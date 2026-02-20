@@ -22,13 +22,16 @@
 !!      subroutine load_sph_reference_fields(refs)
 !!        type(radial_reference_field), intent(inout) :: refs
 !!
-!!      subroutine load_sph_reference_one_field(iref_radius, phys_name, &
-!!     &          iref_in, ncomp, ref_file_IO, r_itp, ref_field)
-!!        character(len = kchara), intent(in) :: phys_name
-!!        integer(kind = kint), intent(in) :: iref_radius, iref_in, ncomp
+!!      subroutine load_sph_reference_two_field                         &
+!!     &         (sph_rj, sph_bc_S, ref_file_IO, iref_radius,           &
+!!     &          phys_name, source_name, iref_in, iref_src, ncomp,     &
+!!     &          r_itp, ref_field)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(sph_boundary_type), intent(in) :: sph_bc_S
 !!        type(field_IO_params), intent(in) :: ref_file_IO
-!!        type(sph_radial_interpolate), intent(inout) :: r_itp
-!!        type(phys_data), intent(inout) :: ref_field
+!!        character(len = kchara), intent(in) :: phys_name, source_name
+!!        integer(kind = kint), intent(in) :: iref_radius, ncomp
+!!        integer(kind = kint), intent(in) :: iref_in, iref_src
 !!@endverbatim
 !
       module radial_reference_field_IO
@@ -205,17 +208,25 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine load_sph_reference_one_field(iref_radius, phys_name,   &
-     &          iref_in, ncomp, ref_file_IO, r_itp, ref_field)
+      subroutine load_sph_reference_two_field                           &
+     &         (sph_rj, sph_bc_S, ref_file_IO, iref_radius,             &
+     &          phys_name, source_name, iref_in, iref_src, ncomp,       &
+     &          r_itp, ref_field)
 !
       use calypso_mpi
+      use t_boundary_params_sph_MHD
       use t_file_IO_parameter
       use field_file_IO
       use interpolate_reference_data
+      use fill_scalar_field
 !
-      character(len = kchara), intent(in) :: phys_name
-      integer(kind = kint), intent(in) :: iref_radius, iref_in, ncomp
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(sph_boundary_type), intent(in) :: sph_bc_S
       type(field_IO_params), intent(in) :: ref_file_IO
+      character(len = kchara), intent(in) :: phys_name, source_name
+      integer(kind = kint), intent(in) :: iref_radius, ncomp
+      integer(kind = kint), intent(in) :: iref_in, iref_src
+!
       type(sph_radial_interpolate), intent(inout) :: r_itp
       type(phys_data), intent(inout) :: ref_field
 !
@@ -231,14 +242,27 @@
       if(iend .gt. 0) call calypso_mpi_abort(iend,                      &
      &                                       'Read file failed')
 !
-      call interpolate_one_ref_field_IO(radius_name,                    &
-     &    iref_radius, phys_name, iref_in, ncomp, ref_fld_IO,           &
-     &    ref_field, r_itp)
+      if(iref_in .gt. 0) then
+        call interpolate_one_ref_field_IO(radius_name,                  &
+     &      iref_radius, phys_name, iref_in, ncomp, ref_fld_IO,         &
+     &      ref_field, r_itp)
+        call fill_scalar_1d_external(sph_bc_S, sph_rj%inod_rj_center,   &
+     &      sph_rj%nidx_rj(1), ref_field%d_fld(1,iref_in))
+      end if
+!
+      if(iref_src .gt. 0) then
+        call interpolate_one_ref_field_IO(radius_name,                  &
+     &      iref_radius, source_name, iref_src, ncomp, ref_fld_IO,      &
+     &      ref_field, r_itp)
+        call fill_scalar_1d_external(sph_bc_S, sph_rj%inod_rj_center,   &
+     &      sph_rj%nidx_rj(1), ref_field%d_fld(1,iref_src))
+
+      end if
 !
       call dealloc_phys_data_IO(ref_fld_IO)
       call dealloc_phys_name_IO(ref_fld_IO)
 !
-      end subroutine load_sph_reference_one_field
+      end subroutine load_sph_reference_two_field
 !
 ! -----------------------------------------------------------------------
 !

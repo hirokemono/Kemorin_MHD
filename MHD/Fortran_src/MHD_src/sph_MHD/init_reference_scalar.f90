@@ -12,13 +12,15 @@
 !!@verbatim
 !!      subroutine s_init_reference_scalar                              &
 !!     &         (irank_reference, takepiro, sph_params, sph_rj, r_2nd, &
-!!     &          sc_prop,  sph_bc_S, fdm2_center, mat_name, ref_param, &
-!!     &          iref_radius, phys_name, iref_scalar, iref_grad,       &
-!!     &          iref_source, r_itp, ref_field, bcs_S, flag_write_ref)
+!!     &          sc_prop, sph_bc_S, fdm2_center, mat_name, ref_param,  &
+!!     &          iref_radius, phys_name, source_name,                  &
+!!     &          iref_scalar, iref_grad, iref_source,                  &
+!!     &          r_itp, ref_field, bcs_S, flag_write_ref)
 !!        integer, intent(in) :: irank_reference
 !!        integer(kind = kint), intent(in) :: iref_scalar, iref_grad
 !!        integer(kind = kint), intent(in) :: iref_source, iref_radius
-!!        character(len=kchara), intent(in) :: mat_name, phys_name
+!!        character(len=kchara), intent(in) :: mat_name
+!!        character(len=kchara), intent(in) :: phys_name, source_name
 !!        type(takepiro_model_param), intent(in) :: takepiro
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
@@ -51,9 +53,10 @@
 !
       subroutine s_init_reference_scalar                                &
      &         (irank_reference, takepiro, sph_params, sph_rj, r_2nd,   &
-     &          sc_prop,  sph_bc_S, fdm2_center, mat_name, ref_param,   &
-     &          iref_radius, phys_name, iref_scalar, iref_grad,         &
-     &          iref_source, r_itp, ref_field, bcs_S, flag_write_ref)
+     &          sc_prop, sph_bc_S, fdm2_center, mat_name, ref_param,    &
+     &          iref_radius, phys_name, source_name,                    &
+     &          iref_scalar, iref_grad, iref_source,                    &
+     &          r_itp, ref_field, bcs_S, flag_write_ref)
 !
       use t_spheric_parameter
       use t_scalar_property
@@ -73,7 +76,8 @@
       integer, intent(in) :: irank_reference
       integer(kind = kint), intent(in) :: iref_scalar, iref_grad
       integer(kind = kint), intent(in) :: iref_source, iref_radius
-      character(len=kchara), intent(in) :: mat_name, phys_name
+      character(len=kchara), intent(in) :: mat_name
+      character(len=kchara), intent(in) :: phys_name, source_name
 !
       type(takepiro_model_param), intent(in) :: takepiro
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -118,8 +122,8 @@
      &      sph_bc_S, bcs_S, fdm2_center, r_2nd, mat_name,              &
      &      iref_source, iref_scalar, iref_grad, ref_field)
       else if(ref_param%iflag_reference .eq. id_ref_field_file) then
-        call const_grad_diffusive_prof                                  &
-     &     (irank_reference, ref_param%ref_file_IO, phys_name,          &
+        call const_grad_diffusive_prof(irank_reference,                 &
+     &      ref_param%ref_file_IO, phys_name, source_name,              &
      &      sph_rj, sc_prop, sph_bc_S, bcs_S, r_2nd, fdm2_center,       &
      &      mat_name, iref_radius, iref_scalar, iref_grad, iref_source, &
      &      ref_field, r_itp)

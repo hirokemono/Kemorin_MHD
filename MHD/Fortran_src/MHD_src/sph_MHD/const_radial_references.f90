@@ -35,7 +35,7 @@
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(band_matrix_type), intent(in) :: band_s00_poisson
 !!      subroutine const_grad_diffusive_prof                            &
-!!     &         (irank_reference, ref_file_IO, phys_name,              &
+!!     &         (irank_reference, ref_file_IO, phys_name, source_name, &
 !!     &          sph_rj, sc_prop, sph_bc_S, bcs_S,                     &
 !!     &          r_2nd, fdm2_center, mat_name, iref_radius,            &
 !!     &          iref_scalar, iref_grad, iref_source, ref_field, r_itp)
@@ -46,6 +46,7 @@
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(fdm2_center_mat), intent(in) :: fdm2_center
 !!        type(band_matrix_type), intent(in) :: band_s00_poisson
+!!        character(len=kchara), intent(in) :: phys_name, source_name
 !!        character(len=kchara), intent(in) :: mat_name
 !!        integer(kind = kint), intent(in) :: iref_scalar
 !!        integer(kind = kint), intent(in) :: iref_grad
@@ -157,7 +158,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_grad_diffusive_prof                              &
-     &         (irank_reference, ref_file_IO, phys_name,                &
+     &         (irank_reference, ref_file_IO, phys_name, source_name,   &
      &          sph_rj, sc_prop, sph_bc_S, bcs_S,                       &
      &          r_2nd, fdm2_center, mat_name, iref_radius,              &
      &          iref_scalar, iref_grad, iref_source, ref_field, r_itp)
@@ -166,7 +167,6 @@
       use t_sph_radial_interpolate
       use calypso_mpi_int
       use calypso_mpi_real
-      use fill_scalar_field
       use const_diffusive_profile
       use const_sph_r_mat_ref_scalar
       use radial_reference_field_IO
@@ -181,7 +181,8 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(fdm2_center_mat), intent(in) :: fdm2_center
 !
-      character(len=kchara), intent(in) :: phys_name, mat_name
+      character(len=kchara), intent(in) :: phys_name, source_name
+      character(len=kchara), intent(in) :: mat_name
       integer(kind = kint), intent(in) :: iref_radius, iref_scalar
       integer(kind = kint), intent(in) :: iref_grad, iref_source
 !
@@ -194,10 +195,10 @@
 !
       if(iref_scalar .le. 0) return
       if(my_rank .eq. irank_reference) then
-        call load_sph_reference_one_field(iref_radius, phys_name,       &
-     &      iref_scalar, n_scalar, ref_file_IO, r_itp, ref_field)
-        call fill_scalar_1d_external(sph_bc_S, sph_rj%inod_rj_center,   &
-     &      sph_rj%nidx_rj(1), ref_field%d_fld(1,iref_scalar))
+        call load_sph_reference_two_field                               &
+     &     (sph_rj, sph_bc_S, ref_file_IO, iref_radius,                 &
+     &      phys_name, source_name, iref_scalar, iref_source, n_scalar, &
+     &      r_itp, ref_field)
 !
         if(iref_grad .gt. 0) then
           call gradient_of_radial_reference(sph_rj, sph_bc_S, bcs_S,    &
@@ -216,6 +217,13 @@
      &        ref_field%d_fld(1,iref_source))
           call dealloc_band_matrix(band_s00_poisson)
         end if
+!
+        write(*,*) 'phys_name  ', trim(phys_name)
+        write(*,*) 'ref_field%d_fld(1,iref_scalar)', &
+     &            ref_field%d_fld(:,iref_scalar)
+        write(*,*) 'source_name  ', trim(source_name)
+        write(*,*) 'ref_field%d_fld(1,iref_source)', &
+     &            ref_field%d_fld(:,iref_source)
       end if
 !
       num64 = cast_long(ref_field%n_point * n_scalar)

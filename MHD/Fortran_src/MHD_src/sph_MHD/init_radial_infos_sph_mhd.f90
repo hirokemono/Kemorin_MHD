@@ -245,7 +245,7 @@
      &    r_2nd, MHD_prop%ht_prop,                                      &
      &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%fdm2_center,                  &
      &    tmat_name, MHD_prop%ref_param_T,                              &
-     &    refs%iref_radius, temperature%name,                           &
+     &    refs%iref_radius, temperature%name, heat_source%name,         &
      &    refs%iref_base%i_temp, refs%iref_grad%i_grad_temp,            &
      &    refs%iref_base%i_heat_source, refs%r_itp,                     &
      &    refs%ref_field, sph_MHD_bc%bcs_T, flag_write_ref)
@@ -255,7 +255,7 @@
      &    r_2nd, MHD_prop%cp_prop,                                      &
      &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%fdm2_center,                  &
      &    cmat_name, MHD_prop%ref_param_C,                              &
-     &    refs%iref_radius, composition%name,                           &
+     &    refs%iref_radius, composition%name, composition_source%name,  &
      &    refs%iref_base%i_light, refs%iref_grad%i_grad_composit,       &
      &    refs%iref_base%i_light_source, refs%r_itp,                    &
      &    refs%ref_field, sph_MHD_bc%bcs_C, flag_write_ref)

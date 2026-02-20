@@ -129,11 +129,11 @@
      &    r_itp%k_old2new_in, r_itp%k_old2new_out,                      &
      &    r_itp%coef_old2new_in)
 !
-      if(iflag_debug .gt. 0) then
+!      if(iflag_debug .gt. 0) then
         call check_sph_radial_interpolate                               &
      &     (r_itp%nri_source, r_itp%source_radius,                      &
      &      ref_field%n_point, ref_field%d_fld(1,iref_radius), r_itp)
-      end if
+!      end if
 !
       call interepolate_reference_fields                                &
      &   (radius_name, ref_fld_IO, r_itp, ref_field)

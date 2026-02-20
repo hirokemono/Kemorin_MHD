@@ -19,6 +19,9 @@
 !!      subroutine fill_scalar_1d_external                              &
 !!     &         (sph_bc, inod_rj_center, nri, d_r)
 !!        type(sph_boundary_type), intent(in) :: sph_bc
+!!        integer(kind = kint), intent(in) :: inod_rj_center
+!!        integer(kind = kint), intent(in) :: nri
+!!        real(kind = kreal), intent(inout) :: d_r(0:nri)
 !!@endverbatim
 !
       module fill_scalar_field
