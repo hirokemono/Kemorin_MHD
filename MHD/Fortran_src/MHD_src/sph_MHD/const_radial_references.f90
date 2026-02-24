@@ -172,6 +172,9 @@
       use radial_reference_field_IO
       use transfer_to_long_integers
 !
+      use fill_scalar_field
+      use select_exp_scalar_ICB
+!
       integer, intent(in) :: irank_reference
       type(field_IO_params), intent(in) :: ref_file_IO
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -200,13 +203,31 @@
      &      phys_name, source_name, iref_scalar, iref_source, n_scalar, &
      &      r_itp, ref_field)
 !
+        if(iref_scalar*ref_field%iflag_update(iref_source) .gt. 0) then
+          write(*,*) 's_const_sph_r_mat_ref_scalar zzz'
+          call s_const_sph_r_mat_ref_scalar                             &
+     &       ((my_rank+50), mat_name, sc_prop%flag_val_diffuse,         &
+     &        ref_field%d_fld(1,sc_prop%ir_kappa),                      &
+     &        ref_field%d_fld(1,sc_prop%ir_dkappa_norm),                &
+     &        sph_rj, r_2nd, sph_bc_S, fdm2_center, band_s00_poisson)
+!
+          ref_field%d_fld(:,iref_scalar) = ref_field%d_fld(:,iref_source)
+          ref_field%d_fld(sph_bc_S%kr_out+1,iref_scalar) = 0.0d0
+          call set_ICB_scalar_boundary_1d                               &
+     &     (sph_rj, sph_bc_S, bcs_S%ICB_Sspec, ref_field%d_fld(1,iref_scalar))
+          call lubksb_3band_ctr(band_s00_poisson, ref_field%d_fld(1,iref_scalar))
+          call fill_scalar_1d_external(sph_bc_S, sph_rj%inod_rj_center,   &
+     &        sph_rj%nidx_rj(1), ref_field%d_fld(1,iref_scalar))
+          call dealloc_band_matrix(band_s00_poisson)
+        end if
+!
         if(iref_grad .gt. 0) then
           call gradient_of_radial_reference(sph_rj, sph_bc_S, bcs_S,    &
      &        r_2nd, fdm2_center, ref_field%d_fld(1,iref_scalar),       &
      &        ref_field%d_fld(1,iref_grad))
         end if
 !
-        if(iref_source .gt. 0) then
+        if(iref_source*ref_field%iflag_update(iref_scalar) .gt. 0) then
           call s_const_sph_r_mat_ref_scalar                             &
      &       ((my_rank+50), mat_name, sc_prop%flag_val_diffuse,         &
      &        ref_field%d_fld(1,sc_prop%ir_kappa),                      &
@@ -219,11 +240,11 @@
         end if
 !
         write(*,*) 'phys_name  ', trim(phys_name)
-        write(*,*) 'ref_field%d_fld(1,iref_scalar)', &
-     &            ref_field%d_fld(:,iref_scalar)
-        write(*,*) 'source_name  ', trim(source_name)
-        write(*,*) 'ref_field%d_fld(1,iref_source)', &
-     &            ref_field%d_fld(:,iref_source)
+        do num64 = 1, ref_field%n_point
+          write(*,*) num64, ref_field%d_fld(num64,iref_radius), &
+      &                     ref_field%d_fld(num64,iref_source), &
+      &                     ref_field%d_fld(num64,iref_scalar)
+        end do
       end if
 !
       num64 = cast_long(ref_field%n_point * n_scalar)
