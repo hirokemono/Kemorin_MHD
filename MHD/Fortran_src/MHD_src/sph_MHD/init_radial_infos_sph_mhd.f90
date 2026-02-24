@@ -194,12 +194,16 @@
 !
       use calypso_mpi
       use calypso_mpi_int
+      use t_time_data
+      use t_file_IO_parameter
       use sph_mhd_rst_IO_control
       use reference_sources_from_d_rj
       use init_reference_scalar
       use init_external_magne_sph
       use radial_reference_field_IO
       use m_base_field_labels
+!
+      use field_file_IO
 !
       type(phys_address), intent(in) :: ipol
       type(sph_grids), intent(in) :: sph
@@ -217,6 +221,10 @@
       logical :: flag_write_ref
       integer :: irank_local
 !
+      type(time_data) :: time_IO
+      type(field_IO) :: radial_fld_IO, radial_temp_IO, radial_comp_IO
+      integer(kind = kint) :: iend
+!
 !
       flag_write_ref = .FALSE.
       if((MHD_prop%fl_prop%ir_nu * MHD_prop%fl_prop%ir_dnu_norm)        &
@@ -228,11 +236,77 @@
       if((MHD_prop%cp_prop%ir_kappa * MHD_prop%cp_prop%ir_dkappa_norm)  &
      &                                  .gt. 0) flag_write_ref = .TRUE.
 !
+      refs%ref_field%iflag_update(1:refs%ref_field%ntot_phys) = 0
 !
-      call cal_ref_sources_from_d_rj(sph, ipol, rj_fld, refs)
-      call load_sph_reference_fields(refs)
-      call overwrite_sources_by_reference(sph%sph_rj, refs%iref_base,   &
-     &    ipol%base, refs%ref_field, rj_fld)
+!
+!       Set source term from restart
+      if(MHD_prop%ref_param_T%iflag_reference                           &
+     &               .eq. id_ref_restart_file) then
+        call set_reference_source_from_rst(sph%sph_rj,                  &
+     &      ipol%base%i_heat_source, rj_fld,                            &
+     &      refs%iref_base%i_heat_source, refs%ref_field)
+      end if
+      if(MHD_prop%ref_param_C%iflag_reference                           &
+     &               .eq. id_ref_restart_file) then
+        call set_reference_source_from_rst(sph%sph_rj,                  &
+     &      ipol%base%i_light_source, rj_fld,                           &
+     &      refs%iref_base%i_light_source, refs%ref_field)
+      end if
+!
+!       Load reference data from file defined in platform_ctl
+      if(my_rank .eq. 0) then
+        if(refs%ref_input_IO%iflag_IO .gt. 0) then
+          if(iflag_debug .gt. 0) write(*,*) 'ref_input_IO%iflag_IO',    &
+     &                      refs%ref_input_IO%iflag_IO
+          call read_and_alloc_step_field(refs%ref_input_IO%file_prefix, &
+     &        my_rank, time_IO, radial_fld_IO, iend)
+          if(iend .gt. 0) call calypso_mpi_abort(iend,                  &
+     &                  'Read radial variation file failed')
+        end if
+!
+!         Load reference data from file defined in temperature control
+        if(MHD_prop%ref_param_T%ref_file_IO%iflag_IO .gt. 0) then
+          call read_and_alloc_step_field                                &
+     &       (MHD_prop%ref_param_T%ref_file_IO%file_prefix,             &
+     &        my_rank, time_IO, radial_temp_IO, iend)
+          if(iend .gt. 0) call calypso_mpi_abort(iend,                  &
+     &                  'Read radial temperature file failed')
+        end if
+!
+!         Load reference data from file defined in composition control
+        if(MHD_prop%ref_param_C%ref_file_IO%iflag_IO .gt. 0) then
+          call read_and_alloc_step_field                                &
+     &       (MHD_prop%ref_param_C%ref_file_IO%file_prefix,             &
+     &        my_rank, time_IO, radial_comp_IO, iend)
+          if(iend .gt. 0) call calypso_mpi_abort(iend,                  &
+     &                  'Read radial composition file failed')
+        end if
+      end if
+!
+!
+      if(refs%ref_input_IO%iflag_IO .gt. 0) then
+        call load_sph_reference_fields(radial_fld_IO, refs)
+        call overwrite_sources_by_reference(sph%sph_rj,                 &
+     &      refs%iref_base, ipol%base, refs%ref_field, rj_fld)
+      end if
+!
+      if(my_rank .eq. 0) then
+        if(refs%ref_input_IO%iflag_IO .gt. 0) then
+          call dealloc_phys_data_IO(radial_fld_IO)
+          call dealloc_phys_name_IO(radial_fld_IO)
+        end if
+!
+        if(MHD_prop%ref_param_T%ref_file_IO%iflag_IO .gt. 0) then
+          call dealloc_phys_data_IO(radial_temp_IO)
+          call dealloc_phys_name_IO(radial_temp_IO)
+        end if
+        if(MHD_prop%ref_param_C%ref_file_IO%iflag_IO .gt. 0) then
+          call dealloc_phys_data_IO(radial_comp_IO)
+          call dealloc_phys_name_IO(radial_comp_IO)
+        end if
+      end if
+!
+!
 !
       irank_local = 0
       if(sph%sph_rj%idx_rj_degree_zero .gt. 0) irank_local = my_rank

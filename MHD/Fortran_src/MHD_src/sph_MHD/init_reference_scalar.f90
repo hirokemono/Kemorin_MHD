@@ -94,10 +94,11 @@
       logical, intent(inout) :: flag_write_ref
 !
 !
-      if (ref_param%iflag_reference .ne. id_sphere_ref_temp             &
+      if(    ref_param%iflag_reference .ne. id_sphere_ref_temp          &
      & .and. ref_param%iflag_reference .ne. id_takepiro_temp            &
      & .and. ref_param%iflag_reference .ne. id_numerical_solution       &
      & .and. ref_param%iflag_reference .ne. id_ref_field_file           &
+     & .and. ref_param%iflag_reference .ne. id_ref_restart_file         &
      &    ) return
       flag_write_ref = .TRUE.
 !

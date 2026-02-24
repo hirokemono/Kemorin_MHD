@@ -65,14 +65,14 @@
       real(kind = kreal), intent(in) :: r_ICB, r_CMB
 !
       real(kind = kreal), intent(inout) :: depth_top, depth_bottom
-      real(kind=kreal), intent(inout) :: reftemp_r(0:nri)
-      real(kind=kreal), intent(inout) :: refgrad_r(0:nri)
+      real(kind = kreal), intent(inout) :: reftemp_r(0:nri)
+      real(kind = kreal), intent(inout) :: refgrad_r(0:nri)
 !
 !
       reftemp_r(1:nri) = zero
       refgrad_r(1:nri) = zero
-      depth_bottom = r_ICB
-      depth_top =    r_CMB
+      depth_bottom =     r_ICB
+      depth_top =        r_CMB
 !
       end subroutine no_ref_temp_sph_mhd
 !

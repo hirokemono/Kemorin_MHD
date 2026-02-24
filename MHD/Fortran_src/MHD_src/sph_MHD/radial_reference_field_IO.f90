@@ -164,38 +164,24 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine load_sph_reference_fields(refs)
+      subroutine load_sph_reference_fields(ref_fld_IO, refs)
 !
       use calypso_mpi
       use calypso_mpi_int
       use calypso_mpi_real
-      use t_time_data
       use t_file_IO_parameter
-      use field_file_IO
       use interpolate_reference_data
       use transfer_to_long_integers
 !
+      type(field_IO), intent(in) :: ref_fld_IO
       type(radial_reference_field), intent(inout) :: refs
 !
-      type(time_data) :: time_IO
-      type(field_IO) :: ref_fld_IO
-      integer(kind = kint) :: iend
       integer(kind = kint_gl) :: num64
 !
 !
-      refs%ref_field%iflag_update(1:refs%ref_field%ntot_phys) = 0
-      if(refs%ref_input_IO%iflag_IO .eq. 0) return
       if(my_rank .eq. 0) then
-        call read_and_alloc_step_field(refs%ref_input_IO%file_prefix,   &
-     &      my_rank, time_IO, ref_fld_IO, iend)
-        if(iend .gt. 0) call calypso_mpi_abort(iend,                    &
-     &                                         'Read file failed')
-!
         call interpolate_ref_fields_IO(radius_name,                     &
      &      refs%iref_radius, ref_fld_IO, refs%ref_field, refs%r_itp)
-!
-        call dealloc_phys_data_IO(ref_fld_IO)
-        call dealloc_phys_name_IO(ref_fld_IO)
       end if
 !
       call calypso_mpi_bcast_int(refs%ref_field%iflag_update,           &
