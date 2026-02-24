@@ -285,7 +285,7 @@
 !
 !
       if(refs%ref_input_IO%iflag_IO .gt. 0) then
-        call load_sph_reference_fields(radial_fld_IO, refs)
+        call load_sph_reference_sources(radial_fld_IO, refs)
         call overwrite_sources_by_reference(sph%sph_rj,                 &
      &      refs%iref_base, ipol%base, refs%ref_field, rj_fld)
       end if

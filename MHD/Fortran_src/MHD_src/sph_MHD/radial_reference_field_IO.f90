@@ -19,7 +19,7 @@
 !!
 !!      subroutine output_reference_field(refs)
 !!        type(radial_reference_field), intent(in) :: refs
-!!      subroutine load_sph_reference_fields(refs)
+!!      subroutine load_sph_reference_sources(refs)
 !!        type(radial_reference_field), intent(inout) :: refs
 !!
 !!      subroutine load_sph_reference_two_field                         &
@@ -164,7 +164,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine load_sph_reference_fields(ref_fld_IO, refs)
+      subroutine load_sph_reference_sources(ref_fld_IO, refs)
 !
       use calypso_mpi
       use calypso_mpi_int
@@ -172,6 +172,7 @@
       use t_file_IO_parameter
       use interpolate_reference_data
       use transfer_to_long_integers
+      use m_base_field_labels
 !
       type(field_IO), intent(in) :: ref_fld_IO
       type(radial_reference_field), intent(inout) :: refs
@@ -180,8 +181,17 @@
 !
 !
       if(my_rank .eq. 0) then
-        call interpolate_ref_fields_IO(radius_name,                     &
-     &      refs%iref_radius, ref_fld_IO, refs%ref_field, refs%r_itp)
+        call const_radial_interpolate_table                             &
+     &     (radius_name, refs%iref_radius, ref_fld_IO,                  &
+     &      refs%ref_field, refs%r_itp)
+        call interpolate_two_ref_scalars                                &
+     &     (heat_source%name, refs%iref_base%i_heat_source,             &
+     &      composition_source%name, refs%iref_base%i_light_source,     &
+     &      ref_fld_IO, refs%ref_field, refs%r_itp)
+        call dealloc_original_sph_data(refs%r_itp)
+!
+        call dealloc_radial_interpolate(refs%r_itp)
+        call dealloc_org_radius_interpolate(refs%r_itp)
       end if
 !
       call calypso_mpi_bcast_int(refs%ref_field%iflag_update,           &
@@ -190,7 +200,7 @@
      &                  * refs%ref_field%ntot_phys)
       call calypso_mpi_bcast_real(refs%ref_field%d_fld, num64, 0)
 !
-      end subroutine load_sph_reference_fields
+      end subroutine load_sph_reference_sources
 !
 ! -----------------------------------------------------------------------
 !
@@ -228,18 +238,21 @@
       if(iend .gt. 0) call calypso_mpi_abort(iend,                      &
      &                                       'Read file failed')
 !
+      call const_radial_interpolate_table(radius_name, iref_radius,     &
+     &                                    ref_fld_IO, ref_field, r_itp)
+      call interpolate_two_ref_scalars(phys_name, iref_in,              &
+     &    source_name, iref_src, ref_fld_IO, ref_field, r_itp)
+      call dealloc_original_sph_data(r_itp)
+!
+      call dealloc_radial_interpolate(r_itp)
+      call dealloc_org_radius_interpolate(r_itp)
+!
       if(iref_in .gt. 0) then
-        call interpolate_one_ref_field_IO(radius_name,                  &
-     &      iref_radius, phys_name, iref_in, ncomp, ref_fld_IO,         &
-     &      ref_field, r_itp)
         call fill_scalar_1d_external(sph_bc_S, sph_rj%inod_rj_center,   &
      &      sph_rj%nidx_rj(1), ref_field%d_fld(1,iref_in))
       end if
 !
       if(iref_src .gt. 0) then
-        call interpolate_one_ref_field_IO(radius_name,                  &
-     &      iref_radius, source_name, iref_src, ncomp, ref_fld_IO,      &
-     &      ref_field, r_itp)
         call fill_scalar_1d_external(sph_bc_S, sph_rj%inod_rj_center,   &
      &      sph_rj%nidx_rj(1), ref_field%d_fld(1,iref_src))
 
