@@ -237,6 +237,11 @@
       refs%ref_field%iflag_update(1:refs%ref_field%ntot_phys) = 0
 !
 !
+      irank_local = 0
+      if(sph%sph_rj%idx_rj_degree_zero .gt. 0) irank_local = my_rank
+      call calypso_mpi_allreduce_one_int                                &
+     &   (irank_local, refs%irank_reference, MPI_SUM)
+!
 !       Set source term from restart
       if(MHD_prop%ref_param_T%iflag_reference                           &
      &               .eq. id_ref_restart_file) then
@@ -260,19 +265,25 @@
      &      refs%iref_base, ipol%base, refs%ref_field, rj_fld)
       end if
 !
+      if(my_rank .eq. refs%irank_reference) then
       if(MHD_prop%ref_param_T%iflag_reference                           &
      &                  .eq. id_ref_field_file) then
+        call load_sph_reference_two_field                               &
+     &     (MHD_prop%ref_param_T%ref_file_IO, refs%iref_radius,         &
+     &      temperature%name, heat_source%name,                         &
+     &      refs%iref_base%i_temp, refs%iref_base%i_heat_source,        &
+     &      n_scalar, refs%r_itp, refs%ref_field)
       end if
       if(MHD_prop%ref_param_C%iflag_reference                           &
      &                  .eq. id_ref_field_file) then
+        call load_sph_reference_two_field                               &
+     &     (MHD_prop%ref_param_C%ref_file_IO, refs%iref_radius,         &
+     &      composition%name, composition_source%name,                  &
+     &      refs%iref_base%i_light, refs%iref_base%i_light_source,      &
+     &      n_scalar, refs%r_itp, refs%ref_field)
+      end if
       end if
 !
-      irank_local = 0
-      if(sph%sph_rj%idx_rj_degree_zero .gt. 0) irank_local = my_rank
-      call calypso_mpi_allreduce_one_int                                &
-     &   (irank_local, refs%irank_reference, MPI_SUM)
-
-      refs%ref_field%iflag_update(1:refs%ref_field%ntot_phys) = 0
       call s_init_reference_scalar(refs%irank_reference,                &
      &    MHD_prop%takepito_T, sph%sph_params, sph%sph_rj,              &
      &    r_2nd, MHD_prop%ht_prop,                                      &

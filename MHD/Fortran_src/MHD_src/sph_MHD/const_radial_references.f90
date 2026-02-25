@@ -198,12 +198,9 @@
 !
       if(iref_scalar .le. 0) return
       if(my_rank .eq. irank_reference) then
-        call load_sph_reference_two_field(ref_file_IO, iref_radius,     &
-     &      phys_name, source_name, iref_scalar, iref_source, n_scalar, &
-     &      r_itp, ref_field)
-!
+            write(*,*) 's_const_sph_r_mat_ref_scalar zzz',   &
+        &      ref_field%iflag_update(iref_scalar)
         if(iref_scalar*ref_field%iflag_update(iref_source) .gt. 0) then
-          write(*,*) 's_const_sph_r_mat_ref_scalar zzz'
           call s_const_sph_r_mat_ref_scalar                             &
      &       ((my_rank+50), mat_name, sc_prop%flag_val_diffuse,         &
      &        ref_field%d_fld(1,sc_prop%ir_kappa),                      &
