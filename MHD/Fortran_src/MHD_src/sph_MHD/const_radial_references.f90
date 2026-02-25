@@ -198,8 +198,7 @@
 !
       if(iref_scalar .le. 0) return
       if(my_rank .eq. irank_reference) then
-        call load_sph_reference_two_field                               &
-     &     (sph_rj, sph_bc_S, ref_file_IO, iref_radius,                 &
+        call load_sph_reference_two_field(ref_file_IO, iref_radius,     &
      &      phys_name, source_name, iref_scalar, iref_source, n_scalar, &
      &      r_itp, ref_field)
 !

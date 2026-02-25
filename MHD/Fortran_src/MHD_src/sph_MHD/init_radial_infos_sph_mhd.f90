@@ -221,9 +221,7 @@
       logical :: flag_write_ref
       integer :: irank_local
 !
-      type(time_data) :: time_IO
-      type(field_IO) :: radial_fld_IO, radial_temp_IO, radial_comp_IO
-      integer(kind = kint) :: iend
+      type(field_IO) :: radial_fld_IO
 !
 !
       flag_write_ref = .FALSE.
@@ -254,59 +252,20 @@
       end if
 !
 !       Load reference data from file defined in platform_ctl
-      if(my_rank .eq. 0) then
-        if(refs%ref_input_IO%iflag_IO .gt. 0) then
-          if(iflag_debug .gt. 0) write(*,*) 'ref_input_IO%iflag_IO',    &
-     &                      refs%ref_input_IO%iflag_IO
-          call read_and_alloc_step_field(refs%ref_input_IO%file_prefix, &
-     &        my_rank, time_IO, radial_fld_IO, iend)
-          if(iend .gt. 0) call calypso_mpi_abort(iend,                  &
-     &                  'Read radial variation file failed')
-        end if
-!
-!         Load reference data from file defined in temperature control
-        if(MHD_prop%ref_param_T%ref_file_IO%iflag_IO .gt. 0) then
-          call read_and_alloc_step_field                                &
-     &       (MHD_prop%ref_param_T%ref_file_IO%file_prefix,             &
-     &        my_rank, time_IO, radial_temp_IO, iend)
-          if(iend .gt. 0) call calypso_mpi_abort(iend,                  &
-     &                  'Read radial temperature file failed')
-        end if
-!
-!         Load reference data from file defined in composition control
-        if(MHD_prop%ref_param_C%ref_file_IO%iflag_IO .gt. 0) then
-          call read_and_alloc_step_field                                &
-     &       (MHD_prop%ref_param_C%ref_file_IO%file_prefix,             &
-     &        my_rank, time_IO, radial_comp_IO, iend)
-          if(iend .gt. 0) call calypso_mpi_abort(iend,                  &
-     &                  'Read radial composition file failed')
-        end if
-      end if
-!
-!
       if(refs%ref_input_IO%iflag_IO .gt. 0) then
-        call load_sph_reference_sources(radial_fld_IO, refs)
+        if(iflag_debug .gt. 0) write(*,*) 'ref_input_IO%iflag_IO',      &
+     &                      refs%ref_input_IO%iflag_IO
+        call load_sph_reference_sources(refs%ref_input_IO, refs)
         call overwrite_sources_by_reference(sph%sph_rj,                 &
      &      refs%iref_base, ipol%base, refs%ref_field, rj_fld)
       end if
 !
-      if(my_rank .eq. 0) then
-        if(refs%ref_input_IO%iflag_IO .gt. 0) then
-          call dealloc_phys_data_IO(radial_fld_IO)
-          call dealloc_phys_name_IO(radial_fld_IO)
-        end if
-!
-        if(MHD_prop%ref_param_T%ref_file_IO%iflag_IO .gt. 0) then
-          call dealloc_phys_data_IO(radial_temp_IO)
-          call dealloc_phys_name_IO(radial_temp_IO)
-        end if
-        if(MHD_prop%ref_param_C%ref_file_IO%iflag_IO .gt. 0) then
-          call dealloc_phys_data_IO(radial_comp_IO)
-          call dealloc_phys_name_IO(radial_comp_IO)
-        end if
+      if(MHD_prop%ref_param_T%iflag_reference                           &
+     &                  .eq. id_ref_field_file) then
       end if
-!
-!
+      if(MHD_prop%ref_param_C%iflag_reference                           &
+     &                  .eq. id_ref_field_file) then
+      end if
 !
       irank_local = 0
       if(sph%sph_rj%idx_rj_degree_zero .gt. 0) irank_local = my_rank
