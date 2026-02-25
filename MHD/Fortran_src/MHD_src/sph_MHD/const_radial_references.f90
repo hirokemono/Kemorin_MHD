@@ -7,11 +7,10 @@
 !>@brief  Refelence scalar by diffusive profile
 !!
 !!@verbatim
-!!      subroutine const_diffusive_profiles(irank_reference, sph_rj,    &
-!!     &          sc_prop, sph_bc_S, bcs_S, fdm2_center, r_2nd,         &
+!!      subroutine const_diffusive_profiles                             &
+!!     &         (sph_rj, sc_prop, sph_bc_S, bcs_S, fdm2_center, r_2nd, &
 !!     &          mat_name, iref_source, iref_scalar, iref_grad,        &
 !!     &          ref_field)
-!!        integer, intent(in) :: irank_reference
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(scalar_property), intent(in) :: sc_prop
@@ -34,11 +33,10 @@
 !!        type(fdm2_center_mat), intent(in) :: fdm2_center
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(band_matrix_type), intent(in) :: band_s00_poisson
-!!      subroutine const_grad_diffusive_prof                            &
-!!     &         (irank_reference, ref_file_IO, phys_name, source_name, &
-!!     &          sph_rj, sc_prop, sph_bc_S, bcs_S,                     &
-!!     &          r_2nd, fdm2_center, mat_name, iref_radius,            &
-!!     &          iref_scalar, iref_grad, iref_source, ref_field, r_itp)
+!!      subroutine const_grad_diffusive_prof(phys_name, source_name,    &
+!!     &          sph_rj, sc_prop, sph_bc_S, bcs_S, r_2nd, fdm2_center, &
+!!     &          mat_name, iref_radius, iref_scalar, iref_grad,        &
+!!     &          iref_source, ref_field, r_itp)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(scalar_property), intent(in) :: sc_prop
 !!        type(sph_boundary_type), intent(in) :: sph_bc
@@ -88,18 +86,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_diffusive_profiles(irank_reference, sph_rj,      &
-     &          sc_prop, sph_bc_S, bcs_S, fdm2_center, r_2nd,           &
+      subroutine const_diffusive_profiles                               &
+     &         (sph_rj, sc_prop, sph_bc_S, bcs_S, fdm2_center, r_2nd,   &
      &          mat_name, iref_source, iref_scalar, iref_grad,          &
      &          ref_field)
 !
-      use calypso_mpi_real
       use const_sph_r_mat_ref_scalar
       use const_diffusive_profile
       use fill_scalar_field
-      use transfer_to_long_integers
 !
-      integer, intent(in) :: irank_reference
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(scalar_property), intent(in) :: sc_prop
@@ -118,11 +113,14 @@
 !
 !
       if(iref_scalar .le. 0) return
-      if(my_rank .eq. irank_reference) then
         if(iref_source .gt. 0) then
 !$omp parallel workshare
           ref_field%d_fld(1:ref_field%n_point,iref_scalar)              &
      &       = ref_field%d_fld(1:ref_field%n_point,iref_source)
+!$omp end parallel workshare
+        else
+!$omp parallel workshare
+          ref_field%d_fld(1:ref_field%n_point,iref_scalar) = 0.0d0
 !$omp end parallel workshare
         end if
 !
@@ -143,40 +141,24 @@
      &        r_2nd, fdm2_center, ref_field%d_fld(1,iref_scalar),       &
      &        ref_field%d_fld(1,iref_grad))
         end if
-      end if
-!
-      num64 = cast_long(ref_field%n_point * n_scalar)
-      call calypso_mpi_bcast_real(ref_field%d_fld(1,iref_scalar),       &
-     &                            num64, irank_reference)
-      if(iref_grad .gt. 0) then
-        call calypso_mpi_bcast_real(ref_field%d_fld(1,iref_grad),       &
-     &                              num64, irank_reference)
-      end if
 !
       end subroutine const_diffusive_profiles
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_grad_diffusive_prof                              &
-     &         (irank_reference, ref_file_IO, phys_name, source_name,   &
-     &          sph_rj, sc_prop, sph_bc_S, bcs_S,                       &
-     &          r_2nd, fdm2_center, mat_name, iref_radius,              &
-     &          iref_scalar, iref_grad, iref_source, ref_field, r_itp)
+      subroutine const_grad_diffusive_prof(phys_name, source_name,      &
+     &          sph_rj, sc_prop, sph_bc_S, bcs_S, r_2nd, fdm2_center,   &
+     &          mat_name, iref_radius, iref_scalar, iref_grad,          &
+     &          iref_source, ref_field, r_itp)
 !
-      use t_file_IO_parameter
       use t_sph_radial_interpolate
-      use calypso_mpi_int
-      use calypso_mpi_real
       use const_diffusive_profile
       use const_sph_r_mat_ref_scalar
       use radial_reference_field_IO
-      use transfer_to_long_integers
 !
       use fill_scalar_field
       use select_exp_scalar_ICB
 !
-      integer, intent(in) :: irank_reference
-      type(field_IO_params), intent(in) :: ref_file_IO
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(scalar_property), intent(in) :: sc_prop
       type(sph_boundary_type), intent(in) :: sph_bc_S
@@ -197,66 +179,40 @@
 !
 !
       if(iref_scalar .le. 0) return
-      if(my_rank .eq. irank_reference) then
-            write(*,*) 's_const_sph_r_mat_ref_scalar zzz',   &
-        &      ref_field%iflag_update(iref_scalar)
-        if(iref_scalar*ref_field%iflag_update(iref_source) .gt. 0) then
-          call s_const_sph_r_mat_ref_scalar                             &
-     &       ((my_rank+50), mat_name, sc_prop%flag_val_diffuse,         &
-     &        ref_field%d_fld(1,sc_prop%ir_kappa),                      &
-     &        ref_field%d_fld(1,sc_prop%ir_dkappa_norm),                &
-     &        sph_rj, r_2nd, sph_bc_S, fdm2_center, band_s00_poisson)
+      call s_const_sph_r_mat_ref_scalar                                 &
+     &   ((my_rank+50), mat_name, sc_prop%flag_val_diffuse,             &
+     &    ref_field%d_fld(1,sc_prop%ir_kappa),                          &
+     &    ref_field%d_fld(1,sc_prop%ir_dkappa_norm),                    &
+     &    sph_rj, r_2nd, sph_bc_S, fdm2_center, band_s00_poisson)
 !
-          ref_field%d_fld(:,iref_scalar) = ref_field%d_fld(:,iref_source)
-          ref_field%d_fld(sph_bc_S%kr_out+1,iref_scalar) = 0.0d0
-          call set_ICB_scalar_boundary_1d                               &
-     &     (sph_rj, sph_bc_S, bcs_S%ICB_Sspec, ref_field%d_fld(1,iref_scalar))
-          call lubksb_3band_ctr(band_s00_poisson, ref_field%d_fld(1,iref_scalar))
-          call fill_scalar_1d_external(sph_bc_S, sph_rj%inod_rj_center,   &
-     &        sph_rj%nidx_rj(1), ref_field%d_fld(1,iref_scalar))
-          call dealloc_band_matrix(band_s00_poisson)
-        end if
+      if(iref_scalar*ref_field%iflag_update(iref_source) .gt. 0) then
+        ref_field%d_fld(1:ref_field%n_point,iref_scalar)                &
+     &        = ref_field%d_fld(1:ref_field%n_point,iref_source)
 !
-        if(iref_grad .gt. 0) then
-          call gradient_of_radial_reference(sph_rj, sph_bc_S, bcs_S,    &
-     &        r_2nd, fdm2_center, ref_field%d_fld(1,iref_scalar),       &
-     &        ref_field%d_fld(1,iref_grad))
-        end if
+        ref_field%d_fld(sph_bc_S%kr_out+1,iref_scalar) = 0.0d0
+        call set_ICB_scalar_boundary_1d                                 &
+     &     (sph_rj, sph_bc_S, bcs_S%ICB_Sspec,                          &
+     &      ref_field%d_fld(1,iref_scalar))
 !
-        if(iref_source*ref_field%iflag_update(iref_scalar) .gt. 0) then
-          call s_const_sph_r_mat_ref_scalar                             &
-     &       ((my_rank+50), mat_name, sc_prop%flag_val_diffuse,         &
-     &        ref_field%d_fld(1,sc_prop%ir_kappa),                      &
-     &        ref_field%d_fld(1,sc_prop%ir_dkappa_norm),                &
-     &        sph_rj, r_2nd, sph_bc_S, fdm2_center, band_s00_poisson)
-          call cal_reference_source(sph_rj, sc_prop, band_s00_poisson,  &
-     &        ref_field%d_fld(1,iref_scalar),                           &
-     &        ref_field%d_fld(1,iref_source))
-          call dealloc_band_matrix(band_s00_poisson)
-        end if
+        call lubksb_3band_ctr(band_s00_poisson,                         &
+     &                        ref_field%d_fld(1,iref_scalar))
 !
-        write(*,*) 'phys_name  ', trim(phys_name)
-        do num64 = 1, ref_field%n_point
-          write(*,*) num64, ref_field%d_fld(num64,iref_radius), &
-      &                     ref_field%d_fld(num64,iref_source), &
-      &                     ref_field%d_fld(num64,iref_scalar)
-        end do
+        call fill_scalar_1d_external(sph_bc_S, sph_rj%inod_rj_center,   &
+     &      sph_rj%nidx_rj(1), ref_field%d_fld(1,iref_scalar))
       end if
 !
-      num64 = cast_long(ref_field%n_point * n_scalar)
-      call calypso_mpi_bcast_int(ref_field%iflag_update(iref_scalar),   &
-     &                           cast_long(n_scalar), irank_reference)
-      call calypso_mpi_bcast_real(ref_field%d_fld(1,iref_scalar),       &
-     &                            num64, irank_reference)
+      if(iref_source*ref_field%iflag_update(iref_scalar) .gt. 0) then
+        call cal_reference_source(sph_rj, sc_prop, band_s00_poisson,    &
+     &      ref_field%d_fld(1,iref_scalar),                             &
+     &      ref_field%d_fld(1,iref_source))
+      end if
 !
       if(iref_grad .gt. 0) then
-        call calypso_mpi_bcast_real(ref_field%d_fld(1,iref_grad),       &
-     &                              num64, irank_reference)
+        call gradient_of_radial_reference(sph_rj, sph_bc_S, bcs_S,      &
+     &      r_2nd, fdm2_center, ref_field%d_fld(1,iref_scalar),         &
+     &      ref_field%d_fld(1,iref_grad))
       end if
-      if(iref_grad .gt. 0) then
-        call calypso_mpi_bcast_real(ref_field%d_fld(1,iref_source),     &
-     &                              num64, irank_reference)
-      end if
+      call dealloc_band_matrix(band_s00_poisson)
 !
       end subroutine const_grad_diffusive_prof
 !
