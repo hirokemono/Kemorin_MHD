@@ -1,0 +1,15 @@
+!  domain ID
+               0
+!  time step number
+               0
+!  time, Delta t
+   0.000000000000000E+000   0.000000000000000E+000
+! Num. of grid, field and comps
+               2               2
+    1    1
+radius
+   0.000000000000000E+000
+   1.000000000000000E+000
+heat_source
+   3.000000000000000E+000
+   3.000000000000000E+000
