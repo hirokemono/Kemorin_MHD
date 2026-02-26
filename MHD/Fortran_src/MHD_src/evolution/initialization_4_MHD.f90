@@ -97,7 +97,7 @@
       use cal_volume_node_MHD
       use int_MHD_mass_matrices
       use int_surface_params_MHD
-      use set_dynamo_initial_field
+      use initial_FEM_MHD_control
       use set_nodal_bc_id_data
       use allocate_array_MHD
       use ordering_line_filter_smp
@@ -235,8 +235,8 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.eq.1) write(*,*)' initial_data_control'
-      call initial_data_control                                         &
+      if (iflag_debug.eq.1) write(*,*) 's_initial_FEM_MHD_control'
+      call s_initial_FEM_MHD_control                                    &
      &   (MHD_step%iflag_restart_mode, MHD_files, MHD_step%rst_step,    &
      &    MHD_prop%ref_param_T, geofem%mesh%node, geofem%mesh%ele,      &
      &    MHD_mesh%fluid, MHD_prop%cd_prop, iphys,                      &

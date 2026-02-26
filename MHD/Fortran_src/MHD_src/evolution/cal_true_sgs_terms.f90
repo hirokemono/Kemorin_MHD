@@ -311,6 +311,7 @@
 !
       use t_bc_data_magne
       use t_surface_bc_data
+      use copy_nodal_fields
       use cal_magnetic_terms
 !
       real(kind = kreal), intent(in) :: dt
@@ -373,6 +374,8 @@
      &         (i_sgs_true, i_sgs_div, i_sgs_simi,                      &
      &          filter_param, nod_comm, node, filtering,                &
      &          wk_filter, nod_fld, v_sol, SR_sig, SR_r)
+!
+      use copy_nodal_fields
 !
       integer(kind = kint), intent(in) :: i_sgs_true, i_sgs_div
       integer(kind = kint), intent(in) :: i_sgs_simi

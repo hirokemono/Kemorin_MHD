@@ -114,6 +114,8 @@
      &          FEM_elens, diff_coefs, mlump_fl, mhd_fem_wk, rhs_mat,   &
      &          nod_fld, ele_fld, v_sol, SR_sig, SR_r)
 !
+      use copy_nodal_fields
+      use cal_fluxes
       use cal_momentum_terms
 !
       real(kind = kreal), intent(in) :: dt
@@ -183,6 +185,8 @@
      &          FEM_elens, diff_coefs, mlump_fl, mhd_fem_wk, rhs_mat,   &
      &          nod_fld, ele_fld, v_sol, SR_sig, SR_r)
 !
+      use copy_nodal_fields
+      use cal_fluxes
       use cal_momentum_terms
 !
       real(kind = kreal), intent(in) :: dt
