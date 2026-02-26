@@ -189,13 +189,9 @@
         ref_field%d_fld(1:ref_field%n_point,iref_scalar)                &
      &        = ref_field%d_fld(1:ref_field%n_point,iref_source)
 !
-        ref_field%d_fld(sph_bc_S%kr_out+1,iref_scalar) = 0.0d0
-        call set_ICB_scalar_boundary_1d                                 &
-     &     (sph_rj, sph_bc_S, bcs_S%ICB_Sspec,                          &
+        call cal_diffusive_profile(sph_rj, sc_prop, sph_bc_S, bcs_S,    &
+     &      r_2nd, fdm2_center, band_s00_poisson,                       &
      &      ref_field%d_fld(1,iref_scalar))
-!
-        call lubksb_3band_ctr(band_s00_poisson,                         &
-     &                        ref_field%d_fld(1,iref_scalar))
 !
         call fill_scalar_1d_external(sph_bc_S, sph_rj%inod_rj_center,   &
      &      sph_rj%nidx_rj(1), ref_field%d_fld(1,iref_scalar))

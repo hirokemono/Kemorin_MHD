@@ -1,10 +1,14 @@
-!
-!      module cal_velocity_pre
-!
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!        modieied by H. Matsui on Sep., 2005
-!
+!>@file   cal_velocity_pre.f90
+!!@brief  module cal_velocity_pre
+!!
+!!@author H. Matsui and H.Okuda 
+!!@date Programmed in July 2000 (ver 1.1)
+!!        modified by H. Matsui in Oct., 2005
+!!        modified by H. Matsui in Aug., 2007
+!!
+!>@brief  Finite elememt integration for momentum equation
+!!
+!!@verbatim
 !!      subroutine s_cal_velocity_pre(time, dt, FEM_prm, SGS_par,       &
 !!     &          nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod, &
 !!     &          fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,         &
@@ -49,7 +53,7 @@
 !!       &           :: MG_vector(0:num_MG_level)
 !!        type(dynamic_least_suare_data), intent(inout) :: wk_lsq
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
-!!       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -58,6 +62,7 @@
 !!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!@endverbatim
 !
       module cal_velocity_pre
 !
@@ -124,7 +129,8 @@
       use cal_sgs_fluxes
       use set_nodal_bc_id_data
       use int_vol_diffusion_ele
-      use int_vol_velo_pre
+      use int_vol_velo_pre_ele_pg
+      use int_vol_velo_pre_ele_upwind
       use int_surf_velo_pre
       use int_vol_coriolis_term
       use cal_sgs_m_flux_sgs_buo
@@ -242,32 +248,29 @@
 ! -------     advection and forces
 !
       if (FEM_prm%iflag_velo_supg .eq. id_turn_ON) then
-        call int_vol_velo_pre_ele_upwind                                &
+        call s_int_vol_velo_pre_ele_upw                                 &
      &     (FEM_prm%iflag_rotate_form, FEM_prm%npoint_t_evo_int, dt,    &
      &      SGS_par%model_p, SGS_par%commute_p, node, ele, fluid,       &
-     &      fl_prop, cd_prop, iphys%base, iphys_LES%filter_fld,         &
-     &      iphys_LES%SGS_term, nod_fld, ak_MHD, ele_fld%ntot_phys,     &
-     &      iphys_ele_base%i_velo, ele_fld%d_fld, iphys_ele_base,       &
+     &      fl_prop, cd_prop, iphys%base, iphys_LES, nod_fld,           &
+     &      ak_MHD, ele_fld, iphys_ele_base%i_velo, iphys_ele_base,     &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      FEM_elens, diff_coefs,                                      &
      &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
       else if (FEM_prm%iflag_velo_supg .eq. id_magnetic_SUPG) then
-        call int_vol_velo_pre_ele_upwind                                &
+        call s_int_vol_velo_pre_ele_upw                                 &
      &     (FEM_prm%iflag_rotate_form, FEM_prm%npoint_t_evo_int, dt,    &
      &      SGS_par%model_p, SGS_par%commute_p, node, ele, fluid,       &
-     &      fl_prop, cd_prop, iphys%base, iphys_LES%filter_fld,         &
-     &      iphys_LES%SGS_term, nod_fld, ak_MHD, ele_fld%ntot_phys,     &
-     &      iphys_ele_base%i_magne, ele_fld%d_fld, iphys_ele_base,      &
+     &      fl_prop, cd_prop, iphys%base, iphys_LES, nod_fld,           &
+     &      ak_MHD, ele_fld, iphys_ele_base%i_magne, iphys_ele_base,    &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      FEM_elens, diff_coefs,                                      &
      &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
       else
-        call int_vol_velo_pre_ele                                       &
+        call s_int_vol_velo_pre_ele_pg                                  &
      &     (FEM_prm%iflag_rotate_form, FEM_prm%npoint_t_evo_int,        &
      &      SGS_par%model_p, SGS_par%commute_p, node, ele, fluid,       &
-     &      fl_prop, cd_prop, iphys%base, iphys_LES%filter_fld,         &
-     &      iphys_LES%SGS_term, nod_fld, ak_MHD, ele_fld%ntot_phys,     &
-     &      ele_fld%d_fld, iphys_ele_base,                              &
+     &      fl_prop, cd_prop, iphys%base, iphys_LES, nod_fld,           &
+     &      ak_MHD, ele_fld, iphys_ele_base,                            &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      FEM_elens, diff_coefs,                                      &
      &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
