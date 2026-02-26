@@ -1,5 +1,5 @@
-!>@file   set_dynamo_initial_field.f90
-!!@brief  module set_dynamo_initial_field
+!>@file   initial_FEM_MHD_control.f90
+!!@brief  module initial_FEM_MHD_control
 !!
 !!@author H. Matsui
 !!@date programmed by H.Matsui and H.Okuda on July 2000 (ver 1.1)
@@ -9,7 +9,7 @@
 !> @brief Set initial data for spectrum dynamos
 !!
 !!@verbatim
-!!      subroutine initial_data_control                                 &
+!!      subroutine s_initial_FEM_MHD_control                            &
 !!     &         (iflag_restart_mode, MHD_files, rst_step, ref_param_T, &
 !!     &          node, ele, fluid, cd_prop, iphys, layer_tbl,          &
 !!     &          SGS_par, FEM_SGS_wk, sgs_coefs, diff_coefs,           &
@@ -34,7 +34,7 @@
 !!        type(field_IO), intent(inout) :: fem_fst_IO
 !!@endverbatim
 !
-      module set_dynamo_initial_field
+      module initial_FEM_MHD_control
 ! j
       use m_precision
       use m_constants
@@ -54,7 +54,7 @@
 !
       implicit none
 !
-      private :: set_initial_data
+      private :: set_initial_FEM_MHD_data
 !
 !-----------------------------------------------------------------------
 !
@@ -62,7 +62,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine initial_data_control                                   &
+      subroutine s_initial_FEM_MHD_control                              &
      &         (iflag_restart_mode, MHD_files, rst_step, ref_param_T,   &
      &          node, ele, fluid, cd_prop, iphys, layer_tbl,            &
      &          SGS_par, FEM_SGS_wk, sgs_coefs, diff_coefs,             &
@@ -108,8 +108,8 @@
      &      FEM_SGS_wk%wk_sgs, FEM_SGS_wk%wk_diff, sgs_coefs,           &
      &      diff_coefs, nod_fld, init_d, time_d, flex_p)
       else
-        call set_initial_data(iflag_restart_mode, cd_prop, ref_param_T, &
-     &                        node, fluid, iphys, nod_fld)
+        call set_initial_FEM_MHD_data(iflag_restart_mode, cd_prop,      &
+     &      ref_param_T, node, fluid, iphys, nod_fld)
       end if
 !
       if (iflag_debug .gt. 1)  write(*,*) 'init_MHD_restart_output'
@@ -130,11 +130,11 @@
         flex_p%istep_flex_to_max = izero
       end if
 !
-      end subroutine initial_data_control
+      end subroutine s_initial_FEM_MHD_control
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_data(iflag_restart_mode, cd_prop,          &
+      subroutine set_initial_FEM_MHD_data(iflag_restart_mode, cd_prop,  &
      &           ref_param_T, node, fluid, iphys, nod_fld)
 !
       use calypso_mpi
@@ -251,8 +251,8 @@
         call calypso_MPI_abort(ierr_fld,'cannot set initial data!!!')
       end if
 !
-      end subroutine set_initial_data
+      end subroutine set_initial_FEM_MHD_data
 !
 !-----------------------------------------------------------------------
 !
-      end module set_dynamo_initial_field
+      end module initial_FEM_MHD_control

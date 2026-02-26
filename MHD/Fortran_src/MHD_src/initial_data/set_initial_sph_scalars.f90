@@ -156,7 +156,7 @@
       real(kind = kreal), intent(inout) :: temp_rj(n_point)
 !
       integer(kind = kint) :: m, k, jj
-      integer(kind = kint) :: kr_in, kr_out, inod
+      integer(kind = kint) :: kr_in, kr_out, inod, ictr
       real(kind = kreal) :: pi, xr, shell, r_in, r_out
 !
 !
@@ -183,8 +183,11 @@
       end if
 !
 !    Center
-      inod = inod_rj_center(sph)
-      if(inod .gt. 0) temp_rj(inod) = temp_rj(inod)
+      ictr = inod_rj_center(sph)
+      if(ictr .gt. 0) then
+        inod = local_sph_data_address(sph, 1, jj)
+        temp_rj(ictr) = temp_rj(inod)
+      end if
 !
       end subroutine init_sph_sectorial_temp
 !
