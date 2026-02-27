@@ -48,7 +48,6 @@
      &         (sph, sph_bc_B, n_point, d_rj_magne, d_rj_current)
 !
       use initial_magne_sph_mhd
-      use sph_boundary_data_picker
 !
       type(sph_grids), intent(in) :: sph
       type(sph_boundary_type), intent(in) :: sph_bc_B
@@ -57,15 +56,6 @@
       real(kind = kreal), intent(inout) :: d_rj_magne(n_point,3)
       real(kind = kreal), intent(inout) :: d_rj_current(n_point,3)
 !
-      real (kind = kreal) :: r_in, r_out
-      integer(kind = kint) :: kr_in, kr_out
-!
-!
-      kr_in =  sph_inner_boundary_r_grid(sph_bc_B)
-      kr_out = sph_outer_boundary_r_grid(sph_bc_B)
-      r_in =   sph_inner_boundary_radius(sph_bc_B)
-      r_out =  sph_outer_boundary_radius(sph_bc_B)
-!
 !!!!!     Clear magnetic field and current density
 !$omp parallel workshare
       d_rj_magne(1:n_point,1:3) =   zero
@@ -73,12 +63,12 @@
 !$omp end parallel workshare
 !
 !!!!!     Y_{1}^{0} component of poloidal magnetic field
-      call initial_magne_shell_dipole(sph, ione, izero,                 &
-     &   kr_in, kr_out, r_in, r_out, n_point, d_rj_magne, d_rj_current)
+      call initial_magne_shell_dipole(sph, sph_bc_B, ione, izero,       &
+     &    n_point, d_rj_magne, d_rj_current)
 !
 !!!!!     Y_{2}^{0} component of toroidal magnetic field
-      call initial_magne_shell_toroidal(sph, itwo, izero,               &
-     &   kr_in, kr_out, r_in, n_point, d_rj_magne, d_rj_current)
+      call initial_magne_shell_toroidal(sph, sph_bc_B, itwo, izero,     &
+     &    n_point, d_rj_magne, d_rj_current)
 !
       end subroutine initial_magne_sph_dbench_case1
 !
@@ -87,8 +77,7 @@
       subroutine initial_magne_sph_dbench_case2                         &
      &         (sph, sph_bc_B, n_point, d_rj_magne, d_rj_current)
 !
-      use spherical_indices_picker
-      use sph_boundary_data_picker
+      use initial_magne_sph_mhd
 !
       type(sph_grids), intent(in) :: sph
       type(sph_boundary_type), intent(in) :: sph_bc_B
@@ -97,14 +86,6 @@
       real(kind = kreal), intent(inout) :: d_rj_magne(n_point,3)
       real(kind = kreal), intent(inout) :: d_rj_current(n_point,3)
 !
-      real (kind = kreal) :: pi, rr, r_out
-      integer(kind = kint) :: inod, k, js, jt, kr_out
-!
-!
-      pi = four * atan(one)
-      kr_out = sph_outer_boundary_r_grid(sph_bc_B)
-      r_out =  sph_outer_boundary_radius(sph_bc_B)
-!
 !!!!!     Clear magnetic field and current density
 !$omp parallel workshare
       d_rj_magne(1:n_point,1:3) =   zero
@@ -112,38 +93,12 @@
 !$omp end parallel workshare
 !
 !!!!!     Y_{1}^{0} component of poloidal magnetic field
-      js = find_local_sph_mode_address(sph, 1,0)
-      if(js .gt. 0) then
-!$omp parallel do private(k,inod,rr)
-        do k = 1, kr_out
-          inod = local_sph_data_address(sph, k, js)
-          rr = radius_1d_rj_r(sph, k)
-          d_rj_magne(inod,1) = (five / two) * rr**2                     &
-     &                      * (four*r_out - three*rr) / (r_out+three)
-          d_rj_magne(inod,2) = (five / two) * rr                        &
-     &                      * (eight*r_out - dnine*rr) / (r_out+three)
-!
-          d_rj_current(inod,3) = five*six * rr / (three + r_out)
-        end do
-!$omp end parallel do
-      end if
+      call initial_magne_sphere_dipole(sph, sph_bc_B, ione, izero,      &
+     &    n_point, d_rj_magne, d_rj_current)
 !
 !!!!!     Y_{2}^{0} component of toroidal magnetic field
-      jt = find_local_sph_mode_address(sph, 2,0)
-      if (jt .gt. 0) then
-!$omp parallel do private(k,inod,rr)
-        do k = 1, kr_out
-          inod = local_sph_data_address(sph, k, jt)
-          rr = radius_1d_rj_r(sph, k)
-!
-          d_rj_magne(inod,3) = (ten / three) * rr * sin(pi*rr/r_out)
-!
-          d_rj_current(inod,1) = d_rj_magne(inod,3)
-          d_rj_current(inod,2) = (ten / three) * sin(pi*rr/r_out)       &
-     &       + (ten / three) * (pi/r_out) * rr * cos(pi*rr/r_out)
-        end do
-!$omp end parallel do
-      end if
+      call initial_magne_sphere_toroidal(sph, sph_bc_B, itwo, izero,    &
+     &    n_point, d_rj_magne, d_rj_current)
 !
       end subroutine initial_magne_sph_dbench_case2
 !

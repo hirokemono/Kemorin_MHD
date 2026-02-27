@@ -7,16 +7,17 @@
 !> @brief Set initial magnetic field as dipole and toroidal
 !!
 !!@verbatim
-!!      subroutine initial_magne_shell_dipole                           &
-!!     &         (sph, l, m, kr_in, kr_out, r_in, r_out,                &
+!!      subroutine initial_magne_shell_dipole(sph, sph_bc_B, l, m,      &
 !!     &          n_point, d_rj_magne, d_rj_current)
-!!      subroutine initial_magne_shell_toroidal                         &
-!!     &         (sph, l, m, kr_in, kr_out, r_in,                       &
+!!      subroutine initial_magne_shell_toroidal(sph, sph_bc_B, l, m,    &
+!!     &          n_point, d_rj_magne, d_rj_current)
+!!      subroutine initial_magne_sphere_dipole(sph, sph_bc_B, l, m,     &
+!!     &          n_point, d_rj_magne, d_rj_current)
+!!      subroutine initial_magne_sphere_toroidal(sph, sph_bc_B, l, m,   &
 !!     &          n_point, d_rj_magne, d_rj_current)
 !!        type(sph_grids), intent(in) :: sph
+!!        type(sph_boundary_type), intent(in) :: sph_bc_B
 !!        integer(kind = kint), intent(in) :: l, m
-!!        integer(kind = kint), intent(in) :: kr_in, kr_out
-!!        real(kind = kreal), intent(in) :: r_in, r_out
 !!        integer(kind = kint), intent(in) :: n_point
 !!        real(kind = kreal), intent(inout) :: d_rj_magne(n_point,3)
 !!        real(kind = kreal), intent(inout) :: d_rj_current(n_point,3)
@@ -38,23 +39,31 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine initial_magne_shell_dipole                             &
-     &         (sph, l, m, kr_in, kr_out, r_in, r_out,                  &
+      subroutine initial_magne_shell_dipole(sph, sph_bc_B, l, m,        &
      &          n_point, d_rj_magne, d_rj_current)
 !
       use spherical_indices_picker
+      use sph_boundary_data_picker
 !
       type(sph_grids), intent(in) :: sph
+      type(sph_boundary_type), intent(in) :: sph_bc_B
       integer(kind = kint), intent(in) :: l, m
-      integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: r_in, r_out
       integer(kind = kint), intent(in) :: n_point
 !
       real(kind = kreal), intent(inout) :: d_rj_magne(n_point,3)
       real(kind = kreal), intent(inout) :: d_rj_current(n_point,3)
 !
-      real (kind = kreal) :: rr
+      real(kind = kreal) :: rr
       integer(kind = kint) :: inod, k, js
+!
+      real(kind = kreal) :: r_in, r_out
+      integer(kind = kint) :: kr_in, kr_out
+!
+!
+      kr_in =  sph_inner_boundary_r_grid(sph_bc_B)
+      kr_out = sph_outer_boundary_r_grid(sph_bc_B)
+      r_in =   sph_inner_boundary_radius(sph_bc_B)
+      r_out =  sph_outer_boundary_radius(sph_bc_B)
 !
 !!!!!     Y_{1}^{m} component of poloidal magnetic field
       js = find_local_sph_mode_address(sph, l, m)
@@ -78,23 +87,29 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine initial_magne_shell_toroidal                           &
-     &         (sph, l, m, kr_in, kr_out, r_in,                         &
+      subroutine initial_magne_shell_toroidal(sph, sph_bc_B, l, m,      &
      &          n_point, d_rj_magne, d_rj_current)
 !
       use spherical_indices_picker
+      use sph_boundary_data_picker
 !
       type(sph_grids), intent(in) :: sph
+      type(sph_boundary_type), intent(in) :: sph_bc_B
       integer(kind = kint), intent(in) :: l, m
-      integer(kind = kint), intent(in) :: kr_in, kr_out
-      real(kind = kreal), intent(in) :: r_in
       integer(kind = kint), intent(in) :: n_point
 !
       real(kind = kreal), intent(inout) :: d_rj_magne(n_point,3)
       real(kind = kreal), intent(inout) :: d_rj_current(n_point,3)
 !
-      real (kind = kreal) :: pi, rr
+      real(kind = kreal) :: pi, rr
       integer(kind = kint) :: inod, k, jt
+      real(kind = kreal) :: r_in
+      integer(kind = kint) :: kr_in, kr_out
+!
+!
+      kr_in =  sph_inner_boundary_r_grid(sph_bc_B)
+      kr_out = sph_outer_boundary_r_grid(sph_bc_B)
+      r_in =   sph_inner_boundary_radius(sph_bc_B)
 !
 !!!!!     Y_{2}^{m} component of toroidal magnetic field
       pi = four * atan(one)
@@ -116,6 +131,91 @@
       end subroutine initial_magne_shell_toroidal
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine initial_magne_sphere_dipole(sph, sph_bc_B, l, m,       &
+     &          n_point, d_rj_magne, d_rj_current)
+!
+      use spherical_indices_picker
+      use sph_boundary_data_picker
+!
+      type(sph_grids), intent(in) :: sph
+      type(sph_boundary_type), intent(in) :: sph_bc_B
+      integer(kind = kint), intent(in) :: l, m
+      integer(kind = kint), intent(in) :: n_point
+!
+      real(kind = kreal), intent(inout) :: d_rj_magne(n_point,3)
+      real(kind = kreal), intent(inout) :: d_rj_current(n_point,3)
+!
+      real (kind = kreal) :: rr, r_out
+      integer(kind = kint) :: inod, k, js, kr_out
+!
+!
+      kr_out = sph_outer_boundary_r_grid(sph_bc_B)
+      r_out =  sph_outer_boundary_radius(sph_bc_B)
+!
+!!!!!     Y_{1}^{m} component of poloidal magnetic field
+      js = find_local_sph_mode_address(sph, l, m)
+      if(js .gt. 0) then
+!$omp parallel do private(k,inod,rr)
+        do k = 1, kr_out
+          inod = local_sph_data_address(sph, k, js)
+          rr = radius_1d_rj_r(sph, k)
+          d_rj_magne(inod,1) = (five / two) * rr**2                     &
+     &                      * (four*r_out - three*rr) / (r_out+three)
+          d_rj_magne(inod,2) = (five / two) * rr                        &
+     &                      * (eight*r_out - dnine*rr) / (r_out+three)
+!
+          d_rj_current(inod,3) = five*six * rr / (three + r_out)
+        end do
+!$omp end parallel do
+      end if
+!
+      end subroutine initial_magne_sphere_dipole
+!
+!-----------------------------------------------------------------------
+!
+      subroutine initial_magne_sphere_toroidal(sph, sph_bc_B, l, m,     &
+     &          n_point, d_rj_magne, d_rj_current)
+!
+      use spherical_indices_picker
+      use sph_boundary_data_picker
+!
+      type(sph_grids), intent(in) :: sph
+      type(sph_boundary_type), intent(in) :: sph_bc_B
+      integer(kind = kint), intent(in) :: l, m
+      integer(kind = kint), intent(in) :: n_point
+!
+      real(kind = kreal), intent(inout) :: d_rj_magne(n_point,3)
+      real(kind = kreal), intent(inout) :: d_rj_current(n_point,3)
+!
+      real (kind = kreal) :: pi, rr, r_out
+      integer(kind = kint) :: inod, k, jt, kr_out
+!
+!
+      kr_out = sph_outer_boundary_r_grid(sph_bc_B)
+      r_out =  sph_outer_boundary_radius(sph_bc_B)
+!
+!!!!!     Y_{2}^{m} component of toroidal magnetic field
+      pi = four * atan(one)
+      jt = find_local_sph_mode_address(sph, l, m)
+      if (jt .gt. 0) then
+!$omp parallel do private(k,inod,rr)
+        do k = 1, kr_out
+          inod = local_sph_data_address(sph, k, jt)
+          rr = radius_1d_rj_r(sph, k)
+!
+          d_rj_magne(inod,3) = (ten / three) * rr * sin(pi*rr/r_out)
+!
+          d_rj_current(inod,1) = d_rj_magne(inod,3)
+          d_rj_current(inod,2) = (ten / three) * sin(pi*rr/r_out)       &
+     &       + (ten / three) * (pi/r_out) * rr * cos(pi*rr/r_out)
+        end do
+!$omp end parallel do
+      end if
+!
+      end subroutine initial_magne_sphere_toroidal
+!
 !-----------------------------------------------------------------------
 !
       end module initial_magne_sph_mhd
