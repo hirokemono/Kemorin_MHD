@@ -658,13 +658,11 @@ CXXFLAGS
 CXX
 GTK3_LIBS
 GTK3_CFLAGS
-AQUATERM_LIBS
 GL_INC
 PKGFLAGS_GL
 COCOA_FLAG
 GL_LIBS
 GL_CFLAGS
-HAVE_LIBAQUATERM
 X_EXTRA_LIBS
 X_LIBS
 X_PRE_LIBS
@@ -841,7 +839,6 @@ with_hdf5
 with_blas
 with_zlib
 with_x
-with_aquaterm
 with_pgplot
 '
       ac_precious_vars='build_alias
@@ -1538,9 +1535,6 @@ Optional Packages:
                     /usr/local or /usr if not found in /usr/local
   --without-zlib to disable zlib usage completely
   --with-x                use the X Window System
-  --with-aquaterm=DIR root directory path of aquaterm installation defaults to
-                    /Library/Frameworks or /System/Library/Frameworks if not found in /Library/Frameworks
-  --without-aquaterm to disable aquaterm usage completely
   --with-pgplot=DIR root directory path of pgplot installation defaults to
                     /usr/local or /usr if not found in /usr/local
   --without-pgplot to disable pgplot usage completely
@@ -5799,85 +5793,6 @@ fi
 
 
 #
-# SYNOPSIS
-#
-#   AX_CHECK_AQUATERM()
-#
-# DESCRIPTION
-#
-#   This macro searches for an installed aquaterm. If nothing was
-#   specified when calling configure, it searches first in /Library/Frameworks and
-#   then in /System/Library/Frameworks, /opt/local/Frameworks and /sw/Frameworks. If the --with-aquaterm=DIR is specified,
-#   it will try to find it in DIR/AquaTerm.framework and DIR/lib/libz.a. If
-#   --without-aquaterm is specified, the library is not searched at all.
-#
-#   If the execute file (AquaTerm.framework/AquaTerm) is not found,
-#   the configuration exits on error, asking for a valid aquaterm installation
-#   directory or --without-aquaterm.
-#
-#   The macro defines the symbol HAVE_AQUATERM if the library is found. You
-#   should use autoheader to include a definition for this symbol in a
-#   config.h file. Sample usage in a C/C++ source is as follows:
-#
-#     #ifdef HAVE_AQUATERM
-#     #endif /* HAVE_AQUATERM */
-#
-# LICENSE
-#
-#   Copyright (c) 2008 Loic Dachary <loic@senga.org>
-#   Copyright (c) 2010 Bastien Chevreux <bach@chevreux.org>
-#
-#   This program is free software; you can redistribute it and/or modify it
-#   under the terms of the GNU General Public License as published by the
-#   Free Software Foundation; either version 2 of the License, or (at your
-#   option) any later version.
-#
-#   This program is distributed in the hope that it will be useful, but
-#   WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
-#   Public License for more details.
-#
-#   You should have received a copy of the GNU General Public License along
-#   with this program. If not, see <http://www.gnu.org/licenses/>.
-#
-#   As a special exception, the respective Autoconf Macro's copyright owner
-#   gives unlimited permission to copy, distribute and modify the configure
-#   scripts that are the output of Autoconf when processing the Macro. You
-#   need not follow the terms of the GNU General Public License when using
-#   or distributing such scripts, even though portions of the text of the
-#   Macro appear in them. The GNU General Public License (GPL) does govern
-#   all other use of the material that constitutes the Autoconf Macro.
-#
-#   This special exception to the GPL applies to versions of the Autoconf
-#   Macro released by the Autoconf Archive. When you make and distribute a
-#   modified version of the Autoconf Macro, you may extend this special
-#   exception to the GPL to apply to your modified version as well.
-
-#serial 8
-
-# This is what autoupdate's m4 run will expand.  It fires the warning
-# (with _au_warn_XXX), outputs it into the updated configure.ac (with
-# m4_warn), and then outputs the replacement expansion.  We need extra
-# quotation around the m4_warn and dnl so they will be written
-# unexpanded into the updated configure.ac.
-
-
-# This is an auxiliary macro that is also run when
-# autoupdate runs m4.  It simply calls m4_warning, but
-# we need a wrapper so that each warning is emitted only
-# once.  We break the quoting in m4_warning's argument in
-# order to expand this macro's arguments, not AU_DEFUN's.
-
-
-# Finally, this is the expansion that is picked up by
-# autoconf, causing NAME to expand to NEW-CODE, plus
-# (if SILENT is not "silent") a m4_warning telling the
-# maintainer to run autoupdate.  We don't issue MESSAGE
-# from autoconf, because that's instructions for what
-# to do *after* running autoupdate.
-
-
-#
 # Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004,
 # 2005  Free Software Foundation, Inc.
 # This file is free software; the Free Software Foundation
@@ -6080,8 +5995,6 @@ printf "%s\n" "with-ffmpeg... \"${USE_ffmpeg}\"" >&6; }
 printf "%s\n" "with-blas...     \"${with_blas}\"" >&6; }
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: with-zlib...     \"${with_zlib}\"" >&5
 printf "%s\n" "with-zlib...     \"${with_zlib}\"" >&6; }
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: with-aquaterm... \"${with_aquaterm}\"" >&5
-printf "%s\n" "with-aquaterm... \"${with_aquaterm}\"" >&6; }
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: with-pgplot...   \"${with_pgplot}\"" >&5
 printf "%s\n" "with-pgplot...   \"${with_pgplot}\"" >&6; }
 
@@ -13715,76 +13628,6 @@ then
 	GL_LIBS="-framework OpenGL  -framework CoreVideo  -framework IOKit -framework Cocoa"
 	GL_INC="${X_CFLAGS}"
 	COCOA_FLAG="-D__APPLE__"
-# Check Aquaterm
-	LIBS=""
-	#
-# Handle user hints
-#
-{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if aquaterm is wanted" >&5
-printf %s "checking if aquaterm is wanted... " >&6; }
-
-# Check whether --with-aquaterm was given.
-if test ${with_aquaterm+y}
-then :
-  withval=$with_aquaterm; if test "$withval" != no ; then
-  aquaterm_places="/Library/Frameworks /System/Library/Frameworks /opt/local/Frameworks /sw/Frameworks"
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-printf "%s\n" "yes" >&6; }
-  if test -d "$withval"
-  then
-    aquaterm_places="$withval $aquaterm_places"
-  else
-    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: Sorry, $withval does not exist, checking usual places" >&5
-printf "%s\n" "$as_me: WARNING: Sorry, $withval does not exist, checking usual places" >&2;}
-  fi
-else
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
-printf "%s\n" "no" >&6; }
-fi
-else case e in #(
-  e) { printf "%s\n" "$as_me:${as_lineno-$LINENO}: WARNING: Checking aquaterm in usual places" >&5
-printf "%s\n" "$as_me: WARNING: Checking aquaterm in usual places" >&2;}
- aquaterm_places="/Library/Frameworks /System/Library/Frameworks /opt/local/Frameworks /sw/Frameworks"
- { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-printf "%s\n" "yes" >&6; } ;;
-esac
-fi
-
-
-#
-# Locate aquaterm, if wanted
-#
-if test -n "${aquaterm_places}"
-then
-	# check the user supplied or any other more or less 'standard' place:
-	#   Most UNIX systems      : /Library/Frameworks and /System/Library/Frameworks
-	#   MacPorts / Fink on OSX : /opt/local/Frameworks respectively /sw/Frameworks
-	for AQUATERM_HOME in ${aquaterm_places} ; do
-	  if test -f "${AQUATERM_HOME}/AquaTerm.framework/AquaTerm"; then break; fi
-	  AQUATERM_HOME=""
-	done
-
-	# if AquaTerm.framework/AquaTerm was nowhere to be found, give a notice and bail out
-	if test ! -n "${AQUATERM_HOME}"; then
-          as_fn_error $? "No AquaTerm.framework/AquaTerm in any directory of ${aquaterm_places}: either specify a valid aquaterm installation with --with-aquaterm=DIR or disable aquaterm usage with --without-aquaterm" "$LINENO" 5
-	fi
-
-	AQUATERM_OLD_LDFLAGS=$LDFLAGS
-	AQUATERM_OLD_CPPFLAGS=$LDFLAGS
-	LDFLAGS="$LDFLAGS -L${AQUATERM_HOME}"
-	LIBS="$LIBS -framework AquaTerm"
-
-	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking aquaterm in ${AQUATERM_HOME}" >&5
-printf %s "checking aquaterm in ${AQUATERM_HOME}... " >&6; }
-	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: ok" >&5
-printf "%s\n" "ok" >&6; }
-fi
-
-
-
-	AQUATERM_LIBS="-F${AQUATERM_HOME} ${LIBS} -Wl,-framework -Wl,Foundation"
-	{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: AQUATERM_LIBS: ${AQUATERM_LIBS}" >&5
-printf "%s\n" "AQUATERM_LIBS: ${AQUATERM_LIBS}" >&6; }
 else
 	COCOA_FLAG=""
 # Checks for OpenGL
@@ -13868,10 +13711,7 @@ fi
 	else
 		PKGFLAGS_GL=""
 	fi
-
-	AQUATERM_LIBS=""
 fi
-
 
 
 
@@ -14167,7 +14007,7 @@ fi
 
 
 # Check pgplot for Fortran compiler
-LIBS="${ZLIB_LIBS} ${PNG_LIBS} ${X_LIBS} ${AQUATERM_LIBS}"
+LIBS="${ZLIB_LIBS} ${PNG_LIBS} ${X_LIBS}"
 LDFLAGS=""
  #
 # Handle user hints
@@ -14456,13 +14296,6 @@ printf "%s\n" "Use PGPLOT...         yes" >&6; }
 else
         { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: Use PGPLOT...          no" >&5
 printf "%s\n" "Use PGPLOT...          no" >&6; }
-fi
-if test -n "${AQUATERM_LIBS}"; then
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: Use Aquaterm...       yes" >&5
-printf "%s\n" "Use Aquaterm...       yes" >&6; }
-else
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: Use Aquaterm...        no" >&5
-printf "%s\n" "Use Aquaterm...        no" >&6; }
 fi
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: " >&5
 printf "%s\n" "" >&6; }
