@@ -159,7 +159,7 @@
      &              :: C_FFTW(Ncomp,Nfft/2+1)
 !
       integer(kind = kint) ::  i, j
-      real :: dummy(3), rtmp(3)
+!      real :: dummy(3), rtmp(3)
 !
 !
 !      call cpu_time(dummy(1))
@@ -178,13 +178,13 @@
 !      call cpu_time(dummy(3))
 !$omp parallel do private(i, j)
       do j = 1, Ncomp
+        i = (Nfft+1)/2 + 1
         X(j,1) = aNfft * real(C_FFTW(j,1))
+        X(j,2) = aNfft * real(C_FFTW(j,i))
         do i = 2, (Nfft+1)/2
           X(j,2*i-1) = two * aNfft * real(C_FFTW(j,i))
           X(j,2*i  ) = two * aNfft * real(C_FFTW(j,i)*iu)
         end do 
-        i = (Nfft+1)/2 + 1
-        X(j,2) = two * aNfft * real(C_FFTW(j,i))
       end do
 !$omp end parallel do
 !      call cpu_time(rtmp(3))
@@ -206,7 +206,7 @@
      &              :: C_FFTW(Ncomp,Nfft/2+1)
 !
       integer(kind = kint) :: i, j
-      real :: dummy(3), rtmp(3)
+!      real :: dummy(3), rtmp(3)
 !
 !
 !   normalization
@@ -218,7 +218,7 @@
           C_FFTW(j,i) = half * cmplx(X(j,2*i-1), -X(j,2*i),kind(0d0))
         end do
         i = (Nfft+1)/2 + 1
-        C_FFTW(j,i) = half * cmplx(X(j,2), zero, kind(0d0))
+        C_FFTW(j,i) = cmplx(X(j,2), zero, kind(0d0))
       end do
 !$omp end parallel do
 !      call cpu_time(rtmp(3))

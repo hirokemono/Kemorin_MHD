@@ -234,7 +234,7 @@
           m = (nidx_rtp(3)+1)/2 + 1
           ic_rtp = j + irt_rtp_smp_stack(np_smp)
           ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
-          WS(ic_send) = two*FFTW_t%aNfft * real(FFTW_t%C(m,icou))
+          WS(ic_send) = FFTW_t%aNfft * real(FFTW_t%C(m,icou))
           end do
 !      call cpu_time(rtmp(3))
       end do
@@ -292,7 +292,7 @@
           m = (nidx_rtp(3)+1)/2 + 1
           ic_rtp = j + irt_rtp_smp_stack(np_smp)
           ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
-          FFTW_t%C(m,icou) = half * cmplx(WR(ic_recv), zero, kind(0d0))
+          FFTW_t%C(m,icou) = cmplx(WR(ic_recv), zero, kind(0d0))
         end do
 !        call cpu_time(rtmp(3))
 !
