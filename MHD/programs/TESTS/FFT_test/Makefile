@@ -61,6 +61,7 @@ CURRENTDIR = $(shell pwd)
 SOURCES = $(shell ls *.f90)
 
 MOD_FFT_TEST = \
+m_FFT_size.o      \
 t_fft_test_data.o \
 test_FFT.o
 
@@ -72,6 +73,7 @@ m_machine_parameter.o \
 FFTPACK5_wrapper.o \
 t_FFTPACK5_wrapper.o \
 \
+m_FFT_size.o      \
 t_fft_test_data.o \
 test_FFTPACK5.o
 
@@ -83,6 +85,7 @@ m_machine_parameter.o \
 ispack_FFT_wrapper.o \
 t_ispack_FFT_wrapper.o \
 \
+m_FFT_size.o      \
 t_fft_test_data.o \
 test_ISPACK1_FFT.o
 
@@ -94,6 +97,7 @@ m_machine_parameter.o \
 ispack3_FFT_wrapper.o \
 t_ispack3_FFT_wrapper.o \
 \
+m_FFT_size.o      \
 t_fft_test_data.o \
 test_ISPACK3_FFT.o
 
@@ -107,6 +111,7 @@ m_fftw_parameters.o \
 FFTW3_multi_wrapper.o \
 t_multi_FFTW_wrapper.o \
 \
+m_FFT_size.o      \
 t_fft_test_data.o \
 test_FFTW3.o
 
@@ -121,6 +126,7 @@ m_OMP_FFTW3_counter.o \
 OMP_FFTW3_wrapper.o \
 t_OMP_FFTW_wrapper.o \
 \
+m_FFT_size.o      \
 t_fft_test_data.o \
 test_OMP_FFTW3.o
 
@@ -134,6 +140,7 @@ m_fftw_parameters.o \
 FFTW3_wrapper.o \
 t_FFTW_wrapper.o \
 \
+m_FFT_size.o      \
 t_fft_test_data.o \
 test_single_FFTW3.o
 
@@ -143,6 +150,7 @@ m_constants.o \
 m_machine_parameter.o \
 \
 compare_FFT_test.o \
+m_FFT_size.o      \
 t_fft_test_data.o
 
 

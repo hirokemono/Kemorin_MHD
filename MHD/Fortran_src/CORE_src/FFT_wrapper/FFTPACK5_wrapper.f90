@@ -130,7 +130,7 @@
         end do
 !
         call RFFTMF(num, ione, Nfft, num, X_FFTPACK5(1,ismp), nsize,    &
-     &      WSAVE, lSAVE, WORK(1,ismp), nsize, ierr)
+     &              WSAVE, lSAVE, WORK(1,ismp), nsize, ierr)
 !
         do inum = 1, num
           j = ist + inum
@@ -194,8 +194,8 @@
           end do
         end do
 !
-        call RFFTMB (num, ione, Nfft, num, X_FFTPACK5(1,ismp), nsize,   &
-     &      WSAVE, lSAVE, WORK(1,ismp), nsize, ierr)
+        call RFFTMB(num, ione, Nfft, num, X_FFTPACK5(1,ismp), nsize,    &
+     &              WSAVE, lSAVE, WORK(1,ismp), nsize, ierr)
 !
         do i = 1, Nfft
           do inum = 1, num
