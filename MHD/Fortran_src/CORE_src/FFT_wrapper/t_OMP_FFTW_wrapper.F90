@@ -15,7 +15,12 @@
 !!   wrapper subroutine for initierize FFT by FFTW
 !! ------------------------------------------------------------------
 !!
-!!      subroutine OMP_forward_FFTW_type(Ncomp, Nfft, X, WK)
+!!      subroutine OMP_forward_FFTW_type(Ncomp, Nfft, X, WK,            &
+!!     &                                 elapsed_fft, elapsed_cpy))
+!!        integer(kind = kint), intent(in) :: Ncomp, Nfft
+!!        real(kind = kreal), intent(inout) :: X(Ncomp, Nfft)
+!!        type(working_OMP_FFTW), intent(inout) :: WK
+!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by FFTW3
@@ -29,7 +34,12 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine OMP_backward_FFTW_type(Ncomp, Nfft, X, WK)
+!!      subroutine OMP_backward_FFTW_type(Ncomp, Nfft, X, WK            &
+!!     &                                 elapsed_fft, elapsed_cpy)
+!!        integer(kind = kint), intent(in) :: Ncomp, Nfft
+!!        real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
+!!        type(working_OMP_FFTW), intent(inout) :: WK
+!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by FFTW3
@@ -77,7 +87,9 @@
 !>        plan ID for forward transform
         integer(kind = fftw_plan) :: omp_plan_fwd
 !
-!>      normalization parameter for FFTW (= 1 / Nfft)
+!>        number of points for complex data
+        integer(kind = kint) :: Nfft_c
+!>        normalization parameter for FFTW (= 1 / Nfft)
         real(kind = kreal) :: aNfft
 !>        real data for multiple Fourier transform
         real(kind = kreal), allocatable :: X_FFTW_mul(:,:)
@@ -104,8 +116,9 @@
 !
 !
       call alloc_OMP_FFTW_plan_t(Ncomp, Nfft, WK)
-      call init_OMP_FFTW(Ncomp, Nfft, WK%omp_plan_fwd, WK%omp_plan_bwd, &
-     &    WK%aNfft, WK%X_FFTW_mul, WK%C_FFTW_mul)
+      call init_OMP_FFTW(Ncomp, Nfft, WK%Nfft_c,                        &
+     &    WK%omp_plan_fwd, WK%omp_plan_bwd,                             &
+     &    WK%X_FFTW_mul, WK%C_FFTW_mul)
 !
       end subroutine init_OMP_FFTW_type
 !
@@ -145,31 +158,36 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine OMP_forward_FFTW_type(Ncomp, Nfft, X, WK)
+      subroutine OMP_forward_FFTW_type(Ncomp, Nfft, X, WK,              &
+     &                                 elapsed_fft, elapsed_cpy)
 !
       integer(kind = kint), intent(in) :: Ncomp, Nfft
 !
       real(kind = kreal), intent(inout) :: X(Ncomp, Nfft)
       type(working_OMP_FFTW), intent(inout) :: WK
+      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call forward_mul_OMP_FFTW(WK%omp_plan_fwd, Ncomp, Nfft,           &
-     &    WK%aNfft, X, WK%X_FFTW_mul, WK%C_FFTW_mul)
+      call forward_mul_OMP_FFTW                                         &
+     &   (WK%omp_plan_fwd, Ncomp, Nfft, WK%aNfft, X,                    &
+     &    WK%Nfft_c, WK%C_FFTW_mul, elapsed_fft, elapsed_cpy)
 !
       end subroutine OMP_forward_FFTW_type
 !
 ! ------------------------------------------------------------------
 !
-      subroutine OMP_backward_FFTW_type(Ncomp, Nfft, X, WK)
+      subroutine OMP_backward_FFTW_type(Ncomp, Nfft, X, WK,             &
+     &                                  elapsed_fft, elapsed_cpy)
 !
       integer(kind = kint), intent(in) :: Ncomp, Nfft
 !
       real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
       type(working_OMP_FFTW), intent(inout) :: WK
+      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call backward_mul_OMP_FFTW(WK%omp_plan_bwd, Ncomp, Nfft,          &
-     &    X, WK%X_FFTW_mul, WK%C_FFTW_mul)
+      call backward_mul_OMP_FFTW(WK%omp_plan_bwd, Ncomp, Nfft, X,       &
+     &    WK%Nfft_c, WK%C_FFTW_mul, elapsed_fft, elapsed_cpy)
 !
       end subroutine OMP_backward_FFTW_type
 !
@@ -183,8 +201,10 @@
 !
 !
       WK%iflag_fft_mul_len = Nfft*Ncomp
+      WK%Nfft_c =  (Nfft+1)/2 + 1
+      WK%aNfft =   one / dble(Nfft)
       allocate( WK%X_FFTW_mul(Ncomp,Nfft) )
-      allocate( WK%C_FFTW_mul(Ncomp,Nfft/2+1) )
+      allocate( WK%C_FFTW_mul(Ncomp,WK%Nfft_c) )
       WK%X_FFTW_mul = 0.0d0
       WK%C_FFTW_mul = 0.0d0
 !
