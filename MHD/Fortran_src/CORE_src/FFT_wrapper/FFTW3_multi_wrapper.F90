@@ -280,6 +280,7 @@
      &        C_FFTW(1,ist), X_FFTW(1,ist))
         ed_f = OMP_GET_WTIME() - st_f
 !
+        st_c = OMP_GET_WTIME()
         do i = 1, Nfft
           X(ist:ied,i) = X_FFTW(i,ist:ied)
         end do

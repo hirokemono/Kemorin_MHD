@@ -10,8 +10,8 @@
 !
       use m_precision
 !
-      integer(kind = kint), parameter ::  ngrid =    128
-      integer(kind = kint), parameter ::  n_field =    8
-      integer(kind = kint), parameter ::  n_loop =     1
+      integer(kind = kint), parameter ::  ngrid =   2048
+      integer(kind = kint), parameter ::  n_field = 1024
+      integer(kind = kint), parameter ::  n_loop =   200
 !
       end module m_FFT_size
