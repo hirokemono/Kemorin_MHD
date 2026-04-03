@@ -106,6 +106,7 @@
 !
       real(kind = kreal) :: start
 !
+      start = 0.0d0
       start = OMP_GET_WTIME()
 #ifdef FFTW3
       if(iflag_FFT .eq. iflag_FFTW_ONCE) then
@@ -137,6 +138,7 @@
       real(kind = kreal) :: start
 !
 !
+      start = 0.0d0
       start = OMP_GET_WTIME()
 #ifdef FFTW3
       if(iflag_FFT .eq. iflag_FFTW_ONCE) then
@@ -208,12 +210,12 @@
         return
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call FFTW_forward_type(Nsmp, Nstacksmp, M, Nfft, X,             &
-     &      WKS%WK_FFTW)
+     &                         WKS%WK_FFTW, elapsed_fft, elapsed_cpy)
         return
       end if
 #endif
 !
-      call CALYPSO_RFFTMF_t(Nsmp, Nstacksmp, M, Nfft, X,              &
+      call CALYPSO_RFFTMF_t(Nsmp, Nstacksmp, M, Nfft, X,                &
      &                      WKS%WK_FFTPACK, elapsed_fft, elapsed_cpy)
 !
       end subroutine forward_FFT_select
@@ -239,12 +241,12 @@
         return
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call FFTW_backward_type(Nsmp, Nstacksmp, M, Nfft, X,            &
-     &      WKS%WK_FFTW)
+     &                          WKS%WK_FFTW, elapsed_fft, elapsed_cpy)
         return
       end if
 #endif
 !
-      call CALYPSO_RFFTMB_t(Nsmp, Nstacksmp, M, Nfft, X,              &
+      call CALYPSO_RFFTMB_t(Nsmp, Nstacksmp, M, Nfft, X,                &
      &                      WKS%WK_FFTPACK, elapsed_fft, elapsed_cpy)
 !
       end subroutine backward_FFT_select
