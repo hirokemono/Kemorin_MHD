@@ -232,10 +232,10 @@
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
         call FFTW_mul_forward_type(Nsmp, Nstacksmp, M, Nfft, X,         &
-     &      WKS%WK_MUL_FFTW)
+     &                             WKS%WK_MUL_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call FFTW_forward_type(Nsmp, Nstacksmp, M, Nfft, X,             &
-     &      WKS%WK_FFTW)
+     &                         WKS%WK_FFTW)
 #endif
       else
         call CALYPSO_RFFTMF_t(Nsmp, Nstacksmp, M, Nfft, X,              &
