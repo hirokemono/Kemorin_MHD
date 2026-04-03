@@ -409,7 +409,7 @@
       FFT_t%howmany_bwd = int(ncomp_bwd)
       FFT_t%howmany_fwd = int(ncomp_fwd)
       FFT_t%Nfft_r = Nfft
-      FFT_t%Nfft_c = Nfft/2 + 1
+      FFT_t%Nfft_c = (Nfft+1)/2 + 1
 !
       allocate(FFT_t%plan_fwd(Nsmp))
       allocate(FFT_t%plan_bwd(Nsmp))
