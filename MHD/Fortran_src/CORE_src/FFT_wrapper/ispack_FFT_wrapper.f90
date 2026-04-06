@@ -251,7 +251,7 @@
 !
         st_c = OMP_GET_WTIME()
         do i = 1, Nfft/2
-          do inum = 1, num8
+          do inum = 1, num
             j = ist + inum
             inod_c = inum + (2*i-2) * num
             inod_s = inum + (2*i-1) * num

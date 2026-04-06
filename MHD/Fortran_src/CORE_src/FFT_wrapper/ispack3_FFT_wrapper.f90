@@ -132,7 +132,7 @@
 !
       real(kind = kreal) :: st_c, ed_c, st_f, ed_f
       integer(kind = kint_gl) :: num8, inum, i
-      integer(kind = kint) :: j, ismp, ist
+      integer(kind = kint_gl) :: j, ismp, ist
       integer(kind = kint_gl) :: inod_s, inod_c
 !
 !
@@ -206,7 +206,7 @@
 !
       real(kind = kreal) :: st_c, ed_c, st_f, ed_f
       integer(kind = kint_gl) :: num8, inum, i
-      integer(kind = kint) ::  j, ismp, ist
+      integer(kind = kint_gl) ::  j, ismp, ist
       integer(kind = kint_gl) :: inod_s, inod_c
 !
 !
@@ -243,15 +243,8 @@
         ed_f = OMP_GET_WTIME() - st_f
 
         st_c = OMP_GET_WTIME()
-        do i = 1, Nfft/2
-          do inum = 1, num8
-            j = ist + inum
-            inod_c = inum + (2*i-2) * num8
-            inod_s = inum + (2*i-1) * num8
-            X(j,2*i-1) = X_ispack(inod_c,ismp)
-            X(j,2*i  ) = X_ispack(inod_s,ismp)
-          end do
-        end do
+        call copy_rtp_field_from_FXRTBA_smp(ist, num8, Nfft, Mmax_smp,  &
+     &                                      X_ispack(1,ismp), M, X)
         ed_c = ed_c + OMP_GET_WTIME() - st_c
       end do
 !$omp end parallel do
@@ -260,6 +253,34 @@
       elapsed_cpy = elapsed_cpy + ed_c / dble(Nsmp)
 !
       end subroutine FXRTBA_kemo_smp
+!
+! ------------------------------------------------------------------
+!
+      subroutine copy_rtp_field_from_FXRTBA_smp(ist_smp, num_smp,       &
+     &          Nfft, Mmax_smp, X_ispack, M, X)
+!
+      integer(kind = kint_gl) :: ist_smp, num_smp
+      integer(kind = kint_gl), intent(in) :: M, Mmax_smp
+      integer(kind = kint_gl), intent(in) :: Nfft
+      real(kind = 8), intent(in) :: X_ispack(Mmax_smp*Nfft)
+!
+      real(kind = kreal), intent(inout) :: X(M,Nfft)
+!
+      integer(kind = kint_gl) :: inum, i, j
+      integer(kind = kint_gl) :: inod_s, inod_c
+!
+!
+      do i = 1, Nfft/2
+        do inum = 1, num_smp
+          j = ist_smp + inum
+          inod_c = inum + (2*i-2) * num_smp
+          inod_s = inum + (2*i-1) * num_smp
+          X(j,2*i-1) = X_ispack(inod_c)
+          X(j,2*i  ) = X_ispack(inod_s)
+        end do
+      end do
+!
+      end subroutine copy_rtp_field_from_FXRTBA_smp
 !
 ! ------------------------------------------------------------------
 !
