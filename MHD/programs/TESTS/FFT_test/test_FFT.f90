@@ -33,10 +33,9 @@
       read(*,*) iflag_FFT_t
 !
 !
-      ft0%start = OMP_GET_WTIME()
       call initialize_FFT_select                                        &
-     &   (0, iflag_FFT_t, np_smp, ft0%nstack, ft0%ngrd, WK_FFTS)
-      ft0%elapsed(1) = ft0%elapsed(1) + OMP_GET_WTIME() - ft0%start
+     &   (0, iflag_FFT_t, np_smp, ft0%nstack, ft0%ngrd, WK_FFTS,        &
+     &    ft0%elapsed(1))
 !
       do iloop = 1, n_loop
         if(mod(iloop, 20) .eq. 0) write(*,*) 'loop count: ', iloop
@@ -47,10 +46,9 @@
 !$omp end parallel workshare
         ft0%elapsed(3) = ft0%elapsed(3) + OMP_GET_WTIME() - ft0%start
 !
-        ft0%start = OMP_GET_WTIME()
         call forward_FFT_select(iflag_FFT_t, np_smp,                    &
-     &      ft0%nstack, ft0%nfld, ft0%ngrd, ft0%s_k, WK_FFTS)
-        ft0%elapsed(2) = ft0%elapsed(2) + OMP_GET_WTIME() - ft0%start
+     &      ft0%nstack, ft0%nfld, ft0%ngrd, ft0%s_k, WK_FFTS,           &
+     &      ft0%elapsed(2), ft0%elapsed(3))
 !
         ft0%start = OMP_GET_WTIME()
 !$omp parallel workshare
@@ -58,10 +56,9 @@
 !$omp end parallel workshare
         ft0%elapsed(3) = ft0%elapsed(3) + OMP_GET_WTIME() - ft0%start
 !
-        ft0%start = OMP_GET_WTIME()
         call backward_FFT_select(iflag_FFT_t, np_smp,                   &
-     &      ft0%nstack, ft0%nfld, ft0%ngrd, ft0%f_x, WK_FFTS)
-        ft0%elapsed(2) = ft0%elapsed(2) + OMP_GET_WTIME() - ft0%start
+     &      ft0%nstack, ft0%nfld, ft0%ngrd, ft0%f_x, WK_FFTS,           &
+     &      ft0%elapsed(2), ft0%elapsed(3))
       end do
 !
       if(n_loop .eq. 1) call write_fft_test_data('fft_test.dat', ft0)
