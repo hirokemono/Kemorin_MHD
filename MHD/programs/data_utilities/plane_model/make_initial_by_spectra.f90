@@ -50,17 +50,18 @@
 ! . for local 
 !  ===========
 
-      integer(kind=kint ) :: ip, inod
-      integer(kind=kint ) :: i, j
-      integer(kind=kint ) :: i1
-      integer(kind=kint ) :: ist, ied
-      integer(kind=kint ) :: ifactor_rst, ifactor_step, istep_rst
+      integer(kind=kint) :: ip, inod
+      integer(kind=kint) :: i, j
+      integer(kind=kint) :: i1
+      integer(kind=kint) :: ist, ied
+      integer(kind=kint) :: ifactor_rst, ifactor_step, istep_rst
 !
-      integer(kind=kint ) :: kx_org, ky_org, iz_org, nfft_org
-      integer(kind=kint ) :: kx_new, ky_new, iz_new, nfft_new
+      integer(kind=kint) :: kx_org, ky_org, iz_org, nfft_org
+      integer(kind=kint) :: kx_new, ky_new, iz_new, nfft_new
 !
-      real   (kind=kreal) ::  dt_init, t_init
-      real   (kind=kreal), dimension(:), allocatable ::  zz
+      real(kind=kreal) ::  dt_init, t_init
+      real(kind=kreal), dimension(:), allocatable ::  zz
+      real(kind=kreal) ::  elapsed_fft = 0.0d0, elapsed_cpy = 0.0d0
 !
       type(time_data), save :: plane_t_IO
 !
@@ -219,7 +220,7 @@
      &      plane_fft_wk1%kx_max, plane_fft_wk1%ky_max,                 &
      &      plane_fft_wk1%iz_max, plane_fft_wk1%num_spectr,             &
      &      plane_fft_wk1%num_fft, plane_fft_wk1%wk_pfft,               &
-     &      plane_fft_wk1%phys_d)
+     &      plane_fft_wk1%phys_d, elapsed_fft, elapsed_cpy)
         call copy_2_inverted_data                                       &
      &     (c_size1%nx_all, c_size1%ny_all, c_size1%nz_all,             &
      &      plane_fft_wk1%kx_max, plane_fft_wk1%ky_max,                 &

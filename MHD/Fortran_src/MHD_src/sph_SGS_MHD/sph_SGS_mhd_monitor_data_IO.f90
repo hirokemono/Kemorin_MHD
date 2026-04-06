@@ -120,6 +120,9 @@
      &    SPH_MHD%ipol, SPH_SGS%ipol_LES, SPH_MHD%fld,                  &
      &    monitor, SR_sig)
 !
+      monitor%elapsed_circle_init = 0.0d0
+      monitor%elapsed_circle_fft =  0.0d0
+      monitor%elapsed_circle_cpy =  0.0d0
       if(monitor%bench%iflag_dynamobench .gt. 0) then
         call init_circle_field_name_dbench(SPH_MHD%ipol,                &
      &      monitor%circ_mid_eq%d_circle, monitor%bench)
@@ -128,7 +131,8 @@
      &      monitor%circ_mid_eq)
         call init_circle_point_global                                   &
      &     (SPH_MHD%sph, SPH_MHD%comms, trans_p,                        &
-     &      monitor%circ_mid_eq, SR_sig, SR_r)
+     &      monitor%circ_mid_eq, monitor%elapsed_circle_init,           &
+     &      SR_sig, SR_r)
         call alloc_dynamobench_monitor(monitor%circ_mid_eq%d_circle,    &
      &                                 monitor%bench)
       end if
@@ -138,7 +142,8 @@
      &     (nod_fld, monitor%mul_circle%cdat(i)%d_circle)
         call init_circle_point_global                                   &
      &     (SPH_MHD%sph, SPH_MHD%comms, trans_p,                        &
-     &      monitor%mul_circle%cdat(i), SR_sig, SR_r)
+     &      monitor%mul_circle%cdat(i), monitor%elapsed_circle_init,    &
+     &      SR_sig, SR_r)
         call set_circle_transfer_address(nod_fld, SPH_MHD%fld,          &
      &                                   monitor%mul_circle%cdat(i))
       end do

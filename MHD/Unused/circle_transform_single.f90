@@ -121,6 +121,7 @@
       type(circle_transform_spectr), intent(inout) :: leg_circ
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
+      real(kind = kreal) :: elapsed_fft = 0.0d0, elapsed_cpy = 0.0d0
       integer ::  j
 !
       call circle_lag_transfer_vector                                   &
@@ -150,15 +151,15 @@
       call backward_FFT_select                                          &
      &   (iflag_FFT, np_smp, leg_circ%istack_circfft_smp, ione,         &
      &    circle%mphi_circle, circle%v_rtp_circle(1,1),                 &
-     &    WK_circle_fft)
+     &    WK_circle_fft, elapsed_fft, elapsed_cpy)
       call backward_FFT_select                                          &
      &   (iflag_FFT, np_smp, leg_circ%istack_circfft_smp, ione,         &
      &    circle%mphi_circle, circle%v_rtp_circle(1,2),                 &
-     &    WK_circle_fft)
+     &    WK_circle_fft, elapsed_fft, elapsed_cpy)
       call backward_FFT_select                                          &
      &   (iflag_FFT, np_smp, leg_circ%istack_circfft_smp, ione,         &
      &    circle%mphi_circle, circle%v_rtp_circle(1,3),                 &
-     &    WK_circle_fft)
+     &    WK_circle_fft, elapsed_fft, elapsed_cpy)
 !
       end subroutine circle_transfer_vector
 !
@@ -176,6 +177,7 @@
       type(circle_transform_spectr), intent(inout) :: leg_circ
       type(working_FFTs), intent(inout) :: WK_circle_fft
 !
+      real(kind = kreal) :: elapsed_fft = 0.0d0, elapsed_cpy = 0.0d0
       integer :: j
 !
       call circle_lag_transfer_scalar                                   &
@@ -198,7 +200,7 @@
       call backward_FFT_select                                          &
      &   (iflag_FFT, np_smp, leg_circ%istack_circfft_smp, ione,         &
      &    circle%mphi_circle, circle%v_rtp_circle(1,1),                 &
-     &    WK_circle_fft)
+     &    WK_circle_fft, elapsed_fft, elapsed_cpy)
 !
       end subroutine circle_transfer_scalar
 !
