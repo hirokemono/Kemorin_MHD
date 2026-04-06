@@ -133,7 +133,7 @@
       real(kind = 8), intent(in) :: T_ispack(itwo*Nfft)
 !
       real(kind = kreal), intent(inout) :: X(M, Nfft)
-      real(kind = kreal), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nfft)
+      real(kind = kreal), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nsmp)
       real(kind = 8), intent(inout) :: WORK_ispack(Mmax_smp*Nfft,Nsmp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
@@ -208,7 +208,7 @@
       real(kind = 8), intent(in) :: T_ispack(itwo*Nfft)
 !
       real(kind = kreal), intent(inout) :: X(M,Nfft)
-      real(kind = kreal), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nfft)
+      real(kind = kreal), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nsmp)
       real(kind = 8), intent(inout) :: WORK_ispack(Mmax_smp*Nfft,Nsmp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
@@ -251,7 +251,7 @@
 !
         st_c = OMP_GET_WTIME()
         do i = 1, Nfft/2
-          do inum = 1, num
+          do inum = 1, num8
             j = ist + inum
             inod_c = inum + (2*i-2) * num
             inod_s = inum + (2*i-1) * num

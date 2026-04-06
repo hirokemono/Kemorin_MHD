@@ -27,7 +27,7 @@
 !!        integer(kind = kint_gl), intent(in) :: IT_ispack(Nfft/2)
 !!        real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
 !!        real(kind = kreal), intent(inout) :: X(M, Nfft)
-!!        real(kind = 8), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nfft)
+!!        real(kind = 8), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nsmp)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
 !!
@@ -51,7 +51,7 @@
 !!        integer(kind = kint_gl), intent(in) :: IT_ispack(Nfft/2)
 !!        real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
 !!        real(kind = kreal), intent(inout) :: X(M,Nfft)
-!!        real(kind = 8), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nfft)
+!!        real(kind = 8), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nsmp)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
 !!
@@ -127,7 +127,7 @@
       real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
 !
       real(kind = kreal), intent(inout) :: X(M, Nfft)
-      real(kind = 8), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nfft)
+      real(kind = 8), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nsmp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: st_c, ed_c, st_f, ed_f
@@ -201,7 +201,7 @@
       real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
 !
       real(kind = kreal), intent(inout) :: X(M,Nfft)
-      real(kind = 8), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nfft)
+      real(kind = 8), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nsmp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: st_c, ed_c, st_f, ed_f
