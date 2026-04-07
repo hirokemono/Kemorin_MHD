@@ -41,8 +41,8 @@
 !$omp end parallel workshare
         ft0%elapsed(3) = ft0%elapsed(3) + OMP_GET_WTIME() - ft0%start
 !
-        call FXRTFA_kemo_t(np_smp, ft0%nstack, nfld8, Nfft8,            &
-     &      ft0%s_k, WK_ISPACK3_t, ft0%elapsed(2), ft0%elapsed(3))
+        call FXRTFA_kemo_t(np_smp, ft0%nstack, nfld8, Nfft8, ft0%s_k,   &
+     &                    WK_ISPACK3_t, ft0%elapsed(2), ft0%elapsed(3))
 !
         ft0%start = OMP_GET_WTIME()
 !$omp parallel workshare
@@ -50,8 +50,8 @@
 !$omp end parallel workshare
         ft0%elapsed(3) = ft0%elapsed(3) + OMP_GET_WTIME() - ft0%start
 !
-        call FXRTBA_kemo_t(np_smp, ft0%nstack, nfld8, Nfft8,            &
-     &      ft0%f_x, WK_ISPACK3_t, ft0%elapsed(2), ft0%elapsed(3))
+        call FXRTBA_kemo_t(np_smp, ft0%nstack, nfld8, Nfft8, ft0%f_x,   &
+     &      WK_ISPACK3_t, ft0%elapsed(2), ft0%elapsed(3))
       end do
 !
       if(n_loop .eq. 1) call write_fft_test_data(file_name, ft0)

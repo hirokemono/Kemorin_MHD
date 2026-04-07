@@ -261,8 +261,9 @@
         call FFTW_mul_forward_type(Nsmp, Nstacksmp, M, Nfft, X,         &
      &      WKS%WK_MUL_FFTW, elapsed_fft, elapsed_cpy)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
-        call FFTW_forward_type(Nsmp, Nstacksmp, M, Nfft, X,             &
-     &                         WKS%WK_FFTW, elapsed_fft, elapsed_cpy)
+        call FFTW_forward_type(Nsmp, Nstacksmp, M,                      &
+     &                         Nfft, X,WKS%WK_FFTW,                     &
+     &                         elapsed_fft, elapsed_cpy)
 #endif
       else
         call CALYPSO_RFFTMF_t(Nsmp, Nstacksmp, M, Nfft, X,              &
@@ -289,6 +290,7 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
+      write(*,*) 'backward_FFT_select', iflag_FFT, iflag_FFTW_SINGLE
       if(iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         call FTTRUB_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WKS%WK_ISPACK1, &
      &                     elapsed_fft, elapsed_cpy)
@@ -301,8 +303,9 @@
         call FFTW_mul_backward_type(Nsmp, Nstacksmp, M, Nfft, X,        &
      &      WKS%WK_MUL_FFTW, elapsed_fft, elapsed_cpy)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
-        call FFTW_backward_type(Nsmp, Nstacksmp, M, Nfft, X,            &
-     &                          WKS%WK_FFTW, elapsed_fft, elapsed_cpy)
+        call FFTW_backward_type(Nsmp, Nstacksmp, M,                     &
+     &                          Nfft, X, WKS%WK_FFTW,                   &
+     &                          elapsed_fft, elapsed_cpy)
 #endif
       else
         call CALYPSO_RFFTMB_t(Nsmp, Nstacksmp, M, Nfft, X,              &
