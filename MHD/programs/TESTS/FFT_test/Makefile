@@ -84,8 +84,10 @@ m_machine_parameter.o \
 \
 transfer_to_long_integers.o \
 normalize_for_ISPACK.o \
-ispack_FFT_wrapper.o \
 t_ispack_FFT_wrapper.o \
+multi_pin_ISPACK1_smp.o \
+ispack_FFT_wrapper.o \
+calypso_multi_ispack.o \
 \
 m_FFT_size.o      \
 t_fft_test_data.o \

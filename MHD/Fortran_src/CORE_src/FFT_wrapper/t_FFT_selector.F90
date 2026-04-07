@@ -121,6 +121,7 @@
      &          Nsmp, Nstacksmp, Nfft, WKS, elapsed_init)
 !
       use transfer_to_long_integers
+      use calypso_multi_ispack
 !
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: iflag_FFT
@@ -164,8 +165,8 @@
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       type(working_FFTs), intent(inout) :: WKS
-      real(kind = kreal) :: elapsed_init
 !
+      real(kind = kreal) :: elapsed_init = 0.0d0
       real(kind = kreal) :: start
 !
       start = 0.0d0
@@ -237,6 +238,7 @@
      &          elapsed_fft, elapsed_cpy)
 !
       use transfer_to_long_integers
+      use calypso_multi_ispack
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
@@ -276,6 +278,7 @@
      &          elapsed_fft, elapsed_cpy)
 !
       use transfer_to_long_integers
+      use calypso_multi_ispack
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)

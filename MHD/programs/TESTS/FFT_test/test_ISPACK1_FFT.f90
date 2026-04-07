@@ -8,8 +8,9 @@
       use m_machine_parameter
       use m_FFT_size
 !
-      use t_ispack_FFT_wrapper
       use t_fft_test_data
+      use t_ispack_FFT_wrapper
+      use calypso_multi_ispack
 !
       implicit none
 !

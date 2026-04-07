@@ -41,7 +41,7 @@
 !!        real(kind = kreal), intent(in) :: X(M,Nfft)
 !!        real(kind = kreal), intent(inout) :: X_ispack(Mmax_smp*Nfft)
 !!      subroutine swap_prt_spectr_to_FXRTBA_smp(ist_smp, nnod_smp,     &
-!!     &          Nfft, Mmax_smp, X_ispack, M, X)
+!!     &          Nfft, M, X, Mmax_smp, X_ispack)
 !!        integer(kind = kint_gl), intent(in) :: ist_smp, nnod_smp
 !!        integer(kind = kint_gl), intent(in) :: M, Nfft, Mmax_smp
 !!        real(kind = kreal), intent(in) :: X(Nfft,M)
@@ -217,7 +217,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine swap_prt_spectr_to_FXRTBA_smp(ist_smp, nnod_smp,       &
-     &          Nfft, Mmax_smp, X_ispack, M, X)
+     &          Nfft, M, X, Mmax_smp, X_ispack)
 !
       integer(kind = kint_gl), intent(in) :: ist_smp, nnod_smp
       integer(kind = kint_gl), intent(in) :: M, Nfft, Mmax_smp
