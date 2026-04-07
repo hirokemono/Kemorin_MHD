@@ -61,8 +61,9 @@ CURRENTDIR = $(shell pwd)
 SOURCES = $(shell ls *.f90)
 
 MOD_FFT_TEST = \
-m_FFT_size.o      \
+m_FFT_size.o \
 t_fft_test_data.o \
+FFT_test_loop.o \
 test_FFT.o
 
 MOD_FFTPACK_TEST = \
@@ -169,11 +170,11 @@ dir_list:
 	@echo 'FFT_TEST_DIR =  $(FFT_TEST_DIR)'          >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_FFT_TEST =      $$(TEST_BUILD_DIR)/$(TARGET_FFT_TEST)'     >> $(MAKENAME)
-	@echo 'TARGET_FFTPACK_TEST =  $$(TEST_BUILD_DIR)/$(TARGET_FFTPACK_TEST)' >> $(MAKENAME)
-	@echo 'TARGET_ISPACK1_TEST =  $$(TEST_BUILD_DIR)/$(TARGET_ISPACK1_TEST)' >> $(MAKENAME)
-	@echo 'TARGET_ISPACK3_TEST =  $$(TEST_BUILD_DIR)/$(TARGET_ISPACK3_TEST)' >> $(MAKENAME)
-	@echo 'TARGET_FFW3_F_TEST =   $$(TEST_BUILD_DIR)/$(TARGET_FFW3_F_TEST)' >> $(MAKENAME)
+	@echo 'TARGET_FFT_TEST =      $$(TEST_BUILD_DIR)/$(TARGET_FFT_TEST)'      >> $(MAKENAME)
+	@echo 'TARGET_FFTPACK_TEST =  $$(TEST_BUILD_DIR)/$(TARGET_FFTPACK_TEST)'  >> $(MAKENAME)
+	@echo 'TARGET_ISPACK1_TEST =  $$(TEST_BUILD_DIR)/$(TARGET_ISPACK1_TEST)'  >> $(MAKENAME)
+	@echo 'TARGET_ISPACK3_TEST =  $$(TEST_BUILD_DIR)/$(TARGET_ISPACK3_TEST)'  >> $(MAKENAME)
+	@echo 'TARGET_FFW3_F_TEST =   $$(TEST_BUILD_DIR)/$(TARGET_FFW3_F_TEST)'   >> $(MAKENAME)
 	@echo 'TARGET_SGL_FFW3_TEST = $$(TEST_BUILD_DIR)/$(TARGET_SGL_FFW3_TEST)' >> $(MAKENAME)
 	@echo 'TARGET_OMP_FFW3_TEST = $$(TEST_BUILD_DIR)/$(TARGET_OMP_FFW3_TEST)' >> $(MAKENAME)
 	@echo 'TARGET_CMPR_FFT_TEST = $$(TEST_BUILD_DIR)/$(TARGET_CMPR_FFT_TEST)' >> $(MAKENAME)
@@ -249,14 +250,14 @@ lib_name:
 mod_list:
 	@echo  MOD_FFT_TEST=      \\  >> $(MAKENAME)
 	@echo  $(MOD_FFT_TEST)        >> $(MAKENAME)
-	@echo  MOD_FFTPACK_TEST=      \\  >> $(MAKENAME)
-	@echo  $(MOD_FFTPACK_TEST)        >> $(MAKENAME)
-	@echo  MOD_ISPACK1_TEST=      \\  >> $(MAKENAME)
-	@echo  $(MOD_ISPACK1_TEST)        >> $(MAKENAME)
-	@echo  MOD_ISPACK3_TEST=      \\  >> $(MAKENAME)
-	@echo  $(MOD_ISPACK3_TEST)        >> $(MAKENAME)
-	@echo  MOD_FFW3_F_TEST=       \\  >> $(MAKENAME)
-	@echo  $(MOD_FFW3_F_TEST)         >> $(MAKENAME)
+	@echo  MOD_FFTPACK_TEST=       \\  >> $(MAKENAME)
+	@echo  $(MOD_FFTPACK_TEST)         >> $(MAKENAME)
+	@echo  MOD_ISPACK1_TEST=       \\  >> $(MAKENAME)
+	@echo  $(MOD_ISPACK1_TEST)         >> $(MAKENAME)
+	@echo  MOD_ISPACK3_TEST=       \\  >> $(MAKENAME)
+	@echo  $(MOD_ISPACK3_TEST)         >> $(MAKENAME)
+	@echo  MOD_FFW3_F_TEST=        \\  >> $(MAKENAME)
+	@echo  $(MOD_FFW3_F_TEST)          >> $(MAKENAME)
 	@echo  MOD_SGL_FFW3_TEST=      \\  >> $(MAKENAME)
 	@echo  $(MOD_SGL_FFW3_TEST)        >> $(MAKENAME)
 	@echo  MOD_OMP_FFW3_TEST=      \\  >> $(MAKENAME)

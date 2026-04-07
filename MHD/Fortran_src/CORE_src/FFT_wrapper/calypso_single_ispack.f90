@@ -132,7 +132,7 @@
       subroutine calypso_single_pin_FTTRUF(Nsmp, Nstacksmp, WK,         &
      &          M, Nfft, X, elapsed_fft, elapsed_cpy)
 !
-      use single_pout_ISPACK1_smp
+      use single_pin_ISPACK1_smp
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
@@ -153,7 +153,7 @@
       subroutine calypso_single_pin_FTTRUB(Nsmp, Nstacksmp,             &
      &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
 !
-      use single_pout_ISPACK1_smp
+      use single_pin_ISPACK1_smp
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
@@ -185,6 +185,7 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
+      write(*,*) 'single_pout_FTTRUF_smp'
       call single_pout_FTTRUF_smp(Nsmp, Nstacksmp, M, Nfft, X,          &
      &    WK%X_ispack, WK%IT_ispack, WK%T_ispack, WK%WORK_ispack,       &
      &    elapsed_fft, elapsed_cpy)
@@ -206,6 +207,7 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
+      write(*,*) 'single_pout_FTTRUB_smp'
       call single_pout_FTTRUB_smp(Nsmp, Nstacksmp, M, Nfft, X,          &
      &    WK%X_ispack, WK%IT_ispack, WK%T_ispack, WK%WORK_ispack,       &
      &    elapsed_fft, elapsed_cpy)

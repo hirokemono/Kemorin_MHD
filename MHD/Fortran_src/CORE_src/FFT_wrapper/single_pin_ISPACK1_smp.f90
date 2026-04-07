@@ -115,7 +115,7 @@
           st_c = OMP_GET_WTIME()
 !          X(1:2,j) =  X(1:2,j)
           X(3:Nfft-1:2,j) =  two * X(3:Nfft-1:2,j)
-          X(3:Nfft:  2,j) = -two * X(3:Nfft:  2,j)
+          X(4:Nfft:  2,j) = -two * X(4:Nfft:  2,j)
           ed_c = ed_c + OMP_GET_WTIME() - st_c
         end do
       end do

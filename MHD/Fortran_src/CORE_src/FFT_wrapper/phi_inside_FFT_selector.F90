@@ -1,19 +1,19 @@
-!>@file   t_FFT_selector.f90
-!!@brief  module t_FFT_selector
+!>@file   phi_inside_FFT_selector.F90
+!!@brief  module phi_inside_FFT_selector
 !!
 !!@author H. Matsui
 !!@date Programmed in Oct., 2009
 !
-!      module t_FFT_selector
+!      module phi_inside_FFT_selector
 !
 !
 !>@brief  Selector of Fourier transform using structure
 !!
 !!@verbatim
-!!      subroutine initialize_FFT_select(id_rank, iflag_FFT,            &
+!!      subroutine init_pin_FFT_select(id_rank, iflag_FFT,              &
 !!     &          Nsmp, Nstacksmp, Nfft, WKS, elapsed_init)
-!!      subroutine finalize_FFT_sel_t(iflag_FFT, Nsmp, Nstacksmp, WKS)
-!!      subroutine verify_FFT_select                                    &
+!!      subroutine fin_pin_FFT_select(iflag_FFT, Nsmp, Nstacksmp, WKS)
+!!      subroutine verify_pin_FFT_select                                &
 !!     &         (iflag_FFT, Nsmp, Nstacksmp, Nfft, WKS)
 !!        integer, intent(in) :: id_rank
 !!        integer(kind = kint), intent(in) :: iflag_FFT
@@ -25,7 +25,7 @@
 !!   wrapper subroutine for initierize FFT for ISPACK
 !! ------------------------------------------------------------------
 !!
-!!      subroutine forward_FFT_select                                   &
+!!      subroutine fwd_pin_FFT_select                                   &
 !!     &         (iflag_FFT, Nsmp, Nstacksmp, M, Nfft, X, WKS,          &
 !!     &          elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) :: iflag_FFT
@@ -47,7 +47,7 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine backward_FFT_select                                  &
+!!      subroutine back_pin_FFT_select                                  &
 !!     &         (iflag_FFT, Nsmp, Nstacksmp, M, Nfft, X, WKS,          &
 !!     &          elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) :: iflag_FFT
@@ -86,7 +86,7 @@
 !!@n @param X(M, Nfft)  Data for Fourier transform
 !!@n @param WKS         Work structure for ISPACK
 !
-      module t_FFT_selector
+      module phi_inside_FFT_selector
 !
       use omp_lib
 !
@@ -99,19 +99,9 @@
 !
       use t_FFTW_wrapper
       use t_multi_FFTW_wrapper
+      use t_FFT_selector
 !
       implicit none
-!
-!>      structure for working data for FFT
-      type working_FFTs
-        type(working_ISPACK) ::   WK_ISPACK1
-        type(working_ISPACK3) ::  WK_ISPACK3
-        type(working_FFTPACK) ::  WK_FFTPACK
-        type(working_FFTW) ::     WK_FFTW
-        type(working_mul_FFTW) :: WK_MUL_FFTW
-      end type working_FFTs
-!
-      integer(kind = kint), parameter :: iflag_ISPACK1_SINGLE = 24
 !
 ! ------------------------------------------------------------------
 !
@@ -119,7 +109,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine initialize_FFT_select(id_rank, iflag_FFT,              &
+      subroutine init_pin_FFT_select(id_rank, iflag_FFT,                &
      &          Nsmp, Nstacksmp, Nfft, WKS, elapsed_init)
 !
       use transfer_to_long_integers
@@ -138,35 +128,35 @@
 !
       start = 0.0d0
       start = OMP_GET_WTIME()
-      if(iflag_FFT .eq. iflag_ISPACK1_ONCE) then
+      if(abs(iflag_FFT) .eq. iflag_ISPACK1_ONCE) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V0.93'
-        call init_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
-      else if(iflag_FFT .eq. iflag_ISPACK1_SINGLE) then
+!        call init_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
+      else if(abs(iflag_FFT) .eq. iflag_ISPACK1_SINGLE) then
         call calypso_single_FTTRUI(Nsmp, Nstacksmp,                     &
      &                            Nfft, WKS%WK_ISPACK1)
-      else if(iflag_FFT .eq. iflag_ISPACK3_ONCE) then
+      else if(abs(iflag_FFT) .eq. iflag_ISPACK3_ONCE) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1'
-        call init_wk_ispack3_t(Nsmp, Nstacksmp,                         &
-     &                         cast_long(Nfft), WKS%WK_ISPACK3)
+!        call init_wk_ispack3_t(Nsmp, Nstacksmp,                         &
+!     &                         cast_long(Nfft), WKS%WK_ISPACK3)
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
+      else if(abs(iflag_FFT) .eq. iflag_FFTW_ONCE) then
         if(id_rank .eq. 0) write(*,*) 'Use FFTW'
-        call init_FFTW_mul_type(Nsmp, Nstacksmp, Nfft, WKS%WK_MUL_FFTW)
-      else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
+!        call init_FFTW_mul_type(Nsmp, Nstacksmp, Nfft, WKS%WK_MUL_FFTW)
+      else if(abs(iflag_FFT) .eq. iflag_FFTW_SINGLE) then
         if(id_rank .eq. 0) write(*,*) 'Use single transform in FFTW'
-        call init_FFTW_type(Nstacksmp(Nsmp), Nfft, WKS%WK_FFTW)
+!        call init_FFTW_type(Nstacksmp(Nsmp), Nfft, WKS%WK_FFTW)
 #endif
       else
         if(id_rank .eq. 0) write(*,*) 'Use FFTPACK'
-        call init_WK_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTPACK)
+!        call init_WK_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTPACK)
       end if
       elapsed_init = elapsed_init + OMP_GET_WTIME() - start
 !
-      end subroutine initialize_FFT_select
+      end subroutine init_pin_FFT_select
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_FFT_sel_t(iflag_FFT, Nsmp, Nstacksmp, WKS)
+      subroutine fin_pin_FFT_select(iflag_FFT, Nsmp, Nstacksmp, WKS)
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
@@ -177,33 +167,33 @@
 !
       start = 0.0d0
       start = OMP_GET_WTIME()
-      if(iflag_FFT .eq. iflag_ISPACK1_ONCE) then
+      if(abs(iflag_FFT) .eq. iflag_ISPACK1_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK V0.93'
+ !       call finalize_wk_ispack_t(WKS%WK_ISPACK1)
+      else if(abs(iflag_FFT) .eq. iflag_ISPACK1_SINGLE) then
         call finalize_wk_ispack_t(WKS%WK_ISPACK1)
-      else if(iflag_FFT .eq. iflag_ISPACK1_SINGLE) then
-        call finalize_wk_ispack_t(WKS%WK_ISPACK1)
-      else if(iflag_FFT .eq. iflag_ISPACK3_ONCE) then
+      else if(abs(iflag_FFT) .eq. iflag_ISPACK3_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK V3.0.1'
-        call finalize_wk_ispack3_t(WKS%WK_ISPACK3)
+!        call finalize_wk_ispack3_t(WKS%WK_ISPACK3)
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
+      else if(abs(iflag_FFT) .eq. iflag_FFTW_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
-        call finalize_FFTW_mul_type(Nsmp, WKS%WK_MUL_FFTW)
-      else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
+!        call finalize_FFTW_mul_type(Nsmp, WKS%WK_MUL_FFTW)
+      else if(abs(iflag_FFT) .eq. iflag_FFTW_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize single FFTW'
-        call finalize_FFTW_type(Nstacksmp(Nsmp), WKS%WK_FFTW)
+!        call finalize_FFTW_type(Nstacksmp(Nsmp), WKS%WK_FFTW)
 #endif
       else
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTPACK'
-        call finalize_WK_FFTPACK_t(WKS%WK_FFTPACK)
+!        call finalize_WK_FFTPACK_t(WKS%WK_FFTPACK)
       end if
       elapsed_init = elapsed_init + OMP_GET_WTIME() - start
 !
-      end subroutine finalize_FFT_sel_t
+      end subroutine fin_pin_FFT_select
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_FFT_select                                      &
+      subroutine verify_pin_FFT_select                                  &
      &         (iflag_FFT, Nsmp, Nstacksmp, Nfft, WKS)
 !
       use transfer_to_long_integers
@@ -215,35 +205,35 @@
       type(working_FFTs), intent(inout) :: WKS
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK1_ONCE) then
+      if(abs(iflag_FFT) .eq. iflag_ISPACK1_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V0.93'
-        call verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
-      else if(iflag_FFT .eq. iflag_ISPACK1_SINGLE) then
-        call verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
-      else if(iflag_FFT .eq. iflag_ISPACK3_ONCE) then
+!        call verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
+      else if(abs(iflag_FFT) .eq. iflag_ISPACK1_SINGLE) then
+!        call verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
+      else if(abs(iflag_FFT) .eq. iflag_ISPACK3_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V0.93'
-        call verify_wk_ispack3_t(Nsmp, Nstacksmp,                       &
-     &                          cast_long(Nfft), WKS%WK_ISPACK3)
+!        call verify_wk_ispack3_t(Nsmp, Nstacksmp,                       &
+!     &                          cast_long(Nfft), WKS%WK_ISPACK3)
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
+      else if(abs(iflag_FFT) .eq. iflag_FFTW_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTW'
-        call verify_wk_FFTW_mul_type(Nsmp, Nstacksmp,                   &
-     &      Nfft, WKS%WK_MUL_FFTW)
-      else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
+!        call verify_wk_FFTW_mul_type(Nsmp, Nstacksmp,                   &
+!     &      Nfft, WKS%WK_MUL_FFTW)
+      else if(abs(iflag_FFT) .eq. iflag_FFTW_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use single FFTW transforms'
-        call verify_wk_FFTW_type(Nstacksmp(Nsmp), Nfft, WKS%WK_FFTW)
+!        call verify_wk_FFTW_type(Nstacksmp(Nsmp), Nfft, WKS%WK_FFTW)
 #endif
       else
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'
-        call verify_wk_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTPACK)
+!        call verify_wk_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTPACK)
       end if
 !
-      end subroutine verify_FFT_select
+      end subroutine verify_pin_FFT_select
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine forward_FFT_select                                     &
+      subroutine fwd_pin_FFT_select                                     &
      &         (iflag_FFT, Nsmp, Nstacksmp, M, Nfft, X, WKS,            &
      &          elapsed_fft, elapsed_cpy)
 !
@@ -260,34 +250,34 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK1_ONCE) then
-        call FTTRUF_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WKS%WK_ISPACK1, &
-     &                     elapsed_fft, elapsed_cpy)
-      else if(iflag_FFT .eq. iflag_ISPACK1_SINGLE) then
-        call calypso_single_pout_FTTRUF(Nsmp, Nstacksmp,                &
+      if(abs(iflag_FFT) .eq. iflag_ISPACK1_ONCE) then
+!        call FTTRUF_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WKS%WK_ISPACK1, &
+!     &                     elapsed_fft, elapsed_cpy)
+      else if(abs(iflag_FFT) .eq. iflag_ISPACK1_SINGLE) then
+        call calypso_single_pin_FTTRUF(Nsmp, Nstacksmp,                 &
      &      WKS%WK_ISPACK1, M, Nfft, X, elapsed_fft, elapsed_cpy)
-      else if(iflag_FFT .eq. iflag_ISPACK3_ONCE) then
-        call FXRTFA_kemo_t(Nsmp, Nstacksmp, cast_long(M),               &
-     &                     cast_long(Nfft), X, WKS%WK_ISPACK3,          &
-     &                     elapsed_fft, elapsed_cpy)
+      else if(abs(iflag_FFT) .eq. iflag_ISPACK3_ONCE) then
+!        call FXRTFA_kemo_t(Nsmp, Nstacksmp, cast_long(M),               &
+!     &                     cast_long(Nfft), X, WKS%WK_ISPACK3,          &
+!     &                     elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
-        call FFTW_mul_forward_type(Nsmp, Nstacksmp, M, Nfft, X,         &
-     &      WKS%WK_MUL_FFTW, elapsed_fft, elapsed_cpy)
-      else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
-        call FFTW_forward_type(Nsmp, Nstacksmp, M, Nfft, X,             &
-     &      WKS%WK_FFTW, elapsed_fft, elapsed_cpy)
+      else if(abs(iflag_FFT) .eq. iflag_FFTW_ONCE) then
+!        call FFTW_mul_forward_type(Nsmp, Nstacksmp, M, Nfft, X,         &
+!     &      WKS%WK_MUL_FFTW, elapsed_fft, elapsed_cpy)
+      else if(abs(iflag_FFT) .eq. iflag_FFTW_SINGLE) then
+!        call FFTW_forward_type(Nsmp, Nstacksmp, M, Nfft, X,             &
+!     &      WKS%WK_FFTW, elapsed_fft, elapsed_cpy)
 #endif
       else
-        call CALYPSO_RFFTMF_t(Nsmp, Nstacksmp, M, Nfft, X,              &
-     &                        WKS%WK_FFTPACK, elapsed_fft, elapsed_cpy)
+!        call CALYPSO_RFFTMF_t(Nsmp, Nstacksmp, M, Nfft, X,              &
+!     &                        WKS%WK_FFTPACK, elapsed_fft, elapsed_cpy)
       end if
 !
-      end subroutine forward_FFT_select
+      end subroutine fwd_pin_FFT_select
 !
 ! ------------------------------------------------------------------
 !
-      subroutine backward_FFT_select                                    &
+      subroutine back_pin_FFT_select                                    &
      &         (iflag_FFT, Nsmp, Nstacksmp, M, Nfft, X, WKS,            &
      &          elapsed_fft, elapsed_cpy)
 !
@@ -304,33 +294,33 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      write(*,*) 'backward_FFT_select', iflag_FFT, iflag_FFTW_SINGLE
-      if(iflag_FFT .eq. iflag_ISPACK1_ONCE) then
-        call FTTRUB_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WKS%WK_ISPACK1, &
-     &                     elapsed_fft, elapsed_cpy)
-      else if(iflag_FFT .eq. iflag_ISPACK1_SINGLE) then
-        call calypso_single_pout_FTTRUB(Nsmp, Nstacksmp, M, Nfft, X,    &
+      write(*,*) 'back_pin_FFT_select', iflag_FFT, iflag_FFTW_SINGLE
+      if(abs(iflag_FFT) .eq. iflag_ISPACK1_ONCE) then
+!        call FTTRUB_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WKS%WK_ISPACK1, &
+!     &                     elapsed_fft, elapsed_cpy)
+      else if(abs(iflag_FFT) .eq. iflag_ISPACK1_SINGLE) then
+        call calypso_single_pin_FTTRUB(Nsmp, Nstacksmp, M, Nfft, X,     &
      &      WKS%WK_ISPACK1, elapsed_fft, elapsed_cpy)
-      else if(iflag_FFT .eq. iflag_ISPACK3_ONCE) then
-        call FXRTBA_kemo_t(Nsmp, Nstacksmp, cast_long(M),               &
-     &                     cast_long(Nfft), X, WKS%WK_ISPACK3,          &
-     &                     elapsed_fft, elapsed_cpy)
+      else if(abs(iflag_FFT) .eq. iflag_ISPACK3_ONCE) then
+!        call FXRTBA_kemo_t(Nsmp, Nstacksmp, cast_long(M),               &
+!     &                     cast_long(Nfft), X, WKS%WK_ISPACK3,          &
+!     &                     elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
-        call FFTW_mul_backward_type(Nsmp, Nstacksmp, M, Nfft, X,        &
-     &      WKS%WK_MUL_FFTW, elapsed_fft, elapsed_cpy)
-      else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
-        call FFTW_backward_type(Nsmp, Nstacksmp, M,                     &
-     &                          Nfft, X, WKS%WK_FFTW,                   &
-     &                          elapsed_fft, elapsed_cpy)
+      else if(abs(iflag_FFT) .eq. iflag_FFTW_ONCE) then
+!        call FFTW_mul_backward_type(Nsmp, Nstacksmp, M, Nfft, X,        &
+!     &      WKS%WK_MUL_FFTW, elapsed_fft, elapsed_cpy)
+      else if(abs(iflag_FFT) .eq. iflag_FFTW_SINGLE) then
+!        call FFTW_backward_type(Nsmp, Nstacksmp, M,                     &
+!     &                          Nfft, X, WKS%WK_FFTW,                   &
+!     &                          elapsed_fft, elapsed_cpy)
 #endif
       else
-        call CALYPSO_RFFTMB_t(Nsmp, Nstacksmp, M, Nfft, X,              &
-     &                        WKS%WK_FFTPACK, elapsed_fft, elapsed_cpy)
+!        call CALYPSO_RFFTMB_t(Nsmp, Nstacksmp, M, Nfft, X,              &
+!     &                        WKS%WK_FFTPACK, elapsed_fft, elapsed_cpy)
       end if
 !
-      end subroutine backward_FFT_select
+      end subroutine back_pin_FFT_select
 !
 ! ------------------------------------------------------------------
 !
-      end module t_FFT_selector
+      end module phi_inside_FFT_selector
