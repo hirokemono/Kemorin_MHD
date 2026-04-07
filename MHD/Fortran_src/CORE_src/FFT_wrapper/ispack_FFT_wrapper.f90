@@ -16,7 +16,18 @@
 !! ------------------------------------------------------------------
 !!
 !!      subroutine FTTRUF_kemo_smp(Nsmp, Nstacksmp, M, Nfft, X,         &
-!!     &          X_ispack, Mmax_smp, IT_ispack, T_ispack, WORK_ispack)
+!!     &          X_ispack, Mmax_smp, IT_ispack, T_ispack, WORK_ispack, &
+!!     &          elapsed_fft, elapsed_cpy)
+!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) :: M, Nfft, Mmax_smp
+!!        integer(kind = 4), intent(in) :: IT_ispack(5)
+!!        real(kind = 8), intent(in) :: T_ispack(itwo*Nfft)
+!!        real(kind = kreal), intent(inout) :: X(M, Nfft)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                             :: X_ispack(Mmax_smp*Nfft,Nsmp)
+!!        real(kind = 8), intent(inout)                                 &
+!!     &                             :: WORK_ispack(Mmax_smp*Nfft,Nsmp)
+!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by ISPACK
@@ -31,7 +42,18 @@
 !! ------------------------------------------------------------------
 !!
 !!      subroutine FTTRUB_kemo_smp(Nsmp, Nstacksmp, M, Nfft, X,         &
-!!     &          X_ispack, Mmax_smp, IT_ispack, T_ispack, WORK_ispack)
+!!     &          X_ispack, Mmax_smp, IT_ispack, T_ispack, WORK_ispack, &
+!!     &          elapsed_fft, elapsed_cpy)
+!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) :: M, Nfft, Mmax_smp
+!!        integer(kind = 4), intent(in) :: IT_ispack(5)
+!!        real(kind = 8), intent(in) :: T_ispack(itwo*Nfft)
+!!        real(kind = kreal), intent(inout) :: X(M,Nfft)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &     :: X_ispack(Mmax_smp*Nfft,Nsmp)
+!!        real(kind = 8), intent(inout)                                 &
+!!     &     :: WORK_ispack(Mmax_smp*Nfft,Nsmp)
+!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by ISPACK
@@ -70,6 +92,8 @@
 !
       module ispack_FFT_wrapper
 !
+      use omp_lib
+!
       use m_precision
       use m_constants
 !
@@ -97,9 +121,12 @@
 ! ------------------------------------------------------------------
 !
       subroutine FTTRUF_kemo_smp(Nsmp, Nstacksmp, M, Nfft, X,           &
-     &          X_ispack, Mmax_smp, IT_ispack, T_ispack, WORK_ispack)
+     &          X_ispack, Mmax_smp, IT_ispack, T_ispack, WORK_ispack,   &
+     &          elapsed_fft, elapsed_cpy)
 !
       use ispack_0931
+      use normalize_for_ISPACK
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft, Mmax_smp
@@ -107,59 +134,57 @@
       real(kind = 8), intent(in) :: T_ispack(itwo*Nfft)
 !
       real(kind = kreal), intent(inout) :: X(M, Nfft)
-      real(kind = kreal), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nfft)
+      real(kind = kreal), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nsmp)
       real(kind = 8), intent(inout) :: WORK_ispack(Mmax_smp*Nfft,Nsmp)
+      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
-      integer(kind = kint) :: i, j, ismp, ist, num
-      integer(kind = kint) :: inum, inod_s, inod_c
+      real(kind = kreal) :: st_c, ed_c, st_f, ed_f
+      integer(kind = kint_gl) :: i, j, ismp, ist
+      integer(kind = kint_gl) :: num8, inum
+      integer(kind = kint_gl) :: inod_s, inod_c
 !
 !
-!$omp parallel do private(i,j,ist,num,inum,inod_s,inod_c)
+      ed_c = 0.0d0
+      ed_f = 0.0d0
+!$omp parallel do private(i,j,ist,num8,inum,inod_s,inod_c,              &
+!$omp&                    st_c,st_f) reduction(+:ed_c,ed_f)
       do ismp = 1, Nsmp
         ist = Nstacksmp(ismp-1)
-        num = Nstacksmp(ismp) - Nstacksmp(ismp-1)
+        num8 = Nstacksmp(ismp) - Nstacksmp(ismp-1)
 !
-        do i = 1, Nfft/2
-          do inum = 1, num
-            j = ist + inum
-            inod_c = inum + (2*i-2) * num
-            inod_s = inum + (2*i-1) * num
-            X_ispack(inod_c,ismp) = X(j,2*i-1)
-            X_ispack(inod_s,ismp) = X(j,2*i  )
-          end do
-        end do
+        st_c = OMP_GET_WTIME()
+        call copy_rtp_fld_to_FXRTFA_smp                                 &
+     &     (ist, num8, cast_long(Nfft), cast_long(M), X,                &
+     &      cast_long(Mmax_smp), X_ispack(1,ismp))
+        ed_c = OMP_GET_WTIME() - st_c
 !
-        call FTTRUF(num, Nfft, X_ispack(1,ismp),                        &
+        st_f = OMP_GET_WTIME()
+        call FTTRUF(int(num8), Nfft, X_ispack(1,ismp),                  &
      &      WORK_ispack(1,ismp), IT_ispack(1), T_ispack(1))
+        ed_f = OMP_GET_WTIME() - st_f
 !
-        do inum = 1, num
-          j = ist + inum
-          inod_c = inum
-          inod_s = inum + num
-          X(j,1) = X_ispack(inod_c,ismp)
-          X(j,2) = X_ispack(inod_s,ismp)
-        end do
-        do i = 2, Nfft/2
-          do inum = 1, num
-            j = ist + inum
-            inod_c = inum + (2*i-2) * num
-            inod_s = inum + (2*i-1) * num
-            X(j,2*i-1) =   two * X_ispack(inod_c,ismp)
-            X(j,2*i  ) = - two * X_ispack(inod_s,ismp)
-          end do
-        end do
-!
+        st_c = OMP_GET_WTIME()
+        call norm_rtp_spectr_from_FXRTFA_smp                            &
+     &     (ist, num8, cast_long(Nfft), cast_long(Mmax_smp),            &
+     &      X_ispack(1,ismp), cast_long(M), X)
+        ed_c = ed_c + OMP_GET_WTIME() - st_c
       end do
 !$omp end parallel do
+!
+      elapsed_fft = elapsed_fft + ed_f / dble(Nsmp)
+      elapsed_cpy = elapsed_cpy + ed_c / dble(Nsmp)
 !
       end subroutine FTTRUF_kemo_smp
 !
 ! ------------------------------------------------------------------
 !
       subroutine FTTRUB_kemo_smp(Nsmp, Nstacksmp, M, Nfft, X,           &
-     &          X_ispack, Mmax_smp, IT_ispack, T_ispack, WORK_ispack)
+     &          X_ispack, Mmax_smp, IT_ispack, T_ispack, WORK_ispack,   &
+     &          elapsed_fft, elapsed_cpy)
 !
       use ispack_0931
+      use normalize_for_ISPACK
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft, Mmax_smp
@@ -167,49 +192,46 @@
       real(kind = 8), intent(in) :: T_ispack(itwo*Nfft)
 !
       real(kind = kreal), intent(inout) :: X(M,Nfft)
-      real(kind = kreal), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nfft)
+      real(kind = kreal), intent(inout)                                 &
+     &                              :: X_ispack(Mmax_smp*Nfft,Nsmp)
       real(kind = 8), intent(inout) :: WORK_ispack(Mmax_smp*Nfft,Nsmp)
+      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
-      integer(kind = kint) ::  i, j, ismp, ist, num
-      integer(kind = kint) :: inum, inod_s, inod_c
+      real(kind = kreal) :: st_c, ed_c, st_f, ed_f
+      integer(kind = kint_gl) ::  i, j, ismp, ist
+      integer(kind = kint_gl) :: num8, inum
+      integer(kind = kint_gl) :: inod_s, inod_c
 !
 !
-!$omp parallel do private(i,j,ist,num,inum,inod_s,inod_c)
+      ed_c = 0.0d0
+      ed_f = 0.0d0
+!$omp parallel do private(i,j,ist,num8,inum,inod_s,inod_c,              &
+!$omp&                    st_c,st_f) reduction(+:ed_c,ed_f)
       do ismp = 1, Nsmp
         ist = Nstacksmp(ismp-1)
-        num = Nstacksmp(ismp) - Nstacksmp(ismp-1)
+        num8 = Nstacksmp(ismp) - Nstacksmp(ismp-1)
 !
-        do inum = 1, num
-          j = ist + inum
-            inod_c = inum
-            inod_s = inum + num
-          X_ispack(inod_c,ismp) = X(j,1)
-          X_ispack(inod_s,ismp) = X(j,2)
-        end do
-        do i = 2, Nfft/2
-          do inum = 1, num
-            j = ist + inum
-            inod_c = inum + (2*i-2) * num
-            inod_s = inum + (2*i-1) * num
-            X_ispack(inod_c,ismp) =  half * X(j,2*i-1)
-            X_ispack(inod_s,ismp) = -half * X(j,2*i  )
-          end do
-        end do
+        st_c = OMP_GET_WTIME()
+        call norm_rtp_spectr_to_FXRTBA_smp                              &
+     &     (ist, num8, cast_long(Nfft), cast_long(M), X,                &
+     &      cast_long(Mmax_smp), X_ispack(1,ismp))
+        ed_c = OMP_GET_WTIME() - st_c
 !
-        call FTTRUB(num, Nfft, X_ispack(1,ismp),                        &
-     &      WORK_ispack(1,ismp), IT_ispack(1), T_ispack(1) )
+        st_f = OMP_GET_WTIME()
+        call FTTRUB(int(num8), Nfft, X_ispack(1,ismp),                  &
+     &      WORK_ispack(1,ismp), IT_ispack(1), T_ispack(1))
+        ed_f = OMP_GET_WTIME() - st_f
 !
-        do i = 1, Nfft/2
-          do inum = 1, num
-            j = ist + inum
-            inod_c = inum + (2*i-2) * num
-            inod_s = inum + (2*i-1) * num
-            X(j,2*i-1) = X_ispack(inod_c,ismp)
-            X(j,2*i  ) = X_ispack(inod_s,ismp)
-          end do
-        end do
+        st_c = OMP_GET_WTIME()
+        call copy_rtp_fld_from_FXRTBA_smp                               &
+     &     (ist, num8, cast_long(Nfft), cast_long(Mmax_smp),            &
+     &      X_ispack(1,ismp), cast_long(M), X)
+        ed_c = ed_c + OMP_GET_WTIME() - st_c
       end do
 !$omp end parallel do
+!
+      elapsed_fft = elapsed_fft + ed_f / dble(Nsmp)
+      elapsed_cpy = elapsed_cpy + ed_c / dble(Nsmp)
 !
       end subroutine FTTRUB_kemo_smp
 !

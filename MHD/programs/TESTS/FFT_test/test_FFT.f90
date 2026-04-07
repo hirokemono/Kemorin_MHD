@@ -26,10 +26,10 @@
 !
       write(*,*) 'select FFT library'
       write(*,*) '1: FFTPACK5'
-      write(*,*) '2: FFTW3 (if avaiable)'
-      write(*,*) '3: SINGLE FFTW3 (if avaiable)'
-      write(*,*) '4: ISPACK-0.93'
-      write(*,*) '5: ISPACK-3.01'
+      write(*,*) '11: FFTW3 (if avaiable)'
+      write(*,*) '12: SINGLE FFTW3 (if avaiable)'
+      write(*,*) '21: ISPACK-0.93'
+      write(*,*) '31: ISPACK-3.01'
       read(*,*) iflag_FFT_t
 !
 !

@@ -82,6 +82,8 @@ m_precision.o \
 m_constants.o \
 m_machine_parameter.o \
 \
+transfer_to_long_integers.o \
+normalize_for_ISPACK.o \
 ispack_FFT_wrapper.o \
 t_ispack_FFT_wrapper.o \
 \
@@ -94,6 +96,7 @@ m_precision.o \
 m_constants.o \
 m_machine_parameter.o \
 \
+normalize_for_ISPACK.o \
 ispack3_FFT_wrapper.o \
 t_ispack3_FFT_wrapper.o \
 \
@@ -250,8 +253,8 @@ mod_list:
 	@echo  $(MOD_ISPACK1_TEST)        >> $(MAKENAME)
 	@echo  MOD_ISPACK3_TEST=      \\  >> $(MAKENAME)
 	@echo  $(MOD_ISPACK3_TEST)        >> $(MAKENAME)
-	@echo  MOD_FFW3_F_TEST=      \\  >> $(MAKENAME)
-	@echo  $(MOD_FFW3_F_TEST)        >> $(MAKENAME)
+	@echo  MOD_FFW3_F_TEST=       \\  >> $(MAKENAME)
+	@echo  $(MOD_FFW3_F_TEST)         >> $(MAKENAME)
 	@echo  MOD_SGL_FFW3_TEST=      \\  >> $(MAKENAME)
 	@echo  $(MOD_SGL_FFW3_TEST)        >> $(MAKENAME)
 	@echo  MOD_OMP_FFW3_TEST=      \\  >> $(MAKENAME)

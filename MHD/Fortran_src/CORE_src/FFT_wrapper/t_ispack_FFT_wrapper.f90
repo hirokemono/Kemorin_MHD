@@ -18,6 +18,11 @@
 !! ------------------------------------------------------------------
 !!
 !!      subroutine FTTRUF_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WK)
+!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) :: M, Nfft
+!!        real(kind = kreal), intent(inout) :: X(M, Nfft)
+!!        type(working_ISPACK), intent(inout) :: WK
+!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by ISPACK
@@ -32,6 +37,11 @@
 !! ------------------------------------------------------------------
 !!
 !!      subroutine FTTRUB_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WK)
+!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) :: M, Nfft
+!!        real(kind = kreal), intent(inout) :: X(M,Nfft)
+!!        type(working_ISPACK), intent(inout) :: WK
+!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by ISPACK
@@ -179,7 +189,8 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine FTTRUF_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WK)
+      subroutine FTTRUF_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WK,         &
+     &                         elapsed_fft, elapsed_cpy)
 !
       use ispack_FFT_wrapper
 !
@@ -188,17 +199,19 @@
 !
       real(kind = kreal), intent(inout) :: X(M, Nfft)
       type(working_ISPACK), intent(inout) :: WK
+      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
       call FTTRUF_kemo_smp(Nsmp, Nstacksmp, M, Nfft, X,                 &
      &    WK%X_ispack, WK%Mmax_smp, WK%IT_ispack, WK%T_ispack,          &
-     &    WK%WORK_ispack)
+     &    WK%WORK_ispack, elapsed_fft, elapsed_cpy)
 !
       end subroutine FTTRUF_kemo_t
 !
 ! ------------------------------------------------------------------
 !
-      subroutine FTTRUB_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WK)
+      subroutine FTTRUB_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WK,         &
+     &                         elapsed_fft, elapsed_cpy)
 !
       use ispack_FFT_wrapper
 !
@@ -207,11 +220,12 @@
 !
       real(kind = kreal), intent(inout) :: X(M,Nfft)
       type(working_ISPACK), intent(inout) :: WK
+      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
       call FTTRUB_kemo_smp(Nsmp, Nstacksmp, M, Nfft, X,                 &
      &    WK%X_ispack, WK%Mmax_smp, WK%IT_ispack, WK%T_ispack,          &
-     &    WK%WORK_ispack)
+     &    WK%WORK_ispack, elapsed_fft, elapsed_cpy)
 !
       end subroutine FTTRUB_kemo_t
 !
