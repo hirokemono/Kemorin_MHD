@@ -21,7 +21,9 @@
       write(*,'(a)') '-----  Test FFT  -----'
       call init_fft_test_data(n_field, ngrid, ft0)
 !
-      write(*,*) 'select FFT library'
+      write(*,*) ' Select FFT library'
+      write(*,*) 'Negative values is set to use wave number ', &
+     &           'as the inner most loop'
       write(*,*) '1: FFTPACK5'
       write(*,*) '11: FFTW3 (if avaiable)'
       write(*,*) '12: SINGLE FFTW3 (if avaiable)'

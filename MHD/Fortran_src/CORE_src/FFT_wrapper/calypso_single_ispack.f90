@@ -16,15 +16,15 @@
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !!        type(working_ISPACK), intent(inout) :: WK
 !!
-!!      subroutine calypso_single_pin_FTTRUF(Nsmp, Nstacksmp, WK,       &
-!!     &          M, Nfft, X, elapsed_fft, elapsed_cpy)
+!!      subroutine calypso_single_pin_FTTRUF(Nsmp, Nstacksmp,           &
+!!     &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !!        integer(kind = kint), intent(in) :: M, Nfft
 !!        real(kind = kreal), intent(inout) :: X(Nfft,M)
 !!        type(working_ISPACK), intent(inout) :: WK
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!!      subroutine calypso_single_pout_FTTRUF(Nsmp, Nstacksmp, WK,      &
-!!     &          M, Nfft, X, elapsed_fft, elapsed_cpy)
+!!      subroutine calypso_single_pout_FTTRUF(Nsmp, Nstacksmp,          &
+!!     &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !!        integer(kind = kint), intent(in) :: M, Nfft
 !!        real(kind = kreal), intent(inout) :: X(M, Nfft)
@@ -129,8 +129,8 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_single_pin_FTTRUF(Nsmp, Nstacksmp, WK,         &
-     &          M, Nfft, X, elapsed_fft, elapsed_cpy)
+      subroutine calypso_single_pin_FTTRUF(Nsmp, Nstacksmp,             &
+     &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
 !
       use single_pin_ISPACK1_smp
 !
@@ -172,8 +172,8 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_single_pout_FTTRUF(Nsmp, Nstacksmp, WK,        &
-     &          M, Nfft, X, elapsed_fft, elapsed_cpy)
+      subroutine calypso_single_pout_FTTRUF(Nsmp, Nstacksmp,            &
+     &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
 !
       use single_pout_ISPACK1_smp
 !

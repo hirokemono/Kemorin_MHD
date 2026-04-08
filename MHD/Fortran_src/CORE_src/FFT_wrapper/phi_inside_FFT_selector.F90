@@ -130,7 +130,7 @@
       start = OMP_GET_WTIME()
       if(abs(iflag_FFT) .eq. iflag_ISPACK1_ONCE) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V0.93'
-!        call init_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
+        call init_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
       else if(abs(iflag_FFT) .eq. iflag_ISPACK1_SINGLE) then
         call calypso_single_FTTRUI(Nsmp, Nstacksmp,                     &
      &                            Nfft, WKS%WK_ISPACK1)
@@ -169,7 +169,7 @@
       start = OMP_GET_WTIME()
       if(abs(iflag_FFT) .eq. iflag_ISPACK1_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK V0.93'
- !       call finalize_wk_ispack_t(WKS%WK_ISPACK1)
+        call finalize_wk_ispack_t(WKS%WK_ISPACK1)
       else if(abs(iflag_FFT) .eq. iflag_ISPACK1_SINGLE) then
         call finalize_wk_ispack_t(WKS%WK_ISPACK1)
       else if(abs(iflag_FFT) .eq. iflag_ISPACK3_ONCE) then
@@ -207,9 +207,9 @@
 !
       if(abs(iflag_FFT) .eq. iflag_ISPACK1_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V0.93'
-!        call verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
+        call verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
       else if(abs(iflag_FFT) .eq. iflag_ISPACK1_SINGLE) then
-!        call verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
+        call verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
       else if(abs(iflag_FFT) .eq. iflag_ISPACK3_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V0.93'
 !        call verify_wk_ispack3_t(Nsmp, Nstacksmp,                       &
@@ -251,11 +251,11 @@
 !
 !
       if(abs(iflag_FFT) .eq. iflag_ISPACK1_ONCE) then
-!        call FTTRUF_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WKS%WK_ISPACK1, &
-!     &                     elapsed_fft, elapsed_cpy)
+        call calypso_multi_pin_FTTRUF(Nsmp, Nstacksmp, M, Nfft, X,      &
+     &      WKS%WK_ISPACK1, elapsed_fft, elapsed_cpy)
       else if(abs(iflag_FFT) .eq. iflag_ISPACK1_SINGLE) then
-        call calypso_single_pin_FTTRUF(Nsmp, Nstacksmp,                 &
-     &      WKS%WK_ISPACK1, M, Nfft, X, elapsed_fft, elapsed_cpy)
+        call calypso_single_pin_FTTRUF(Nsmp, Nstacksmp, M, Nfft, X,     &
+     &      WKS%WK_ISPACK1, elapsed_fft, elapsed_cpy)
       else if(abs(iflag_FFT) .eq. iflag_ISPACK3_ONCE) then
 !        call FXRTFA_kemo_t(Nsmp, Nstacksmp, cast_long(M),               &
 !     &                     cast_long(Nfft), X, WKS%WK_ISPACK3,          &
@@ -294,10 +294,10 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      write(*,*) 'back_pin_FFT_select', iflag_FFT, iflag_FFTW_SINGLE
       if(abs(iflag_FFT) .eq. iflag_ISPACK1_ONCE) then
-!        call FTTRUB_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WKS%WK_ISPACK1, &
-!     &                     elapsed_fft, elapsed_cpy)
+        write(*,*) 'calypso_multi_pin_FTTRUB', iflag_FFT, iflag_ISPACK1_ONCE
+        call calypso_multi_pin_FTTRUB(Nsmp, Nstacksmp, M, Nfft, X,      &
+     &      WKS%WK_ISPACK1, elapsed_fft, elapsed_cpy)
       else if(abs(iflag_FFT) .eq. iflag_ISPACK1_SINGLE) then
         call calypso_single_pin_FTTRUB(Nsmp, Nstacksmp, M, Nfft, X,     &
      &      WKS%WK_ISPACK1, elapsed_fft, elapsed_cpy)
