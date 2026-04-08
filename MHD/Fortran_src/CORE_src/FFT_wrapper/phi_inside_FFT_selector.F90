@@ -153,7 +153,7 @@
 #endif
       else
         if(id_rank .eq. 0) write(*,*) 'Use FFTPACK'
-!        call init_WK_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTPACK)
+        call init_WK_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTPACK)
       end if
       elapsed_init = elapsed_init + OMP_GET_WTIME() - start
 !
@@ -190,7 +190,7 @@
 #endif
       else
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTPACK'
-!        call finalize_WK_FFTPACK_t(WKS%WK_FFTPACK)
+        call finalize_WK_FFTPACK_t(WKS%WK_FFTPACK)
       end if
       elapsed_init = elapsed_init + OMP_GET_WTIME() - start
 !
@@ -230,7 +230,7 @@
 #endif
       else
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'
-!        call verify_wk_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTPACK)
+        call verify_wk_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTPACK)
       end if
 !
       end subroutine verify_pin_FFT_select
@@ -281,8 +281,9 @@
 !     &      WKS%WK_FFTW, elapsed_fft, elapsed_cpy)
 #endif
       else
-!        call CALYPSO_RFFTMF_t(Nsmp, Nstacksmp, M, Nfft, X,              &
-!     &                        WKS%WK_FFTPACK, elapsed_fft, elapsed_cpy)
+        write(*,*) 'calypso_multi_pin_RFFTMF'
+        call calypso_multi_pin_RFFTMF(Nsmp, Nstacksmp, M, Nfft, X,      &
+     &      WKS%WK_FFTPACK, elapsed_fft, elapsed_cpy)
       end if
 !
       end subroutine fwd_pin_FFT_select
@@ -333,8 +334,9 @@
 !     &                          elapsed_fft, elapsed_cpy)
 #endif
       else
-!        call CALYPSO_RFFTMB_t(Nsmp, Nstacksmp, M, Nfft, X,              &
-!     &                        WKS%WK_FFTPACK, elapsed_fft, elapsed_cpy)
+        write(*,*) 'calypso_multi_pin_RFFTMB'
+        call calypso_multi_pin_RFFTMB(Nsmp, Nstacksmp, M, Nfft, X,      &
+     &      WKS%WK_FFTPACK, elapsed_fft, elapsed_cpy)
       end if
 !
       end subroutine back_pin_FFT_select

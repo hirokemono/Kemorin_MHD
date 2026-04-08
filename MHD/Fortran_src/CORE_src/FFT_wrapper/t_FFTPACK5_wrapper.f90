@@ -240,6 +240,49 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
+      subroutine calypso_multi_pin_RFFTMF(Nsmp, Nstacksmp,              &
+     &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
+!
+      use multi_pin_FFTPACK_smp
+!
+      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) :: M, Nfft
+!
+      real(kind = kreal), intent(inout) :: X(Nfft,M)
+      type(working_FFTPACK), intent(inout) :: WK
+      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
+!
+!
+      call multi_pin_RFFTMF_smp(Nsmp, Nstacksmp, M, Nfft, X,            &
+     &    WK%X_FFTPACK5, WK%Mmax_smp, WK%lsave_FFTPACK,                 &
+     &    WK%WSAVE_FFTPACK, WK%WORK_FFTPACK, elapsed_fft, elapsed_cpy)
+!
+      end subroutine calypso_multi_pin_RFFTMF
+!
+! ------------------------------------------------------------------
+!
+      subroutine calypso_multi_pin_RFFTMB(Nsmp, Nstacksmp,              &
+     &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
+!
+      use multi_pin_FFTPACK_smp
+!
+      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) :: M, Nfft
+!
+      real(kind = kreal), intent(inout) :: X(Nfft,M)
+      type(working_FFTPACK), intent(inout) :: WK
+      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
+!
+!
+      call multi_pin_RFFTMB_smp(Nsmp, Nstacksmp, M, Nfft, X,            &
+     &    WK%X_FFTPACK5, WK%Mmax_smp, WK%lsave_FFTPACK,                 &
+     &    WK%WSAVE_FFTPACK, WK%WORK_FFTPACK, elapsed_fft, elapsed_cpy)
+!
+      end subroutine calypso_multi_pin_RFFTMB
+!
+! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
       subroutine alloc_work_4_FFTPACK_t(Nsmp, Nfft, WK)
 !
       integer(kind = kint), intent(in) :: Nsmp, Nfft
