@@ -124,6 +124,8 @@
      &          X, X_FFTPACK5, Mmax_smp, lSAVE, WSAVE, WORK,            &
      &          elapsed_fft, elapsed_cpy)
 !
+      use normalize_for_FFTPACK
+!
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
       integer(kind = kint), intent(in) :: lSAVE, Mmax_smp
@@ -135,25 +137,20 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: st_c, ed_c, st_f, ed_f
-      integer(kind = kint) ::  i, j, ismp, ist, num, inum, nsize
-      integer(kind = kint) :: inod_s, inod_c, ierr
+      integer(kind = kint) :: ismp, ist, num, nsize
+      integer(kind = kint) :: ierr
 !
 !
-!$omp parallel do private(i,j,ist,num,inum,nsize,inod_s,inod_c,         &
-!$omp&                    st_c,st_f) reduction(+:ed_c,ed_f)
+!$omp parallel do private(ist,num,nsize,st_c,st_f)                      &
+!$omp&            reduction(+:ed_c,ed_f)
       do ismp = 1, Nsmp
         ist = Nstacksmp(ismp-1)
         num = Nstacksmp(ismp) - Nstacksmp(ismp-1)
         nsize = num*Nfft
 !
         st_c = OMP_GET_WTIME()
-        do i = 1, Nfft
-          do inum = 1, num
-            j = ist + inum
-            inod_c = inum + (i-1) * num
-            X_FFTPACK5(inod_c,ismp) = X(j,i)
-          end do
-        end do
+        call copy_rtp_fld_to_RFFTMF_smp(ist, num, Nfft, M, X,           &
+     &                                  Mmax_smp, X_FFTPACK5(1,ismp))
         ed_c = OMP_GET_WTIME() - st_c
 !
         st_f = OMP_GET_WTIME()
@@ -162,21 +159,8 @@
         ed_f = OMP_GET_WTIME() - st_f
 !
         st_c = OMP_GET_WTIME()
-        do inum = 1, num
-          j = ist + inum
-          inod_s = inum + (Nfft-1) * num
-          X(j,1) = X_FFTPACK5(inum,ismp)
-          X(j,2) = X_FFTPACK5(inod_s,ismp)
-        end do
-        do i = 1, (Nfft+1)/2 - 1
-          do inum = 1, num
-            j = ist + inum
-            inod_c = inum + (2*i-1) * num
-            inod_s = inum + (2*i  ) * num
-            X(j,2*i+1) = X_FFTPACK5(inod_c,ismp)
-            X(j,2*i+2) = X_FFTPACK5(inod_s,ismp)
-          end do
-        end do
+        call swap_rtp_spectr_from_RFFTMF_smp(ist, num, Nfft, Mmax_smp,  &
+     &                                       X_FFTPACK5(1,ismp), M, X)
         ed_c = ed_c + OMP_GET_WTIME() - st_c
       end do
 !$omp end parallel do
@@ -192,6 +176,8 @@
      &          X, X_FFTPACK5, Mmax_smp, lSAVE, WSAVE, WORK,            &
      &          elapsed_fft, elapsed_cpy)
 !
+      use normalize_for_FFTPACK
+!
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
       integer(kind = kint), intent(in) :: lSAVE, Mmax_smp
@@ -203,12 +189,12 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: st_c, ed_c, st_f, ed_f
-      integer(kind = kint) ::  i, j, ismp, ist, inum, num, nsize
-      integer(kind = kint) :: inod_s, inod_c, ierr
+      integer(kind = kint) ::  ismp, ist, num, nsize
+      integer(kind = kint) :: ierr
 !
 !
-!$omp parallel do private(i,j,ist,num,inum,nsize,inod_s,inod_c,         &
-!$omp&                    st_c,st_f) reduction(+:ed_c,ed_f)
+!$omp parallel do private(ist,num,nsize,st_c,st_f)                      &
+!$omp&            reduction(+:ed_c,ed_f)
       do ismp = 1, Nsmp
         ist = Nstacksmp(ismp-1)
         num = Nstacksmp(ismp) - Nstacksmp(ismp-1)
@@ -216,21 +202,8 @@
 !
 !   normalization
         st_c = OMP_GET_WTIME()
-        do inum = 1, num
-          j = ist + inum
-          inod_s = inum + (Nfft-1) * num
-          X_FFTPACK5(inum,ismp) =   X(j,1)
-          X_FFTPACK5(inod_s,ismp) = X(j,2)
-        end do
-        do i = 1, (Nfft+1)/2 - 1
-          do inum = 1, num
-            j = ist + inum
-            inod_c = inum + (2*i-1) * num
-            inod_s = inum + (2*i  ) * num
-            X_FFTPACK5(inod_c,ismp) = X(j,2*i+1)
-            X_FFTPACK5(inod_s,ismp) = X(j,2*i+2)
-          end do
-        end do
+        call swap_rtp_spectr_to_RFFTMB_smp(ist, num, Nfft, M, X,       &
+     &                                    Mmax_smp, X_FFTPACK5(1,ismp))
         ed_c = OMP_GET_WTIME() - st_c
 !
         st_f = OMP_GET_WTIME()
@@ -239,13 +212,8 @@
         ed_f = OMP_GET_WTIME() - st_f
 !
         st_c = OMP_GET_WTIME()
-        do i = 1, Nfft
-          do inum = 1, num
-            j = ist + inum
-            inod_c = inum + (i-1) * num
-            X(j,i) = X_FFTPACK5(inod_c,ismp)
-          end do
-        end do
+        call copy_rtp_fld_from_RFFTMB_smp(ist, num, Nfft, Mmax_smp,     &
+     &                                    X_FFTPACK5(1,ismp), M, X)
         ed_c = ed_c + OMP_GET_WTIME() - st_c
       end do
 !$omp end parallel do

@@ -71,6 +71,7 @@ m_precision.o \
 m_constants.o \
 m_machine_parameter.o \
 \
+normalize_for_FFTPACK.o \
 FFTPACK5_wrapper.o \
 t_FFTPACK5_wrapper.o \
 \
