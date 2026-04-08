@@ -126,6 +126,7 @@
       use calypso_multi_ispack
       use calypso_single_ispack
       use calypso_multi_ispack3
+      use calypso_single_ispack3
 !
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: iflag_FFT
@@ -149,6 +150,11 @@
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1'
         call init_wk_ispack3_t(Nsmp, Nstacksmp,                         &
      &                         cast_long(Nfft), WKS%WK_ISPACK3)
+      else if(iflag_FFT .eq. iflag_ISPACK3_SINGLE) then
+        call calypso_single_FXRINI(Nsmp, Nstacksmp,                     &
+     &                             cast_long(Nfft), WKS%WK_ISPACK3)
+
+
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
         if(id_rank .eq. 0) write(*,*) 'Use FFTW'
@@ -178,12 +184,12 @@
 !
       start = 0.0d0
       start = OMP_GET_WTIME()
-      if(iflag_FFT .eq. iflag_ISPACK1_ONCE) then
+      if(     (iflag_FFT .eq. iflag_ISPACK1_ONCE)                       &
+     &   .or. (iflag_FFT .eq. iflag_ISPACK1_SINGLE)) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK V0.93'
         call finalize_wk_ispack_t(WKS%WK_ISPACK1)
-      else if(iflag_FFT .eq. iflag_ISPACK1_SINGLE) then
-        call finalize_wk_ispack_t(WKS%WK_ISPACK1)
-      else if(iflag_FFT .eq. iflag_ISPACK3_ONCE) then
+      else if((iflag_FFT .eq. iflag_ISPACK3_ONCE)                       &
+     &   .or. (iflag_FFT .eq. iflag_ISPACK3_SINGLE)) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK V3.0.1'
         call finalize_wk_ispack3_t(WKS%WK_ISPACK3)
 #ifdef FFTW3
@@ -222,9 +228,11 @@
       else if(iflag_FFT .eq. iflag_ISPACK1_SINGLE) then
         call verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
       else if(iflag_FFT .eq. iflag_ISPACK3_ONCE) then
-        if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V0.93'
+        if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V3.0.1'
         call verify_wk_ispack3_t(Nsmp, Nstacksmp,                       &
      &                          cast_long(Nfft), WKS%WK_ISPACK3)
+      else if(iflag_FFT .eq. iflag_ISPACK3_SINGLE) then
+        if(iflag_debug .gt. 0) write(*,*) 'Use single ISPACK V3'
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTW'
@@ -252,6 +260,7 @@
       use calypso_multi_ispack
       use calypso_single_ispack
       use calypso_multi_ispack3
+      use calypso_single_ispack3
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
@@ -272,6 +281,11 @@
         call FXRTFA_kemo_t(Nsmp, Nstacksmp, cast_long(M),               &
      &                     cast_long(Nfft), X, WKS%WK_ISPACK3,          &
      &                     elapsed_fft, elapsed_cpy)
+      else if(iflag_FFT .eq. iflag_ISPACK3_SINGLE) then
+        write(*,*) 'calypso_single_pout_FXRTFA'
+        call calypso_single_pout_FXRTFA(Nsmp, Nstacksmp, cast_long(M),  &
+     &                              cast_long(Nfft), X, WKS%WK_ISPACK3, &
+     &                              elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
         call FFTW_mul_forward_type(Nsmp, Nstacksmp, M, Nfft, X,         &
@@ -297,6 +311,7 @@
       use calypso_multi_ispack
       use calypso_single_ispack
       use calypso_multi_ispack3
+      use calypso_single_ispack3
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
@@ -318,6 +333,10 @@
         call FXRTBA_kemo_t(Nsmp, Nstacksmp, cast_long(M),               &
      &                     cast_long(Nfft), X, WKS%WK_ISPACK3,          &
      &                     elapsed_fft, elapsed_cpy)
+      else if(iflag_FFT .eq. iflag_ISPACK3_SINGLE) then
+        call calypso_single_pout_FXRTBA(Nsmp, Nstacksmp, cast_long(M),  &
+     &                              cast_long(Nfft), X, WKS%WK_ISPACK3, &
+     &                              elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
         call FFTW_mul_backward_type(Nsmp, Nstacksmp, M, Nfft, X,        &

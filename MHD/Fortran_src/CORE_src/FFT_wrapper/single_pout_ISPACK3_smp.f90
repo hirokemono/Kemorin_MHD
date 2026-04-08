@@ -1,5 +1,5 @@
-!>@file   single_pout_ISPACK1_smp.f90
-!!@brief  module single_pout_ISPACK1_smp
+!>@file   single_pout_ISPACK3_smp.f90
+!!@brief  module single_pout_ISPACK3_smp
 !!
 !!@author H. Matsui
 !!@date Programmed in Apr., 2026
@@ -8,16 +8,15 @@
 !>@brief Multiple Fourier transform with inner frequency loop by ISPACK1
 !!
 !!@verbatim
-!!      subroutine single_pout_FTTRUF_smp(Nsmp, Nstacksmp, M, Nfft, X,  &
-!!     &          X_ispack, IT_ispack, T_ispack, WORK_ispack,           &
+!!      subroutine single_pout_FXRTFA_smp(Nsmp, Nstacksmp,              &
+!!     &          M, Nfft, X, X_ispack, IT_ispack, T_ispack,            &
 !!     &          elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-!!        integer(kind = kint), intent(in) :: M, Nfft
-!!        integer(kind = 4), intent(in) :: IT_ispack(5)
-!!        real(kind = 8), intent(in) :: T_ispack(itwo*Nfft)
+!!        integer(kind = kint_gl), intent(in) :: M, Nfft
+!!        integer(kind = kint_gl), intent(in) :: IT_ispack(Nfft/2)
+!!        real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
 !!        real(kind = kreal), intent(inout) :: X(M,Nfft)
 !!        real(kind = kreal), intent(inout) :: X_ispack(Nfft,Nsmp)
-!!        real(kind = 8), intent(inout) :: WORK_ispack(Nfft,Nsmp)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
 !!
@@ -31,16 +30,15 @@
 !! a_{k} = \frac{1}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\frac{2\pi j k}{Nfft})
 !!
 !! ------------------------------------------------------------------
-!!      subroutine single_pout_FTTRUB_smp(Nsmp, Nstacksmp, M, Nfft, X,  &
-!!     &          X_ispack, IT_ispack, T_ispack, WORK_ispack,           &
+!!      subroutine single_pout_FXRTBA_smp(Nsmp, Nstacksmp,              &
+!!     &          M, Nfft, X, X_ispack, IT_ispack, T_ispack,            &
 !!     &          elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-!!        integer(kind = kint), intent(in) :: M, Nfft
-!!        integer(kind = 4), intent(in) :: IT_ispack(5)
-!!        real(kind = 8), intent(in) :: T_ispack(itwo*Nfft)
+!!        integer(kind = kint_gl), intent(in) :: M, Nfft
+!!        integer(kind = kint_gl), intent(in) :: IT_ispack(Nfft/2)
+!!        real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
 !!        real(kind = kreal), intent(inout) :: X(M,Nfft)
 !!        real(kind = kreal), intent(inout) :: X_ispack(Nfft,Nsmp)
-!!        real(kind = 8), intent(inout) :: WORK_ispack(Nfft,Nsmp)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
 !!
@@ -65,7 +63,7 @@
 !! ------------------------------------------------------------------
 !!@endverbatim
 !
-      module single_pout_ISPACK1_smp
+      module single_pout_ISPACK3_smp
 !
       use omp_lib
 !
@@ -80,20 +78,19 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine single_pout_FTTRUF_smp(Nsmp, Nstacksmp, M, Nfft, X,    &
-     &          X_ispack, IT_ispack, T_ispack, WORK_ispack,             &
+      subroutine single_pout_FXRTFA_smp(Nsmp, Nstacksmp,                &
+     &          M, Nfft, X, X_ispack, IT_ispack, T_ispack,              &
      &          elapsed_fft, elapsed_cpy)
 !
-      use ispack_0931
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint), intent(in) :: M, Nfft
-      integer(kind = 4), intent(in) :: IT_ispack(5)
-      real(kind = 8), intent(in) :: T_ispack(itwo*Nfft)
+      integer(kind = kint_gl), intent(in) :: M, Nfft
+      integer(kind = kint_gl), intent(in) :: IT_ispack(Nfft/2)
+      real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
 !
       real(kind = kreal), intent(inout) :: X(M, Nfft)
       real(kind = kreal), intent(inout) :: X_ispack(Nfft,Nsmp)
-      real(kind = 8), intent(inout) :: WORK_ispack(Nfft,Nsmp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: st_c, ed_c, st_f, ed_f
@@ -113,8 +110,8 @@
           ed_c = st_c + OMP_GET_WTIME() - st_c
 !
           st_f = OMP_GET_WTIME()
-          call FTTRUF(ione, Nfft, X_ispack(1,ismp),                     &
-     &        WORK_ispack(1,ismp), IT_ispack(1), T_ispack(1))
+          call FXRTFA(cast_long(ione), Nfft, X_ispack(1,ismp),          &
+     &                IT_ispack(1), T_ispack(1))
           ed_f = OMP_GET_WTIME() - st_f
 !
           st_c = OMP_GET_WTIME()
@@ -129,24 +126,23 @@
       elapsed_fft = elapsed_fft + ed_f / dble(Nsmp)
       elapsed_cpy = elapsed_cpy + ed_c / dble(Nsmp)
 !
-      end subroutine single_pout_FTTRUF_smp
+      end subroutine single_pout_FXRTFA_smp
 !
 ! ------------------------------------------------------------------
 !
-      subroutine single_pout_FTTRUB_smp(Nsmp, Nstacksmp, M, Nfft, X,    &
-     &          X_ispack, IT_ispack, T_ispack, WORK_ispack,             &
+      subroutine single_pout_FXRTBA_smp(Nsmp, Nstacksmp,                &
+     &          M, Nfft, X, X_ispack, IT_ispack, T_ispack,              &
      &          elapsed_fft, elapsed_cpy)
 !
-      use ispack_0931
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint), intent(in) :: M, Nfft
-      integer(kind = 4), intent(in) :: IT_ispack(5)
-      real(kind = 8), intent(in) :: T_ispack(itwo*Nfft)
+      integer(kind = kint_gl), intent(in) :: M, Nfft
+      integer(kind = kint_gl), intent(in) :: IT_ispack(Nfft/2)
+      real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
 !
       real(kind = kreal), intent(inout) :: X(M,Nfft)
       real(kind = kreal), intent(inout) :: X_ispack(Nfft,Nsmp)
-      real(kind = 8), intent(inout) :: WORK_ispack(Nfft,Nsmp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: st_c, ed_c, st_f, ed_f
@@ -168,8 +164,8 @@
           ed_c = st_c + OMP_GET_WTIME() - st_c
 !
           st_f = OMP_GET_WTIME()
-          call FTTRUB(ione, Nfft, X_ispack(1,ismp),                     &
-     &        WORK_ispack(1,ismp), IT_ispack(1), T_ispack(1))
+          call FXRTBA(cast_long(ione), Nfft, X_ispack(1,ismp),          &
+     &                IT_ispack(1), T_ispack(1))
           ed_f = OMP_GET_WTIME() - st_f
 !
           st_c = OMP_GET_WTIME()
@@ -182,8 +178,8 @@
       elapsed_fft = elapsed_fft + ed_f / dble(Nsmp)
       elapsed_cpy = elapsed_cpy + ed_c / dble(Nsmp)
 !
-      end subroutine single_pout_FTTRUB_smp
+      end subroutine single_pout_FXRTBA_smp
 !
 ! ------------------------------------------------------------------
 !
-      end module single_pout_ISPACK1_smp
+      end module single_pout_ISPACK3_smp

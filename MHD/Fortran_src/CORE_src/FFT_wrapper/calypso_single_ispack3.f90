@@ -1,5 +1,5 @@
-!>@file   calypso_single_ispack.f90
-!!@brief  module calypso_single_ispack
+!>@file   calypso_single_ispack3.f90
+!!@brief  module calypso_single_ispack3
 !!
 !!@author H. Matsui
 !!@date Programmed on Apr., 2013
@@ -11,24 +11,24 @@
 !! ------------------------------------------------------------------
 !! wrapper subroutine for initierize FFT for ISPACK
 !! ------------------------------------------------------------------
-!!      subroutine calypso_single_FTTRUI(Nsmp, Nstacksmp, Nfft, WK)
-!!        integer(kind = kint), intent(in) ::  Nfft
+!!      subroutine calypso_single_FXRINI(Nsmp, Nstacksmp, Nfft, WK)
+!!        integer(kind = kint_gl), intent(in) ::  Nfft
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-!!        type(working_ISPACK), intent(inout) :: WK
+!!        type(working_ISPACK3), intent(inout) :: WK
 !!
-!!      subroutine calypso_single_pin_FTTRUF(Nsmp, Nstacksmp,           &
+!!      subroutine calypso_single_pin_FXRTFA(Nsmp, Nstacksmp,           &
 !!     &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-!!        integer(kind = kint), intent(in) :: M, Nfft
+!!        integer(kind = kint_gl), intent(in) :: M, Nfft
 !!        real(kind = kreal), intent(inout) :: X(Nfft,M)
-!!        type(working_ISPACK), intent(inout) :: WK
+!!        type(working_ISPACK3), intent(inout) :: WK
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!!      subroutine calypso_single_pout_FTTRUF(Nsmp, Nstacksmp,          &
+!!      subroutine calypso_single_pout_FXRTFA(Nsmp, Nstacksmp,          &
 !!     &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-!!        integer(kind = kint), intent(in) :: M, Nfft
+!!        integer(kind = kint_gl), intent(in) :: M, Nfft
 !!        real(kind = kreal), intent(inout) :: X(M, Nfft)
-!!        type(working_ISPACK), intent(inout) :: WK
+!!        type(working_ISPACK3), intent(inout) :: WK
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
 !!
@@ -43,19 +43,19 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine calypso_single_pin_FTTRUB(Nsmp, Nstacksmp,           &
+!!      subroutine calypso_single_pin_FXRTBA(Nsmp, Nstacksmp,           &
 !!     &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-!!        integer(kind = kint), intent(in) :: M, Nfft
+!!        integer(kind = kint_gl), intent(in) :: M, Nfft
 !!        real(kind = kreal), intent(inout) :: X(Nfft,M)
-!!        type(working_ISPACK), intent(inout) :: WK
+!!        type(working_ISPACK3), intent(inout) :: WK
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!!      subroutine calypso_single_pout_FTTRUB(Nsmp, Nstacksmp,          &
+!!      subroutine calypso_single_pout_FXRTBA(Nsmp, Nstacksmp,          &
 !!     &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-!!        integer(kind = kint), intent(in) :: M, Nfft
+!!        integer(kind = kint_gl), intent(in) :: M, Nfft
 !!        real(kind = kreal), intent(inout) :: X(M,Nfft)
-!!        type(working_ISPACK), intent(inout) :: WK
+!!        type(working_ISPACK3), intent(inout) :: WK
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
 !!
@@ -87,11 +87,11 @@
 !!@n @param X(M, Nfft)  Data for Fourier transform
 !!@n @param WK          Work structure for ISPACK
 !
-      module calypso_single_ispack
+      module calypso_single_ispack3
 !
       use m_precision
       use m_constants
-      use t_ispack_FFT_wrapper
+      use t_ispack3_FFT_wrapper
 !
       implicit none
 !
@@ -101,14 +101,15 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_single_FTTRUI(Nsmp, Nstacksmp, Nfft, WK)
+      subroutine calypso_single_FXRINI(Nsmp, Nstacksmp, Nfft, WK)
 !
-      use ispack_FFT_wrapper
+      use ispack3_FFT_wrapper
+      use transfer_to_long_integers
 !
-      integer(kind = kint), intent(in) ::  Nfft
+      integer(kind = kint_gl), intent(in) ::  Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !
-      type(working_ISPACK), intent(inout) :: WK
+      type(working_ISPACK3), intent(inout) :: WK
 !
       integer(kind = kint) :: ip
 !
@@ -119,99 +120,99 @@
      &      = max(WK%Mmax_smp, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
       end do
 !
-      call alloc_const_ispack_t(Nfft, WK)
-      call FTTRUI_kemo(Nfft, WK%IT_ispack, WK%T_ispack)
+      call alloc_const_ispack3_t(Nfft, WK)
+      call FXRINI_kemo(Nfft, WK%IT_ispack, WK%T_ispack)
 !
-      call alloc_work_ispack_t(Nsmp, ione, Nfft, WK)
+      call alloc_work_ispack3_t(Nsmp, cast_long(ione), Nfft, WK)
 !
-      end subroutine calypso_single_FTTRUI
+      end subroutine calypso_single_FXRINI
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_single_pin_FTTRUF(Nsmp, Nstacksmp,             &
+      subroutine calypso_single_pin_FXRTFA(Nsmp, Nstacksmp,             &
      &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
 !
-      use single_pin_ISPACK1_smp
+      use single_pin_ISPACK3_smp
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint), intent(in) :: M, Nfft
+      integer(kind = kint_gl), intent(in) :: M, Nfft
 !
       real(kind = kreal), intent(inout) :: X(Nfft,M)
-      type(working_ISPACK), intent(inout) :: WK
+      type(working_ISPACK3), intent(inout) :: WK
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call single_pin_FTTRUF_smp(Nsmp, Nstacksmp, M, Nfft, X,           &
-     &    WK%IT_ispack, WK%T_ispack, WK%WORK_ispack,                    &
-     &    elapsed_fft, elapsed_cpy)
+      call single_pin_FXRTFA_smp(Nsmp, Nstacksmp, M, Nfft, X,           &
+     &    WK%IT_ispack, WK%T_ispack, elapsed_fft, elapsed_cpy)
 !
-      end subroutine calypso_single_pin_FTTRUF
+      end subroutine calypso_single_pin_FXRTFA
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_single_pin_FTTRUB(Nsmp, Nstacksmp,             &
+      subroutine calypso_single_pin_FXRTBA(Nsmp, Nstacksmp,             &
      &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
 !
-      use single_pin_ISPACK1_smp
+      use single_pin_ISPACK3_smp
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint), intent(in) :: M, Nfft
+      integer(kind = kint_gl), intent(in) :: M, Nfft
 !
       real(kind = kreal), intent(inout) :: X(Nfft,M)
-      type(working_ISPACK), intent(inout) :: WK
+      type(working_ISPACK3), intent(inout) :: WK
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call single_pin_FTTRUB_smp(Nsmp, Nstacksmp, M, Nfft, X,           &
-     &    WK%IT_ispack, WK%T_ispack, WK%WORK_ispack,                    &
-     &    elapsed_fft, elapsed_cpy)
+      call single_pin_FXRTBA_smp(Nsmp, Nstacksmp, M, Nfft, X,           &
+     &    WK%IT_ispack, WK%T_ispack, elapsed_fft, elapsed_cpy)
 !
-      end subroutine calypso_single_pin_FTTRUB
+      end subroutine calypso_single_pin_FXRTBA
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_single_pout_FTTRUF(Nsmp, Nstacksmp,            &
+      subroutine calypso_single_pout_FXRTFA(Nsmp, Nstacksmp,            &
      &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
 !
-      use single_pout_ISPACK1_smp
+      use single_pout_ISPACK3_smp
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint), intent(in) :: M, Nfft
+      integer(kind = kint_gl), intent(in) :: M, Nfft
 !
       real(kind = kreal), intent(inout) :: X(M, Nfft)
-      type(working_ISPACK), intent(inout) :: WK
+      type(working_ISPACK3), intent(inout) :: WK
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call single_pout_FTTRUF_smp(Nsmp, Nstacksmp, M, Nfft, X,          &
-     &    WK%X_ispack, WK%IT_ispack, WK%T_ispack, WK%WORK_ispack,       &
+      write(*,*) 'single_pout_FXRTFA_smp'
+      call single_pout_FXRTFA_smp(Nsmp, Nstacksmp,                      &
+     &    M, Nfft, X, WK%X_ispack, WK%IT_ispack, WK%T_ispack,           &
      &    elapsed_fft, elapsed_cpy)
 !
-      end subroutine calypso_single_pout_FTTRUF
+      end subroutine calypso_single_pout_FXRTFA
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_single_pout_FTTRUB(Nsmp, Nstacksmp,            &
+      subroutine calypso_single_pout_FXRTBA(Nsmp, Nstacksmp,            &
      &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
 !
-      use single_pout_ISPACK1_smp
+      use single_pout_ISPACK3_smp
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint), intent(in) :: M, Nfft
+      integer(kind = kint_gl), intent(in) :: M, Nfft
 !
       real(kind = kreal), intent(inout) :: X(M,Nfft)
-      type(working_ISPACK), intent(inout) :: WK
+      type(working_ISPACK3), intent(inout) :: WK
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call single_pout_FTTRUB_smp(Nsmp, Nstacksmp, M, Nfft, X,          &
-     &    WK%X_ispack, WK%IT_ispack, WK%T_ispack, WK%WORK_ispack,       &
+      write(*,*) 'single_pout_FXRTBA_smp'
+      call single_pout_FXRTBA_smp(Nsmp, Nstacksmp,                      &
+     &    M, Nfft, X, WK%X_ispack, WK%IT_ispack, WK%T_ispack,           &
      &    elapsed_fft, elapsed_cpy)
 !
-      end subroutine calypso_single_pout_FTTRUB
+      end subroutine calypso_single_pout_FXRTBA
 !
 ! ------------------------------------------------------------------
 !
-      end module calypso_single_ispack
+      end module calypso_single_ispack3

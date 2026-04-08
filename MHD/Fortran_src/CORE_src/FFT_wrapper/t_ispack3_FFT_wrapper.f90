@@ -16,10 +16,10 @@
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !!        type(working_ISPACK3), intent(inout) :: WK
 !!
-!!      subroutine alloc_work_ispack3_t(Nsmp, Nfft, WK)
+!!      subroutine alloc_work_ispack3_t(Nsmp, nmax_comp, Nfft, WK)
 !!      subroutine alloc_const_ispack3_t(nfft, WK)
 !!        integer(kind = kint), intent(in) :: Nsmp
-!!        integer(kind = kint_gl), intent(in) :: Nfft
+!!        integer(kind = kint_gl), intent(in) :: Nfft, nmax_comp
 !!        type(working_ISPACK3), intent(inout) :: WK
 !! ------------------------------------------------------------------
 !! wrapper subroutine for initierize FFT for ISPACK-3
@@ -121,10 +121,10 @@
       end if
 !
       if( WK%iflag_fft_comp .lt. 0) then
-        call alloc_work_ispack3_t(Nsmp, Nfft, WK)
+        call alloc_work_ispack3_t(Nsmp, WK%Mmax_smp, Nfft, WK)
       else if( (WK%Mmax_smp*Nfft) .gt. WK%iflag_fft_comp ) then
         call dealloc_work_ispack3_t(WK)
-        call alloc_work_ispack3_t(Nsmp, Nfft, WK)
+        call alloc_work_ispack3_t(Nsmp, WK%Mmax_smp, Nfft, WK)
       end if
 !
       end subroutine verify_wk_ispack3_t
@@ -132,14 +132,14 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine alloc_work_ispack3_t(Nsmp, Nfft, WK)
+      subroutine alloc_work_ispack3_t(Nsmp, nmax_comp, Nfft, WK)
 !
       integer(kind = kint), intent(in) :: Nsmp
-      integer(kind = kint_gl), intent(in) :: Nfft
+      integer(kind = kint_gl), intent(in) :: Nfft, nmax_comp
       type(working_ISPACK3), intent(inout) :: WK
 !
 !
-      WK%iflag_fft_comp = WK%Mmax_smp*Nfft
+      WK%iflag_fft_comp = nmax_comp * Nfft
       allocate( WK%X_ispack(WK%iflag_fft_comp,Nsmp) )
 !
       end subroutine alloc_work_ispack3_t

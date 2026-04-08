@@ -110,7 +110,7 @@
       call alloc_const_ispack3_t(Nfft, WK)
       call FXRINI_kemo(Nfft, WK%IT_ispack, WK%T_ispack)
 !
-      call alloc_work_ispack3_t(Nsmp, Nfft, WK)
+      call alloc_work_ispack3_t(Nsmp, WK%Mmax_smp, Nfft, WK)
 !
       end subroutine init_wk_ispack3_t
 !

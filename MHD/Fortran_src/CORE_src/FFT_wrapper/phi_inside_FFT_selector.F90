@@ -116,6 +116,7 @@
       use calypso_multi_ispack
       use calypso_single_ispack
       use calypso_multi_ispack3
+      use calypso_single_ispack3
 !
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: iflag_FFT
@@ -139,6 +140,9 @@
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1'
         call init_wk_ispack3_t(Nsmp, Nstacksmp,                         &
      &                         cast_long(Nfft), WKS%WK_ISPACK3)
+      else if(abs(iflag_FFT) .eq. iflag_ISPACK3_SINGLE) then
+        call calypso_single_FXRINI(Nsmp, Nstacksmp,                     &
+     &                             cast_long(Nfft), WKS%WK_ISPACK3)
 #ifdef FFTW3
       else if(abs(iflag_FFT) .eq. iflag_FFTW_ONCE) then
         if(id_rank .eq. 0) write(*,*) 'Use FFTW'
@@ -168,12 +172,12 @@
 !
       start = 0.0d0
       start = OMP_GET_WTIME()
-      if(abs(iflag_FFT) .eq. iflag_ISPACK1_ONCE) then
+      if(     (abs(iflag_FFT) .eq. iflag_ISPACK1_ONCE)                  &
+     &   .or. (abs(iflag_FFT) .eq. iflag_ISPACK1_SINGLE)) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK V0.93'
         call finalize_wk_ispack_t(WKS%WK_ISPACK1)
-      else if(abs(iflag_FFT) .eq. iflag_ISPACK1_SINGLE) then
-        call finalize_wk_ispack_t(WKS%WK_ISPACK1)
-      else if(abs(iflag_FFT) .eq. iflag_ISPACK3_ONCE) then
+      else if((abs(iflag_FFT) .eq. iflag_ISPACK3_ONCE)                  &
+     &   .or. (abs(iflag_FFT) .eq. iflag_ISPACK3_SINGLE)) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK V3.0.1'
         call finalize_wk_ispack3_t(WKS%WK_ISPACK3)
 #ifdef FFTW3
@@ -206,13 +210,13 @@
       type(working_FFTs), intent(inout) :: WKS
 !
 !
-      if(abs(iflag_FFT) .eq. iflag_ISPACK1_ONCE) then
+      if(     (abs(iflag_FFT) .eq. iflag_ISPACK1_ONCE)                  &
+     &   .or. (abs(iflag_FFT) .eq. iflag_ISPACK1_SINGLE)) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V0.93'
         call verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
-      else if(abs(iflag_FFT) .eq. iflag_ISPACK1_SINGLE) then
-        call verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
-      else if(abs(iflag_FFT) .eq. iflag_ISPACK3_ONCE) then
-        if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V0.93'
+      else if((abs(iflag_FFT) .eq. iflag_ISPACK3_ONCE)                  &
+     &   .or. (abs(iflag_FFT) .eq. iflag_ISPACK3_SINGLE)) then
+        if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V3.0.1'
         call verify_wk_ispack3_t(Nsmp, Nstacksmp,                       &
      &                          cast_long(Nfft), WKS%WK_ISPACK3)
 #ifdef FFTW3
@@ -242,6 +246,7 @@
       use calypso_multi_ispack
       use calypso_single_ispack
       use calypso_multi_ispack3
+      use calypso_single_ispack3
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
@@ -260,6 +265,11 @@
      &      WKS%WK_ISPACK1, elapsed_fft, elapsed_cpy)
       else if(abs(iflag_FFT) .eq. iflag_ISPACK3_ONCE) then
         call calypso_multi_pin_FXRTFA(Nsmp, Nstacksmp, cast_long(M),    &
+     &                              cast_long(Nfft), X, WKS%WK_ISPACK3, &
+     &                              elapsed_fft, elapsed_cpy)
+      else if(abs(iflag_FFT) .eq. iflag_ISPACK3_SINGLE) then
+        write(*,*) 'calypso_single_pin_FXRTFA'
+        call calypso_single_pin_FXRTFA(Nsmp, Nstacksmp, cast_long(M),   &
      &                              cast_long(Nfft), X, WKS%WK_ISPACK3, &
      &                              elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
@@ -287,6 +297,7 @@
       use calypso_multi_ispack
       use calypso_single_ispack
       use calypso_multi_ispack3
+      use calypso_single_ispack3
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
@@ -304,8 +315,12 @@
         call calypso_single_pin_FTTRUB(Nsmp, Nstacksmp, M, Nfft, X,     &
      &      WKS%WK_ISPACK1, elapsed_fft, elapsed_cpy)
       else if(abs(iflag_FFT) .eq. iflag_ISPACK3_ONCE) then
-        write(*,*) 'calypso_multi_pin_FXRTBA', iflag_FFT, iflag_ISPACK1_ONCE
         call calypso_multi_pin_FXRTBA(Nsmp, Nstacksmp, cast_long(M),    &
+     &                              cast_long(Nfft), X, WKS%WK_ISPACK3, &
+     &                              elapsed_fft, elapsed_cpy)
+      else if(abs(iflag_FFT) .eq. iflag_ISPACK3_SINGLE) then
+        write(*,*) 'calypso_single_pin_FXRTBA'
+        call calypso_single_pin_FXRTBA(Nsmp, Nstacksmp, cast_long(M),   &
      &                              cast_long(Nfft), X, WKS%WK_ISPACK3, &
      &                              elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
