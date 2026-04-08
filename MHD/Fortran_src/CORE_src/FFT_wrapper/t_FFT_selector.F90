@@ -125,6 +125,7 @@
       use transfer_to_long_integers
       use calypso_multi_ispack
       use calypso_single_ispack
+      use calypso_multi_ispack3
 !
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: iflag_FFT
@@ -250,6 +251,7 @@
       use transfer_to_long_integers
       use calypso_multi_ispack
       use calypso_single_ispack
+      use calypso_multi_ispack3
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
@@ -294,6 +296,7 @@
       use transfer_to_long_integers
       use calypso_multi_ispack
       use calypso_single_ispack
+      use calypso_multi_ispack3
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)

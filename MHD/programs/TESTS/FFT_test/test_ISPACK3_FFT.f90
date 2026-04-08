@@ -10,6 +10,7 @@
 !
       use t_ispack3_FFT_wrapper
       use t_fft_test_data
+      use calypso_multi_ispack3
 !
       implicit none
 !

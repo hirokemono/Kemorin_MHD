@@ -1,33 +1,23 @@
-!>@file   ispack3_FFT_wrapper.f90
-!!@brief  module ispack3_FFT_wrapper
+!>@file   multi_pin_ISPACK3_smp.f90
+!!@brief  module multi_pin_ISPACK3_smp
 !!
 !!@author H. Matsui
-!!@date Programmed in 2008
-!
-!
-!>@brief  Fourier transform using ISPACK
+!!@date Programmed in Apr., 2026
+!!
+!!
+!>@brief Multiple Fourier transform with inner frequency loop by ISPACK1
 !!
 !!@verbatim
-!!  ---------------------------------------------------------------------
-!!
-!!      subroutine FXRINI_kemo(Nfft, IT_ispack, T_ispack)
-!!        integer(kind = kint_gl), intent(in) :: Nfft
-!!        integer(kind = kint_gl), intent(inout) :: IT_ispack(Nfft/2)
-!!        real(kind = 8), intent(inout) :: T_ispack(Nfft+Nfft/2)
-!! ------------------------------------------------------------------
-!! wrapper subroutine for initierize FFT for ISPACK
-!! ------------------------------------------------------------------
-!!
-!!      subroutine FXRTFA_kemo_smp(Nsmp, Nstacksmp, M, Nfft, X,         &
+!!      subroutine multi_pin_FXRTFA_smp(Nsmp, Nstacksmp, M, Nfft, X,    &
 !!     &          X_ispack, Mmax_smp, IT_ispack, T_ispack,              &
 !!     &          elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-!!        integer(kind = kint_gl), intent(in) :: M, Mmax_smp
-!!        integer(kind = kint_gl), intent(in) :: Nfft
-!!        integer(kind = kint_gl), intent(in) :: IT_ispack(Nfft/2)
+!!        integer(kind = kint), intent(in) :: M, Nfft, Mmax_smp
+!!        integer(kind = 4), intent(in) :: IT_ispack(nfft/2)
 !!        real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
-!!        real(kind = kreal), intent(inout) :: X(M, Nfft)
-!!        real(kind = 8), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nsmp)
+!!        real(kind = kreal), intent(inout) :: X(Nfft,M)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                 :: X_ispack(Mmax_smp*Nfft,Nsmp)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
 !!
@@ -41,17 +31,16 @@
 !! a_{k} = \frac{1}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\frac{2\pi j k}{Nfft})
 !!
 !! ------------------------------------------------------------------
-!!
-!!      subroutine FXRTBA_kemo_smp(Nsmp, Nstacksmp, M, Nfft, X,         &
+!!      subroutine multi_pin_FXRTBA_smp(Nsmp, Nstacksmp, M, Nfft, X,    &
 !!     &          X_ispack, Mmax_smp, IT_ispack, T_ispack,              &
 !!     &          elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-!!        integer(kind = kint_gl), intent(in) :: M, Mmax_smp
-!!        integer(kind = kint_gl), intent(in) :: Nfft
-!!        integer(kind = kint_gl), intent(in) :: IT_ispack(Nfft/2)
+!!        integer(kind = kint), intent(in) :: M, Nfft, Mmax_smp
+!!        integer(kind = 4), intent(in) :: IT_ispack(nfft/2)
 !!        real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
-!!        real(kind = kreal), intent(inout) :: X(M,Nfft)
-!!        real(kind = 8), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nsmp)
+!!        real(kind = kreal), intent(inout) :: X(Nfft,M)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                 :: X_ispack(Mmax_smp*Nfft,Nsmp)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
 !!
@@ -75,20 +64,8 @@
 !!
 !! ------------------------------------------------------------------
 !!@endverbatim
-!!
-!!@n @param Nsmp  Number of SMP processors
-!!@n @param Nstacksmp(0:Nsmp)   End number for each SMP process
-!!@n @param M           Number of components for Fourier transforms
-!!@n @param Nfft        Data length for eadh FFT
-!!@n @param X(M, Nfft)  Data for Fourier transform
-!!
-!!@n @param Mmax_smp    Maximum number of component for each SMP process
-!!@n @param X_ispack(Mmax_smp*Nfft,Nsmp) 
-!!                 Data for multiple Fourier transform
-!!@n @param IT_ispack(5)              Work integer for ISPACK
-!!@n @param T_ispack(itwo*Nfft)       Work constatnts for ISPACK
 !
-      module ispack3_FFT_wrapper
+      module multi_pin_ISPACK3_smp
 !
       use omp_lib
 !
@@ -103,51 +80,34 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine FXRINI_kemo(Nfft, IT_ispack, T_ispack)
-!
-      integer(kind = kint_gl), intent(in) :: Nfft
-      integer(kind = kint_gl), intent(inout) :: IT_ispack(Nfft/2)
-      real(kind = 8), intent(inout) :: T_ispack(Nfft+Nfft/2)
-!
-!
-      call FXRINI(Nfft, IT_ispack, T_ispack(1))
-!
-      end subroutine FXRINI_kemo
-!
-! ------------------------------------------------------------------
-!
-      subroutine FXRTFA_kemo_smp(Nsmp, Nstacksmp, M, Nfft, X,           &
+      subroutine multi_pin_FXRTFA_smp(Nsmp, Nstacksmp, M, Nfft, X,      &
      &          X_ispack, Mmax_smp, IT_ispack, T_ispack,                &
      &          elapsed_fft, elapsed_cpy)
 !
       use normalize_for_ISPACK
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint_gl), intent(in) :: M, Mmax_smp
-      integer(kind = kint_gl), intent(in) :: Nfft
+      integer(kind = kint_gl), intent(in) :: M, Nfft, Mmax_smp
       integer(kind = kint_gl), intent(in) :: IT_ispack(Nfft/2)
       real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
 !
-      real(kind = kreal), intent(inout) :: X(M, Nfft)
-      real(kind = 8), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nsmp)
+      real(kind = kreal), intent(inout) :: X(Nfft,M)
+      real(kind = kreal), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nsmp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: st_c, ed_c, st_f, ed_f
-      integer(kind = kint_gl) :: num8, inum, i
-      integer(kind = kint_gl) :: j, ismp, ist
-      integer(kind = kint_gl) :: inod_s, inod_c
+      integer(kind = kint_gl) :: ismp, ist, num8
 !
 !
       ed_c = 0.0d0
       ed_f = 0.0d0
-!$omp parallel do private(i,j,ist,num8,inum,inod_s,inod_c,              &
-!$omp&                    st_c,st_f) reduction(+:ed_c,ed_f)
+!$omp parallel do private(ist,num8,st_c,st_f) reduction(+:ed_c,ed_f)
       do ismp = 1, Nsmp
         ist = Nstacksmp(ismp-1)
         num8 = Nstacksmp(ismp) - Nstacksmp(ismp-1)
 !
         st_c = OMP_GET_WTIME()
-        call copy_rtp_fld_to_FXRTFA_smp(ist, num8, Nfft, M, X,          &
+        call swap_prt_fld_to_FXRTFA_smp(ist, num8, Nfft, M, X,          &
      &                                  Mmax_smp, X_ispack(1,ismp))
         ed_c = OMP_GET_WTIME() - st_c
 !
@@ -157,8 +117,8 @@
         ed_f = OMP_GET_WTIME() - st_f
 !
         st_c = OMP_GET_WTIME()
-        call norm_rtp_spectr_from_FXRTFA_smp(ist, num8,                 &
-     &      Nfft, Mmax_smp, X_ispack(1,ismp), M, X)
+        call swap_prt_spectr_from_FXRTFA_smp(ist, num8, Nfft, Mmax_smp, &
+     &                                       X_ispack(1,ismp), M, X)
         ed_c = ed_c + OMP_GET_WTIME() - st_c
       end do
 !$omp end parallel do
@@ -166,42 +126,39 @@
       elapsed_fft = elapsed_fft + ed_f / dble(Nsmp)
       elapsed_cpy = elapsed_cpy + ed_c / dble(Nsmp)
 !
-      end subroutine FXRTFA_kemo_smp
+      end subroutine multi_pin_FXRTFA_smp
 !
 ! ------------------------------------------------------------------
 !
-      subroutine FXRTBA_kemo_smp(Nsmp, Nstacksmp, M, Nfft, X,           &
+      subroutine multi_pin_FXRTBA_smp(Nsmp, Nstacksmp, M, Nfft, X,      &
      &          X_ispack, Mmax_smp, IT_ispack, T_ispack,                &
      &          elapsed_fft, elapsed_cpy)
 !
       use normalize_for_ISPACK
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint_gl), intent(in) :: M, Mmax_smp
-      integer(kind = kint_gl), intent(in) :: Nfft
+      integer(kind = kint_gl), intent(in) :: M, Nfft, Mmax_smp
       integer(kind = kint_gl), intent(in) :: IT_ispack(Nfft/2)
       real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
 !
-      real(kind = kreal), intent(inout) :: X(M,Nfft)
-      real(kind = 8), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nsmp)
+      real(kind = kreal), intent(inout) :: X(Nfft,M)
+      real(kind = kreal), intent(inout)                                 &
+     &                              :: X_ispack(Mmax_smp*Nfft,Nsmp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: st_c, ed_c, st_f, ed_f
-      integer(kind = kint_gl) :: num8, inum, i
-      integer(kind = kint_gl) ::  j, ismp, ist
-      integer(kind = kint_gl) :: inod_s, inod_c
+      integer(kind = kint_gl) :: ismp, ist, num8
 !
 !
       ed_c = 0.0d0
       ed_f = 0.0d0
-!$omp parallel do private(i,j,ist,num8,inum,inod_s,inod_c,              &
-!$omp&                    st_c,st_f) reduction(+:ed_c,ed_f)
+!$omp parallel do private(ist,num8,st_c,st_f) reduction(+:ed_c,ed_f)
       do ismp = 1, Nsmp
         ist = Nstacksmp(ismp-1)
         num8 = Nstacksmp(ismp) - Nstacksmp(ismp-1)
 !
         st_c = OMP_GET_WTIME()
-        call norm_rtp_spectr_to_FXRTBA_smp(ist, num8, Nfft, M, X,       &
+        call swap_prt_spectr_to_FXRTBA_smp(ist, num8, Nfft, M, X,       &
      &                                     Mmax_smp, X_ispack(1,ismp))
         ed_c = OMP_GET_WTIME() - st_c
 !
@@ -211,7 +168,7 @@
         ed_f = OMP_GET_WTIME() - st_f
 !
         st_c = OMP_GET_WTIME()
-        call copy_rtp_fld_from_FXRTBA_smp(ist, num8, Nfft, Mmax_smp,    &
+        call swap_prt_fld_from_FXRTBA_smp(ist, num8, Nfft, Mmax_smp,    &
      &                                    X_ispack(1,ismp), M, X)
         ed_c = ed_c + OMP_GET_WTIME() - st_c
       end do
@@ -220,8 +177,8 @@
       elapsed_fft = elapsed_fft + ed_f / dble(Nsmp)
       elapsed_cpy = elapsed_cpy + ed_c / dble(Nsmp)
 !
-      end subroutine FXRTBA_kemo_smp
+      end subroutine multi_pin_FXRTBA_smp
 !
 ! ------------------------------------------------------------------
 !
-      end module ispack3_FFT_wrapper
+      end module multi_pin_ISPACK3_smp

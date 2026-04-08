@@ -101,7 +101,9 @@ m_machine_parameter.o \
 \
 normalize_for_ISPACK.o \
 ispack3_FFT_wrapper.o \
+multi_pin_ispack3_smp.o \
 t_ispack3_FFT_wrapper.o \
+calypso_multi_ispack3.o \
 \
 m_FFT_size.o      \
 t_fft_test_data.o \

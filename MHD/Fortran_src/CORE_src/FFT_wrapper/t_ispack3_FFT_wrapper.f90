@@ -10,50 +10,19 @@
 !!@verbatim
 !!  ---------------------------------------------------------------------
 !!
-!!      subroutine init_wk_ispack3_t(Nsmp, Nstacksmp, Nfft, WK)
 !!      subroutine finalize_wk_ispack3_t(WK)
 !!      subroutine verify_wk_ispack3_t(Nsmp, Nstacksmp, Nfft, WK)
 !!        integer(kind = kint_gl), intent(in) ::  Nfft
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !!        type(working_ISPACK3), intent(inout) :: WK
+!!
+!!      subroutine alloc_work_ispack3_t(Nsmp, Nfft, WK)
+!!      subroutine alloc_const_ispack3_t(nfft, WK)
+!!        integer(kind = kint), intent(in) :: Nsmp
+!!        integer(kind = kint_gl), intent(in) :: Nfft
+!!        type(working_ISPACK3), intent(inout) :: WK
 !! ------------------------------------------------------------------
 !! wrapper subroutine for initierize FFT for ISPACK-3
-!! ------------------------------------------------------------------
-!!
-!!      subroutine FXRTFA_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WK,       &
-!!     &                         elapsed_fft, elapsed_cpy)
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-!!        integer(kind = kint_gl), intent(in) :: M, Nfft
-!!        real(kind = kreal), intent(inout) :: X(M, Nfft)
-!!        type(working_ISPACK3), intent(inout) :: WK
-!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!! ------------------------------------------------------------------
-!!
-!! wrapper subroutine for forward Fourier transform by ISPACK-3
-!!
-!! a_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\frac{2\pi j k}{Nfft})
-!! b_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\frac{2\pi j k}{Nfft})
-!!
-!! a_{0} = \frac{1}{Nfft} \sum_{j=0}^{Nfft-1} x_{j}
-!! K = Nfft/2....
-!! a_{k} = \frac{1}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\frac{2\pi j k}{Nfft})
-!!
-!! ------------------------------------------------------------------
-!!
-!!      subroutine FXRTBA_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WK,       &
-!!     &                         elapsed_fft, elapsed_cpy)
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-!!        integer(kind = kint_gl), intent(in) :: M, Nfft
-!!        real(kind = kreal), intent(inout) :: X(M,Nfft)
-!!        type(working_ISPACK3), intent(inout) :: WK
-!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!! ------------------------------------------------------------------
-!!
-!! wrapper subroutine for backward Fourier transform by ISPACK-3
-!!
-!! x_{k} = a_{0} + (-1)^{j} a_{Nfft/2} + sum_{k=1}^{Nfft/2-1}
-!! (a_{k} \cos(2\pijk/Nfft) + b_{k} \sin(2\pijk/Nfft))
-!!
 !! ------------------------------------------------------------------
 !!
 !! i = 1:     a_{0}
@@ -101,39 +70,11 @@
       end type working_ISPACK3
 !
 !
-      private :: alloc_work_ispack3_t, alloc_const_ispack3_t
       private :: dealloc_work_ispack3_t, dealloc_const_ispack3_t
 !
 ! ------------------------------------------------------------------
 !
       contains
-!
-! ------------------------------------------------------------------
-!
-      subroutine init_wk_ispack3_t(Nsmp, Nstacksmp, Nfft, WK)
-!
-      use ispack3_FFT_wrapper
-!
-      integer(kind = kint_gl), intent(in) ::  Nfft
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-!
-      type(working_ISPACK3), intent(inout) :: WK
-!
-      integer(kind = kint) :: ip
-!
-!
-      WK%Mmax_smp = Nstacksmp(1)
-      do ip = 1, Nsmp
-        WK%Mmax_smp                                                     &
-     &      = max(WK%Mmax_smp, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
-      end do
-!
-      call alloc_const_ispack3_t(Nfft, WK)
-      call FXRINI_kemo( Nfft, WK%IT_ispack, WK%T_ispack )
-!
-      call alloc_work_ispack3_t(Nsmp, Nfft, WK)
-!
-      end subroutine init_wk_ispack3_t
 !
 ! ------------------------------------------------------------------
 !
@@ -187,49 +128,6 @@
       end if
 !
       end subroutine verify_wk_ispack3_t
-!
-! ------------------------------------------------------------------
-! ------------------------------------------------------------------
-!
-      subroutine FXRTFA_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WK,         &
-     &                         elapsed_fft, elapsed_cpy)
-!
-      use ispack3_FFT_wrapper
-!
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint_gl), intent(in) :: M, Nfft
-!
-      real(kind = kreal), intent(inout) :: X(M, Nfft)
-      type(working_ISPACK3), intent(inout) :: WK
-      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!
-!
-      call FXRTFA_kemo_smp(Nsmp, Nstacksmp, M, Nfft, X,                 &
-     &    WK%X_ispack, WK%Mmax_smp, WK%IT_ispack, WK%T_ispack,          &
-     &    elapsed_fft, elapsed_cpy)
-!
-      end subroutine FXRTFA_kemo_t
-!
-! ------------------------------------------------------------------
-!
-      subroutine FXRTBA_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WK,         &
-     &                         elapsed_fft, elapsed_cpy)
-!
-      use ispack3_FFT_wrapper
-!
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint_gl), intent(in) :: M, Nfft
-!
-      real(kind = kreal), intent(inout) :: X(M,Nfft)
-      type(working_ISPACK3), intent(inout) :: WK
-      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!
-!
-      call FXRTBA_kemo_smp(Nsmp, Nstacksmp, M, Nfft, X,                 &
-     &    WK%X_ispack, WK%Mmax_smp, WK%IT_ispack, WK%T_ispack,          &
-     &    elapsed_fft, elapsed_cpy)
-!
-      end subroutine FXRTBA_kemo_t
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
