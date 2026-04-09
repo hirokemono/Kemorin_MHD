@@ -134,8 +134,8 @@
 !
 !   normalization
           st_c = OMP_GET_WTIME()
-          X(1,j) = aNfft * real(C_FFTW(1,     1))
-          X(2,j) = aNfft * real(C_FFTW(NFFT_c,1))
+          X(1,j) = aNfft * real(C_FFTW(1,     ip))
+          X(2,j) = aNfft * real(C_FFTW(NFFT_c,ip))
           do i = 2, NFFT_c - 1
             X(2*i-1,j) =  two * aNfft * real(C_FFTW(i,ip))
             X(2*i,  j) = -two * aNfft * imag(C_FFTW(i,ip))

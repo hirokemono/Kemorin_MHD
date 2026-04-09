@@ -26,7 +26,7 @@
      &           'as the inner most loop'
       write(*,*) ' 1: FFTPACK5'
       write(*,*) ' 2: SINGLE FFTPACK5'
-      write(*,*) '11: FFTW3 (if avaiable)'
+      write(*,*) '11: FFTW3        (if avaiable)'
       write(*,*) '12: SINGLE FFTW3 (if avaiable)'
       write(*,*) '21: ISPACK-0.93'
       write(*,*) '24: SINGLE ISPACK-0.93'
