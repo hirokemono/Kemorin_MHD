@@ -10,6 +10,7 @@
 !
       use t_FFTW_wrapper
       use t_fft_test_data
+      use calypso_single_FFTW3
 !
       implicit none
 !

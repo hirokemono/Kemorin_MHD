@@ -152,7 +152,9 @@ m_machine_parameter.o \
 skip_comment_f.o \
 m_fftw_parameters.o \
 normalize_for_FFTW.o \
+single_pin_fftw3_smp.o \
 FFTW3_wrapper.o \
+calypso_single_fftw3.o \
 t_FFTW_wrapper.o \
 \
 m_FFT_size.o      \

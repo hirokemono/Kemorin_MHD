@@ -151,7 +151,7 @@
         call init_FFTW_mul_type(Nsmp, Nstacksmp, Nfft, WKS%WK_MUL_FFTW)
       else if(abs(iflag_FFT) .eq. iflag_FFTW_SINGLE) then
         if(id_rank .eq. 0) write(*,*) 'Use single transform in FFTW'
-!        call init_FFTW_type(Nstacksmp(Nsmp), Nfft, WKS%WK_FFTW)
+        call init_FFTW_type(Nstacksmp(Nsmp), Nfft, WKS%WK_FFTW)
 #endif
       else if(abs(iflag_FFT) .eq. iflag_FFTPACK_SINGLE) then
         if(id_rank .eq. 0) write(*,*) 'Use FFTPACK'
@@ -192,7 +192,7 @@
         call finalize_FFTW_mul_type(Nsmp, WKS%WK_MUL_FFTW)
       else if(abs(iflag_FFT) .eq. iflag_FFTW_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize single FFTW'
-!        call finalize_FFTW_type(Nstacksmp(Nsmp), WKS%WK_FFTW)
+        call finalize_FFTW_type(Nstacksmp(Nsmp), WKS%WK_FFTW)
 #endif
       else
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTPACK'
@@ -233,7 +233,7 @@
      &      Nfft, WKS%WK_MUL_FFTW)
       else if(abs(iflag_FFT) .eq. iflag_FFTW_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use single FFTW transforms'
-!        call verify_wk_FFTW_type(Nstacksmp(Nsmp), Nfft, WKS%WK_FFTW)
+        call verify_wk_FFTW_type(Nstacksmp(Nsmp), Nfft, WKS%WK_FFTW)
 #endif
       else
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'
@@ -257,6 +257,7 @@
       use calypso_multi_fftpack
       use calypso_single_fftpack
       use calypso_multi_FFTW3
+      use calypso_single_FFTW3
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
@@ -284,15 +285,14 @@
      &                              elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
       else if(abs(iflag_FFT) .eq. iflag_FFTW_ONCE) then
-        write(*,*) 'calypso_multi_pin_fwd_FFTW3'
         call calypso_multi_pin_fwd_FFTW3(Nsmp, Nstacksmp, M, Nfft, X,   &
      &      WKS%WK_MUL_FFTW, elapsed_fft, elapsed_cpy)
       else if(abs(iflag_FFT) .eq. iflag_FFTW_SINGLE) then
-!        call FFTW_forward_type(Nsmp, Nstacksmp, M, Nfft, X,             &
-!     &      WKS%WK_FFTW, elapsed_fft, elapsed_cpy)
+        write(*,*) 'calypso_single_pin_fwd_FFTW3'
+        call calypso_single_pin_fwd_FFTW3(Nsmp, Nstacksmp, M, Nfft, X,  &
+     &      WKS%WK_FFTW, elapsed_fft, elapsed_cpy)
 #endif
       else if(abs(iflag_FFT) .eq. iflag_FFTPACK_SINGLE) then
-        write(*,*) 'calypso_single_pin_RFFTMF'
         call calypso_single_pin_RFFTMF(Nsmp, Nstacksmp, M, Nfft, X,     &
      &      WKS%WK_FFTPACK, elapsed_fft, elapsed_cpy)
       else
@@ -316,6 +316,7 @@
       use calypso_multi_fftpack
       use calypso_single_fftpack
       use calypso_multi_FFTW3
+      use calypso_single_FFTW3
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
@@ -337,19 +338,18 @@
      &                              cast_long(Nfft), X, WKS%WK_ISPACK3, &
      &                              elapsed_fft, elapsed_cpy)
       else if(abs(iflag_FFT) .eq. iflag_ISPACK3_SINGLE) then
-        write(*,*) 'calypso_single_pin_FXRTBA'
         call calypso_single_pin_FXRTBA(Nsmp, Nstacksmp, cast_long(M),   &
      &                              cast_long(Nfft), X, WKS%WK_ISPACK3, &
      &                              elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
       else if(abs(iflag_FFT) .eq. iflag_FFTW_ONCE) then
-        write(*,*) 'calypso_multi_pin_bwd_FFTW3'
         call calypso_multi_pin_bwd_FFTW3(Nsmp, Nstacksmp, M, Nfft, X,   &
      &      WKS%WK_MUL_FFTW, elapsed_fft, elapsed_cpy)
       else if(abs(iflag_FFT) .eq. iflag_FFTW_SINGLE) then
-!        call FFTW_backward_type(Nsmp, Nstacksmp, M,                     &
-!     &                          Nfft, X, WKS%WK_FFTW,                   &
-!     &                          elapsed_fft, elapsed_cpy)
+        write(*,*) 'calypso_single_pin_bwd_FFTW3'
+        call calypso_single_pin_bwd_FFTW3(Nsmp, Nstacksmp, M,           &
+     &                                    Nfft, X, WKS%WK_FFTW,         &
+     &                                    elapsed_fft, elapsed_cpy)
 #endif
       else if(abs(iflag_FFT) .eq. iflag_FFTPACK_SINGLE) then
         call calypso_single_pin_RFFTMB(Nsmp, Nstacksmp, M, Nfft, X,     &
