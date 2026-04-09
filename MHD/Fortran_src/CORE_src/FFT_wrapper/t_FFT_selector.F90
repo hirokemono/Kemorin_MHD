@@ -163,7 +163,7 @@
         call init_FFTW_mul_type(Nsmp, Nstacksmp, Nfft, WKS%WK_MUL_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(id_rank .eq. 0) write(*,*) 'Use single transform in FFTW'
-        call init_FFTW_type(Nstacksmp(Nsmp), Nfft, WKS%WK_FFTW)
+        call init_FFTW_type(Nsmp, Nfft, WKS%WK_FFTW)
 #endif
       else if(iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
         if(id_rank .eq. 0) write(*,*) 'Use FFTPACK'
@@ -204,7 +204,7 @@
         call finalize_FFTW_mul_type(Nsmp, WKS%WK_MUL_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize single FFTW'
-        call finalize_FFTW_type(Nstacksmp(Nsmp), WKS%WK_FFTW)
+        call finalize_FFTW_type(Nsmp, WKS%WK_FFTW)
 #endif
       else
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTPACK'
@@ -247,7 +247,7 @@
      &      Nfft, WKS%WK_MUL_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use single FFTW transforms'
-        call verify_wk_FFTW_type(Nstacksmp(Nsmp), Nfft, WKS%WK_FFTW)
+        call verify_wk_FFTW_type(Nsmp, Nfft, WKS%WK_FFTW)
 #endif
       else
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'

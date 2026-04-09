@@ -10,10 +10,17 @@
 !! ------------------------------------------------------------------
 !!      subroutine init_4_FFTW_smp(Ncomp, Nfft,                         &
 !!     &          plan_forward, plan_backward, X_FFTW, C_FFTW)
+!!        integer(kind = kint), intent(in) ::  Nfft, Nfft_c
+!!        integer(kind = kint), intent(in) ::  Nsmp
+!!        integer(kind = fftw_plan), intent(inout) :: plan_forward(Nsmp)
+!!        integer(kind = fftw_plan), intent(inout) :: plan_backward(Nsmp)
+!!        real(kind = kreal), intent(inout) :: X_FFTW(Nfft,Nsmp)
+!!        complex(kind = fftw_complex), intent(inout)                   &
+!!     &                                  :: C_FFTW(Nfft_c,Nsmp)
 !!
 !!   wrapper subroutine for initierize FFTW plans
 !! ------------------------------------------------------------------
-!!      subroutine destroy_FFTW_smp(Ncomp, plan_forward, plan_backward)
+!!      subroutine destroy_FFTW_smp(Nsmp, plan_forward, plan_backward)
 !!        CAUTION!!  dfftw_destroy_plan oftern makes SEGMENTAION FAULT!!
 !!
 !!
@@ -90,47 +97,47 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_4_FFTW_smp(Ncomp, Nfft, NFFT_c,                   &
+      subroutine init_4_FFTW_smp(Nsmp, Nfft, NFFT_c,                    &
      &          plan_forward, plan_backward, X_FFTW, C_FFTW)
 !
       integer(kind = kint), intent(in) ::  Nfft, Nfft_c
-      integer(kind = kint), intent(in) ::  Ncomp
+      integer(kind = kint), intent(in) ::  Nsmp
 !
-      integer(kind = fftw_plan), intent(inout) :: plan_forward(Ncomp)
-      integer(kind = fftw_plan), intent(inout) :: plan_backward(Ncomp)
-      real(kind = kreal), intent(inout) :: X_FFTW(Nfft,Ncomp)
+      integer(kind = fftw_plan), intent(inout) :: plan_forward(Nsmp)
+      integer(kind = fftw_plan), intent(inout) :: plan_backward(Nsmp)
+      real(kind = kreal), intent(inout) :: X_FFTW(Nfft,Nsmp)
       complex(kind = fftw_complex), intent(inout)                       &
-     &                                  :: C_FFTW(Nfft_c,Ncomp)
+     &                                  :: C_FFTW(Nfft_c,Nsmp)
 !
       integer(kind = kint) :: j
       integer :: Nfft4
 !
 !
       Nfft4 = int(Nfft)
-      do j = 1, Ncomp
+      do j = 1, Nsmp
         call dfftw_plan_dft_r2c_1d(plan_forward(j), Nfft4,              &
-     &      X_FFTW(1,j), C_FFTW(1,j) , FFTW_KEMO_EST)
+     &      X_FFTW(1,j), C_FFTW(1,j), FFTW_KEMO_EST)
         call dfftw_plan_dft_c2r_1d(plan_backward(j), Nfft4,             &
-     &      C_FFTW(1,j), X_FFTW(1,j) , FFTW_KEMO_EST)
+     &      C_FFTW(1,j), X_FFTW(1,j), FFTW_KEMO_EST)
       end do
 !
       end subroutine init_4_FFTW_smp
 !
 ! ------------------------------------------------------------------
 !
-      subroutine destroy_FFTW_smp(Ncomp, plan_forward, plan_backward)
+      subroutine destroy_FFTW_smp(Nsmp, plan_forward, plan_backward)
 !
-      integer(kind = kint), intent(in) ::  Ncomp
+      integer(kind = kint), intent(in) ::  Nsmp
 !
-      integer(kind = fftw_plan), intent(in) :: plan_forward(Ncomp)
-      integer(kind = fftw_plan), intent(in) :: plan_backward(Ncomp)
+      integer(kind = fftw_plan), intent(in) :: plan_forward(Nsmp)
+      integer(kind = fftw_plan), intent(in) :: plan_backward(Nsmp)
 !
-      integer(kind = kint) :: j
+      integer(kind = kint) :: ismp
 !
 !
-      do j = 1, Ncomp
-        call dfftw_destroy_plan(plan_forward(j))
-        call dfftw_destroy_plan(plan_backward(j))
+      do ismp = 1, Nsmp
+        call dfftw_destroy_plan(plan_forward(ismp))
+        call dfftw_destroy_plan(plan_backward(ismp))
         call dfftw_cleanup
       end do
 !
@@ -233,7 +240,8 @@
           ed_c = ed_c + OMP_GET_WTIME() - st_c
 !
           st_f = OMP_GET_WTIME()
-          call dfftw_execute(plan_backward(ip))
+          call dfftw_execute_dft_c2r(plan_backward(ip),                 &
+     &                               C_FFTW(1,ip), X_FFTW(1,ip))
           ed_f = ed_f + OMP_GET_WTIME() - st_f
 !
           st_c = OMP_GET_WTIME()

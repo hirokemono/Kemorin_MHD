@@ -8,10 +8,6 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine init_FFTW_type(Ncomp, Nfft, WK)
-!!      subroutine finalize_FFTW_type(Ncomp, WK)
-!!      subroutine verify_wk_FFTW_type(Ncomp, Nfft, WK)
-!!
 !!      subroutine init_FFTW_mul_type(Nsmp, Nstacksmp, Nfft, WK)
 !!      subroutine finalize_FFTW_mul_type(Nsmp, WK)
 !!      subroutine verify_wk_FFTW_mul_type(Nsmp, Nstacksmp, Nfft, WK)

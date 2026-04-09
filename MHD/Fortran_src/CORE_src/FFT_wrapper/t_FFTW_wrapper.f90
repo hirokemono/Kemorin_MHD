@@ -8,9 +8,11 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine init_FFTW_type(Ncomp, Nfft, WK)
-!!      subroutine finalize_FFTW_type(Ncomp, WK)
-!!      subroutine verify_wk_FFTW_type(Ncomp, Nfft, WK)
+!!      subroutine init_FFTW_type(Nsmp, Nfft, WK)
+!!      subroutine finalize_FFTW_type(Nsmp, WK)
+!!      subroutine verify_wk_FFTW_type(Nsmp, Nfft, WK)
+!!        integer(kind = kint), intent(in) ::  Nsmp, Nfft
+!!        type(working_FFTW), intent(inout) :: WK
 !!
 !!   wrapper subroutine for initierize FFT by FFTW
 !! ------------------------------------------------------------------
@@ -73,50 +75,50 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_FFTW_type(Ncomp, Nfft, WK)
+      subroutine init_FFTW_type(Nsmp, Nfft, WK)
 !
-      integer(kind = kint), intent(in) ::  Ncomp, Nfft
+      integer(kind = kint), intent(in) ::  Nsmp, Nfft
 !
       type(working_FFTW), intent(inout) :: WK
 !
 !
-      call alloc_work_4_FFTW_t(Ncomp, Ncomp, Nfft, WK)
-      call init_4_FFTW_smp(Ncomp, Nfft, WK%Nfft_c, WK%plan_forward,     &
+      call alloc_work_4_FFTW_t(Nsmp, Nfft, WK)
+      call init_4_FFTW_smp(Nsmp, Nfft, WK%Nfft_c, WK%plan_forward,      &
      &    WK%plan_backward, WK%X_FFTW, WK%C_FFTW)
 !
       end subroutine init_FFTW_type
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_FFTW_type(Ncomp, WK)
+      subroutine finalize_FFTW_type(Nsmp, WK)
 !
-      integer(kind = kint), intent(in) ::  Ncomp
+      integer(kind = kint), intent(in) ::  Nsmp
 !
       type(working_FFTW), intent(inout) :: WK
 !
 !
-      call destroy_FFTW_smp(Ncomp, WK%plan_forward, WK%plan_backward)
+      call destroy_FFTW_smp(Nsmp, WK%plan_forward, WK%plan_backward)
       call dealloc_work_4_FFTW_t(WK)
 !
       end subroutine finalize_FFTW_type
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_wk_FFTW_type(Ncomp, Nfft, WK)
+      subroutine verify_wk_FFTW_type(Nsmp, Nfft, WK)
 !
-      integer(kind = kint), intent(in) ::  Ncomp, Nfft
+      integer(kind = kint), intent(in) ::  Nsmp, Nfft
 !
       type(working_FFTW), intent(inout) :: WK
 !
 !
       if(WK%iflag_fft_len .lt. 0) then
-        call init_FFTW_type(Ncomp, Nfft, WK)
+        call init_FFTW_type(Nsmp, Nfft, WK)
         return
       end if
 !
-      if( WK%iflag_fft_len .ne. Nfft*Ncomp) then
-        call finalize_FFTW_type(Ncomp, WK)
-        call init_FFTW_type(Ncomp, Nfft, WK)
+      if( WK%iflag_fft_len .ne. Nfft*Nsmp) then
+        call finalize_FFTW_type(Nsmp, WK)
+        call init_FFTW_type(Nsmp, Nfft, WK)
       end if
 !
       end subroutine verify_wk_FFTW_type
@@ -124,20 +126,20 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine alloc_work_4_FFTW_t(Nplan, Ncomp, Nfft, WK)
+      subroutine alloc_work_4_FFTW_t(Nsmp, Nfft, WK)
 !
-      integer(kind = kint), intent(in) :: Nplan, Ncomp, Nfft
+      integer(kind = kint), intent(in) :: Nsmp, Nfft
       type(working_FFTW), intent(inout) :: WK
 !
 !
-      allocate(WK%plan_forward(Nplan))
-      allocate(WK%plan_backward(Nplan))
+      allocate(WK%plan_forward(Nsmp))
+      allocate(WK%plan_backward(Nsmp))
 !
-      WK%iflag_fft_len = Nfft*Ncomp
+      WK%iflag_fft_len = Nfft*Nsmp
       WK%Nfft_c =        (Nfft+1)/2 + 1
       WK%aNfft = one / dble(Nfft)
-      allocate( WK%X_FFTW(Nfft,Ncomp) )
-      allocate( WK%C_FFTW(WK%Nfft_c,Ncomp) )
+      allocate( WK%X_FFTW(Nfft,Nsmp) )
+      allocate( WK%C_FFTW(WK%Nfft_c,Nsmp) )
       WK%X_FFTW = 0.0d0
       WK%C_FFTW = 0.0d0
 !
