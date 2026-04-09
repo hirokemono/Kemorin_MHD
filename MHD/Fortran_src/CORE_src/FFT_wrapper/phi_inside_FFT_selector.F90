@@ -152,6 +152,9 @@
         if(id_rank .eq. 0) write(*,*) 'Use single transform in FFTW'
 !        call init_FFTW_type(Nstacksmp(Nsmp), Nfft, WKS%WK_FFTW)
 #endif
+      else if(abs(iflag_FFT) .eq. iflag_FFTPACK_SINGLE) then
+        if(id_rank .eq. 0) write(*,*) 'Use FFTPACK'
+        call init_WK_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTPACK)
       else
         if(id_rank .eq. 0) write(*,*) 'Use FFTPACK'
         call init_WK_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTPACK)
@@ -250,6 +253,7 @@
       use calypso_multi_ispack3
       use calypso_single_ispack3
       use calypso_multi_fftpack
+      use calypso_single_fftpack
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
@@ -283,8 +287,11 @@
 !        call FFTW_forward_type(Nsmp, Nstacksmp, M, Nfft, X,             &
 !     &      WKS%WK_FFTW, elapsed_fft, elapsed_cpy)
 #endif
+      else if(abs(iflag_FFT) .eq. iflag_FFTPACK_SINGLE) then
+        write(*,*) 'calypso_single_pin_RFFTMF'
+        call calypso_single_pin_RFFTMF(Nsmp, Nstacksmp, M, Nfft, X,     &
+     &      WKS%WK_FFTPACK, elapsed_fft, elapsed_cpy)
       else
-        write(*,*) 'calypso_multi_pin_RFFTMF'
         call calypso_multi_pin_RFFTMF(Nsmp, Nstacksmp, M, Nfft, X,      &
      &      WKS%WK_FFTPACK, elapsed_fft, elapsed_cpy)
       end if
@@ -303,6 +310,7 @@
       use calypso_multi_ispack3
       use calypso_single_ispack3
       use calypso_multi_fftpack
+      use calypso_single_fftpack
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
@@ -337,8 +345,10 @@
 !     &                          Nfft, X, WKS%WK_FFTW,                   &
 !     &                          elapsed_fft, elapsed_cpy)
 #endif
+      else if(abs(iflag_FFT) .eq. iflag_FFTPACK_SINGLE) then
+        call calypso_single_pin_RFFTMB(Nsmp, Nstacksmp, M, Nfft, X,     &
+     &      WKS%WK_FFTPACK, elapsed_fft, elapsed_cpy)
       else
-        write(*,*) 'calypso_multi_pin_RFFTMB'
         call calypso_multi_pin_RFFTMB(Nsmp, Nstacksmp, M, Nfft, X,      &
      &      WKS%WK_FFTPACK, elapsed_fft, elapsed_cpy)
       end if
