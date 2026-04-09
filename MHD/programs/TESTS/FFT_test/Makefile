@@ -72,7 +72,9 @@ m_constants.o \
 m_machine_parameter.o \
 \
 normalize_for_FFTPACK.o \
+multi_pin_fftpack_smp.o \
 FFTPACK5_wrapper.o \
+calypso_multi_fftpack.o \
 t_FFTPACK5_wrapper.o \
 \
 m_FFT_size.o      \

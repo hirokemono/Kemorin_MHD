@@ -127,6 +127,7 @@
       use calypso_single_ispack
       use calypso_multi_ispack3
       use calypso_single_ispack3
+      use calypso_multi_fftpack
 !
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: iflag_FFT

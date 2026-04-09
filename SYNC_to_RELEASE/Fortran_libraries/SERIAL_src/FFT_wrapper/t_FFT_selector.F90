@@ -116,6 +116,8 @@
       subroutine initialize_FFT_select(id_rank, iflag_FFT,              &
      &          Nsmp, Nstacksmp, Nfft, WKS, elapsed_init)
 !
+      use calypso_multi_fftpack
+!
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nfft
