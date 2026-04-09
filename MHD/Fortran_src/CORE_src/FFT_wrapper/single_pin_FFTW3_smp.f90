@@ -144,7 +144,6 @@
         end do
       end do
 !$omp end parallel do
-      write(*,*) 'single_pin_fwd_FFTW3_smp'
 !
       elapsed_fft = elapsed_fft + ed_f / dble(Nsmp)
       elapsed_cpy = elapsed_cpy + ed_c / dble(Nsmp)
@@ -195,14 +194,11 @@
           ed_f = ed_f + OMP_GET_WTIME() - st_f
 !
           st_c = OMP_GET_WTIME()
-          do i = 1, Nfft
-            X(i,j) = X_FFTW(i,ip)
-          end do
+          X(1:Nfft,j) = X_FFTW(1:Nfft,ip)
           ed_c = ed_c + OMP_GET_WTIME() - st_c
         end do
       end do
 !$omp end parallel do
-      write(*,*) 'single_pin_bwd_FFTW3_smp'
 !
       elapsed_fft = elapsed_fft + ed_f / dble(Nsmp)
       elapsed_cpy = elapsed_cpy + ed_c / dble(Nsmp)
