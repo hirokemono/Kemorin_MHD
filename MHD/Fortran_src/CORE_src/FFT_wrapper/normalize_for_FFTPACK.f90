@@ -8,7 +8,7 @@
 !>@brief  Normalization and data copy for FFTPACK
 !!
 !!@verbatim
-!!      subroutine swap_rtp_spectr_from_RFFTMF_smp(ist_smp, nnod_smp,   &
+!!      subroutine copy_rtp_spectr_from_RFFTMF_smp(ist_smp, nnod_smp,   &
 !!     &          Nfft, Mmax_smp, X_FFTPACK, M, X)
 !!        integer(kind = kint), intent(in) :: ist_smp, nnod_smp
 !!        integer(kind = kint), intent(in) :: M, Nfft, Mmax_smp
@@ -34,7 +34,7 @@
 !!        real(kind = kreal), intent(in) :: X(Nfft,M)
 !!        real(kind = kreal), intent(inout) :: X_FFTPACK(Mmax_smp*Nfft)
 !!
-!!      subroutine swap_rtp_spectr_to_RFFTMB_smp(ist_smp, nnod_smp,     &
+!!      subroutine copy_rtp_spectr_to_RFFTMB_smp(ist_smp, nnod_smp,     &
 !!     &          Nfft, M, X, Mmax_smp, X_FFTPACK)
 !!        integer(kind = kint), intent(in) :: ist_smp, nnod_smp
 !!        integer(kind = kint), intent(in) :: M, Nfft, Mmax_smp
@@ -74,7 +74,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine swap_rtp_spectr_from_RFFTMF_smp(ist_smp, nnod_smp,     &
+      subroutine copy_rtp_spectr_from_RFFTMF_smp(ist_smp, nnod_smp,     &
      &          Nfft, Mmax_smp, X_FFTPACK, M, X)
 !
       integer(kind = kint), intent(in) :: ist_smp, nnod_smp
@@ -103,7 +103,7 @@
         X(j,2) = X_FFTPACK(inod_c)
       end do
 !
-      end subroutine swap_rtp_spectr_from_RFFTMF_smp
+      end subroutine copy_rtp_spectr_from_RFFTMF_smp
 !
 ! ------------------------------------------------------------------
 !
@@ -185,7 +185,7 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine swap_rtp_spectr_to_RFFTMB_smp(ist_smp, nnod_smp,       &
+      subroutine copy_rtp_spectr_to_RFFTMB_smp(ist_smp, nnod_smp,       &
      &          Nfft, M, X, Mmax_smp, X_FFTPACK)
 !
       integer(kind = kint), intent(in) :: ist_smp, nnod_smp
@@ -214,7 +214,7 @@
         X_FFTPACK(inod_c) = X(j,2)
       end do
 !
-      end subroutine swap_rtp_spectr_to_RFFTMB_smp
+      end subroutine copy_rtp_spectr_to_RFFTMB_smp
 !
 ! ------------------------------------------------------------------
 !
@@ -261,15 +261,13 @@
 !
       real(kind = kreal), intent(inout) :: X(M,Nfft)
 !
-      integer(kind = kint) ::  i, j, inum, inod_c
+      integer(kind = kint) ::  i, inod_c
 !
 !
       do i = 1, Nfft
-        do inum = 1, nnod_smp
-          j = ist_smp + inum
-          inod_c = inum + (i-1) * nnod_smp
-          X(j,i) = X_FFTPACK(inod_c)
-        end do
+        inod_c = (i-1) * nnod_smp
+        X(ist_smp+1:ist_smp+nnod_smp,i)                                 &
+     &     = X_FFTPACK(inod_c+1:inod_c+nnod_smp)
       end do
 !
       end subroutine copy_rtp_fld_from_RFFTMB_smp

@@ -141,6 +141,8 @@
       integer(kind = kint) :: ierr
 !
 !
+      ed_c = 0.0d0
+      ed_f = 0.0d0
 !$omp parallel do private(ist,num,nsize,st_c,st_f)                      &
 !$omp&            reduction(+:ed_c,ed_f)
       do ismp = 1, Nsmp
@@ -159,7 +161,7 @@
         ed_f = OMP_GET_WTIME() - st_f
 !
         st_c = OMP_GET_WTIME()
-        call swap_rtp_spectr_from_RFFTMF_smp(ist, num, Nfft, Mmax_smp,  &
+        call copy_rtp_spectr_from_RFFTMF_smp(ist, num, Nfft, Mmax_smp,  &
      &                                       X_FFTPACK5(1,ismp), M, X)
         ed_c = ed_c + OMP_GET_WTIME() - st_c
       end do
@@ -193,6 +195,8 @@
       integer(kind = kint) :: ierr
 !
 !
+      ed_c = 0.0d0
+      ed_f = 0.0d0
 !$omp parallel do private(ist,num,nsize,st_c,st_f)                      &
 !$omp&            reduction(+:ed_c,ed_f)
       do ismp = 1, Nsmp
@@ -202,7 +206,7 @@
 !
 !   normalization
         st_c = OMP_GET_WTIME()
-        call swap_rtp_spectr_to_RFFTMB_smp(ist, num, Nfft, M, X,       &
+        call copy_rtp_spectr_to_RFFTMB_smp(ist, num, Nfft, M, X,        &
      &                                    Mmax_smp, X_FFTPACK5(1,ismp))
         ed_c = OMP_GET_WTIME() - st_c
 !
