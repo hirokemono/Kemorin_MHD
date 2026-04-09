@@ -214,6 +214,7 @@
      &         (iflag_FFT, Nsmp, Nstacksmp, Nfft, WKS)
 !
       use transfer_to_long_integers
+      use calypso_multi_fftpack
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nfft
@@ -261,6 +262,7 @@
       use calypso_single_ispack
       use calypso_multi_ispack3
       use calypso_single_ispack3
+      use calypso_multi_fftpack
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
@@ -312,6 +314,7 @@
       use calypso_single_ispack
       use calypso_multi_ispack3
       use calypso_single_ispack3
+      use calypso_multi_fftpack
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)

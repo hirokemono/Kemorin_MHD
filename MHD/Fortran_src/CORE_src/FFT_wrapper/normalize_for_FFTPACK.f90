@@ -121,14 +121,19 @@
 !
       do inum = 1, nnod_smp
         j = ist_smp + inum
-        inod_c = inum
-        X(1,j) = X_FFTPACK(inod_c)
-        X(2,j) = X_FFTPACK(inod_c+nnod_smp)
-        do i = 2, Nfft/2
-          inod_c = inum + (2*i-2) * nnod_smp
-          X(2*i-1,j) =   two * X_FFTPACK(inod_c         )
-          X(2*i,  j) = - two * X_FFTPACK(inod_c+nnod_smp)
+        X(1,j) = X_FFTPACK(inum  )
+      end do
+      do i = 2, Nfft-1
+        do inum = 1, nnod_smp
+          j = ist_smp + inum
+          inod_c = inum + (i-1) * nnod_smp
+          X(i+1,j) = X_FFTPACK(inod_c)
         end do
+      end do
+      do inum = 1, nnod_smp
+        j = ist_smp + inum
+        inod_c = inum + (Nfft-1) * nnod_smp
+        X(2,j) = X_FFTPACK(inod_c)
       end do
 !
       end subroutine swap_prt_spectr_from_RFFTMF_smp
@@ -176,7 +181,7 @@
         do inum = 1, nnod_smp
           j = ist_smp + inum
           inod_c = inum + (i-1) * nnod_smp
-          X_FFTPACK(inod_c         ) = X(i,j)
+          X_FFTPACK(inod_c) = X(i,j)
         end do
       end do
 !

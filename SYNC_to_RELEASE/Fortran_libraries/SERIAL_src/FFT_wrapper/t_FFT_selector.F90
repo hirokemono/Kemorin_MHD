@@ -182,6 +182,9 @@
       subroutine verify_FFT_select                                      &
      &         (iflag_FFT, Nsmp, Nstacksmp, Nfft, WKS)
 !
+      use t_FFT_selector
+      use calypso_multi_fftpack
+!
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
@@ -214,6 +217,8 @@
      &         (iflag_FFT, Nsmp, Nstacksmp, M, Nfft, X, WKS,            &
      &          elapsed_fft, elapsed_cpy)
 !
+      use calypso_multi_fftpack
+!
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
@@ -245,6 +250,8 @@
       subroutine backward_FFT_select                                    &
      &         (iflag_FFT, Nsmp, Nstacksmp, M, Nfft, X, WKS,            &
      &          elapsed_fft, elapsed_cpy)
+!
+      use calypso_multi_fftpack
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
