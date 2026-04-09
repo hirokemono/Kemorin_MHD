@@ -109,12 +109,12 @@
         st_c = OMP_GET_WTIME()
         call swap_prt_fld_to_FXRTFA_smp(ist, num8, Nfft, M, X,          &
      &                                  Mmax_smp, X_ispack(1,ismp))
-        ed_c = OMP_GET_WTIME() - st_c
+        ed_c = ed_c + OMP_GET_WTIME() - st_c
 !
         st_f = OMP_GET_WTIME()
         call FXRTFA(num8, Nfft, X_ispack(1,ismp),                       &
      &              IT_ispack(1), T_ispack(1))
-        ed_f = OMP_GET_WTIME() - st_f
+        ed_f = ed_f + OMP_GET_WTIME() - st_f
 !
         st_c = OMP_GET_WTIME()
         call swap_prt_spectr_from_FXRTFA_smp(ist, num8, Nfft, Mmax_smp, &
@@ -160,12 +160,12 @@
         st_c = OMP_GET_WTIME()
         call swap_prt_spectr_to_FXRTBA_smp(ist, num8, Nfft, M, X,       &
      &                                     Mmax_smp, X_ispack(1,ismp))
-        ed_c = OMP_GET_WTIME() - st_c
+        ed_c = ed_c + OMP_GET_WTIME() - st_c
 !
         st_f = OMP_GET_WTIME()
         call FXRTBA(num8, Nfft, X_ispack(1,ismp),                       &
      &              IT_ispack(1), T_ispack(1))
-        ed_f = OMP_GET_WTIME() - st_f
+        ed_f = ed_f + OMP_GET_WTIME() - st_f
 !
         st_c = OMP_GET_WTIME()
         call swap_prt_fld_from_FXRTBA_smp(ist, num8, Nfft, Mmax_smp,    &

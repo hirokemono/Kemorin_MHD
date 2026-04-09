@@ -153,12 +153,12 @@
         st_c = OMP_GET_WTIME()
         call copy_rtp_fld_to_RFFTMF_smp(ist, num, Nfft, M, X,           &
      &                                  Mmax_smp, X_FFTPACK5(1,ismp))
-        ed_c = OMP_GET_WTIME() - st_c
+        ed_c = ed_c + OMP_GET_WTIME() - st_c
 !
         st_f = OMP_GET_WTIME()
         call RFFTMF(num, ione, Nfft, num, X_FFTPACK5(1,ismp), nsize,    &
      &              WSAVE, lSAVE, WORK(1,ismp), nsize, ierr)
-        ed_f = OMP_GET_WTIME() - st_f
+        ed_f = ed_f + OMP_GET_WTIME() - st_f
 !
         st_c = OMP_GET_WTIME()
         call copy_rtp_spectr_from_RFFTMF_smp(ist, num, Nfft, Mmax_smp,  &
@@ -208,12 +208,12 @@
         st_c = OMP_GET_WTIME()
         call copy_rtp_spectr_to_RFFTMB_smp(ist, num, Nfft, M, X,        &
      &                                    Mmax_smp, X_FFTPACK5(1,ismp))
-        ed_c = OMP_GET_WTIME() - st_c
+        ed_c = ed_c + OMP_GET_WTIME() - st_c
 !
         st_f = OMP_GET_WTIME()
         call RFFTMB(num, ione, Nfft, num, X_FFTPACK5(1,ismp), nsize,    &
      &              WSAVE, lSAVE, WORK(1,ismp), nsize, ierr)
-        ed_f = OMP_GET_WTIME() - st_f
+        ed_f = ed_f + OMP_GET_WTIME() - st_f
 !
         st_c = OMP_GET_WTIME()
         call copy_rtp_fld_from_RFFTMB_smp(ist, num, Nfft, Mmax_smp,     &

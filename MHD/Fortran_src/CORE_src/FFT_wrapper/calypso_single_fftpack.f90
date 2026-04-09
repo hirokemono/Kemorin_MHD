@@ -127,7 +127,7 @@
       call init_CALYPSO_FFTPACK                                         &
      &   (Nfft,  WK%lsave_FFTPACK, WK%WSAVE_FFTPACK)
 !
-      call alloc_work_4_FFTPACK_t(Nsmp, Nfft, WK)
+      call alloc_work_4_FFTPACK_t(Nsmp, ione, Nfft, WK)
 !
       end subroutine calypso_single_RFFTMI
 !
@@ -137,7 +137,7 @@
       subroutine calypso_single_pout_RFFTMF(Nsmp, Nstacksmp,            &
      &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
 !
-      use FFTPACK5_wrapper
+      use single_pout_FFTPACK_smp
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
@@ -147,9 +147,10 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call CALYPSO_RFFTMF_SMP(Nsmp, Nstacksmp, M, Nfft, X,              &
-     &    WK%X_FFTPACK5, WK%Mmax_smp, WK%lsave_FFTPACK,                 &
-     &    WK%WSAVE_FFTPACK, WK%WORK_FFTPACK, elapsed_fft, elapsed_cpy)
+      call single_pout_RFFTMF_smp                                       &
+     &   (Nsmp, Nstacksmp, M, Nfft, X, WK%X_FFTPACK5,                   &
+     &    WK%lsave_FFTPACK, WK%WSAVE_FFTPACK, WK%WORK_FFTPACK,          &
+     &    elapsed_fft, elapsed_cpy)
 !
       end subroutine calypso_single_pout_RFFTMF
 !
@@ -158,7 +159,7 @@
       subroutine calypso_single_pout_RFFTMB(Nsmp, Nstacksmp,            &
      &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
 !
-      use FFTPACK5_wrapper
+      use single_pout_FFTPACK_smp
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
@@ -168,9 +169,10 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call CALYPSO_RFFTMB_SMP(Nsmp, Nstacksmp, M, Nfft, X,              &
-     &    WK%X_FFTPACK5, WK%Mmax_smp, WK%lsave_FFTPACK,                 &
-     &    WK%WSAVE_FFTPACK, WK%WORK_FFTPACK, elapsed_fft, elapsed_cpy)
+      call single_pout_RFFTMB_smp                                       &
+     &   (Nsmp, Nstacksmp, M, Nfft, X, WK%X_FFTPACK5,                   &
+     &    WK%lsave_FFTPACK, WK%WSAVE_FFTPACK, WK%WORK_FFTPACK,          &
+     &    elapsed_fft, elapsed_cpy)
 !
       end subroutine calypso_single_pout_RFFTMB
 !

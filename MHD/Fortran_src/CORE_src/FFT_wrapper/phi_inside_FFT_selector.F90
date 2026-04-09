@@ -118,6 +118,7 @@
       use calypso_multi_ispack3
       use calypso_single_ispack3
       use calypso_multi_fftpack
+      use calypso_single_fftpack
 !
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: iflag_FFT
@@ -154,7 +155,8 @@
 #endif
       else if(abs(iflag_FFT) .eq. iflag_FFTPACK_SINGLE) then
         if(id_rank .eq. 0) write(*,*) 'Use FFTPACK'
-        call init_WK_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTPACK)
+        call calypso_single_RFFTMI(Nsmp, Nstacksmp,                     &
+     &                             Nfft, WKS%WK_FFTPACK)
       else
         if(id_rank .eq. 0) write(*,*) 'Use FFTPACK'
         call init_WK_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTPACK)

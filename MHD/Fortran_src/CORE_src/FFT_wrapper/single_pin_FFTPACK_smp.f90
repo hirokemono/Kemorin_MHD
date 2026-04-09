@@ -124,7 +124,7 @@
           st_f = OMP_GET_WTIME()
           call RFFTMF(ione, ione, Nfft, ione, X(1,inum), Nfft,          &
      &              WSAVE, lSAVE, WORK(1,ismp), Nfft, ierr)
-          ed_f = OMP_GET_WTIME() - st_f
+          ed_f = ed_f + OMP_GET_WTIME() - st_f
 !
           st_c = OMP_GET_WTIME()
 !          X(1,inum) = X(1,inum)
@@ -178,7 +178,7 @@
           X_tmp =            X(2,inum)
           X(2:Nfft-1,inum) = X(3:Nfft,inum)
           X(Nfft,inum) =     X_tmp
-          ed_c = OMP_GET_WTIME() - st_c
+          ed_c = ed_c + OMP_GET_WTIME() - st_c
 !
           st_f = OMP_GET_WTIME()
           call RFFTMB(ione, ione, Nfft, ione, X(1,inum), Nfft,          &

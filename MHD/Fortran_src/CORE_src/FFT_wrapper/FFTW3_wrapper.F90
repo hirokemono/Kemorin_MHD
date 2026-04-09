@@ -170,13 +170,13 @@
         do j = ist, ied
           X_FFTW(1:Nfft,j) = X(j,1:Nfft)
         end do
-        ed_c = OMP_GET_WTIME() - st_c
+        ed_c = ed_c + OMP_GET_WTIME() - st_c
 !
         st_f = OMP_GET_WTIME()
         do j = ist, ied
           call dfftw_execute(plan_forward(j))
         end do
-        ed_f = OMP_GET_WTIME() - st_f
+        ed_f = ed_f + OMP_GET_WTIME() - st_f
 !
 !   normalization
         st_c = OMP_GET_WTIME()
@@ -224,19 +224,19 @@
         st_c = OMP_GET_WTIME()
         call norm_swap_to_prt_bwd_FFT(ist, ied, Ncomp, Nfft, X,         &
      &                                NFFT_c, C_FFTW)
-        ed_c = OMP_GET_WTIME() - st_c
+        ed_c = ed_c + OMP_GET_WTIME() - st_c
 !
         st_f = OMP_GET_WTIME()
         do j = ist, ied
           call dfftw_execute(plan_backward(j))
         end do
-        ed_f = OMP_GET_WTIME() - st_f
+        ed_f = ed_f + OMP_GET_WTIME() - st_f
 !
         st_c = OMP_GET_WTIME()
         do i = 1, Nfft
           X(ist:ied,i) = X_FFTW(i,ist:ied)
         end do
-        ed_c = OMP_GET_WTIME() - st_c
+        ed_c = ed_c + OMP_GET_WTIME() - st_c
       end do
 !$omp end parallel do
 !

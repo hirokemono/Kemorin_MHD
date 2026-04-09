@@ -1,5 +1,5 @@
-!>@file   multi_pin_FFTPACK_smp.f90
-!!@brief  module multi_pin_FFTPACK_smp
+!>@file   single_pout_FFTPACK_smp.f90
+!!@brief  module single_pout_FFTPACK_smp
 !!
 !!@author H. Matsui
 !!@date Programmed in Apr., 2013
@@ -11,16 +11,16 @@
 !!   wrapper subroutine for initierize FFT
 !! ------------------------------------------------------------------
 !!
-!!      subroutine multi_pin_RFFTMF_smp(Nsmp, Nstacksmp, M, Nfft,       &
-!!     &          X, X_FFTPACK5, Mmax_smp, lSAVE, WSAVE, WORK,          &
+!!      subroutine single_pout_RFFTMF_smp(Nsmp, Nstacksmp,              &
+!!     &          M, Nfft, X, X_FFTPACK, lSAVE, WSAVE, WORK,            &
 !!     &          elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !!        integer(kind = kint), intent(in) :: M, Nfft
-!!        integer(kind = kint), intent(in) :: lSAVE, Mmax_smp
+!!        integer(kind = kint), intent(in) :: lSAVE
 !!        real(kind = 8), intent(in) :: WSAVE(lSAVE)
-!!        real(kind = kreal), intent(inout) :: X(Nfft,M)
-!!        real(kind = 8), intent(inout) :: X_FFTPACK5(Mmax_smp*Nfft,Nsmp)
-!!        real(kind = 8), intent(inout) :: WORK(Mmax_smp*Nfft,Nsmp)
+!!        real(kind = kreal), intent(inout) :: X(M,Nfft)
+!!        real(kind = 8), intent(inout) :: X_FFTPACK(Nfft,Nsmp)
+!!        real(kind = 8), intent(inout) :: WORK(Nfft,Nsmp)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
 !!
@@ -38,16 +38,16 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine multi_pin_RFFTMB_smp(Nsmp, Nstacksmp, M, Nfft,       &
-!!     &          X, X_FFTPACK5, Mmax_smp, lSAVE, WSAVE, WORK,          &
+!!      subroutine single_pout_RFFTMB_smp(Nsmp, Nstacksmp,              &
+!!     &          M, Nfft, X, X_FFTPACK, lSAVE, WSAVE, WORK,            &
 !!     &          elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !!        integer(kind = kint), intent(in) :: M, Nfft
-!!        integer(kind = kint), intent(in) :: lSAVE, Mmax_smp
+!!        integer(kind = kint), intent(in) :: lSAVE
 !!        real(kind = 8), intent(in) :: WSAVE(lSAVE)
-!!        real(kind = kreal), intent(inout) :: X(Nfft,M)
-!!        real(kind = 8), intent(inout) :: X_FFTPACK5(Mmax_smp*Nfft,Nsmp)
-!!        real(kind = 8), intent(inout) :: WORK(Mmax_smp*Nfft,Nsmp)
+!!        real(kind = kreal), intent(inout) :: X(M,Nfft)
+!!       real(kind = 8), intent(inout) :: X_FFTPACK(Nfft,Nsmp)
+!!        real(kind = 8), intent(inout) :: WORK(Nfft,Nsmp)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
 !!
@@ -76,16 +76,13 @@
 !!@n @param Nstacksmp(0:Nsmp)   End number for each SMP process
 !!@n @param M           Number of components for Fourier transforms
 !!@n @param Nfft        Data length for eadh FFT
-!!@n @param X(Nfft,M)  Data for Fourier transform
+!!@n @param X(M,Nfft)  Data for Fourier transform
 !!
-!!@n @param Mmax_smp    Maximum number of component for each SMP process
-!!@n @param X_FFTPACK5(Mmax_smp*Nfft,Nsmp)
-!!                 Data for multiple Fourier transform
 !!@n @param lSAVE                     Size of work constant for FFTPACK
 !!@n @param WSAVE(lSAVE)              Work constatnts for FFTPACK
-!!@n @param WORK(Mmax_smp*Nfft,Nsmp)  Work area for FFTPACK
+!!@n @param WORK(Nfft,Nsmp)  Work area for FFTPACK
 !
-      module multi_pin_FFTPACK_smp
+      module single_pout_FFTPACK_smp
 !
       use omp_lib
 !
@@ -100,113 +97,114 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine multi_pin_RFFTMF_smp(Nsmp, Nstacksmp, M, Nfft,         &
-     &          X, X_FFTPACK5, Mmax_smp, lSAVE, WSAVE, WORK,            &
+      subroutine single_pout_RFFTMF_smp(Nsmp, Nstacksmp,                &
+     &          M, Nfft, X, X_FFTPACK, lSAVE, WSAVE, WORK,              &
      &          elapsed_fft, elapsed_cpy)
 !
       use normalize_for_FFTPACK
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
-      integer(kind = kint), intent(in) :: lSAVE, Mmax_smp
+      integer(kind = kint), intent(in) :: lSAVE
       real(kind = 8), intent(in) :: WSAVE(lSAVE)
 !
-      real(kind = kreal), intent(inout) :: X(Nfft,M)
-      real(kind = 8), intent(inout) :: X_FFTPACK5(Mmax_smp*Nfft,Nsmp)
-      real(kind = 8), intent(inout) :: WORK(Mmax_smp*Nfft,Nsmp)
+      real(kind = kreal), intent(inout) :: X(M,Nfft)
+      real(kind = 8), intent(inout) :: X_FFTPACK(Nfft,Nsmp)
+      real(kind = 8), intent(inout) :: WORK(Nfft,Nsmp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: st_c, ed_c, st_f, ed_f
-      integer(kind = kint) :: ismp, ist, num, nsize
+      integer(kind = kint) :: ismp, ist, ied, inum
       integer(kind = kint) :: ierr
 !
 !
       ed_c = 0.0d0
       ed_f = 0.0d0
-!$omp parallel do private(ist,num,nsize,st_c,st_f)                      &
+!$omp parallel do private(ist,ied,inum,st_c,st_f)                       &
 !$omp&            reduction(+:ed_c,ed_f)
       do ismp = 1, Nsmp
-        ist = Nstacksmp(ismp-1)
-        num = Nstacksmp(ismp) - Nstacksmp(ismp-1)
-        nsize = num*Nfft
+        ist = Nstacksmp(ismp-1) + 1
+        ied = Nstacksmp(ismp  )
+        do inum = ist, ied
+          st_c = OMP_GET_WTIME()
+          X_FFTPACK(1:Nfft,ismp) = X(inum,1:Nfft)
+          ed_c = ed_c + OMP_GET_WTIME() - st_c
 !
-        st_c = OMP_GET_WTIME()
-        call swap_prt_fld_to_RFFTMF_smp(ist, num, Nfft, M, X,           &
-     &                                  Mmax_smp, X_FFTPACK5(1,ismp))
-        ed_c = ed_c + OMP_GET_WTIME() - st_c
+          st_f = OMP_GET_WTIME()
+          call RFFTMF(ione, ione, Nfft, ione, X_FFTPACK(1,ismp), Nfft,  &
+     &              WSAVE, lSAVE, WORK(1,ismp), Nfft, ierr)
+          ed_f = ed_f + OMP_GET_WTIME() - st_f
 !
-        st_f = OMP_GET_WTIME()
-        call RFFTMF(num, ione, Nfft, num, X_FFTPACK5(1,ismp), nsize,    &
-     &              WSAVE, lSAVE, WORK(1,ismp), nsize, ierr)
-        ed_f = ed_f + OMP_GET_WTIME() - st_f
-!
-        st_c = OMP_GET_WTIME()
-        call swap_prt_spectr_from_RFFTMF_smp(ist, num, Nfft, Mmax_smp,  &
-     &                                       X_FFTPACK5(1,ismp), M, X)
-        ed_c = ed_c + OMP_GET_WTIME() - st_c
+          st_c = OMP_GET_WTIME()
+          X(inum,1) =      X_FFTPACK(1,ismp)
+          X(inum,2) =      X_FFTPACK(Nfft,ismp)
+          X(inum,3:Nfft) = X_FFTPACK(2:Nfft-1,ismp)
+          ed_c = ed_c + OMP_GET_WTIME() - st_c
+        end do
       end do
 !$omp end parallel do
 !
       elapsed_fft = elapsed_fft + ed_f / dble(Nsmp)
       elapsed_cpy = elapsed_cpy + ed_c / dble(Nsmp)
 !
-      end subroutine multi_pin_RFFTMF_smp
+      end subroutine single_pout_RFFTMF_smp
 !
 ! ------------------------------------------------------------------
 !
-      subroutine multi_pin_RFFTMB_smp(Nsmp, Nstacksmp, M, Nfft,         &
-     &          X, X_FFTPACK5, Mmax_smp, lSAVE, WSAVE, WORK,            &
+      subroutine single_pout_RFFTMB_smp(Nsmp, Nstacksmp,                &
+     &          M, Nfft, X, X_FFTPACK, lSAVE, WSAVE, WORK,              &
      &          elapsed_fft, elapsed_cpy)
 !
       use normalize_for_FFTPACK
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
-      integer(kind = kint), intent(in) :: lSAVE, Mmax_smp
+      integer(kind = kint), intent(in) :: lSAVE
       real(kind = 8), intent(in) :: WSAVE(lSAVE)
 !
-      real(kind = kreal), intent(inout) :: X(Nfft,M)
-      real(kind = 8), intent(inout) :: X_FFTPACK5(Mmax_smp*Nfft,Nsmp)
-      real(kind = 8), intent(inout) :: WORK(Mmax_smp*Nfft,Nsmp)
+      real(kind = kreal), intent(inout) :: X(M,Nfft)
+      real(kind = 8), intent(inout) :: X_FFTPACK(Nfft,Nsmp)
+      real(kind = 8), intent(inout) :: WORK(Nfft,Nsmp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: st_c, ed_c, st_f, ed_f
-      integer(kind = kint) ::  ismp, ist, num, nsize
+      integer(kind = kint) ::  ismp, ist, ied, inum
       integer(kind = kint) :: ierr
 !
 !
       ed_c = 0.0d0
       ed_f = 0.0d0
-!$omp parallel do private(ist,num,nsize,st_c,st_f)                      &
+!$omp parallel do private(ist,ied,inum,st_c,st_f)                       &
 !$omp&            reduction(+:ed_c,ed_f)
       do ismp = 1, Nsmp
-        ist = Nstacksmp(ismp-1)
-        num = Nstacksmp(ismp) - Nstacksmp(ismp-1)
-        nsize = num*Nfft
+        ist = Nstacksmp(ismp-1) + 1
+        ied = Nstacksmp(ismp  )
+        do inum = ist, ied
 !
 !   normalization
-        st_c = OMP_GET_WTIME()
-        call swap_prt_spectr_to_RFFTMB_smp(ist, num, Nfft, M, X,        &
-     &                                    Mmax_smp, X_FFTPACK5(1,ismp))
-        ed_c = ed_c + OMP_GET_WTIME() - st_c
+          st_c = OMP_GET_WTIME()
+          X_FFTPACK(1,ismp) =        X(inum,1)
+          X_FFTPACK(2:Nfft-1,ismp) = X(inum,3:Nfft)
+          X_FFTPACK(Nfft,ismp) =     X(inum,2)
+          ed_c = ed_c + OMP_GET_WTIME() - st_c
 !
-        st_f = OMP_GET_WTIME()
-        call RFFTMB(num, ione, Nfft, num, X_FFTPACK5(1,ismp), nsize,    &
-     &              WSAVE, lSAVE, WORK(1,ismp), nsize, ierr)
-        ed_f = ed_f + OMP_GET_WTIME() - st_f
+          st_f = OMP_GET_WTIME()
+          call RFFTMB(ione, ione, Nfft, ione, X_FFTPACK(1,ismp), Nfft,  &
+     &                WSAVE, lSAVE, WORK(1,ismp), Nfft, ierr)
+          ed_f = ed_f + OMP_GET_WTIME() - st_f
 !
-        st_c = OMP_GET_WTIME()
-        call swap_prt_fld_from_RFFTMB_smp(ist, num, Nfft, Mmax_smp,     &
-     &                                    X_FFTPACK5(1,ismp), M, X)
-        ed_c = ed_c + OMP_GET_WTIME() - st_c
+          st_c = OMP_GET_WTIME()
+          X(inum,1:Nfft) = X_FFTPACK(1:Nfft,ismp)
+          ed_c = ed_c + OMP_GET_WTIME() - st_c
+        end do
       end do
 !$omp end parallel do
 !
       elapsed_fft = elapsed_fft + ed_f / dble(Nsmp)
       elapsed_cpy = elapsed_cpy + ed_c / dble(Nsmp)
 !
-      end subroutine multi_pin_RFFTMB_smp
+      end subroutine single_pout_RFFTMB_smp
 !
 ! ------------------------------------------------------------------
 !
-      end module multi_pin_FFTPACK_smp
+      end module single_pout_FFTPACK_smp

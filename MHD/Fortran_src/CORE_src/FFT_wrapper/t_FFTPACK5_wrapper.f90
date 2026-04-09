@@ -15,9 +15,9 @@
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !!        type(working_FFTPACK), intent(inout) :: WK
 !!
-!!      subroutine alloc_work_4_FFTPACK_t(Nsmp, Nfft, WK)
+!!      subroutine alloc_work_4_FFTPACK_t(Nsmp, nmax_comp, Nfft, WK)
 !!      subroutine alloc_const_4_FFTPACK_t(nfft, WK)
-!!        integer(kind = kint), intent(in) :: Nsmp, Nfft
+!!        integer(kind = kint), intent(in) :: Nsmp, nmax_comp, Nfft
 !!        type(working_FFTPACK), intent(inout) :: WK
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT
@@ -122,10 +122,10 @@
       end if
 !
       if(WK%iflag_fft_comp .lt. 0) then
-        call alloc_work_4_FFTPACK_t(Nsmp, Nfft, WK)
+        call alloc_work_4_FFTPACK_t(Nsmp, WK%Mmax_smp, Nfft, WK)
       else if( (WK%Mmax_smp*Nfft) .gt. WK%iflag_fft_comp ) then
         call dealloc_work_4_FFTPACK_t(WK)
-        call alloc_work_4_FFTPACK_t(Nsmp, Nfft, WK)
+        call alloc_work_4_FFTPACK_t(Nsmp, WK%Mmax_smp, Nfft, WK)
       end if
 !
       end subroutine verify_wk_FFTPACK_t
@@ -133,13 +133,13 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine alloc_work_4_FFTPACK_t(Nsmp, Nfft, WK)
+      subroutine alloc_work_4_FFTPACK_t(Nsmp, nmax_comp, Nfft, WK)
 !
-      integer(kind = kint), intent(in) :: Nsmp, Nfft
+      integer(kind = kint), intent(in) :: Nsmp, nmax_comp, Nfft
       type(working_FFTPACK), intent(inout) :: WK
 !
 !
-      WK%iflag_fft_comp = WK%Mmax_smp*Nfft
+      WK%iflag_fft_comp = WK%Mmax_smp * Nfft
       allocate( WK%X_FFTPACK5(WK%iflag_fft_comp,Nsmp) )
       allocate( WK%WORK_FFTPACK(WK%iflag_fft_comp,Nsmp) )
       WK%WORK_FFTPACK = 0.0d0

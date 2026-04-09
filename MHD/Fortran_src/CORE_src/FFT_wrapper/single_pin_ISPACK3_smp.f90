@@ -102,7 +102,7 @@
           st_f = OMP_GET_WTIME()
           call FXRTFA(cast_long(ione), Nfft, X(1,j),                    &
      &                IT_ispack(1), T_ispack(1))
-          ed_f = OMP_GET_WTIME() - st_f
+          ed_f = ed_f + OMP_GET_WTIME() - st_f
 !
           st_c = OMP_GET_WTIME()
 !          X(1:2,j) =    X(1:2,j)

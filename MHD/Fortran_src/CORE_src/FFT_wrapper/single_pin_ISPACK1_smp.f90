@@ -110,7 +110,7 @@
           st_f = OMP_GET_WTIME()
           call FTTRUF(ione, Nfft, X(1:Nfft,j), WORK_ispack(1,ismp),     &
      &                IT_ispack(1), T_ispack(1))
-          ed_f = OMP_GET_WTIME() - st_f
+          ed_f = ed_f + OMP_GET_WTIME() - st_f
 !
           st_c = OMP_GET_WTIME()
 !          X(1:2,j) =  X(1:2,j)
