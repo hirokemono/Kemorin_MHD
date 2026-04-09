@@ -120,7 +120,9 @@ m_machine_parameter.o \
 skip_comment_f.o \
 m_fftw_parameters.o \
 normalize_for_FFTW.o \
+multi_pin_fftw3_smp.o \
 FFTW3_multi_wrapper.o \
+calypso_multi_FFTW3.o \
 t_multi_FFTW_wrapper.o \
 \
 m_FFT_size.o      \
