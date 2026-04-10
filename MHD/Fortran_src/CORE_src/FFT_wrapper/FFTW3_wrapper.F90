@@ -179,13 +179,14 @@
           ed_c = ed_c + OMP_GET_WTIME() - st_c
 !
           st_f = OMP_GET_WTIME()
-          call dfftw_execute(plan_forward(ip))
+          call dfftw_execute_dft_r2c(plan_forward(ip),                  &
+     &        X_FFTW(1,ip), C_FFTW(1,ip))
           ed_f = ed_f + OMP_GET_WTIME() - st_f
 !
 !   normalization
           st_c = OMP_GET_WTIME()
-          X(j,1) = aNfft * real(C_FFTW(1,     1))
-          X(j,2) = aNfft * real(C_FFTW(NFFT_c,1))
+          X(j,1) = aNfft * real(C_FFTW(1,     ip))
+          X(j,2) = aNfft * real(C_FFTW(NFFT_c,ip))
           do i = 2, NFFT_c - 1
             X(j,2*i-1) =  two * aNfft * real(C_FFTW(i,ip))
             X(j,2*i  ) = -two * aNfft * imag(C_FFTW(i,ip))
