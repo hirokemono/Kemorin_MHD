@@ -3,6 +3,10 @@
 !!
 !!@author H. Matsui
 !!@date Programmed in Oct., 2009
+!
+!      module t_FFT_selector
+!
+!
 !>@brief  Selector of Fourier transform using structure
 !!
 !!@verbatim
@@ -155,7 +159,6 @@
 !
       real(kind = kreal) :: start
 !
-!
       start = 0.0d0
       start = OMP_GET_WTIME()
 #ifdef FFTW3
@@ -181,7 +184,7 @@
       subroutine verify_FFT_select                                      &
      &         (iflag_FFT, Nsmp, Nstacksmp, Nfft, WKS)
 !
-      use t_FFT_selector
+      use calypso_multi_fftpack
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nfft
@@ -203,8 +206,8 @@
       end if
 #endif
 !
-      if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'
-      call verify_wk_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTPACK)
+        if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'
+        call verify_wk_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTPACK)
 !
       end subroutine verify_FFT_select
 !
