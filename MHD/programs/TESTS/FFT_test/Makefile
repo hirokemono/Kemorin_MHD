@@ -73,7 +73,7 @@ m_machine_parameter.o \
 \
 normalize_for_FFTPACK.o \
 multi_pin_FFTPACK_smp.o \
-FFTPACK5_wrapper.o \
+multi_pout_FFTPACK_smp.o \
 calypso_multi_fftpack.o \
 t_FFTPACK5_wrapper.o \
 \
@@ -90,7 +90,7 @@ transfer_to_long_integers.o \
 normalize_for_ISPACK.o \
 t_ispack_FFT_wrapper.o \
 multi_pin_ISPACK1_smp.o \
-ispack_FFT_wrapper.o \
+multi_pout_ISPACK1_smp.o \
 calypso_multi_ispack.o \
 \
 m_FFT_size.o      \
@@ -103,7 +103,7 @@ m_constants.o \
 m_machine_parameter.o \
 \
 normalize_for_ISPACK.o \
-ispack3_FFT_wrapper.o \
+multi_pout_ISPACK3_smp.o \
 multi_pin_ISPACK3_smp.o \
 t_ispack3_FFT_wrapper.o \
 calypso_multi_ispack3.o \

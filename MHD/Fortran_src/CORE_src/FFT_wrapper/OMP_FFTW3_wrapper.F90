@@ -171,7 +171,7 @@
      &         (plan_forward, Ncomp, Nfft, aNfft, X, Nfft_c, C_FFTW,    &
      &          elapsed_fft, elapsed_cpy)
 !
-      use normalize_for_FFTW
+      use normalize_for_OMP_FFTW
 !
       integer(kind = kint), intent(in) :: Ncomp, Nfft, Nfft_c
       integer(kind = fftw_plan), intent(in) :: plan_forward
@@ -191,7 +191,7 @@
 !
 !   normalization
       st = OMP_GET_WTIME()
-      call normalize_to_rtp_fwd_FFTW(Ncomp, aNfft, NFFT_c, C_FFTW,      &
+      call normalize_to_fwd_OMP_FFTW(Ncomp, aNfft, NFFT_c, C_FFTW,      &
      &                               Nfft, X)
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - st
 !
@@ -203,7 +203,7 @@
      &         (plan_backward, Ncomp, Nfft, X, Nfft_c, C_FFTW,          &
      &          elapsed_fft, elapsed_cpy)
 !
-      use normalize_for_FFTW
+      use normalize_for_OMP_FFTW
 !
       integer(kind = kint), intent(in) :: Ncomp, Nfft, Nfft_c
       integer(kind = fftw_plan), intent(in) :: plan_backward
@@ -217,7 +217,7 @@
 !
 !   normalization
       st = OMP_GET_WTIME()
-      call normalize_to_rtp_bwd_FFTW(Ncomp, Nfft, X, NFFT_c, C_FFTW)
+      call normalize_to_bwd_OMP_FFTW(Ncomp, Nfft, X, NFFT_c, C_FFTW)
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - st
 !
       st = OMP_GET_WTIME()

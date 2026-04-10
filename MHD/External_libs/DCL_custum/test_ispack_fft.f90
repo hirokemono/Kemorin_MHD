@@ -5,7 +5,7 @@
       use m_precision
       use m_constants
 !
-      use ispack_FFT_wrapper
+      use multi_pout_ISPACK1_smp
 !
       implicit none
 !

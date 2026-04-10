@@ -42,7 +42,7 @@ m_machine_parameter.o \
 \
 normalize_for_FFTPACK.o \
 multi_pin_FFTPACK_smp.o \
-FFTPACK5_wrapper.o \
+multi_pout_FFTPACK_smp.o \
 calypso_multi_fftpack.o \
 t_FFTPACK5_wrapper.o \
 \

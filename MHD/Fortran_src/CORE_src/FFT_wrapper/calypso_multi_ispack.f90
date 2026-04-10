@@ -102,7 +102,7 @@
 !
       subroutine init_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WK)
 !
-      use ispack_FFT_wrapper
+      use multi_pout_ISPACK1_smp
 !
       integer(kind = kint), intent(in) ::  Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
@@ -174,7 +174,7 @@
       subroutine FTTRUF_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WK,         &
      &                         elapsed_fft, elapsed_cpy)
 !
-      use ispack_FFT_wrapper
+      use multi_pout_ISPACK1_smp
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
@@ -184,7 +184,7 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call FTTRUF_kemo_smp(Nsmp, Nstacksmp, M, Nfft, X,                 &
+      call multi_pout_FTTRUF_smp(Nsmp, Nstacksmp, M, Nfft, X,           &
      &    WK%X_ispack, WK%Mmax_smp, WK%IT_ispack, WK%T_ispack,          &
      &    WK%WORK_ispack, elapsed_fft, elapsed_cpy)
 !
@@ -195,7 +195,7 @@
       subroutine FTTRUB_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WK,         &
      &                         elapsed_fft, elapsed_cpy)
 !
-      use ispack_FFT_wrapper
+      use multi_pout_ISPACK1_smp
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
@@ -205,7 +205,7 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call FTTRUB_kemo_smp(Nsmp, Nstacksmp, M, Nfft, X,                 &
+      call multi_pout_FTTRUB_smp(Nsmp, Nstacksmp, M, Nfft, X,           &
      &    WK%X_ispack, WK%Mmax_smp, WK%IT_ispack, WK%T_ispack,          &
      &    WK%WORK_ispack, elapsed_fft, elapsed_cpy)
 !

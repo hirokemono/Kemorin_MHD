@@ -103,7 +103,7 @@
 !
       subroutine calypso_single_FXRINI(Nsmp, Nstacksmp, Nfft, WK)
 !
-      use ispack3_FFT_wrapper
+      use multi_pout_ISPACK3_smp
       use transfer_to_long_integers
 !
       integer(kind = kint_gl), intent(in) ::  Nfft

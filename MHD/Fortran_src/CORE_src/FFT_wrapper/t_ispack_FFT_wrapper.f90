@@ -87,7 +87,7 @@
 !
       subroutine verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WK)
 !
-      use ispack_FFT_wrapper
+      use multi_pout_ISPACK1_smp
 !
       integer(kind = kint), intent(in) ::  Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
