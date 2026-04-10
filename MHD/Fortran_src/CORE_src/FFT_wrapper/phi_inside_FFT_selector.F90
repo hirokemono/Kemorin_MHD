@@ -119,6 +119,7 @@
       use calypso_single_ispack3
       use calypso_multi_fftpack
       use calypso_single_fftpack
+      use calypso_multi_FFTW3
       use calypso_single_FFTW3
 !
       integer, intent(in) :: id_rank
@@ -170,6 +171,7 @@
 !
       subroutine fin_pin_FFT_select(iflag_FFT, Nsmp, Nstacksmp, WKS)
 !
+      use calypso_multi_FFTW3
       use calypso_single_FFTW3
 !
       integer(kind = kint), intent(in) :: iflag_FFT
@@ -212,6 +214,7 @@
 !
       use transfer_to_long_integers
       use calypso_multi_fftpack
+      use calypso_multi_FFTW3
       use calypso_single_FFTW3
 !
       integer(kind = kint), intent(in) :: iflag_FFT

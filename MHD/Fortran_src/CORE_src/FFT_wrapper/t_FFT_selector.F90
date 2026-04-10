@@ -129,6 +129,7 @@
       use calypso_single_ispack3
       use calypso_multi_fftpack
       use calypso_single_fftpack
+      use calypso_multi_FFTW3
       use calypso_single_FFTW3
 !
       integer, intent(in) :: id_rank
@@ -182,6 +183,7 @@
 !
       subroutine finalize_FFT_sel_t(iflag_FFT, Nsmp, Nstacksmp, WKS)
 !
+      use calypso_multi_FFTW3
       use calypso_single_FFTW3
 !
       integer(kind = kint), intent(in) :: iflag_FFT
@@ -224,6 +226,7 @@
 !
       use transfer_to_long_integers
       use calypso_multi_fftpack
+      use calypso_multi_FFTW3
       use calypso_single_FFTW3
 !
       integer(kind = kint), intent(in) :: iflag_FFT
@@ -303,7 +306,7 @@
      &                              elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
-        call FFTW_mul_forward_type(Nsmp, Nstacksmp, M, Nfft, X,         &
+        call calypso_multi_pout_fwd_FFTW3(Nsmp, Nstacksmp, M, Nfft, X,  &
      &      WKS%WK_MUL_FFTW, elapsed_fft, elapsed_cpy)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call FFTW_forward_type(Nsmp, Nstacksmp, M, Nfft, X,             &
@@ -362,7 +365,7 @@
      &                              elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
-        call FFTW_mul_backward_type(Nsmp, Nstacksmp, M, Nfft, X,        &
+        call calypso_multi_pout_bwd_FFTW3(Nsmp, Nstacksmp, M, Nfft, X,  &
      &      WKS%WK_MUL_FFTW, elapsed_fft, elapsed_cpy)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call FFTW_backward_type(Nsmp, Nstacksmp, M,                     &

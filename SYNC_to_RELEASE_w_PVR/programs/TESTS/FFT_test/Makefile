@@ -59,7 +59,7 @@ skip_comment_f.o \
 m_fftw_parameters.o \
 normalize_for_FFTW.o \
 multi_pin_FFTW3_smp.o \
-FFTW3_multi_wrapper.o \
+multi_pout_FFTW3_smp.o \
 calypso_multi_FFTW3.o \
 t_multi_FFTW_wrapper.o \
 \
