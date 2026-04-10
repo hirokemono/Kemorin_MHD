@@ -95,7 +95,7 @@
       use m_FFT_selector
       use t_FFTPACK5_wrapper
 !
-      use t_FFTW_wrapper
+      use t_single_FFTW_wrapper
       use t_multi_FFTW_wrapper
 !
       implicit none
@@ -117,6 +117,7 @@
      &          Nsmp, Nstacksmp, Nfft, WKS, elapsed_init)
 !
       use calypso_multi_fftpack
+      use calypso_single_FFTW3
 !
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: iflag_FFT
@@ -152,6 +153,8 @@
 !
       subroutine finalize_FFT_sel_t(iflag_FFT, Nsmp, Nstacksmp, WKS)
 !
+      use calypso_single_FFTW3
+!
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       type(working_FFTs), intent(inout) :: WKS
@@ -185,6 +188,7 @@
      &         (iflag_FFT, Nsmp, Nstacksmp, Nfft, WKS)
 !
       use calypso_multi_fftpack
+      use calypso_single_FFTW3
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nfft

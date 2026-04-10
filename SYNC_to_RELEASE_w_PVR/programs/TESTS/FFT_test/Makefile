@@ -74,11 +74,11 @@ m_machine_parameter.o \
 \
 skip_comment_f.o \
 m_fftw_parameters.o \
+t_single_FFTW_wrapper.o \
 normalize_for_FFTW.o \
 single_pin_FFTW3_smp.o \
-FFTW3_wrapper.o \
+single_pout_FFTW3_smp.o \
 calypso_single_FFTW3.o \
-t_FFTW_wrapper.o \
 \
 m_FFT_size.o      \
 t_fft_test_data.o \
