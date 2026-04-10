@@ -191,8 +191,8 @@
 !
 !   normalization
       st = OMP_GET_WTIME()
-      call normalize_to_rtp_fwd_FFT(Ncomp, aNfft, NFFT_c, C_FFTW,       &
-     &                              Nfft, X)
+      call normalize_to_rtp_fwd_FFTW(Ncomp, aNfft, NFFT_c, C_FFTW,      &
+     &                               Nfft, X)
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - st
 !
       end subroutine forward_mul_OMP_FFTW
@@ -217,7 +217,7 @@
 !
 !   normalization
       st = OMP_GET_WTIME()
-      call normalize_to_rtp_bwd_FFT(Ncomp, Nfft, X, NFFT_c, C_FFTW)
+      call normalize_to_rtp_bwd_FFTW(Ncomp, Nfft, X, NFFT_c, C_FFTW)
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - st
 !
       st = OMP_GET_WTIME()
