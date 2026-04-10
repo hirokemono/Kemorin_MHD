@@ -10,7 +10,7 @@ LIB_MHD_FILE= libcalypso_MHD.a
 SUBDIRS = \
 IO \
 initial_data \
-adial_FDM \
+radial_FDM \
 sph_MHD
 
 #

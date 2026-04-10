@@ -162,36 +162,32 @@
      &                                  :: C_FFTW(NFFT_c,Nsmp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
-      real(kind = kreal) :: st_c, ed_c, st_f, ed_f
+      real(kind = kreal) :: start, ed_c, ed_f
       integer(kind = kint) :: i, j, ip, ist, ied
 !
 !
       ed_c = 0.0d0
       ed_f = 0.0d0
-!$omp parallel do private(i,j,ist,ied,st_c,st_f) reduction(+:ed_c,ed_f)
+!$omp parallel do private(i,j,ist,ied,start) reduction(+:ed_c,ed_f)
       do ip = 1, Nsmp
         ist = Nstacksmp(ip-1) + 1
         ied = Nstacksmp(ip) 
 !
         do j = ist, ied
-          st_c = OMP_GET_WTIME()
+          start = OMP_GET_WTIME()
           X_FFTW(1:Nfft,ip) = X(j,1:Nfft)
-          ed_c = ed_c + OMP_GET_WTIME() - st_c
+          ed_c = ed_c + OMP_GET_WTIME() - start
 !
-          st_f = OMP_GET_WTIME()
+          start = OMP_GET_WTIME()
           call dfftw_execute_dft_r2c(plan_forward(ip),                  &
-     &        X_FFTW(1,ip), C_FFTW(1,ip))
-          ed_f = ed_f + OMP_GET_WTIME() - st_f
+     &                               X_FFTW(1,ip), C_FFTW(1,ip))
+          ed_f = ed_f + OMP_GET_WTIME() - start
 !
 !   normalization
-          st_c = OMP_GET_WTIME()
-          X(j,1) = aNfft * real(C_FFTW(1,     ip))
-          X(j,2) = aNfft * real(C_FFTW(NFFT_c,ip))
-          do i = 2, NFFT_c - 1
-            X(j,2*i-1) =  two * aNfft * real(C_FFTW(i,ip))
-            X(j,2*i  ) = -two * aNfft * imag(C_FFTW(i,ip))
-          end do 
-          ed_c = ed_c + OMP_GET_WTIME() - st_c
+          start = OMP_GET_WTIME()
+          call norm_swap_from_prt_fwd_FFT((j-1), ione, Ncomp, NFFT_c,   &
+     &                                    C_FFTW(1,ip), Nfft, aNfft, X)
+          ed_c = ed_c + OMP_GET_WTIME() - start
         end do
       end do
 !$omp end parallel do
@@ -219,37 +215,34 @@
      &                                  :: C_FFTW(NFFT_c,Nsmp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
-      real(kind = kreal) :: st_c, ed_c, st_f, ed_f
+      real(kind = kreal) :: start, ed_c, ed_f
       integer(kind = kint) :: i, j, ip, ist, ied
 !
 !
       ed_c = 0.0d0
       ed_f = 0.0d0
-!$omp parallel do private(i,j,ist,ied,st_c,st_f) reduction(+:ed_c,ed_f)
+!$omp parallel do private(i,j,ist,ied,start) reduction(+:ed_c,ed_f)
       do ip = 1, Nsmp
         ist = Nstacksmp(ip-1) + 1
         ied = Nstacksmp(ip)
 !
         do j = ist, ied
 !   normalization
-          st_c = OMP_GET_WTIME()
-          C_FFTW(1,ip) = cmplx(X(j,1), zero, kind(0d0))
-          do i = 2, NFFT_c - 1
-            C_FFTW(i,ip) = half * cmplx(X(j,2*i-1), -X(j,2*i),kind(0d0))
-          end do
-          C_FFTW(NFFT_c,ip) = cmplx(X(j,2), zero, kind(0d0))
-          ed_c = ed_c + OMP_GET_WTIME() - st_c
+          start = OMP_GET_WTIME()
+          call norm_swap_to_prt_bwd_FFT((j-1), ione, Ncomp, Nfft, X,    &
+     &                                  NFFT_c, C_FFTW(1,ip))
+          ed_c = ed_c + OMP_GET_WTIME() - start
 !
-          st_f = OMP_GET_WTIME()
+          start = OMP_GET_WTIME()
           call dfftw_execute_dft_c2r(plan_backward(ip),                 &
      &                               C_FFTW(1,ip), X_FFTW(1,ip))
-          ed_f = ed_f + OMP_GET_WTIME() - st_f
+          ed_f = ed_f + OMP_GET_WTIME() - start
 !
-          st_c = OMP_GET_WTIME()
+          start = OMP_GET_WTIME()
           do i = 1, Nfft
             X(j,i) = X_FFTW(i,ip)
           end do
-          ed_c = ed_c + OMP_GET_WTIME() - st_c
+          ed_c = ed_c + OMP_GET_WTIME() - start
         end do
       end do
 !$omp end parallel do

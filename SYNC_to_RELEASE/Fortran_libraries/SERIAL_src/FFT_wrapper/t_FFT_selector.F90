@@ -184,7 +184,6 @@
       subroutine verify_FFT_select                                      &
      &         (iflag_FFT, Nsmp, Nstacksmp, Nfft, WKS)
 !
-      use t_FFT_selector
       use calypso_multi_fftpack
 !
       integer(kind = kint), intent(in) :: iflag_FFT
