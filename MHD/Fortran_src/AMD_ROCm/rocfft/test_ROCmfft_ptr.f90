@@ -211,22 +211,8 @@
         elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-!        call norm_prt_from_fwd_OMP_FFTW                                &
-!     &     (ft1%nfld, aNfft, NFFT_c, x_cplx, ft1%ngrd, ft1%s_k(1,1))
-!$omp parallel workshare
-        x_cplx(1:Nfft_c,1:ft1%nfld) = x_cplx(1:Nfft_c,1:ft1%nfld)      &
-     &                             / dble(ft1%ngrd)
-!$omp end parallel workshare
-!$omp parallel do private(nd,i)
-        do nd = 1, ft1%nfld
-          ft1%s_k(1,nd) = real(x_cplx(1,     nd))
-          ft1%s_k(2,nd) = real(x_cplx(Nfft_c,nd))
-          do i = 2, Nfft_c-1
-            ft1%s_k(2*i-1,nd) =  two * real(x_cplx(i,nd))
-            ft1%s_k(2*i,  nd) = -two * imag(x_cplx(i,nd))
-          end do
-        end do
-!$omp end parallel do
+        call norm_prt_from_fwd_OMP_FFTW                                 &
+     &     (ft1%nfld, aNfft, NFFT_c, x_cplx, ft1%ngrd, ft1%s_k(1,1))
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !
@@ -243,18 +229,8 @@
 !
 !   Backword transform
         start = OMP_GET_WTIME()
-!        call norm_prt_to_bwd_OMP_FFTW(ft1%nfld, ft1%ngrd, ft1%f_x(1,1),&
-!     &                                NFFT_c, y_cplx(1,1))
-!$omp parallel do private(nd,i)
-        do nd = 1, ft1%nfld
-          y_cplx(1,nd) = cmplx(ft1%f_x(1,nd), 0.0d0, kind(0d0))
-          do i = 2, NFFT_c - 1
-            y_cplx(i,nd) =  half * cmplx( ft1%f_x(2*i-1,nd),           &
-     &                                   -ft1%f_x(2*i,  nd), kind(0d0))
-          end do
-          y_cplx(NFFT_c,nd) = cmplx(ft1%f_x(2,nd), 0.0d0, kind(0d0))
-        end do
-!$omp end parallel do
+        call norm_prt_to_bwd_OMP_FFTW(ft1%nfld, ft1%ngrd, ft1%f_x(1,1), &
+     &                                NFFT_c, y_cplx(1,1))
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
