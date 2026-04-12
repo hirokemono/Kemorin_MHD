@@ -183,9 +183,13 @@
         if(mod(icou, 20) .eq. 0) write(*,*) 'loop count: ', icou
 !
         start = OMP_GET_WTIME()
-!$omp parallel workshare
-        ft1%s_k(1:ft1%ngrd,1:ft1%nfld) = ft1%org(1:ft1%ngrd,1:ft1%nfld)
-!$omp end parallel workshare
+!$omp target teams distribute parallel do collapse(2)
+        do nd = 1, ft1%nfld
+          do i = 1, ft1%ngrd
+            ft1%s_k(i,nd) = ft1%org(i,nd)
+          end do
+        end do
+!$omp end target teams distribute parallel do
 !
 !   Forward transform
 !$omp parallel do private(nd,i)
@@ -217,13 +221,13 @@
 !
 !
         start = OMP_GET_WTIME()
-!$omp parallel do private(nd,i)
+!$omp target teams distribute parallel do collapse(2)
         do nd = 1, ft1%nfld
           do i = 1, ft1%ngrd
             ft1%f_x(i,nd) = ft1%s_k(i,nd)
           end do
         end do
-!$omp end parallel do
+!$omp end target teams distribute parallel do
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !

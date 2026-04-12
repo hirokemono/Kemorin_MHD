@@ -14,6 +14,7 @@
 !
       use m_FFT_size
       use t_fft_test_data
+      use normalize_for_OMP_FFTW
 !
       implicit none
 !
@@ -22,6 +23,7 @@
 !
       type(fft_test_data) :: ft1
 !
+      real(kind = kreal), parameter :: aNfft = one / ngrid
       integer(kind = kint), parameter :: Nfft_c = ngrid/2 + 1
       integer(kind = kint), parameter :: Nfft_r = 2*Nfft_c
       real(kind = kreal), allocatable, target :: x_real(:,:)
@@ -168,21 +170,31 @@
         if(mod(icou, 20) .eq. 0) write(*,*) 'loop count: ', icou
 !
         start = OMP_GET_WTIME()
-!$omp parallel workshare
-        ft1%s_k(1:ft1%nfld,1:ft1%ngrd) = ft1%org(1:ft1%nfld,1:ft1%ngrd)
-!$omp end parallel workshare
+!$omp target teams distribute parallel do collapse(2)
+        do i = 1, ft1%ngrd
+          do nd = 1, ft1%nfld
+            ft1%s_k(nd,i) = ft1%org(nd,i)
+          end do
+        end do
+!$omp end target teams distribute parallel do
 !
 !   Forward transform
-!$omp parallel do
+!$omp target teams distribute parallel do collapse(2)
         do i = 1, ft1%ngrd
-          x_real(1:n_field,i) = ft1%s_k(1:n_field,i)
+          do nd = 1, ft1%nfld
+            x_real(nd,i) = ft1%s_k(nd,i)
+          end do
         end do
-!$omp end parallel do
-!$omp parallel do
-        do i = ft1%ngrd+1, Nfft_r
-          x_real(1:n_field,i) = 0.0d0
-        end do
-!$omp end parallel do
+!$omp end target teams distribute parallel do
+        if(ft1%ngrd .lt. Nfft_r) then
+!$omp target teams distribute parallel do collapse(2)
+          do i = ft1%ngrd+1, Nfft_r
+            do nd = 1, ft1%nfld
+              x_real(nd,i) = 0.0d0
+            end do
+          end do
+!$omp end target teams distribute parallel do
+        end if
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
@@ -196,39 +208,25 @@
         elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-!$omp parallel workshare
-        x_cplx(1:ft1%nfld,1:Nfft_c)                                     &
-     &       = x_cplx(1:ft1%nfld,1:Nfft_c) / dble(ft1%ngrd)
-!$omp end parallel workshare
-
-!$omp parallel workshare
-        ft1%s_k(1:ft1%nfld,1) = real(x_cplx(1:ft1%nfld,1))
-        ft1%s_k(1:ft1%nfld,2) = real(x_cplx(1:ft1%nfld,Nfft_c))
-!$omp end parallel workshare
-!$omp parallel do
-        do i = 2, Nfft_c-1
-          ft1%s_k(1:ft1%nfld,2*i-1) =  two * real(x_cplx(1:ft1%nfld,i))
-          ft1%s_k(1:ft1%nfld,2*i  ) = -two * imag(x_cplx(1:ft1%nfld,i))
+        call norm_rtp_from_fwd_OMP_FFTW(ft1%nfld, aNfft,                &
+     &      NFFT_c, x_cplx(1,1), ft1%ngrd, ft1%s_k(1,1))
+        elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
+!
+        start = OMP_GET_WTIME()
+!$omp target teams distribute parallel do collapse(2)
+        do i = 1, ft1%ngrd
+          do nd = 1, ft1%nfld
+            ft1%f_x(nd,i) = ft1%s_k(nd,i)
+          end do
         end do
-!$omp end parallel do
-!$omp parallel workshare
-        ft1%f_x(1:ft1%nfld,1:ft1%ngrd) = ft1%s_k(1:ft1%nfld,1:ft1%ngrd)
-!$omp end parallel workshare
+!$omp end target teams distribute parallel do
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !   Backword transform
 !
         start = OMP_GET_WTIME()
-!$omp parallel workshare
-        y_cplx(1:ft1%nfld,1) =      (ft1%f_x(1:ft1%nfld,1), zero)
-        y_cplx(1:ft1%nfld,Nfft_c) = (ft1%f_x(1:ft1%nfld,2), zero)
-!$omp end parallel workshare
-!$omp parallel do
-        do i = 2, Nfft_c-1
-          y_cplx(1:ft1%nfld,i) = (half * ft1%f_x(1:ft1%nfld,2*i-1),     &
-     &                           -half * ft1%f_x(1:ft1%nfld,2*i  ))
-        end do
-!$omp end parallel do
+        call norm_rtp_to_bwd_OMP_FFTW(ft1%nfld, ft1%ngrd, ft1%f_x(1,1), &
+     &      NFFT_c, y_cplx(1,1))
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
@@ -242,11 +240,13 @@
         elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-!$omp parallel do private(i)
+!$omp target teams distribute parallel do collapse(2)
         do i = 1, ft1%ngrd
-          ft1%f_x(1:ft1%nfld,i) = y_real(1:ft1%nfld,i)
+          do nd = 1, ft1%nfld
+            ft1%f_x(nd,i) = y_real(nd,i)
+          end do
         end do
-!$omp end parallel do
+!$omp end target teams distribute parallel do
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
       end do
 !
