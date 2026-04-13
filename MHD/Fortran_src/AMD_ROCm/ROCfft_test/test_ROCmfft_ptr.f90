@@ -63,94 +63,9 @@
       l_real(1) = ngrid
       l_real(2) = ft1%nfld
 !
-!   Initialize Forward transform
+!   Initialize Fourier transform
       start = OMP_GET_WTIME()
-      fwd%in_strides_size =   1
-      fwd%in_strides(1) =     1
-      fwd%in_distance =       Nfft_r
-      fwd%out_strides_size =  0
-      fwd%out_distance =      0
-!
-      call hipCheck(hipMalloc(fwd%data_ptr, Nbytes))
-      call rocfftCheck                                                  &
-     &   (rocfft_plan_description_create(fwd%ROCfft_description))
-      call rocfftCheck(rocfft_plan_description_set_data_layout          &
-     &                                      (fwd%ROCfft_description,    &
-     &                                       rocfft_array_type_real,    &
-     &                                      rocfft_array_type_unset,    &
-     &                                               fwd%in_offsets,    &
-     &                                              fwd%out_offsets,    &
-     &                                          fwd%in_strides_size,    &
-     &                                     c_loc(fwd%in_strides(1)),    &
-     &                                              fwd%in_distance,    &
-     &                                         fwd%out_strides_size,    &
-     &                                           fwd%strides_nullpo,    &
-     &                                            fwd%out_distance))
-      call rocfftCheck(rocfft_plan_create(fwd%ROCfft_plan,              &
-                                          rocfft_placement_inplace,     &
-                                  rocfft_transform_type_real_forward,   &
-                                          rocfft_precision_double,      &
-                                          ione_c, c_loc(l_real(1)),     &
-                                  l_real(2), fwd%ROCfft_description))
-!
-      call rocfftCheck                                                  &
-     &   (rocfft_plan_get_work_buffer_size(fwd%ROCfft_plan,             &
-     &                                     fwd%ROCfft_wk_buf_size))
-      call rocfftCheck                                                  &
-     &   (rocfft_execution_info_create(fwd%ROCfft_work_info))
-      if(fwd%ROCfft_wk_buf_size > 0) then
-        call hipCheck(hipMalloc(fwd%ROCfft_work_buffer,                 &
-     &                          fwd%ROCfft_wk_buf_size))
-        call rocfftCheck(rocfft_execution_info_set_work_buffer          &
-     &                                        (fwd%ROCfft_work_info,    &
-     &                                         fwd%ROCfft_work_buffer,  &
-     &                                         fwd%ROCfft_wk_buf_size))
-      end if
-!
-!   Initialize Backword transform
-      bwd%in_strides_size =  0
-      bwd%in_distance =      0
-      bwd%out_strides_size = 1
-      bwd%out_strides(1) =   1
-      bwd%out_distance =     Nfft_r
-!
-      call hipCheck(hipMalloc(bwd%data_ptr, Nbytes))
-      call rocfftCheck                                                  &
-     &   (rocfft_plan_description_create(bwd%ROCfft_description))
-      call rocfftCheck(rocfft_plan_description_set_data_layout          &
-     &                                      (bwd%ROCfft_description,    &
-     &                                      rocfft_array_type_unset,    &
-     &                                       rocfft_array_type_real,    &
-     &                                               bwd%in_offsets,    &
-     &                                              bwd%out_offsets,    &
-     &                                          bwd%in_strides_size,    &
-     &                                           bwd%strides_nullpo,    &
-     &                                              bwd%in_distance,    &
-     &                                         bwd%out_strides_size,    &
-     &                                    c_loc(bwd%out_strides(1)),    &
-     &                                            bwd%out_distance))
-!
-      call rocfftCheck(rocfft_plan_create(bwd%ROCfft_plan,              &
-                                          rocfft_placement_inplace,     &
-                                  rocfft_transform_type_real_inverse,   &
-                                          rocfft_precision_double,      &
-                                          ione_c, c_loc(l_real(1)),     &
-                                  l_real(2), bwd%ROCfft_description))
-!
-      call rocfftCheck                                                  &
-     &   (rocfft_plan_get_work_buffer_size(bwd%ROCfft_plan,             &
-     &                                     bwd%ROCfft_wk_buf_size))
-      write(*,*) 'bwd%ROCfft_wk_buf_size', bwd%ROCfft_wk_buf_size
-      call rocfftCheck                                                  &
-     &   (rocfft_execution_info_create(bwd%ROCfft_work_info))
-      if(bwd%ROCfft_wk_buf_size > 0) then
-        call hipCheck(hipMalloc(bwd%ROCfft_work_buffer,                 &
-     &                          bwd%ROCfft_wk_buf_size))
-        call rocfftCheck(rocfft_execution_info_set_work_buffer          &
-     &                                       (bwd%ROCfft_work_info,     &
-     &                                        bwd%ROCfft_work_buffer,   &
-     &                                        bwd%ROCfft_wk_buf_size))
-      end if
+      call calypso_pin_ROCmFFT_init(Nfft_r, Nbytes, l_real, fwd, bwd)
       elapsed(3) = OMP_GET_WTIME() - start
 !
       elapsed(1:2) = zero
@@ -181,13 +96,8 @@
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call hipCheck(hipMemcpy(fwd%data_ptr, c_loc(x_real(1,1)),       &
-     &                          Nbytes, hipMemcpyHostToDevice))
-        call rocfftCheck(rocfft_execute(fwd%ROCfft_plan, fwd%data_ptr,  &
-     &                          c_null_ptr, fwd%ROCfft_work_info))
-        call hipCheck(hipDeviceSynchronize())
-        call hipCheck(hipMemcpy(c_loc(x_cplx(1,1)), fwd%data_ptr,       &
-     &                          Nbytes, hipMemcpyDeviceToHost))
+        call calypso_pin_fwd_ROCmFFT(fwd, ft1%nfld, Nfft_r, x_real,     &
+     &      Nfft_c, x_cplx, Nbytes, fwd%data_ptr)
         elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
@@ -214,13 +124,8 @@
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call hipCheck(hipMemcpy(bwd%data_ptr, c_loc(y_cplx(1,1)),       &
-     &                          Nbytes, hipMemcpyHostToDevice))
-        call rocfftCheck(rocfft_execute(bwd%ROCfft_plan, bwd%data_ptr,  &
-     &                          c_null_ptr, bwd%ROCfft_work_info))
-        call hipCheck(hipDeviceSynchronize())
-        call hipCheck(hipMemcpy(c_loc(y_real(1,1)), bwd%data_ptr,       &
-     &                          Nbytes, hipMemcpyDeviceToHost))
+        call calypso_pin_bwd_ROCmFFT(bwd, n_field, Nfft_c, y_cplx,      &
+     &      Nfft_r, y_real, Nbytes, bwd%data_ptr)
         elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
@@ -236,24 +141,7 @@
 !
 !   Finalize
       start = OMP_GET_WTIME()
-      call rocfftCheck                                                  &
-     &   (rocfft_execution_info_destroy(fwd%ROCfft_work_info))
-      call rocfftCheck                                                  &
-     &   (rocfft_execution_info_destroy(bwd%ROCfft_work_info))
-      if(fwd%ROCfft_wk_buf_size > 0) then
-        call hipCheck(hipFree(fwd%ROCfft_work_buffer))
-      end if
-      if(bwd%ROCfft_wk_buf_size > 0) then
-        call hipCheck(hipFree(bwd%ROCfft_work_buffer))
-      end if
-      call rocfftCheck                                                  &
-     &   (rocfft_plan_description_destroy(bwd%ROCfft_description))
-      call rocfftCheck                                                  &
-     &   (rocfft_plan_description_destroy(fwd%ROCfft_description))
-      call rocfftCheck(rocfft_plan_destroy(bwd%ROCfft_plan))
-      call rocfftCheck(rocfft_plan_destroy(fwd%ROCfft_plan))
-      call hipCheck(hipFree(bwd%data_ptr))
-      call hipCheck(hipFree(fwd%data_ptr))
+      call calypso_pin_ROCmFFT_fin(fwd, bwd)
       deallocate(x_cplx, x_real)
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
