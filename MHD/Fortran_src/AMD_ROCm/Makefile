@@ -4,7 +4,9 @@ TEST_SOURCES  := $(shell find . -name "*.f03" | sed "s,^\./,,g")
 TEST_APPS     := compare_fft_test test_FFTPACK5 test_FFTW3 test_ROCmfft_sgl_rtp test_ROCmfft_ptr test_ROCmfft_rtp
 RUN_TEST_APPS := $(addprefix run., $(TEST_APPS))
 
+ROCFFT_DIR =   ROCfft_test
 FFT_WRAP_DIR = FFT_wrapper
+TEST_SRC_DIR = FFT_test
 
 # FC= hipfc -v
 # FC= amdflang -fopenmp
@@ -48,13 +50,13 @@ rocfft: rocfft.o m_precision.o
 compare_fft_test: $(MOD_CMPR_FFT_TEST)
 	$(F90) $(F90OPTFLAGS) $(F90CPPFLAGS) -o $@ $(MOD_CMPR_FFT_TEST) $(F90LIBS)
 
-test_ROCmfft_rtp: test_ROCmfft_rtp.o t_fft_test_data.o m_FFT_size.o m_machine_parameter.o m_constants.o m_precision.o fftpack5.11d.o
+test_ROCmfft_rtp: test_ROCmfft_rtp.o t_fft_test_data.o normalize_for_OMP_FFTW.o m_FFT_size.o m_machine_parameter.o m_constants.o m_precision.o fftpack5.11d.o
 	$(FC)  $(CFLAGS) $(LDFLAGS) $^ -o $@
 
-test_ROCmfft_ptr: test_ROCmfft_ptr.o t_fft_test_data.o normalize_for_OMP_FFTW.o m_FFT_size.o m_machine_parameter.o m_constants.o m_precision.o fftpack5.11d.o
+test_ROCmfft_ptr: test_ROCmfft_ptr.o t_ROCmFFT_wrapper.o t_fft_test_data.o normalize_for_OMP_FFTW.o m_FFT_size.o m_machine_parameter.o m_constants.o m_precision.o fftpack5.11d.o
 	$(FC)  $(CFLAGS) $(LDFLAGS) $^ -o $@
 
-test_ROCmfft_sgl_rtp: test_ROCmfft_sgl_rtp.o t_fft_test_data.o m_FFT_size.o m_machine_parameter.o m_constants.o m_precision.o fftpack5.11d.o
+test_ROCmfft_sgl_rtp: test_ROCmfft_sgl_rtp.o normalize_for_FFTW.o t_fft_test_data.o m_FFT_size.o m_machine_parameter.o m_constants.o m_precision.o fftpack5.11d.o
 	$(FC)  $(CFLAGS) $(LDFLAGS) $^ -o $@
 
 test_ROCmfft_sgl_prt: test_ROCmfft_sgl_prt.o t_fft_test_data.o m_FFT_size.o m_machine_parameter.o m_constants.o m_precision.o fftpack5.11d.o
@@ -71,24 +73,24 @@ test_FFTW3: $(MOD_FFW3_F_TEST)
 rocfft.o: rocfft.f03 m_precision.o
 	$(FC)  $(CFLAGS) -c $<
 
-test_ROCmfft_rtp.o: test_ROCmfft_rtp.f90 t_fft_test_data.o m_FFT_size.o m_machine_parameter.o m_constants.o m_precision.o
+test_ROCmfft_rtp.o: $(ROCFFT_DIR)/test_ROCmfft_rtp.f90 t_fft_test_data.o normalize_for_OMP_FFTW.o m_FFT_size.o m_machine_parameter.o m_constants.o m_precision.o
+	$(FC)  $(CFLAGS) -c $<
+test_ROCmfft_ptr.o: $(ROCFFT_DIR)/test_ROCmfft_ptr.f90 t_ROCmFFT_wrapper.o t_fft_test_data.o normalize_for_OMP_FFTW.o m_FFT_size.o m_machine_parameter.o m_constants.o m_precision.o
+	$(FC)  $(CFLAGS) -c $<
+test_ROCmfft_sgl_rtp.o: $(ROCFFT_DIR)/test_ROCmfft_sgl_rtp.f90 normalize_for_FFTW.o t_fft_test_data.o m_FFT_size.o m_machine_parameter.o m_constants.o m_precision.o
+	$(FC)  $(CFLAGS) -c $<
+test_ROCmfft_sgl_prt.o: $(ROCFFT_DIR)/test_ROCmfft_sgl_prt.f90 t_fft_test_data.o m_FFT_size.o m_machine_parameter.o m_constants.o m_precision.o
 	$(FC)  $(CFLAGS) -c $<
 
-test_ROCmfft_ptr.o: test_ROCmfft_ptr.f90 t_fft_test_data.o m_FFT_size.o m_machine_parameter.o m_constants.o m_precision.o
-	$(FC)  $(CFLAGS) -c $<
-test_ROCmfft_sgl_rtp.o: test_ROCmfft_sgl_rtp.f90 t_fft_test_data.o m_FFT_size.o m_machine_parameter.o m_constants.o m_precision.o
-	$(FC)  $(CFLAGS) -c $<
-test_ROCmfft_sgl_prt.o: test_ROCmfft_sgl_prt.f90 t_fft_test_data.o m_FFT_size.o normalize_for_OMP_FFTW.o m_machine_parameter.o m_constants.o m_precision.o
-	$(FC)  $(CFLAGS) -c $<
-test_FFTW3.o: test_FFTW3.f90 m_precision.o m_constants.o m_machine_parameter.o m_FFT_size.o t_multi_FFTW_wrapper.o t_fft_test_data.o calypso_multi_FFTW3.o
+test_FFTW3.o: $(TEST_SRC_DIR)/test_FFTW3.f90 m_precision.o m_constants.o m_machine_parameter.o m_FFT_size.o t_multi_FFTW_wrapper.o t_fft_test_data.o calypso_multi_FFTW3.o
 	$(F90) -c $(F90OPTFLAGS) $<
-test_FFTPACK5.o: test_FFTPACK5.f90 m_precision.o m_constants.o m_machine_parameter.o m_FFT_size.o t_fft_test_data.o t_FFTPACK5_wrapper.o calypso_multi_fftpack.o
+test_FFTPACK5.o: $(TEST_SRC_DIR)/test_FFTPACK5.f90 m_precision.o m_constants.o m_machine_parameter.o m_FFT_size.o t_fft_test_data.o t_FFTPACK5_wrapper.o calypso_multi_fftpack.o
 	$(F90) -c $(F90OPTFLAGS) $<
-compare_FFT_test.o: compare_FFT_test.f90 m_precision.o m_constants.o m_machine_parameter.o t_fft_test_data.o
+compare_FFT_test.o: $(TEST_SRC_DIR)/compare_FFT_test.f90 m_precision.o m_constants.o m_machine_parameter.o t_fft_test_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 
-t_fft_test_data.o: t_fft_test_data.f90 m_machine_parameter.o m_machine_parameter.o m_constants.o m_precision.o
-	$(FC)  $(CFLAGS) -c $<
+t_ROCmFFT_wrapper.o: $(ROCFFT_DIR)/t_ROCmFFT_wrapper.f90 m_constants.o m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
 
 m_fftw_parameters.o: $(FFT_WRAP_DIR)/m_fftw_parameters.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -106,31 +108,33 @@ t_FFTPACK5_wrapper.o: $(FFT_WRAP_DIR)/t_FFTPACK5_wrapper.f90 m_precision.o m_con
 	$(F90) -c $(F90OPTFLAGS) $<
 calypso_multi_fftpack.o: $(FFT_WRAP_DIR)/calypso_multi_fftpack.f90 m_precision.o m_constants.o t_FFTPACK5_wrapper.o multi_pout_FFTPACK_smp.o multi_pin_FFTPACK_smp.o
 	$(F90) -c $(F90OPTFLAGS) $<
-normalize_for_FFTPACK.o: $(FFT_WRAP_DIR)/normalize_for_FFTPACK.f90 m_precision.o m_constants.o
-	$(F90) -c $(F90OPTFLAGS) $<
 multi_pin_FFTPACK_smp.o: $(FFT_WRAP_DIR)/multi_pin_FFTPACK_smp.f90 m_precision.o m_constants.o normalize_for_FFTPACK.o
 	$(F90) -c $(F90OPTFLAGS) $<
 multi_pout_FFTPACK_smp.o: $(FFT_WRAP_DIR)/multi_pout_FFTPACK_smp.f90 m_precision.o m_constants.o normalize_for_FFTPACK.o
 	$(F90) -c $(F90OPTFLAGS) $<
 
+normalize_for_FFTPACK.o: $(FFT_WRAP_DIR)/normalize_for_FFTPACK.f90 m_precision.o m_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
 normalize_for_FFTW.o: $(FFT_WRAP_DIR)/normalize_for_FFTW.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 normalize_for_OMP_FFTW.o: $(FFT_WRAP_DIR)/normalize_for_OMP_FFTW.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 
-m_FFT_size.o: m_FFT_size.f90 m_precision.o
+t_fft_test_data.o: $(TEST_SRC_DIR)/t_fft_test_data.f90 m_machine_parameter.o m_machine_parameter.o m_constants.o m_precision.o
+	$(FC)  $(CFLAGS) -c $<
+m_FFT_size.o: $(TEST_SRC_DIR)/m_FFT_size.f90 m_precision.o
 	$(FC)  $(CFLAGS) -c $<
 
-m_machine_parameter.o: m_machine_parameter.f90 m_precision.o
+m_machine_parameter.o: $(TEST_SRC_DIR)/m_machine_parameter.f90 m_precision.o
 	$(FC)  $(CFLAGS) -c $<
 
-m_constants.o: m_constants.f90 m_precision.o
+m_constants.o: $(TEST_SRC_DIR)/m_constants.f90 m_precision.o
 	$(FC)  $(CFLAGS) -c $<
 
-m_precision.o: m_precision.f90
+m_precision.o: $(TEST_SRC_DIR)/m_precision.f90
 	$(FC)  $(CFLAGS) -c $<
 
-fftpack5.11d.o: fftpack5.11d.f90
+fftpack5.11d.o: $(TEST_SRC_DIR)/fftpack5.11d.f90
 	$(FC)  $(CFLAGS) -c $<
 
 

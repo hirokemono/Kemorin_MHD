@@ -14,6 +14,7 @@
 !
       use m_FFT_size
       use t_fft_test_data
+      use normalize_for_FFTW
 !
       implicit none
 !
@@ -23,6 +24,7 @@
 !
       type(fft_test_data) :: ft1
 !
+      real(kind = kreal), parameter ::   aNfft = one / ngrid
       integer(kind = kint), parameter :: Nfft_c = ngrid/2 + 1
       integer(kind = kint), parameter :: Nfft =   2*Nfft_c
       real(kind = kreal), allocatable, target :: x_real(:)
@@ -105,18 +107,20 @@
           elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
           start = OMP_GET_WTIME()
-!$omp parallel workshare
-          x_cplx(1:Nfft_c) = x_cplx(1:Nfft_c) / dble(ft1%ngrd)
-!$omp end parallel workshare
+          call norm_swap_from_prt_fwd_FFTW((nd-1), ione, ft1%nfld,      &
+     &        NFFT_c, x_cplx(1), ft1%ngrd, aNfft, ft1%s_k(1,1))
+!!$omp parallel workshare
+!          x_cplx(1:Nfft_c) = x_cplx(1:Nfft_c) / dble(ft1%ngrd)
+!!$omp end parallel workshare
 !
-          ft1%s_k(nd,1) = real(x_cplx(1)   )
-          ft1%s_k(nd,2) = real(x_cplx(Nfft_c))
-!$omp parallel do
-          do i = 2, Nfft_c-1
-            ft1%s_k(nd,2*i-1) =  two * real(x_cplx(i))
-            ft1%s_k(nd,2*i  ) = -two * imag(x_cplx(i))
-          end do
-!$omp end parallel do
+!          ft1%s_k(nd,1) = real(x_cplx(1)   )
+!          ft1%s_k(nd,2) = real(x_cplx(Nfft_c))
+!!$omp parallel do
+!          do i = 2, Nfft_c-1
+!            ft1%s_k(nd,2*i-1) =  two * real(x_cplx(i))
+!            ft1%s_k(nd,2*i  ) = -two * imag(x_cplx(i))
+!          end do
+!!$omp end parallel do
           elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
         end do
 !
@@ -131,14 +135,8 @@
 !   Backword transform
         do nd = 1, ft1%nfld
           start = OMP_GET_WTIME()
-          y_cplx(1) = cmplx(ft1%f_x(nd,1), 0.0d0, kind(0d0))
-!$omp parallel do
-          do i = 2, Nfft_c-1
-            y_cplx(i) = half * cmplx(ft1%f_x(nd,2*i-1),                 &
-     &                              -ft1%f_x(nd,2*i  ), kind(0d0))
-          end do
-!$omp end parallel do
-          y_cplx(Nfft_c) = cmplx(ft1%f_x(nd,2), 0.0d0, kind(0d0))
+          call norm_swap_to_prt_bwd_FFTW((nd-1), ione, ft1%nfld,        &
+     &        ft1%ngrd, ft1%f_x(1,1),  NFFT_c, y_cplx(1))
           elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
           start = OMP_GET_WTIME()
