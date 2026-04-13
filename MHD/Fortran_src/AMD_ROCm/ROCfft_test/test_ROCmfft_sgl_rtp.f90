@@ -188,16 +188,10 @@
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call hipCheck                                                   &
-     &     (hipMemcpy(WK_fwd%data_ptr, c_loc(WK_fwd%X_ROCmFFT(1,1)),    &
-     &                WK_fwd%Nbytes, hipMemcpyHostToDevice))
-        call rocfftCheck                                                &
-     &     (rocfft_execute(fwd%ROCfft_plan, WK_fwd%data_ptr,            &
-     &                     c_null_ptr, fwd%ROCfft_wk_info))
-        call hipCheck(hipDeviceSynchronize())
-        call hipCheck                                                   &
-     &     (hipMemcpy(c_loc(WK_fwd%C_ROCmFFT(1,1)), WK_fwd%data_ptr,    &
-     &                WK_fwd%Nbytes, hipMemcpyDeviceToHost))
+        call calypso_forward_ROCmFFT(fwd,                               &
+     &                            WK_fwd%Nfft_r, WK_fwd%X_ROCmFFT(1,1), &
+     &                            WK_fwd%Nfft_c, WK_fwd%C_ROCmFFT(1,1), &
+     &                            WK_fwd%Nbytes, WK_fwd%data_ptr)
         elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
@@ -223,16 +217,10 @@
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call hipCheck                                                   &
-     &     (hipMemcpy(WK_bwd%data_ptr, c_loc(WK_bwd%C_ROCmFFT(1,1)),    &
-     &                WK_bwd%Nbytes, hipMemcpyHostToDevice))
-        call rocfftCheck                                                &
-     &     (rocfft_execute(bwd%ROCfft_plan, WK_bwd%data_ptr,            &
-     &                     c_null_ptr, bwd%ROCfft_wk_info))
-        call hipCheck(hipDeviceSynchronize())
-        call hipCheck                                                   &
-     &     (hipMemcpy(c_loc(WK_bwd%X_ROCmFFT(1,1)), WK_bwd%data_ptr,    &
-     &                WK_bwd%Nbytes, hipMemcpyDeviceToHost))
+        call calypso_backward_ROCmFFT(bwd,                              &
+     &                            WK_bwd%Nfft_c, WK_bwd%C_ROCmFFT(1,1), &
+     &                            WK_bwd%Nfft_r, WK_bwd%X_ROCmFFT(1,1), &
+     &                            WK_bwd%Nbytes, WK_bwd%data_ptr)
         elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
@@ -248,20 +236,7 @@
 !
 !   Finalize
       start = OMP_GET_WTIME()
-      call rocfftCheck                                                  &
-     &   (rocfft_execution_info_destroy(fwd%ROCfft_wk_info))
-      call rocfftCheck                                                  &
-     &   (rocfft_execution_info_destroy(bwd%ROCfft_wk_info))
-      if(fwd%ROCfft_wk_buf_size > 0) call hipCheck(hipFree(fwd%ROCfft_wk_buffer))
-      if(bwd%ROCfft_wk_buf_size > 0) call hipCheck(hipFree(bwd%ROCfft_wk_buffer))
-      call rocfftCheck                                                  &
-     &   (rocfft_plan_description_destroy(bwd%ROCfft_description))
-      call rocfftCheck                                                  &
-     &   (rocfft_plan_description_destroy(fwd%ROCfft_description))
-      call rocfftCheck(rocfft_plan_destroy(bwd%ROCfft_plan))
-      call rocfftCheck(rocfft_plan_destroy(fwd%ROCfft_plan))
-      call hipCheck(hipFree(WK_fwd%data_ptr))
-      call hipCheck(hipFree(WK_bwd%data_ptr))
+      call calypso_pin_ROCmFFT_fin(fwd, WK_fwd, bwd, WK_bwd)
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
   10  continue

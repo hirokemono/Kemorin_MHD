@@ -21,21 +21,19 @@
 !!        type(c_ptr), intent(inout), target :: bwd_data_ptr
 !! ------------------------------------------------------------------
 !!
-!!      subroutine calypso_pin_fwd_ROCmFFT(fwd, n_field,                &
-!!     &          Nfft_r, X_ROCmFFT, Nfft_c, C_ROCmFFT,                 &
-!!     &          Nbytes, data_ptr)
+!! wrapper subroutine for forward Fourier transform by FFTW3
+!!      subroutine calypso_forward_ROCmFFT(fwd, Nfft_r, X_ROCmFFT,      &
+!!     &          Nfft_c, C_ROCmFFT, Nbytes, data_ptr)
 !!        type(calypso_ROCmfft_params), intent(in), target :: fwd
-!!        integer(kind = kint) :: n_field
-!!        integer(c_size_t), intent(in) :: Nfft_r, Nfft_c
+!!        integer(kind = kint), intent(in) :: Nfft_r, Nfft_c
 !!        integer(c_size_t), intent(in) :: Nbytes
 !!        real(kind = kreal), intent(in), target                        &
-!!     &                   :: X_ROCmFFT(Nfft_r,n_field)
+!!     &                   :: X_ROCmFFT(Nfft_r*fwd%Ncomp)
 !!        complex(kind = kreal), intent(inout), target                  &
-!!     &                   :: C_ROCmFFT(Nfft_c,n_field)
+!!     &                   :: C_ROCmFFT(Nfft_c*fwd%Ncomp)
 !!        type(c_ptr), intent(inout) :: data_ptr
 !! ------------------------------------------------------------------
 !!
-!! wrapper subroutine for forward Fourier transform by FFTW3
 !!
 !!   a_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\frac{2\pi j k}{Nfft})
 !!   b_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\frac{2\pi j k}{Nfft})
@@ -46,17 +44,15 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine calypso_pin_bwd_ROCmFFT(bwd, n_field,                &
-!!     &          Nfft_c, C_ROCmFFT, Nfft_r, X_ROCmFFT,                 &
-!!     &          Nbytes, data_ptr)
+!!      subroutine calypso_backward_ROCmFFT(bwd, Nfft_c, C_ROCmFFT,     &
+!!     &          Nfft_r, X_ROCmFFT, Nbytes, data_ptr)
 !!        type(calypso_ROCmfft_params), intent(in), target :: bwd
-!!        integer(kind = kint) :: n_field
-!!        integer(c_size_t), intent(in) :: Nfft_r, Nfft_c
+!!        integer(kind = kint), intent(in) :: Nfft_r, Nfft_c
 !!        integer(c_size_t), intent(in) :: Nbytes
 !!        complex(kind = kreal), intent(in), target                     &
-!!     &                   :: C_ROCmFFT(Nfft_c,n_field)
+!!     &                   :: C_ROCmFFT(Nfft_c*bwd%Ncomp)
 !!        real(kind = kreal), intent(inout), target                     &
-!!     &                   :: X_ROCmFFT(Nfft_r,n_field)
+!!     &                   :: X_ROCmFFT(Nfft_r*bwd%Ncomp)
 !!        type(c_ptr), intent(inout) :: data_ptr
 !! ------------------------------------------------------------------
 !!
@@ -196,6 +192,7 @@
       fwd%in_strides(1) =     1
       fwd%in_distance =       WK_fwd%Nfft_r
       fwd%out_strides_size =  0
+      fwd%out_strides(1) =    1
       fwd%out_distance =      0
 !
       call hipCheck(hipMalloc(WK_fwd%data_ptr, WK_fwd%Nbytes))
@@ -211,7 +208,7 @@
      &                                     c_loc(fwd%in_strides(1)),    &
      &                                              fwd%in_distance,    &
      &                                         fwd%out_strides_size,    &
-     &                                           fwd%strides_nullpo,    &
+     &                                    c_loc(fwd%out_strides(1)),    &
      &                                            fwd%out_distance))
       call rocfftCheck(rocfft_plan_create(fwd%ROCfft_plan,              &
                                           rocfft_placement_inplace,     &
@@ -258,7 +255,8 @@
 !$omp end parallel workshare
 !
 !   Initialize Backword transform
-      bwd%in_strides_size =  0
+      bwd%in_strides_size =  1
+      bwd%in_strides(1) =    1
       bwd%in_distance =      0
       bwd%out_strides_size = 1
       bwd%out_strides(1) =   1
@@ -274,7 +272,7 @@
      &                                               bwd%in_offsets,    &
      &                                              bwd%out_offsets,    &
      &                                          bwd%in_strides_size,    &
-     &                                           bwd%strides_nullpo,    &
+     &                                     c_loc(bwd%in_strides(1)),    &
      &                                              bwd%in_distance,    &
      &                                         bwd%out_strides_size,    &
      &                                    c_loc(bwd%out_strides(1)),    &
@@ -342,7 +340,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_pin_fwd_ROCmFFT(fwd, Nfft_r, X_ROCmFFT,        &
+      subroutine calypso_forward_ROCmFFT(fwd, Nfft_r, X_ROCmFFT,        &
      &          Nfft_c, C_ROCmFFT, Nbytes, data_ptr)
 !
       use hipfort
@@ -353,26 +351,26 @@
       integer(kind = kint), intent(in) :: Nfft_r, Nfft_c
       integer(c_size_t), intent(in) :: Nbytes
       real(kind = kreal), intent(in), target                            &
-     &                   :: X_ROCmFFT(Nfft_r,fwd%Ncomp)
+     &                   :: X_ROCmFFT(Nfft_r*fwd%Ncomp)
 !
       complex(kind = kreal), intent(inout), target                      &
-     &                   :: C_ROCmFFT(Nfft_c,fwd%Ncomp)
+     &                   :: C_ROCmFFT(Nfft_c*fwd%Ncomp)
       type(c_ptr), intent(inout) :: data_ptr
 !
 !
-      call hipCheck(hipMemcpy(data_ptr, c_loc(X_ROCmFFT(1,1)),          &
+      call hipCheck(hipMemcpy(data_ptr, c_loc(X_ROCmFFT(1)),            &
      &                        Nbytes, hipMemcpyHostToDevice))
       call rocfftCheck(rocfft_execute(fwd%ROCfft_plan, data_ptr,        &
-     &                        c_null_ptr, fwd%ROCfft_wk_info))
+     &                                c_null_ptr, fwd%ROCfft_wk_info))
       call hipCheck(hipDeviceSynchronize())
-      call hipCheck(hipMemcpy(c_loc(C_ROCmFFT(1,1)), data_ptr,          &
+      call hipCheck(hipMemcpy(c_loc(C_ROCmFFT(1)), data_ptr,            &
      &                        Nbytes, hipMemcpyDeviceToHost))
 !
-      end subroutine calypso_pin_fwd_ROCmFFT
+      end subroutine calypso_forward_ROCmFFT
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_pin_bwd_ROCmFFT(bwd, Nfft_c, C_ROCmFFT,        &
+      subroutine calypso_backward_ROCmFFT(bwd, Nfft_c, C_ROCmFFT,       &
      &          Nfft_r, X_ROCmFFT, Nbytes, data_ptr)
 !
       use hipfort
@@ -383,22 +381,22 @@
       integer(kind = kint), intent(in) :: Nfft_r, Nfft_c
       integer(c_size_t), intent(in) :: Nbytes
       complex(kind = kreal), intent(in), target                         &
-     &                   :: C_ROCmFFT(Nfft_c,bwd%Ncomp)
+     &                   :: C_ROCmFFT(Nfft_c*bwd%Ncomp)
 !
       real(kind = kreal), intent(inout), target                         &
-     &                   :: X_ROCmFFT(Nfft_r,bwd%Ncomp)
+     &                   :: X_ROCmFFT(Nfft_r*bwd%Ncomp)
       type(c_ptr), intent(inout) :: data_ptr
 !
 !
-        call hipCheck(hipMemcpy(data_ptr, c_loc(C_ROCmFFT(1,1)),        &
-     &                          Nbytes, hipMemcpyHostToDevice))
-        call rocfftCheck(rocfft_execute(bwd%ROCfft_plan, data_ptr,      &
-     &                          c_null_ptr, bwd%ROCfft_wk_info))
-        call hipCheck(hipDeviceSynchronize())
-        call hipCheck(hipMemcpy(c_loc(X_ROCmFFT(1,1)), data_ptr,        &
-     &                          Nbytes, hipMemcpyDeviceToHost))
+      call hipCheck(hipMemcpy(data_ptr, c_loc(C_ROCmFFT(1)),            &
+     &                        Nbytes, hipMemcpyHostToDevice))
+      call rocfftCheck(rocfft_execute(bwd%ROCfft_plan, data_ptr,        &
+     &                                c_null_ptr, bwd%ROCfft_wk_info))
+      call hipCheck(hipDeviceSynchronize())
+      call hipCheck(hipMemcpy(c_loc(X_ROCmFFT(1)), data_ptr,            &
+     &                        Nbytes, hipMemcpyDeviceToHost))
 !
-      end subroutine calypso_pin_bwd_ROCmFFT
+      end subroutine calypso_backward_ROCmFFT
 !
 ! ------------------------------------------------------------------
 !
