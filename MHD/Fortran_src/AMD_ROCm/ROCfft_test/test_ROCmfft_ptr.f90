@@ -24,19 +24,10 @@
 !
       type(fft_test_data) :: ft1
 !
-      real(kind = kreal), parameter :: aNfft = one / ngrid
-      integer(kind = kint), parameter :: Nfft_c = ngrid/2 + 1
-      integer(kind = kint), parameter :: Nfft_r = 2*Nfft_c
-      complex(kind = kreal), allocatable, target :: x_cplx(:,:)
-      real(kind = kreal), allocatable, target :: x_real(:,:)
-      complex(kind = kreal), allocatable, target :: y_cplx(:,:)
-      real(kind = kreal), allocatable, target :: y_real(:,:)
-      integer(c_size_t) :: Nbytes = Nfft_r * n_field * kreal
-      integer(c_size_t), parameter :: ione_c =  ione
-      integer(c_size_t), allocatable, target :: l_real(:)
-!
       type(calypso_ROCmfft_params), target :: fwd
       type(calypso_ROCmfft_params), target :: bwd
+      type(calypso_ROCmfft_work), target :: WK_fwd
+      type(calypso_ROCmfft_work), target :: WK_bwd
 !
       integer(kind = kint) :: i, nd, icou
 !
@@ -45,27 +36,10 @@
       call init_fft_test_data(n_field, ngrid, ft1)
       call swap_fft_test_input_to_pin(ft1)
 !
-      allocate(x_real(Nfft_r,n_field))
-      allocate(y_real(Nfft_r,n_field))
-!$omp parallel workshare
-      x_real(1:Nfft_r,1:n_field) = 0.0d0
-      y_real(1:Nfft_r,1:n_field) = 0.0d0
-!$omp end parallel workshare
-!
-      allocate(x_cplx(Nfft_c,n_field))
-      allocate(y_cplx(Nfft_c,n_field))
-!$omp parallel workshare
-      x_cplx(1:Nfft_c,1:n_field) = 0.0d0
-      y_cplx(1:Nfft_c,1:n_field) = 0.0d0
-!$omp end parallel workshare
-!
-      allocate(l_real(2))
-      l_real(1) = ngrid
-      l_real(2) = ft1%nfld
-!
 !   Initialize Fourier transform
       start = OMP_GET_WTIME()
-      call calypso_pin_ROCmFFT_init(Nfft_r, Nbytes, l_real, fwd, bwd)
+      call calypso_pin_ROCmFFT_init(n_field, ngrid,                     &
+     &                              fwd, WK_fwd, bwd, WK_bwd)
       elapsed(3) = OMP_GET_WTIME() - start
 !
       elapsed(1:2) = zero
@@ -86,23 +60,25 @@
 !$omp parallel do private(nd,i)
         do nd = 1, ft1%nfld
           do i = 1, ft1%ngrd
-            x_real(i,nd) = ft1%s_k(i,nd)
+            WK_fwd%X_ROCmFFT(i,nd) = ft1%s_k(i,nd)
           end do
-          do i = ft1%ngrd+1, Nfft_r
-            x_real(i,nd) = zero
+          do i = ft1%ngrd+1, WK_fwd%Nfft_r
+            WK_fwd%X_ROCmFFT(i,nd) = zero
           end do
         end do
 !$omp end parallel do
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call calypso_pin_fwd_ROCmFFT(fwd, ft1%nfld, Nfft_r, x_real,     &
-     &      Nfft_c, x_cplx, Nbytes, fwd%data_ptr)
+        call calypso_pin_fwd_ROCmFFT(fwd,                               &
+     &                               WK_fwd%Nfft_r, WK_fwd%X_ROCmFFT,   &
+     &                               WK_fwd%Nfft_c, WK_fwd%C_ROCmFFT,   &
+     &                               WK_fwd%Nbytes, WK_fwd%data_ptr)
         elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call norm_prt_from_fwd_OMP_FFTW                                 &
-     &     (ft1%nfld, aNfft, NFFT_c, x_cplx, ft1%ngrd, ft1%s_k(1,1))
+        call norm_prt_from_fwd_OMP_FFTW(ft1%nfld, WK_fwd%aNfft,         &
+     &      WK_fwd%NFFT_c, WK_fwd%C_ROCmFFT, ft1%ngrd, ft1%s_k(1,1))
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !
@@ -120,19 +96,21 @@
 !   Backword transform
         start = OMP_GET_WTIME()
         call norm_prt_to_bwd_OMP_FFTW(ft1%nfld, ft1%ngrd, ft1%f_x(1,1), &
-     &                                NFFT_c, y_cplx(1,1))
+     &      WK_bwd%Nfft_c, WK_bwd%C_ROCmFFT(1,1))
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call calypso_pin_bwd_ROCmFFT(bwd, n_field, Nfft_c, y_cplx,      &
-     &      Nfft_r, y_real, Nbytes, bwd%data_ptr)
+        call calypso_pin_bwd_ROCmFFT(bwd,                               &
+     &                               WK_bwd%Nfft_c, WK_bwd%C_ROCmFFT,   &
+     &                               WK_bwd%Nfft_r, WK_bwd%X_ROCmFFT,   &
+     &                               WK_bwd%Nbytes, WK_bwd%data_ptr)
         elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
 !$omp parallel do private(nd,i)
         do nd = 1, ft1%nfld
           do i = 1, ft1%ngrd
-            ft1%f_x(i,nd) = y_real(i,nd)
+            ft1%f_x(i,nd) = WK_bwd%X_ROCmFFT(i,nd)
           end do
         end do
 !$omp end parallel do
@@ -141,8 +119,7 @@
 !
 !   Finalize
       start = OMP_GET_WTIME()
-      call calypso_pin_ROCmFFT_fin(fwd, bwd)
-      deallocate(x_cplx, x_real)
+      call calypso_pin_ROCmFFT_fin(fwd, WK_fwd, bwd, WK_bwd)
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
   10  continue
