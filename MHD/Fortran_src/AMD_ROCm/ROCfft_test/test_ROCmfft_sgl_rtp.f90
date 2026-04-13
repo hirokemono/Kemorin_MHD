@@ -29,33 +29,14 @@
       type(calypso_ROCmfft_work), target :: WK_fwd
       type(calypso_ROCmfft_work), target :: WK_bwd
 !
-      real(kind = kreal), parameter :: aNfft = one / ngrid
-      integer(kind = kint), parameter :: Nfft_c = ngrid/2 + 1
-      integer(kind = kint), parameter :: Nfft_r = 2*Nfft_c
       real(kind = kreal), allocatable, target :: x_real(:,:)
       real(kind = kreal), allocatable, target :: y_real(:,:)
       complex(kind = kreal), allocatable, target :: x_cplx(:,:)
       complex(kind = kreal), allocatable, target :: y_cplx(:,:)
 !
-      integer(c_size_t) :: Nbytes = Nfft_r * n_field * kreal
       integer(c_size_t), parameter :: ione_c =  ione
       type(c_ptr) :: dx = c_null_ptr
       integer(c_size_t), allocatable, target :: l_real(:)
-!
-      type(c_ptr) :: plan_fwd = c_null_ptr
-      type(c_ptr) :: descriptor_fwd = c_null_ptr
-!
-      integer(c_size_t) :: fwd_wk_buf_size = 0
-      type(c_ptr) :: fwd_wk_info =   c_null_ptr
-      type(c_ptr) :: fwd_wk_buffer = c_null_ptr
-!
-      type(c_ptr) :: plan_bwd = c_null_ptr
-      type(c_ptr) :: in_offsets_bwd =  c_null_ptr
-      type(c_ptr) :: out_offsets_bwd = c_null_ptr
-!
-      integer(c_size_t) :: bwd_wk_buf_size = 0
-      type(c_ptr) :: bwd_wk_info =   c_null_ptr
-      type(c_ptr) :: bwd_wk_buffer = c_null_ptr
 !
       integer(kind = kint) :: i, nd
       integer(kind = kint) :: icou
@@ -65,18 +46,23 @@
       write(*,*) 'Number of threads:  ', np_smp
       call init_fft_test_data(n_field, ngrid, ft1)
 !
-      allocate(x_real(n_field,Nfft_r))
-      allocate(y_real(n_field,Nfft_r))
+      call calypso_ROCmFFT_set_size(n_field, ngrid, fwd, WK_fwd)
+      call calypso_ROCmFFT_set_size(n_field, ngrid, bwd, WK_bwd)
+!
+      allocate(x_real(n_field,WK_fwd%Nfft_r))
+      allocate(y_real(n_field,WK_bwd%Nfft_r))
 !$omp parallel workshare
-      x_real(1:n_field,1:Nfft_r) = 0.0d0
-      y_real(1:n_field,1:Nfft_r) = 0.0d0
+      x_real(1:n_field,1:WK_fwd%Nfft_r) = 0.0d0
+!$omp end parallel workshare
+!$omp parallel workshare
+      y_real(1:n_field,1:WK_bwd%Nfft_r) = 0.0d0
 !$omp end parallel workshare
 !
-      allocate(x_cplx(n_field,Nfft_c))
-      allocate(y_cplx(n_field,Nfft_c))
+      allocate(x_cplx(n_field,WK_fwd%Nfft_c))
+      allocate(y_cplx(n_field,WK_bwd%Nfft_c))
 !$omp parallel workshare
-      x_cplx(1:n_field,1:Nfft_c) = 0.0d0
-      y_cplx(1:n_field,1:Nfft_c) = 0.0d0
+      x_cplx(1:n_field,1:WK_fwd%Nfft_c) = 0.0d0
+      y_cplx(1:n_field,1:WK_bwd%Nfft_c) = 0.0d0
 !$omp end parallel workshare
 !
 !
@@ -94,11 +80,12 @@
       fwd%out_strides(1) = n_field
       fwd%out_distance = 1
 !
-      call hipCheck(hipMalloc(dx,Nbytes))
+      call hipCheck(hipMalloc(dx,WK_fwd%Nbytes))
 !
-      call rocfftCheck(rocfft_plan_description_create(descriptor_fwd))
+      call rocfftCheck                                                  &
+     &   (rocfft_plan_description_create(fwd%ROCfft_description))
       call rocfftCheck(rocfft_plan_description_set_data_layout          &
-     &                                      (descriptor_fwd,            &
+     &                                      (fwd%ROCfft_description,    &
      &                                       rocfft_array_type_real,    &
      &                                      rocfft_array_type_unset,    &
      &                                               fwd%in_offsets,    &
@@ -109,23 +96,26 @@
      &                                         fwd%out_strides_size,    &
      &                                    c_loc(fwd%out_strides(1)),    &
      &                                            fwd%out_distance))
-      call rocfftCheck(rocfft_plan_create(plan_fwd,                     &
+      call rocfftCheck(rocfft_plan_create(fwd%ROCfft_plan,              &
      &                                    rocfft_placement_inplace,     &
      &                          rocfft_transform_type_real_forward,     &
      &                                    rocfft_precision_double,      &
      &                                    ione_c, c_loc(l_real(1)),     &
-     &                              l_real(2), descriptor_fwd))
+     &                           l_real(2), fwd%ROCfft_description))
 !
-      call rocfftCheck(rocfft_plan_get_work_buffer_size(plan_fwd,       &
-     &                                             fwd_wk_buf_size))
-      write(*,*) 'fwd_wk_buf_size', fwd_wk_buf_size
-      call rocfftCheck(rocfft_execution_info_create(fwd_wk_info))
-      if(fwd_wk_buf_size > 0) then
-        call hipCheck(hipMalloc(fwd_wk_buffer, fwd_wk_buf_size))
+      call rocfftCheck                                                  &
+     &   (rocfft_plan_get_work_buffer_size(fwd%ROCfft_plan,             &
+     &                                     fwd%ROCfft_wk_buf_size))
+      write(*,*) 'fwd%ROCfft_wk_buf_size', fwd%ROCfft_wk_buf_size
+      call rocfftCheck                                                  &
+     &   (rocfft_execution_info_create(fwd%ROCfft_wk_info))
+      if(fwd%ROCfft_wk_buf_size > 0) then
+        call hipCheck(hipMalloc(fwd%ROCfft_wk_buffer,                   &
+     &                          fwd%ROCfft_wk_buf_size))
         call rocfftCheck(rocfft_execution_info_set_work_buffer          &
-     &                                                 (fwd_wk_info,    &
-     &                                                  fwd_wk_buffer,  &
-     &                                              fwd_wk_buf_size))
+     &                                          (fwd%ROCfft_wk_info,    &
+     &                                         fwd%ROCfft_wk_buffer,    &
+     &                                       fwd%ROCfft_wk_buf_size))
       end if
 !
 !   Initialize Backword transform
@@ -151,23 +141,26 @@
      &                                    c_loc(bwd%out_strides(1)),    &
      &                                            bwd%out_distance))
 !
-      call rocfftCheck(rocfft_plan_create(plan_bwd,                     &
+      call rocfftCheck(rocfft_plan_create(bwd%ROCfft_plan,              &
      &                                    rocfft_placement_inplace,     &
      &                            rocfft_transform_type_real_inverse,   &
      &                                    rocfft_precision_double,      &
      &                                    ione_c, c_loc(l_real(1)),     &
      &                            l_real(2), bwd%ROCfft_description))
 !
-      call rocfftCheck(rocfft_plan_get_work_buffer_size(plan_bwd,       &
-     &                                              bwd_wk_buf_size))
-      write(*,*) 'bwd_wk_buf_size', bwd_wk_buf_size
-      call rocfftCheck(rocfft_execution_info_create(bwd_wk_info))
-      if(bwd_wk_buf_size > 0) then
-        call hipCheck(hipMalloc(bwd_wk_buffer, bwd_wk_buf_size))
+      call rocfftCheck                                                  &
+     &   (rocfft_plan_get_work_buffer_size(bwd%ROCfft_plan,             &
+     &                                     bwd%ROCfft_wk_buf_size))
+      write(*,*) 'bwd%ROCfft_wk_buf_size', bwd%ROCfft_wk_buf_size
+      call rocfftCheck                                                  &
+     &   (rocfft_execution_info_create(bwd%ROCfft_wk_info))
+      if(bwd%ROCfft_wk_buf_size > 0) then
+        call hipCheck(hipMalloc(bwd%ROCfft_wk_buffer,                   &
+     &                          bwd%ROCfft_wk_buf_size))
         call rocfftCheck(rocfft_execution_info_set_work_buffer          &
-     &                                                 (bwd_wk_info,    &
-     &                                                  bwd_wk_buffer,  &
-     &                                              bwd_wk_buf_size))
+     &                                        (bwd%ROCfft_wk_info,      &
+     &                                         bwd%ROCfft_wk_buffer,    &
+     &                                         bwd%ROCfft_wk_buf_size))
       end if
       elapsed(3) = OMP_GET_WTIME() - start
 !
@@ -192,9 +185,9 @@
           end do
         end do
 !$omp end target teams distribute parallel do
-        if(ft1%ngrd .lt. Nfft_r) then
+        if(ft1%ngrd .lt. WK_fwd%Nfft_r) then
 !$omp target teams distribute parallel do collapse(2)
-          do i = ft1%ngrd+1, Nfft_r
+          do i = ft1%ngrd+1, WK_fwd%Nfft_r
             do nd = 1, ft1%nfld
               x_real(nd,i) = 0.0d0
             end do
@@ -204,18 +197,18 @@
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call hipCheck(hipMemcpy(dx, c_loc(x_real(1,1)), Nbytes,         &
+        call hipCheck(hipMemcpy(dx, c_loc(x_real(1,1)), WK_fwd%Nbytes,  &
      &                          hipMemcpyHostToDevice))
-        call rocfftCheck(rocfft_execute(plan_fwd, dx, c_null_ptr,       &
-     &                                  fwd_wk_info))
+        call rocfftCheck(rocfft_execute(fwd%ROCfft_plan, dx, c_null_ptr, &
+     &                                  fwd%ROCfft_wk_info))
         call hipCheck(hipDeviceSynchronize())
-        call hipCheck(hipMemcpy(c_loc(x_cplx(1,1)), dx, Nbytes,         &
+        call hipCheck(hipMemcpy(c_loc(x_cplx(1,1)), dx, WK_fwd%Nbytes,  &
      &                          hipMemcpyDeviceToHost))
         elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call norm_rtp_from_fwd_OMP_FFTW(ft1%nfld, aNfft,                &
-     &      NFFT_c, x_cplx(1,1), ft1%ngrd, ft1%s_k(1,1))
+        call norm_rtp_from_fwd_OMP_FFTW(ft1%nfld, WK_fwd%aNfft,         &
+     &      WK_fwd%NFFT_c, x_cplx(1,1), ft1%ngrd, ft1%s_k(1,1))
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
@@ -232,16 +225,16 @@
 !
         start = OMP_GET_WTIME()
         call norm_rtp_to_bwd_OMP_FFTW(ft1%nfld, ft1%ngrd, ft1%f_x(1,1), &
-     &      NFFT_c, y_cplx(1,1))
+     &      WK_bwd%NFFT_c, y_cplx(1,1))
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call hipCheck(hipMemcpy(dx, c_loc(y_cplx(1,1)), Nbytes,         &
+        call hipCheck(hipMemcpy(dx, c_loc(y_cplx(1,1)), WK_bwd%Nbytes,  &
      &                          hipMemcpyHostToDevice))
-        call rocfftCheck(rocfft_execute(plan_bwd, dx, c_null_ptr,       &
-     &                                  bwd_wk_info))
+        call rocfftCheck(rocfft_execute(bwd%ROCfft_plan, dx, c_null_ptr,       &
+     &                                  bwd%ROCfft_wk_info))
         call hipCheck(hipDeviceSynchronize())
-        call hipCheck(hipMemcpy(c_loc(y_real(1,1)), dx, Nbytes,         &
+        call hipCheck(hipMemcpy(c_loc(y_real(1,1)), dx, WK_bwd%Nbytes,  &
      &                          hipMemcpyDeviceToHost))
         elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
@@ -258,15 +251,18 @@
 !
 !   Finalize
       start = OMP_GET_WTIME()
-      call rocfftCheck(rocfft_execution_info_destroy(fwd_wk_info))
-      call rocfftCheck(rocfft_execution_info_destroy(bwd_wk_info))
-      if(fwd_wk_buf_size > 0) call hipCheck(hipFree(fwd_wk_buffer))
-      if(bwd_wk_buf_size > 0) call hipCheck(hipFree(bwd_wk_buffer))
+      call rocfftCheck                                                  &
+     &   (rocfft_execution_info_destroy(fwd%ROCfft_wk_info))
+      call rocfftCheck                                                  &
+     &   (rocfft_execution_info_destroy(bwd%ROCfft_wk_info))
+      if(fwd%ROCfft_wk_buf_size > 0) call hipCheck(hipFree(fwd%ROCfft_wk_buffer))
+      if(bwd%ROCfft_wk_buf_size > 0) call hipCheck(hipFree(bwd%ROCfft_wk_buffer))
       call rocfftCheck                                                  &
      &   (rocfft_plan_description_destroy(bwd%ROCfft_description))
-      call rocfftCheck(rocfft_plan_description_destroy(descriptor_fwd))
-      call rocfftCheck(rocfft_plan_destroy(plan_bwd))
-      call rocfftCheck(rocfft_plan_destroy(plan_fwd))
+      call rocfftCheck                                                  &
+     &   (rocfft_plan_description_destroy(fwd%ROCfft_description))
+      call rocfftCheck(rocfft_plan_destroy(bwd%ROCfft_plan))
+      call rocfftCheck(rocfft_plan_destroy(fwd%ROCfft_plan))
       call hipCheck(hipFree(dx))
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !

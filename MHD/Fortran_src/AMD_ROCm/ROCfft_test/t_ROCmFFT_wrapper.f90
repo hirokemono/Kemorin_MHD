@@ -9,6 +9,7 @@
 !!@verbatim
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT by FFTW
+!!      subroutine calypso_ROCmFFT_set_size(Ncomp, Nfft, f_param, WORK)
 !!      subroutine calypso_pin_ROCmFFT_init(Nfft_r, Nbytes,             &
 !!     &                                    l_real, fwd, bwd)
 !!      subroutine calypso_pin_ROCmFFT_fin(fwd, bwd)
@@ -97,11 +98,8 @@
         type(c_ptr) :: ROCfft_description = c_null_ptr
 !
         integer(c_size_t) :: ROCfft_wk_buf_size = 0
-        type(c_ptr) :: ROCfft_work_buffer = c_null_ptr
-        type(c_ptr) :: ROCfft_work_info =   c_null_ptr
-!
-        type(c_ptr) :: ROCfft_wk_info =   c_null_ptr
         type(c_ptr) :: ROCfft_wk_buffer = c_null_ptr
+        type(c_ptr) :: ROCfft_wk_info =   c_null_ptr
 !
         type(c_ptr) :: in_offsets =  c_null_ptr
         type(c_ptr) :: out_offsets = c_null_ptr
@@ -145,34 +143,44 @@
 !
 !
 !   Initialize Forward transform
-      call calypso_pin_fwd_ROCmFFT_init(Ncomp, Nfft, fwd, WK_fwd)
+      call calypso_ROCmFFT_set_size(Ncomp, Nfft, fwd, WK_fwd)
+      call calypso_pin_fwd_ROCmFFT_init(fwd, WK_fwd)
 !
 !   Initialize Backword transform
-      call calypso_pin_bwd_ROCmFFT_init(Ncomp, Nfft, bwd, WK_bwd)
+      call calypso_ROCmFFT_set_size(Ncomp, Nfft, bwd, WK_bwd)
+      call calypso_pin_bwd_ROCmFFT_init(bwd, WK_bwd)
 !
       end subroutine calypso_pin_ROCmFFT_init
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_pin_fwd_ROCmFFT_init(Ncomp, Nfft,              &
-     &                                        fwd, WK_fwd)
+      subroutine calypso_ROCmFFT_set_size(Ncomp, Nfft, f_param, WORK)
+!
+      integer(c_size_t), intent(in) :: Ncomp
+      integer(c_size_t), intent(in) :: Nfft
+      type(calypso_ROCmfft_params), intent(inout) :: f_param
+      type(calypso_ROCmfft_work), intent(inout), target :: WORK
+!
+      f_param%Ncomp =  Ncomp
+      f_param%Nfft =   Nfft
+      WORK%aNfft =  one / dble(f_param%Nfft)
+      WORK%Nfft_c = f_param%Nfft / 2 + 1
+      WORK%Nfft_r = 2 * WORK%Nfft_c
+      WORK%Nbytes = WORK%Nfft_r * f_param%Ncomp * kreal
+!
+      end subroutine calypso_ROCmFFT_set_size
+!
+! ------------------------------------------------------------------
+!
+      subroutine calypso_pin_fwd_ROCmFFT_init(fwd, WK_fwd)
 !
       use hipfort
       use hipfort_check
       use hipfort_rocfft
 !
-      integer(c_size_t), intent(in) :: Ncomp
-      integer(c_size_t), intent(in) :: Nfft
       type(calypso_ROCmfft_params), intent(inout), target :: fwd
       type(calypso_ROCmfft_work), intent(inout), target :: WK_fwd
 !
-!
-      fwd%Ncomp =  Ncomp
-      fwd%Nfft =   Nfft
-      WK_fwd%aNfft =  one / dble(fwd%Nfft)
-      WK_fwd%Nfft_c = fwd%Nfft / 2 + 1
-      WK_fwd%Nfft_r = 2 * WK_fwd%Nfft_c
-      WK_fwd%Nbytes = WK_fwd%Nfft_r * fwd%Ncomp * kreal
 !
       allocate(WK_fwd%X_ROCmFFT(WK_fwd%Nfft_r,fwd%Ncomp))
       allocate(WK_fwd%C_ROCmFFT(WK_fwd%Nfft_r,fwd%Ncomp))
@@ -216,13 +224,13 @@
      &   (rocfft_plan_get_work_buffer_size(fwd%ROCfft_plan,             &
      &                                     fwd%ROCfft_wk_buf_size))
       call rocfftCheck                                                  &
-     &   (rocfft_execution_info_create(fwd%ROCfft_work_info))
+     &   (rocfft_execution_info_create(fwd%ROCfft_wk_info))
       if(fwd%ROCfft_wk_buf_size > 0) then
-        call hipCheck(hipMalloc(fwd%ROCfft_work_buffer,                 &
+        call hipCheck(hipMalloc(fwd%ROCfft_wk_buffer,                   &
      &                          fwd%ROCfft_wk_buf_size))
         call rocfftCheck(rocfft_execution_info_set_work_buffer          &
-     &                                        (fwd%ROCfft_work_info,    &
-     &                                         fwd%ROCfft_work_buffer,  &
+     &                                        (fwd%ROCfft_wk_info,      &
+     &                                         fwd%ROCfft_wk_buffer,    &
      &                                         fwd%ROCfft_wk_buf_size))
       end if
 !
@@ -230,25 +238,15 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_pin_bwd_ROCmFFT_init(Ncomp, Nfft,              &
-     &                                        bwd, WK_bwd)
+      subroutine calypso_pin_bwd_ROCmFFT_init(bwd, WK_bwd)
 !
       use hipfort
       use hipfort_check
       use hipfort_rocfft
 !
-      integer(c_size_t), intent(in) :: Ncomp
-      integer(c_size_t), intent(in) :: Nfft
       type(calypso_ROCmfft_params), intent(inout), target :: bwd
       type(calypso_ROCmfft_work), intent(inout), target :: WK_bwd
 !
-!
-      bwd%Ncomp =  Ncomp
-      bwd%Nfft =   Nfft
-      WK_bwd%aNfft =  one / dble(bwd%Nfft)
-      WK_bwd%Nfft_c = bwd%Nfft / 2 + 1
-      WK_bwd%Nfft_r = 2 * WK_bwd%Nfft_c
-      WK_bwd%Nbytes = WK_bwd%Nfft_r * bwd%Ncomp * kreal
 !
       allocate(WK_bwd%X_ROCmFFT(WK_bwd%Nfft_r,bwd%Ncomp))
       allocate(WK_bwd%C_ROCmFFT(WK_bwd%Nfft_r,bwd%Ncomp))
@@ -294,13 +292,13 @@
      &                                     bwd%ROCfft_wk_buf_size))
       write(*,*) 'bwd%ROCfft_wk_buf_size', bwd%ROCfft_wk_buf_size
       call rocfftCheck                                                  &
-     &   (rocfft_execution_info_create(bwd%ROCfft_work_info))
+     &   (rocfft_execution_info_create(bwd%ROCfft_wk_info))
       if(bwd%ROCfft_wk_buf_size > 0) then
-        call hipCheck(hipMalloc(bwd%ROCfft_work_buffer,                 &
+        call hipCheck(hipMalloc(bwd%ROCfft_wk_buffer,                   &
      &                          bwd%ROCfft_wk_buf_size))
         call rocfftCheck(rocfft_execution_info_set_work_buffer          &
-     &                                       (bwd%ROCfft_work_info,     &
-     &                                        bwd%ROCfft_work_buffer,   &
+     &                                       (bwd%ROCfft_wk_info,       &
+     &                                        bwd%ROCfft_wk_buffer,     &
      &                                        bwd%ROCfft_wk_buf_size))
       end if
 !
@@ -320,14 +318,14 @@
       type(calypso_ROCmfft_work), intent(inout), target :: WK_bwd
 !
       call rocfftCheck                                                  &
-     &   (rocfft_execution_info_destroy(fwd%ROCfft_work_info))
+     &   (rocfft_execution_info_destroy(fwd%ROCfft_wk_info))
       call rocfftCheck                                                  &
-     &   (rocfft_execution_info_destroy(bwd%ROCfft_work_info))
+     &   (rocfft_execution_info_destroy(bwd%ROCfft_wk_info))
       if(fwd%ROCfft_wk_buf_size > 0) then
-        call hipCheck(hipFree(fwd%ROCfft_work_buffer))
+        call hipCheck(hipFree(fwd%ROCfft_wk_buffer))
       end if
       if(bwd%ROCfft_wk_buf_size > 0) then
-        call hipCheck(hipFree(bwd%ROCfft_work_buffer))
+        call hipCheck(hipFree(bwd%ROCfft_wk_buffer))
       end if
       call rocfftCheck                                                  &
      &   (rocfft_plan_description_destroy(bwd%ROCfft_description))
@@ -365,7 +363,7 @@
       call hipCheck(hipMemcpy(data_ptr, c_loc(X_ROCmFFT(1,1)),          &
      &                        Nbytes, hipMemcpyHostToDevice))
       call rocfftCheck(rocfft_execute(fwd%ROCfft_plan, data_ptr,        &
-     &                        c_null_ptr, fwd%ROCfft_work_info))
+     &                        c_null_ptr, fwd%ROCfft_wk_info))
       call hipCheck(hipDeviceSynchronize())
       call hipCheck(hipMemcpy(c_loc(C_ROCmFFT(1,1)), data_ptr,          &
      &                        Nbytes, hipMemcpyDeviceToHost))
@@ -395,7 +393,7 @@
         call hipCheck(hipMemcpy(data_ptr, c_loc(C_ROCmFFT(1,1)),        &
      &                          Nbytes, hipMemcpyHostToDevice))
         call rocfftCheck(rocfft_execute(bwd%ROCfft_plan, data_ptr,      &
-     &                          c_null_ptr, bwd%ROCfft_work_info))
+     &                          c_null_ptr, bwd%ROCfft_wk_info))
         call hipCheck(hipDeviceSynchronize())
         call hipCheck(hipMemcpy(c_loc(X_ROCmFFT(1,1)), data_ptr,        &
      &                          Nbytes, hipMemcpyDeviceToHost))
