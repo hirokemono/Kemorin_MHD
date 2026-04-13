@@ -190,7 +190,7 @@
       call hipCheck(hipMalloc(WK_fwd%data_ptr, WK_fwd%Nbytes))
 !
       allocate(WK_fwd%X_ROCmFFT(WK_fwd%Nfft_r,fwd%Ncomp))
-      allocate(WK_fwd%C_ROCmFFT(WK_fwd%Nfft_r,fwd%Ncomp))
+      allocate(WK_fwd%C_ROCmFFT(WK_fwd%Nfft_c,fwd%Ncomp))
 !$omp parallel workshare
       WK_fwd%X_ROCmFFT(1:WK_fwd%Nfft_r,1:fwd%Ncomp) = 0.0d0
 !$omp end parallel workshare
@@ -222,7 +222,7 @@
       call hipCheck(hipMalloc(WK_bwd%data_ptr, WK_bwd%Nbytes))
 !
       allocate(WK_bwd%X_ROCmFFT(WK_bwd%Nfft_r,bwd%Ncomp))
-      allocate(WK_bwd%C_ROCmFFT(WK_bwd%Nfft_r,bwd%Ncomp))
+      allocate(WK_bwd%C_ROCmFFT(WK_bwd%Nfft_c,bwd%Ncomp))
 !$omp parallel workshare
       WK_bwd%X_ROCmFFT(1:WK_bwd%Nfft_r,1:bwd%Ncomp) = 0.0d0
 !$omp end parallel workshare
