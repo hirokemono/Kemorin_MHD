@@ -44,14 +44,6 @@
 !
       type(c_ptr) :: plan_fwd = c_null_ptr
       type(c_ptr) :: descriptor_fwd = c_null_ptr
-      type(c_ptr) :: in_offsets_fwd =  c_null_ptr
-      type(c_ptr) :: out_offsets_fwd = c_null_ptr
-      integer(c_size_t), target :: in_strides_size_fwd =  ione
-      integer(c_size_t), target :: in_strides_fwd(1) =  (/n_field/)
-      integer(c_size_t), target :: in_distance_fwd = ione
-      integer(c_size_t), target :: out_strides_size_fwd = ione
-      integer(c_size_t), target :: out_strides_fwd(1) = (/n_field/)
-      integer(c_size_t), target :: out_distance_fwd = ione
 !
       integer(c_size_t) :: fwd_wk_buf_size = 0
       type(c_ptr) :: fwd_wk_info =   c_null_ptr
@@ -95,6 +87,13 @@
 !   Initialize Forward transform
       start = OMP_GET_WTIME()
 !
+      fwd%in_strides_size =   1
+      fwd%in_strides(1) =     n_field
+      fwd%in_distance =       1
+      fwd%out_strides_size =  1
+      fwd%out_strides(1) = n_field
+      fwd%out_distance = 1
+!
       call hipCheck(hipMalloc(dx,Nbytes))
 !
       call rocfftCheck(rocfft_plan_description_create(descriptor_fwd))
@@ -102,14 +101,14 @@
      &                                      (descriptor_fwd,            &
      &                                       rocfft_array_type_real,    &
      &                                      rocfft_array_type_unset,    &
-     &                                               in_offsets_fwd,    &
-     &                                              out_offsets_fwd,    &
-     &                                          in_strides_size_fwd,    &
-     &                                        c_loc(in_strides_fwd),    &
-     &                                              in_distance_fwd,    &
-     &                                         out_strides_size_fwd,    &
-     &                                       c_loc(out_strides_fwd),    &
-     &                                            out_distance_fwd))
+     &                                               fwd%in_offsets,    &
+     &                                              fwd%out_offsets,    &
+     &                                          fwd%in_strides_size,    &
+     &                                     c_loc(fwd%in_strides(1)),    &
+     &                                              fwd%in_distance,    &
+     &                                         fwd%out_strides_size,    &
+     &                                    c_loc(fwd%out_strides(1)),    &
+     &                                            fwd%out_distance))
       call rocfftCheck(rocfft_plan_create(plan_fwd,                     &
      &                                    rocfft_placement_inplace,     &
      &                          rocfft_transform_type_real_forward,     &
@@ -150,7 +149,6 @@
      &                                              bwd%in_distance,    &
      &                                         bwd%out_strides_size,    &
      &                                    c_loc(bwd%out_strides(1)),    &
-!     &  c_null_ptr, &
      &                                            bwd%out_distance))
 !
       call rocfftCheck(rocfft_plan_create(plan_bwd,                     &
