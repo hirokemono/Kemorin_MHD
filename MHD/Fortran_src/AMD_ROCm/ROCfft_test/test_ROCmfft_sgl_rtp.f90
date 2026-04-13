@@ -29,14 +29,7 @@
       type(calypso_ROCmfft_work), target :: WK_fwd
       type(calypso_ROCmfft_work), target :: WK_bwd
 !
-      real(kind = kreal), allocatable, target :: x_real(:,:)
-      real(kind = kreal), allocatable, target :: y_real(:,:)
-      complex(kind = kreal), allocatable, target :: x_cplx(:,:)
-      complex(kind = kreal), allocatable, target :: y_cplx(:,:)
-!
       integer(c_size_t), parameter :: ione_c =  ione
-      type(c_ptr) :: dx = c_null_ptr
-      integer(c_size_t), allocatable, target :: l_real(:)
 !
       integer(kind = kint) :: i, nd
       integer(kind = kint) :: icou
@@ -49,26 +42,22 @@
       call calypso_ROCmFFT_set_size(n_field, ngrid, fwd, WK_fwd)
       call calypso_ROCmFFT_set_size(n_field, ngrid, bwd, WK_bwd)
 !
-      allocate(x_real(n_field,WK_fwd%Nfft_r))
-      allocate(y_real(n_field,WK_bwd%Nfft_r))
+      allocate(WK_fwd%X_ROCmFFT(n_field,WK_fwd%Nfft_r))
+      allocate(WK_bwd%X_ROCmFFT(n_field,WK_bwd%Nfft_r))
 !$omp parallel workshare
-      x_real(1:n_field,1:WK_fwd%Nfft_r) = 0.0d0
+      WK_fwd%X_ROCmFFT(1:n_field,1:WK_fwd%Nfft_r) = 0.0d0
 !$omp end parallel workshare
 !$omp parallel workshare
-      y_real(1:n_field,1:WK_bwd%Nfft_r) = 0.0d0
+      WK_bwd%X_ROCmFFT(1:n_field,1:WK_bwd%Nfft_r) = 0.0d0
 !$omp end parallel workshare
 !
-      allocate(x_cplx(n_field,WK_fwd%Nfft_c))
-      allocate(y_cplx(n_field,WK_bwd%Nfft_c))
+      allocate(WK_fwd%C_ROCmFFT(n_field,WK_fwd%Nfft_c))
+      allocate(WK_bwd%C_ROCmFFT(n_field,WK_bwd%Nfft_c))
 !$omp parallel workshare
-      x_cplx(1:n_field,1:WK_fwd%Nfft_c) = 0.0d0
-      y_cplx(1:n_field,1:WK_bwd%Nfft_c) = 0.0d0
+      WK_fwd%C_ROCmFFT(1:n_field,1:WK_fwd%Nfft_c) = 0.0d0
+      WK_bwd%C_ROCmFFT(1:n_field,1:WK_bwd%Nfft_c) = 0.0d0
 !$omp end parallel workshare
 !
-!
-      allocate(l_real(3))
-      l_real(1) = ngrid
-      l_real(2) = ft1%nfld
 !
 !   Initialize Forward transform
       start = OMP_GET_WTIME()
@@ -80,7 +69,7 @@
       fwd%out_strides(1) = n_field
       fwd%out_distance = 1
 !
-      call hipCheck(hipMalloc(dx,WK_fwd%Nbytes))
+      call hipCheck(hipMalloc(WK_fwd%data_ptr,WK_fwd%Nbytes))
 !
       call rocfftCheck                                                  &
      &   (rocfft_plan_description_create(fwd%ROCfft_description))
@@ -99,9 +88,9 @@
       call rocfftCheck(rocfft_plan_create(fwd%ROCfft_plan,              &
      &                                    rocfft_placement_inplace,     &
      &                          rocfft_transform_type_real_forward,     &
-     &                                    rocfft_precision_double,      &
-     &                                    ione_c, c_loc(l_real(1)),     &
-     &                           l_real(2), fwd%ROCfft_description))
+     &                                     rocfft_precision_double,     &
+     &                                     ione_c, c_loc(fwd%Nfft),     &
+     &                           fwd%Ncomp, fwd%ROCfft_description))
 !
       call rocfftCheck                                                  &
      &   (rocfft_plan_get_work_buffer_size(fwd%ROCfft_plan,             &
@@ -126,6 +115,8 @@
       bwd%out_strides(1) =   n_field
       bwd%out_distance =     1
 !
+      call hipCheck(hipMalloc(WK_bwd%data_ptr,WK_fwd%Nbytes))
+!
       call rocfftCheck                                                  &
      &   (rocfft_plan_description_create(bwd%ROCfft_description))
       call rocfftCheck(rocfft_plan_description_set_data_layout          &
@@ -142,11 +133,11 @@
      &                                            bwd%out_distance))
 !
       call rocfftCheck(rocfft_plan_create(bwd%ROCfft_plan,              &
-     &                                    rocfft_placement_inplace,     &
+     &                                      rocfft_placement_inplace,   &
      &                            rocfft_transform_type_real_inverse,   &
-     &                                    rocfft_precision_double,      &
-     &                                    ione_c, c_loc(l_real(1)),     &
-     &                            l_real(2), bwd%ROCfft_description))
+     &                                       rocfft_precision_double,   &
+     &                                       ione_c, c_loc(fwd%Nfft),   &
+     &                            bwd%Ncomp, bwd%ROCfft_description))
 !
       call rocfftCheck                                                  &
      &   (rocfft_plan_get_work_buffer_size(bwd%ROCfft_plan,             &
@@ -181,7 +172,7 @@
 !$omp target teams distribute parallel do collapse(2)
         do i = 1, ft1%ngrd
           do nd = 1, ft1%nfld
-            x_real(nd,i) = ft1%s_k(nd,i)
+            WK_fwd%X_ROCmFFT(nd,i) = ft1%s_k(nd,i)
           end do
         end do
 !$omp end target teams distribute parallel do
@@ -189,7 +180,7 @@
 !$omp target teams distribute parallel do collapse(2)
           do i = ft1%ngrd+1, WK_fwd%Nfft_r
             do nd = 1, ft1%nfld
-              x_real(nd,i) = 0.0d0
+              WK_fwd%X_ROCmFFT(nd,i) = 0.0d0
             end do
           end do
 !$omp end target teams distribute parallel do
@@ -197,18 +188,21 @@
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call hipCheck(hipMemcpy(dx, c_loc(x_real(1,1)), WK_fwd%Nbytes,  &
-     &                          hipMemcpyHostToDevice))
-        call rocfftCheck(rocfft_execute(fwd%ROCfft_plan, dx, c_null_ptr, &
-     &                                  fwd%ROCfft_wk_info))
+        call hipCheck                                                   &
+     &     (hipMemcpy(WK_fwd%data_ptr, c_loc(WK_fwd%X_ROCmFFT(1,1)),    &
+     &                WK_fwd%Nbytes, hipMemcpyHostToDevice))
+        call rocfftCheck                                                &
+     &     (rocfft_execute(fwd%ROCfft_plan, WK_fwd%data_ptr,            &
+     &                     c_null_ptr, fwd%ROCfft_wk_info))
         call hipCheck(hipDeviceSynchronize())
-        call hipCheck(hipMemcpy(c_loc(x_cplx(1,1)), dx, WK_fwd%Nbytes,  &
-     &                          hipMemcpyDeviceToHost))
+        call hipCheck                                                   &
+     &     (hipMemcpy(c_loc(WK_fwd%C_ROCmFFT(1,1)), WK_fwd%data_ptr,    &
+     &                WK_fwd%Nbytes, hipMemcpyDeviceToHost))
         elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
         call norm_rtp_from_fwd_OMP_FFTW(ft1%nfld, WK_fwd%aNfft,         &
-     &      WK_fwd%NFFT_c, x_cplx(1,1), ft1%ngrd, ft1%s_k(1,1))
+     &      WK_fwd%NFFT_c, WK_fwd%C_ROCmFFT(1,1), ft1%ngrd, ft1%s_k(1,1))
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
@@ -225,24 +219,27 @@
 !
         start = OMP_GET_WTIME()
         call norm_rtp_to_bwd_OMP_FFTW(ft1%nfld, ft1%ngrd, ft1%f_x(1,1), &
-     &      WK_bwd%NFFT_c, y_cplx(1,1))
+     &      WK_bwd%NFFT_c, WK_bwd%C_ROCmFFT(1,1))
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call hipCheck(hipMemcpy(dx, c_loc(y_cplx(1,1)), WK_bwd%Nbytes,  &
-     &                          hipMemcpyHostToDevice))
-        call rocfftCheck(rocfft_execute(bwd%ROCfft_plan, dx, c_null_ptr,       &
-     &                                  bwd%ROCfft_wk_info))
+        call hipCheck                                                   &
+     &     (hipMemcpy(WK_bwd%data_ptr, c_loc(WK_bwd%C_ROCmFFT(1,1)),    &
+     &                WK_bwd%Nbytes, hipMemcpyHostToDevice))
+        call rocfftCheck                                                &
+     &     (rocfft_execute(bwd%ROCfft_plan, WK_bwd%data_ptr,            &
+     &                     c_null_ptr, bwd%ROCfft_wk_info))
         call hipCheck(hipDeviceSynchronize())
-        call hipCheck(hipMemcpy(c_loc(y_real(1,1)), dx, WK_bwd%Nbytes,  &
-     &                          hipMemcpyDeviceToHost))
+        call hipCheck                                                   &
+     &     (hipMemcpy(c_loc(WK_bwd%X_ROCmFFT(1,1)), WK_bwd%data_ptr,    &
+     &                WK_bwd%Nbytes, hipMemcpyDeviceToHost))
         elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
 !$omp target teams distribute parallel do collapse(2)
         do i = 1, ft1%ngrd
           do nd = 1, ft1%nfld
-            ft1%f_x(nd,i) = y_real(nd,i)
+            ft1%f_x(nd,i) = WK_bwd%X_ROCmFFT(nd,i)
           end do
         end do
 !$omp end target teams distribute parallel do
@@ -263,7 +260,8 @@
      &   (rocfft_plan_description_destroy(fwd%ROCfft_description))
       call rocfftCheck(rocfft_plan_destroy(bwd%ROCfft_plan))
       call rocfftCheck(rocfft_plan_destroy(fwd%ROCfft_plan))
-      call hipCheck(hipFree(dx))
+      call hipCheck(hipFree(WK_fwd%data_ptr))
+      call hipCheck(hipFree(WK_bwd%data_ptr))
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
   10  continue
