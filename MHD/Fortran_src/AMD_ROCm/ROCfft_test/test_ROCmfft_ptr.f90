@@ -1,5 +1,5 @@
 !
-      program test_ROCmfft_ptr
+      program test_ROCmfft_prt
 !
       use iso_c_binding
       use omp_lib
@@ -27,8 +27,7 @@
 !
       integer(kind = kint) :: i, nd, icou
 !
-      np_smp = omp_get_max_threads()
-      write(*,*) 'Number of threads:  ', np_smp
+      write(*,'(a)') '-----  Test prt ROCmFFT  -----'
       call init_fft_test_data(n_field, ngrid, ft1)
       call swap_fft_test_input_to_pin(ft1)
 !
@@ -125,9 +124,12 @@
       end if
       call dealloc_fft_test_data(ft1)
 !
+      write(*,'(a,i4)') 'Number of threads:  ', np_smp
+      write(*, '(a,3i6)')                                               &
+     &        "Num (point, field, loop): ", ngrid, n_field, n_loop
       write(*, '("Time for ROCmfft:    ",1pE16.6e3)') elapsed(1)
       write(*, '("Time for Initialize: ",1pE16.6e3)') elapsed(3)
       write(*, '("Time for Data copy:  ",1pE16.6e3)') elapsed(2)
 !
       stop 'finish'
-      end program test_ROCmfft_ptr
+      end program test_ROCmfft_prt

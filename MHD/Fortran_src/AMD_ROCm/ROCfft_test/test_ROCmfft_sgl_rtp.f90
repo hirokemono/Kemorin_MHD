@@ -35,30 +35,11 @@
       integer(kind = kint) :: i, nd
       integer(kind = kint) :: icou
 !
-      np_smp = omp_get_max_threads()
-      write(*,*) 'Number of threads:  ', np_smp
+      write(*,'(a)') '-----  Test single rtp ROCmFFT  -----'
       call init_fft_test_data(n_field, ngrid, ft1)
 !
-      call calypso_sgl_ROCmFFT_set_size(ngrid, fwd, WK_fwd)
-      call calypso_sgl_fwd_ROCmFFT_alloc(fwd, WK_fwd)
-!
-      call calypso_sgl_ROCmFFT_set_size(ngrid, bwd, WK_bwd)
-      call calypso_sgl_fwd_ROCmFFT_alloc(bwd, WK_bwd)
-!
       start = OMP_GET_WTIME()
-      call rocfftCheck(rocfft_plan_create(fwd%ROCfft_plan,              &
-                                          rocfft_placement_inplace,     &
-                                  rocfft_transform_type_real_forward,   &
-                                          rocfft_precision_double,      &
-                                          ione_c, c_loc(fwd%Nfft),      &
-                                          ione_c, c_null_ptr))
-!
-      call rocfftCheck(rocfft_plan_create(bwd%ROCfft_plan,              &
-                                          rocfft_placement_inplace,     &
-                                  rocfft_transform_type_real_inverse,   &
-                                          rocfft_precision_double,      &
-                                          ione_c, c_loc(bwd%Nfft),      &
-                                          ione_c, c_null_ptr))
+      call calypso_sgl_ROCmFFT_init(ngrid, fwd, WK_fwd, bwd, WK_bwd)
       elapsed(3) = OMP_GET_WTIME() - start
 !
       elapsed(1:2) = 0.0d0
@@ -83,16 +64,10 @@
           elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 
           start = OMP_GET_WTIME()
-          call hipCheck                                                 &
-     &       (hipMemcpy(WK_fwd%data_ptr, c_loc(WK_fwd%X_ROCmFFT(1)),    &
-     &                  WK_fwd%Nbytes, hipMemcpyHostToDevice))
-          call rocfftCheck                                              &
-     &       (rocfft_execute(fwd%ROCfft_plan, WK_fwd%data_ptr,          &
-     &                       c_null_ptr, c_null_ptr))
-          call hipCheck(hipDeviceSynchronize())
-          call hipCheck                                                 &
-     &       (hipMemcpy(c_loc(WK_fwd%C_ROCmFFT(1)), WK_fwd%data_ptr,    &
-     &                  WK_fwd%Nbytes, hipMemcpyDeviceToHost))
+          call calypso_sgl_fwd_ROCmFFT(fwd,                             &
+     &                                 WK_fwd%Nfft_r, WK_fwd%X_ROCmFFT, &
+     &                                 WK_fwd%Nfft_c, WK_fwd%C_ROCmFFT, &
+     &                                 WK_fwd%Nbytes, WK_fwd%data_ptr)
           elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
           start = OMP_GET_WTIME()
@@ -119,16 +94,10 @@
           elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
           start = OMP_GET_WTIME()
-          call hipCheck                                                 &
-     &       (hipMemcpy(WK_bwd%data_ptr, c_loc(WK_bwd%C_ROCmFFT(1)),    &
-     &                  WK_bwd%Nbytes, hipMemcpyHostToDevice))
-          call rocfftCheck                                              &
-     &       (rocfft_execute(bwd%ROCfft_plan, WK_bwd%data_ptr,          &
-     &                       c_null_ptr, c_null_ptr))
-          call hipCheck(hipDeviceSynchronize())
-          call hipCheck                                                 &
-     &       (hipMemcpy(c_loc(WK_bwd%X_ROCmFFT(1)), WK_bwd%data_ptr,    &
-     &                  WK_bwd%Nbytes, hipMemcpyDeviceToHost))
+          call calypso_sgl_bwd_ROCmFFT(bwd,                             &
+     &                                 WK_bwd%Nfft_c, WK_bwd%C_ROCmFFT, &
+     &                                 WK_bwd%Nfft_r, WK_bwd%X_ROCmFFT, &
+     &                                 WK_bwd%Nbytes, WK_bwd%data_ptr)
           elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
           start = OMP_GET_WTIME()
@@ -142,16 +111,16 @@
       end do
 !
       start = OMP_GET_WTIME()
-      call rocfftCheck(rocfft_plan_destroy(fwd%ROCfft_plan))
-      call rocfftCheck(rocfft_plan_destroy(bwd%ROCfft_plan))
-      call hipCheck(hipFree(WK_fwd%data_ptr))
-      call hipCheck(hipFree(WK_bwd%data_ptr))
+      call calypso_single_ROCmFFT_fin(fwd, WK_fwd, bwd, WK_bwd)
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
    10 continue
       if(n_loop .eq. 1) call write_fft_test_data(ROCfft_test, ft1)
       call dealloc_fft_test_data(ft1)
 !
+      write(*,'(a,i4)') 'Number of threads:  ', np_smp
+      write(*, '(a,3i6)')                                               &
+     &        "Num (point, field, loop): ", ngrid, n_field, n_loop
       write(*, '("Time for ROCmfft:    ",1pE16.6e3)') elapsed(1)
       write(*, '("Time for Initialize: ",1pE16.6e3)') elapsed(3)
       write(*, '("Time for Data copy:  ",1pE16.6e3)') elapsed(2)
