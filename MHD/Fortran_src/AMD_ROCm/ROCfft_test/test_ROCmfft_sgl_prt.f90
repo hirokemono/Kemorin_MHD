@@ -15,6 +15,7 @@
       use m_FFT_size
       use t_fft_test_data
       use t_single_ROCmFFT_wrapper
+      use single_pin_ROCmFFT_offload
 !
       implicit none
 !
@@ -24,14 +25,13 @@
 !
       type(fft_test_data) :: ft1
 !
-      type(calypso_ROCmfft_params), target :: fwd
-      type(calypso_ROCmfft_params), target :: bwd
-      type(calypso_ROCmfft_work), target :: WK_fwd
-      type(calypso_ROCmfft_work), target :: WK_bwd
+      type(single_ROCmfft_params), target :: fwd
+      type(single_ROCmfft_params), target :: bwd
+      type(single_ROCmfft_work), target :: WK_fwd
+      type(single_ROCmfft_work), target :: WK_bwd
 !
       integer(c_size_t), parameter :: ione_c = ione
 !
-      integer(kind = kint) :: i, nd
       integer(kind = kint) :: icou
 !
       write(*,'(a)') '-----  Test single prt ROCmFFT  -----'
@@ -53,76 +53,18 @@
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !   Forward transform
-        do nd = 1, ft1%nfld
-          start = OMP_GET_WTIME()
-!$omp parallel workshare
-          WK_fwd%X_ROCmFFT(1:WK_fwd%Nfft_r) = 0.0d0
-!$omp end parallel workshare
-!$omp parallel workshare
-          WK_fwd%X_ROCmFFT(1:ft1%ngrd) = ft1%s_k(1:ft1%ngrd,nd)
-!$omp end parallel workshare
-          elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
-
-          start = OMP_GET_WTIME()
-          call calypso_sgl_fwd_ROCmFFT(fwd,                             &
-     &                                 WK_fwd%Nfft_r, WK_fwd%X_ROCmFFT, &
-     &                                 WK_fwd%Nfft_c, WK_fwd%C_ROCmFFT, &
-     &                                 WK_fwd%Nbytes, WK_fwd%data_ptr)
-          elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
-!
-          start = OMP_GET_WTIME()
-!$omp parallel workshare
-          WK_fwd%C_ROCmFFT(1:WK_fwd%Nfft_c)                             &
-     &          = WK_fwd%C_ROCmFFT(1:WK_fwd%Nfft_c) / dble(ft1%ngrd)
-!$omp end parallel workshare
-!
-          ft1%s_k(1,nd) = real(WK_fwd%C_ROCmFFT(1)            )
-          ft1%s_k(2,nd) = real(WK_fwd%C_ROCmFFT(WK_fwd%Nfft_c))
-!$omp parallel do
-          do i = 2, WK_fwd%Nfft_c-1
-            ft1%s_k(2*i-1,nd) =  two * real(WK_fwd%C_ROCmFFT(i))
-            ft1%s_k(2*i,  nd) = -two * imag(WK_fwd%C_ROCmFFT(i))
-          end do
-!$omp end parallel do
-          elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
-        end do
+        call single_pin_fwd_ROCmFFT(fwd, WK_fwd, ft1%nfld, ft1%s_k,     &
+     &                              elapsed(1), elapsed(2))
 !
         start = OMP_GET_WTIME()
-!$omp parallel do
-        do nd = 1, ft1%nfld
-          ft1%f_x(1:ft1%ngrd,nd) = ft1%s_k(1:ft1%ngrd,nd)
-        end do
-!$omp end parallel do
+!$omp parallel workshare
+        ft1%f_x(1:ft1%ngrd,1:ft1%nfld) = ft1%s_k(1:ft1%ngrd,1:ft1%nfld)
+!$omp end parallel workshare
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !   Backword transform
-        do nd = 1, ft1%nfld
-          start = OMP_GET_WTIME()
-          WK_bwd%C_ROCmFFT(1) = cmplx(ft1%f_x(1,nd), 0.0d0, kind(0d0))
-!$omp parallel do
-          do i = 2, WK_bwd%Nfft_c - 1
-            WK_bwd%C_ROCmFFT(i) = half * cmplx( ft1%f_x(2*i-1,nd),      &
-     &                                         -ft1%f_x(2*i,  nd),      &
-     &                                          kind(0d0))
-          end do
-!$omp end parallel do
-          WK_bwd%C_ROCmFFT(WK_bwd%Nfft_c) = cmplx(ft1%f_x(2,nd),        &
-     &                                            0.0d0, kind(0d0))
-          elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
-!
-          start = OMP_GET_WTIME()
-          call calypso_sgl_bwd_ROCmFFT(bwd,                             &
-     &                                 WK_bwd%Nfft_c, WK_bwd%C_ROCmFFT, &
-     &                                 WK_bwd%Nfft_r, WK_bwd%X_ROCmFFT, &
-     &                                 WK_bwd%Nbytes, WK_bwd%data_ptr)
-          elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
-!
-          start = OMP_GET_WTIME()
-!$omp parallel workshare
-          ft1%f_x(1:ft1%ngrd,nd) = WK_bwd%X_ROCmFFT(1:ft1%ngrd)
-!$omp end parallel workshare
-          elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
-        end do
+        call single_pin_bwd_ROCmFFT(bwd, WK_bwd, ft1%nfld, ft1%f_x,     &
+     &                              elapsed(1), elapsed(2))
       end do
 !
       start = OMP_GET_WTIME()

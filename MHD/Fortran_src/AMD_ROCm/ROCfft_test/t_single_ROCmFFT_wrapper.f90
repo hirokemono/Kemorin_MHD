@@ -14,8 +14,8 @@
 !!     &                                          bwd, WK_bwd)
 !!      subroutine calypso_single_ROCmFFT_fin(fwd, bwd)
 !!        integer(c_size_t), intent(in) :: Nfft_r
-!!        type(calypso_ROCmfft_params), intent(inout), target :: fwd
-!!        type(calypso_ROCmfft_params), intent(inout), target :: bwd
+!!        type(single_ROCmfft_params), intent(inout), target :: fwd
+!!        type(single_ROCmfft_params), intent(inout), target :: bwd
 !!        type(c_ptr), intent(inout), target :: fwd_data_ptr
 !!        type(c_ptr), intent(inout), target :: bwd_data_ptr
 !! ------------------------------------------------------------------
@@ -23,7 +23,7 @@
 !! wrapper subroutine for forward Fourier transform by FFTW3
 !!      subroutine calypso_sgl_fwd_ROCmFFT(fwd, Nfft_r, X_ROCmFFT,      &
 !!     &          Nfft_c, C_ROCmFFT, Nbytes, data_ptr)
-!!        type(calypso_ROCmfft_params), intent(in), target :: fwd
+!!        type(single_ROCmfft_params), intent(in), target :: fwd
 !!        integer(kind = kint), intent(in) :: Nfft_r, Nfft_c
 !!        integer(c_size_t), intent(in) :: Nbytes
 !!        real(kind = kreal), intent(in), target :: X_ROCmFFT(Nfft_r)
@@ -33,7 +33,7 @@
 !!
 !!
 !!   a_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\frac{2\pi j k}{Nfft})
-!!   b_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\frac{2\pi j k}{Nfft})
+!!   b_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \sin (\frac{2\pi j k}{Nfft})
 !!
 !!   a_{0} = \frac{1}{Nfft} \sum_{j=0}^{Nfft-1} x_{j}
 !!    K = Nfft/2....
@@ -43,7 +43,7 @@
 !!
 !!      subroutine calypso_sgl_bwd_ROCmFFT(bwd, Nfft_c, C_ROCmFFT,      &
 !!     &          Nfft_r, X_ROCmFFT, Nbytes, data_ptr)
-!!        type(calypso_ROCmfft_params), intent(in), target :: bwd
+!!        type(single_ROCmfft_params), intent(in), target :: bwd
 !!        integer(kind = kint), intent(in) :: Nfft_r, Nfft_c
 !!        integer(c_size_t), intent(in) :: Nbytes
 !!        complex(kind = kreal), intent(in), target:: C_ROCmFFT(Nfft_c)
@@ -81,12 +81,12 @@
 !
       implicit none
 !
-      type calypso_ROCmfft_params
+      type single_ROCmfft_params
         integer(c_size_t) :: Nfft =   0
         integer(c_size_t) :: Ncomp =  0
 !
         type(c_ptr) :: ROCfft_plan = c_null_ptr
-      end type calypso_ROCmfft_params
+      end type single_ROCmfft_params
 !
       type calypso_ROCmfft_work
         real(kind = kreal) ::   aNfft = 0.0d0
@@ -111,8 +111,8 @@
      &                                          bwd, WK_bwd)
 !
       integer(c_size_t), intent(in) :: Nfft
-      type(calypso_ROCmfft_params), intent(inout), target :: fwd
-      type(calypso_ROCmfft_params), intent(inout), target :: bwd
+      type(single_ROCmfft_params), intent(inout), target :: fwd
+      type(single_ROCmfft_params), intent(inout), target :: bwd
       type(calypso_ROCmfft_work), intent(inout), target :: WK_fwd
       type(calypso_ROCmfft_work), intent(inout), target :: WK_bwd
 !
@@ -134,7 +134,7 @@
       subroutine calypso_sgl_ROCmFFT_set_size(Nfft, f_param, WORK)
 !
       integer(c_size_t), intent(in) :: Nfft
-      type(calypso_ROCmfft_params), intent(inout) :: f_param
+      type(single_ROCmfft_params), intent(inout) :: f_param
       type(calypso_ROCmfft_work), intent(inout), target :: WORK
 !
       f_param%Nfft =   Nfft
@@ -153,7 +153,7 @@
       use hipfort_check
       use hipfort_rocfft
 !
-      type(calypso_ROCmfft_params), intent(inout), target :: fwd
+      type(single_ROCmfft_params), intent(inout), target :: fwd
       type(calypso_ROCmfft_work), intent(inout), target :: WK_fwd
 !
 !   Initialize Forward transform
@@ -178,7 +178,7 @@
       use hipfort_check
       use hipfort_rocfft
 !
-      type(calypso_ROCmfft_params), intent(inout), target :: bwd
+      type(single_ROCmfft_params), intent(inout), target :: bwd
       type(calypso_ROCmfft_work), intent(inout), target :: WK_bwd
 !
 !   Initialize Backword transform
@@ -204,7 +204,7 @@
       use hipfort_check
       use hipfort_rocfft
 !
-      type(calypso_ROCmfft_params), intent(inout), target :: fwd
+      type(single_ROCmfft_params), intent(inout), target :: fwd
 !
 !
       call rocfftCheck(rocfft_plan_create(fwd%ROCfft_plan,              &
@@ -224,7 +224,7 @@
       use hipfort_check
       use hipfort_rocfft
 !
-      type(calypso_ROCmfft_params), intent(inout), target :: bwd
+      type(single_ROCmfft_params), intent(inout), target :: bwd
 !
 !
       call rocfftCheck(rocfft_plan_create(bwd%ROCfft_plan,              &
@@ -244,8 +244,8 @@
       use hipfort_check
       use hipfort_rocfft
 !
-      type(calypso_ROCmfft_params), intent(inout), target :: fwd
-      type(calypso_ROCmfft_params), intent(inout), target :: bwd
+      type(single_ROCmfft_params), intent(inout), target :: fwd
+      type(single_ROCmfft_params), intent(inout), target :: bwd
       type(calypso_ROCmfft_work), intent(inout), target :: WK_fwd
       type(calypso_ROCmfft_work), intent(inout), target :: WK_bwd
 !
@@ -267,7 +267,7 @@
       use hipfort_check
       use hipfort_rocfft
 !
-      type(calypso_ROCmfft_params), intent(in), target :: fwd
+      type(single_ROCmfft_params), intent(in), target :: fwd
       integer(kind = kint), intent(in) :: Nfft_r, Nfft_c
       integer(c_size_t), intent(in) :: Nbytes
       real(kind = kreal), intent(in), target :: X_ROCmFFT(Nfft_r)
@@ -296,7 +296,7 @@
       use hipfort_check
       use hipfort_rocfft
 !
-      type(calypso_ROCmfft_params), intent(in), target :: bwd
+      type(single_ROCmfft_params), intent(in), target :: bwd
       integer(kind = kint), intent(in) :: Nfft_r, Nfft_c
       integer(c_size_t), intent(in) :: Nbytes
       complex(kind = kreal), intent(in), target :: C_ROCmFFT(Nfft_c)

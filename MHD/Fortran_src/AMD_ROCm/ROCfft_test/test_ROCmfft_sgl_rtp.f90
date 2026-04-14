@@ -15,7 +15,7 @@
       use m_FFT_size
       use t_fft_test_data
       use t_single_ROCmFFT_wrapper
-      use normalize_for_FFTW
+      use single_pout_ROCmFFT_offload
 !
       implicit none
 !
@@ -25,10 +25,10 @@
 !
       type(fft_test_data) :: ft1
 !
-      type(calypso_ROCmfft_params), target :: fwd
-      type(calypso_ROCmfft_params), target :: bwd
-      type(calypso_ROCmfft_work), target :: WK_fwd
-      type(calypso_ROCmfft_work), target :: WK_bwd
+      type(single_ROCmfft_params), target :: fwd
+      type(single_ROCmfft_params), target :: bwd
+      type(single_ROCmfft_work), target :: WK_fwd
+      type(single_ROCmfft_work), target :: WK_bwd
 !
       integer(c_size_t), parameter :: ione_c = ione
 !
@@ -53,61 +53,18 @@
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !   Forward transform
-        do nd = 1, ft1%nfld
-          start = OMP_GET_WTIME()
-!$omp parallel workshare
-          WK_fwd%X_ROCmFFT(1:WK_fwd%Nfft_r) = 0.0d0
-!$omp end parallel workshare
-!$omp parallel workshare
-          WK_fwd%X_ROCmFFT(1:ft1%ngrd) = ft1%s_k(nd,1:ft1%ngrd)
-!$omp end parallel workshare
-          elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
-
-          start = OMP_GET_WTIME()
-          call calypso_sgl_fwd_ROCmFFT(fwd,                             &
-     &                                 WK_fwd%Nfft_r, WK_fwd%X_ROCmFFT, &
-     &                                 WK_fwd%Nfft_c, WK_fwd%C_ROCmFFT, &
-     &                                 WK_fwd%Nbytes, WK_fwd%data_ptr)
-          elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
-!
-          start = OMP_GET_WTIME()
-          call norm_swap_from_prt_fwd_FFTW((nd-1), ione, ft1%nfld,      &
-     &        WK_fwd%NFFT_c, WK_fwd%C_ROCmFFT(1),                       &
-     &        ft1%ngrd, WK_fwd%aNfft, ft1%s_k(1,1))
-          elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
-        end do
+        call single_pout_fwd_ROCmFFT(fwd, WK_fwd, ft1%nfld, ft1%s_k,    &
+     &                               elapsed(1), elapsed(2))
 !
         start = OMP_GET_WTIME()
-!$omp parallel do
-        do i = 1, ft1%ngrd
-          ft1%f_x(1:ft1%nfld,i) = ft1%s_k(1:ft1%nfld,i)
-        end do
-!$omp end parallel do
+!$omp parallel workshare
+        ft1%f_x(1:ft1%nfld,1:ft1%ngrd) = ft1%s_k(1:ft1%nfld,1:ft1%ngrd)
+!$omp end parallel workshare
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !   Backword transform
-        do nd = 1, ft1%nfld
-          start = OMP_GET_WTIME()
-          call norm_swap_to_prt_bwd_FFTW((nd-1), ione, ft1%nfld,        &
-     &         ft1%ngrd, ft1%f_x(1,1),                                  &
-     &         WK_bwd%NFFT_c, WK_bwd%C_ROCmFFT(1))
-          elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
-!
-          start = OMP_GET_WTIME()
-          call calypso_sgl_bwd_ROCmFFT(bwd,                             &
-     &                                 WK_bwd%Nfft_c, WK_bwd%C_ROCmFFT, &
-     &                                 WK_bwd%Nfft_r, WK_bwd%X_ROCmFFT, &
-     &                                 WK_bwd%Nbytes, WK_bwd%data_ptr)
-          elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
-!
-          start = OMP_GET_WTIME()
-!$omp parallel do
-          do i = 1, ft1%ngrd
-            ft1%f_x(nd,i) = WK_bwd%X_ROCmFFT(i)
-          end do
-!$omp end parallel do
-          elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
-        end do
+        call single_pout_bwd_ROCmFFT(bwd, WK_bwd, ft1%nfld, ft1%f_x,    &
+     &                               elapsed(1), elapsed(2))
       end do
 !
       start = OMP_GET_WTIME()
