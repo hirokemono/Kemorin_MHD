@@ -11,7 +11,7 @@
       use m_FFT_size
       use t_fft_test_data
       use t_ROCmFFT_wrapper
-      use normalize_for_OMP_FFTW
+      use multi_pin_ROCmFFT_offload
 !
       implicit none
 !
@@ -33,8 +33,8 @@
 !
 !   Initialize Fourier transform
       start = OMP_GET_WTIME()
-      call calypso_pin_ROCmFFT_init(n_field, ngrid,                     &
-     &                              fwd, WK_fwd, bwd, WK_bwd)
+      call calypso_ROCmFFT_initialize(n_field, ngrid,                   &
+     &                                fwd, WK_fwd, bwd, WK_bwd)
       elapsed(3) = OMP_GET_WTIME() - start
 !
       elapsed(1:2) = zero
@@ -43,78 +43,29 @@
         if(mod(icou, 20) .eq. 0) write(*,*) 'loop count: ', icou
 !
         start = OMP_GET_WTIME()
-!$omp target teams distribute parallel do collapse(2)
-        do nd = 1, ft1%nfld
-          do i = 1, ft1%ngrd
-            ft1%s_k(i,nd) = ft1%org(i,nd)
-          end do
-        end do
-!$omp end target teams distribute parallel do
+!$omp parallel workshare
+        ft1%s_k(1:ft1%ngrd,1:ft1%nfld) = ft1%org(1:ft1%ngrd,1:ft1%nfld)
+!$omp end parallel workshare
+        elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !   Forward transform
-!$omp parallel do private(nd,i)
-        do nd = 1, ft1%nfld
-          do i = 1, ft1%ngrd
-            WK_fwd%X_ROCmFFT(i,nd) = ft1%s_k(i,nd)
-          end do
-          do i = ft1%ngrd+1, WK_fwd%Nfft_r
-            WK_fwd%X_ROCmFFT(i,nd) = zero
-          end do
-        end do
-!$omp end parallel do
-        elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
+        call multi_pin_fwd_ROCmFFT(fwd, WK_fwd, ft1%s_k(1,1),           &
+     &                             elapsed(1), elapsed(2))
 !
         start = OMP_GET_WTIME()
-        call calypso_forward_ROCmFFT(fwd,                               &
-     &                               WK_fwd%Nfft_r, WK_fwd%X_ROCmFFT,   &
-     &                               WK_fwd%Nfft_c, WK_fwd%C_ROCmFFT,   &
-     &                               WK_fwd%Nbytes, WK_fwd%data_ptr)
-        elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
-!
-        start = OMP_GET_WTIME()
-        call norm_prt_from_fwd_OMP_FFTW(ft1%nfld, WK_fwd%aNfft,         &
-     &      WK_fwd%NFFT_c, WK_fwd%C_ROCmFFT, ft1%ngrd, ft1%s_k(1,1))
+!$omp parallel workshare
+        ft1%f_x(1:ft1%ngrd,1:ft1%nfld) = ft1%s_k(1:ft1%ngrd,1:ft1%nfld)
+!$omp end parallel workshare
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
-!
-!
-        start = OMP_GET_WTIME()
-!$omp target teams distribute parallel do collapse(2)
-        do nd = 1, ft1%nfld
-          do i = 1, ft1%ngrd
-            ft1%f_x(i,nd) = ft1%s_k(i,nd)
-          end do
-        end do
-!$omp end target teams distribute parallel do
-        elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
-!
 !
 !   Backword transform
-        start = OMP_GET_WTIME()
-        call norm_prt_to_bwd_OMP_FFTW(ft1%nfld, ft1%ngrd, ft1%f_x(1,1), &
-     &      WK_bwd%Nfft_c, WK_bwd%C_ROCmFFT(1,1))
-        elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
-!
-        start = OMP_GET_WTIME()
-        call calypso_backward_ROCmFFT(bwd,                              &
-     &                                WK_bwd%Nfft_c, WK_bwd%C_ROCmFFT,  &
-     &                                WK_bwd%Nfft_r, WK_bwd%X_ROCmFFT,  &
-     &                                WK_bwd%Nbytes, WK_bwd%data_ptr)
-        elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
-!
-        start = OMP_GET_WTIME()
-!$omp parallel do private(nd,i)
-        do nd = 1, ft1%nfld
-          do i = 1, ft1%ngrd
-            ft1%f_x(i,nd) = WK_bwd%X_ROCmFFT(i,nd)
-          end do
-        end do
-!$omp end parallel do
-        elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
+        call multi_pin_bwd_ROCmFFT(bwd, WK_bwd, ft1%f_x,                &
+     &                             elapsed(1), elapsed(2))
       end do
 !
 !   Finalize
       start = OMP_GET_WTIME()
-      call calypso_pin_ROCmFFT_fin(fwd, WK_fwd, bwd, WK_bwd)
+      call calypso_ROCmFFT_finalize(fwd, WK_fwd, bwd, WK_bwd)
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
   10  continue

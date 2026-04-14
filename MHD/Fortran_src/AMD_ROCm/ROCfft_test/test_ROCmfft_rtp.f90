@@ -11,7 +11,7 @@
       use m_FFT_size
       use t_fft_test_data
       use t_ROCmFFT_wrapper
-      use normalize_for_OMP_FFTW
+      use multi_pout_ROCmFFT_offload
 !
       implicit none
 !
@@ -32,16 +32,10 @@
       write(*,'(a)') '-----  Test rtp ROCmFFT  -----'
       call init_fft_test_data(n_field, ngrid, ft1)
 !
-!   Initialize Forward transform
+!   Initialize Fourier transform
       start = OMP_GET_WTIME()
-      call calypso_ROCmFFT_set_size(n_field, ngrid, fwd, WK_fwd)
-      call calypso_pout_fwd_ROCmFFT_init(fwd, WK_fwd)
-      call calypso_fwd_ROCmFFT_init(fwd)
-!
-!   Initialize Backword transform
-      call calypso_ROCmFFT_set_size(n_field, ngrid, bwd, WK_bwd)
-      call calypso_pout_bwd_ROCmFFT_init(bwd, WK_bwd)
-      call calypso_bwd_ROCmFFT_init(bwd)
+      call calypso_ROCmFFT_initialize(n_field, ngrid,                   &
+     &                                fwd, WK_fwd, bwd, WK_bwd)
       elapsed(3) = OMP_GET_WTIME() - start
 !
       elapsed(1:2) = zero
@@ -49,83 +43,29 @@
         if(mod(icou, 20) .eq. 0) write(*,*) 'loop count: ', icou
 !
         start = OMP_GET_WTIME()
-!$omp target teams distribute parallel do collapse(2)
-        do i = 1, ft1%ngrd
-          do nd = 1, ft1%nfld
-            ft1%s_k(nd,i) = ft1%org(nd,i)
-          end do
-        end do
-!$omp end target teams distribute parallel do
+!$omp parallel workshare
+        ft1%s_k(1:ft1%nfld,1:ft1%ngrd) = ft1%org(1:ft1%nfld,1:ft1%ngrd)
+!$omp end parallel workshare
+        elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !   Forward transform
-!$omp target teams distribute parallel do collapse(2)
-        do i = 1, ft1%ngrd
-          do nd = 1, ft1%nfld
-            WK_fwd%X_ROCmFFT(nd,i) = ft1%s_k(nd,i)
-          end do
-        end do
-!$omp end target teams distribute parallel do
-        if(ft1%ngrd .lt. WK_fwd%Nfft_r) then
-!$omp target teams distribute parallel do collapse(2)
-          do i = ft1%ngrd+1, WK_fwd%Nfft_r
-            do nd = 1, ft1%nfld
-              WK_fwd%X_ROCmFFT(nd,i) = 0.0d0
-            end do
-          end do
-!$omp end target teams distribute parallel do
-        end if
-        elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
+        call multi_pout_fwd_ROCmFFT(fwd, WK_fwd, ft1%s_k(1,1),          &
+     &                              elapsed(1), elapsed(2))
 !
         start = OMP_GET_WTIME()
-        call calypso_forward_ROCmFFT(fwd,                               &
-     &                            WK_fwd%Nfft_r, WK_fwd%X_ROCmFFT(1,1), &
-     &                            WK_fwd%Nfft_c, WK_fwd%C_ROCmFFT(1,1), &
-     &                            WK_fwd%Nbytes, WK_fwd%data_ptr)
-        elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
-!
-        start = OMP_GET_WTIME()
-        call norm_rtp_from_fwd_OMP_FFTW(ft1%nfld, WK_fwd%aNfft,         &
-     &      WK_fwd%NFFT_c, WK_fwd%C_ROCmFFT(1,1), ft1%ngrd, ft1%s_k(1,1))
-        elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
-!
-        start = OMP_GET_WTIME()
-!$omp target teams distribute parallel do collapse(2)
-        do i = 1, ft1%ngrd
-          do nd = 1, ft1%nfld
-            ft1%f_x(nd,i) = ft1%s_k(nd,i)
-          end do
-        end do
-!$omp end target teams distribute parallel do
+!$omp parallel workshare
+        ft1%f_x(1:ft1%nfld,1:ft1%ngrd) = ft1%s_k(1:ft1%nfld,1:ft1%ngrd)
+!$omp end parallel workshare
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !   Backword transform
-!
-        start = OMP_GET_WTIME()
-        call norm_rtp_to_bwd_OMP_FFTW(ft1%nfld, ft1%ngrd, ft1%f_x(1,1), &
-     &      WK_bwd%NFFT_c, WK_bwd%C_ROCmFFT(1,1))
-        elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
-!
-        start = OMP_GET_WTIME()
-        call calypso_backward_ROCmFFT(bwd,                              &
-     &                            WK_bwd%Nfft_c, WK_bwd%C_ROCmFFT(1,1), &
-     &                            WK_bwd%Nfft_r, WK_bwd%X_ROCmFFT(1,1), &
-     &                            WK_bwd%Nbytes, WK_bwd%data_ptr)
-        elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
-!
-        start = OMP_GET_WTIME()
-!$omp target teams distribute parallel do collapse(2)
-        do i = 1, ft1%ngrd
-          do nd = 1, ft1%nfld
-            ft1%f_x(nd,i) = WK_bwd%X_ROCmFFT(nd,i)
-          end do
-        end do
-!$omp end target teams distribute parallel do
-        elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
+        call multi_pout_bwd_ROCmFFT(bwd, WK_bwd, ft1%f_x(1,1),          &
+     &                              elapsed(1), elapsed(2))
       end do
 !
 !   Finalize
       start = OMP_GET_WTIME()
-      call calypso_pin_ROCmFFT_fin(fwd, WK_fwd, bwd, WK_bwd)
+      call calypso_ROCmFFT_finalize(fwd, WK_fwd, bwd, WK_bwd)
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
   10  continue
