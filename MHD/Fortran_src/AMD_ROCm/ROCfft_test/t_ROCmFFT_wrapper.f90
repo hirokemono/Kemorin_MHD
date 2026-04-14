@@ -9,10 +9,10 @@
 !!@verbatim
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT by FFTW
-!!      subroutine calypso_ROCmFFT_set_size(Ncomp, Nfft,                &
+!!      subroutine calypso_ROCmFFT_set_size(Ncomp_fwd, Ncomp_bwd, Nfft, &
 !!     &                                    fwd, bwd, WK_fft)
-!!        integer(c_size_t), intent(in) :: Ncomp
-!!        integer(c_size_t), intent(in) :: Nfft
+!!        integer(kind = kint), intent(in) :: Ncomp_fwd, Ncomp_bwd
+!!        integer(kind = kint), intent(in) :: Nfft
 !!        type(calypso_ROCmfft_params), intent(inout) :: fwd, bwd
 !!        type(calypso_ROCmfft_work), intent(inout), target :: WK_fft
 !!      subroutine calypso_fwd_ROCmFFT_init(fwd)
@@ -20,9 +20,8 @@
 !!      subroutine calypso_ROCmFFT_finalize(fwd, bwd)
 !!        type(calypso_ROCmfft_params), intent(inout), target :: fwd
 !!        type(calypso_ROCmfft_params), intent(inout), target :: bwd
-!!      subroutine calypso_pin_ROCmFFT_alloc(Ncomp, WK_fft)
-!!      subroutine calypso_pout_ROCmFFT_alloc(Ncomp, WK_fft)
-!!        integer(c_size_t), intent(in) :: Ncomp
+!!      subroutine calypso_ROCmFFT_alloc(fwd, bwd, WK_fft)
+!!        type(calypso_ROCmfft_params), intent(in) :: fwd, bwd
 !!        type(calypso_ROCmfft_work), intent(inout), target :: WK_fft
 !! ------------------------------------------------------------------
 !!
@@ -41,7 +40,7 @@
 !!
 !!
 !!   a_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\frac{2\pi j k}{Nfft})
-!!   b_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\frac{2\pi j k}{Nfft})
+!!   b_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \sin (\frac{2\pi j k}{Nfft})
 !!
 !!   a_{0} = \frac{1}{Nfft} \sum_{j=0}^{Nfft-1} x_{j}
 !!    K = Nfft/2....
@@ -94,6 +93,7 @@
       type calypso_ROCmfft_params
         integer(c_size_t) ::    Nfft =   0
         integer(c_size_t) ::    Ncomp =  0
+        integer(c_size_t) ::    Nbytes = 0
 !
         type(c_ptr) :: ROCfft_plan =        c_null_ptr
         type(c_ptr) :: ROCfft_description = c_null_ptr
@@ -117,11 +117,10 @@
         real(kind = kreal) ::   aNfft = 0.0d0
         integer(kind = kint) :: Nfft_c = 0
         integer(kind = kint) :: Nfft_r = 0
-        integer(c_size_t) ::    Nbytes = 0
 !
         type(c_ptr) :: data_ptr = c_null_ptr
-        real(kind = kreal), allocatable :: X_ROCmFFT(:,:)
-        complex(kind = kreal), allocatable :: C_ROCmFFT(:,:)
+        real(kind = kreal), allocatable :: X_ROCmFFT(:)
+        complex(kind = kreal), allocatable :: C_ROCmFFT(:)
       end type calypso_ROCmfft_work
 !
       integer(c_size_t), parameter, private :: ione_c =  ione
@@ -132,75 +131,53 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_ROCmFFT_set_size(Ncomp, Nfft,                  &
+      subroutine calypso_ROCmFFT_set_size(Ncomp_fwd, Ncomp_bwd, Nfft,   &
      &                                    fwd, bwd, WK_fft)
 !
-      integer(c_size_t), intent(in) :: Ncomp
-      integer(c_size_t), intent(in) :: Nfft
+      integer(kind = kint), intent(in) :: Ncomp_fwd, Ncomp_bwd
+      integer(kind = kint), intent(in) :: Nfft
       type(calypso_ROCmfft_params), intent(inout) :: fwd, bwd
       type(calypso_ROCmfft_work), intent(inout), target :: WK_fft
 !
-      fwd%Ncomp =  Ncomp
+      fwd%Ncomp =  Ncomp_fwd
       fwd%Nfft =   Nfft
-      bwd%Ncomp =  Ncomp
+      bwd%Ncomp =  Ncomp_bwd
       bwd%Nfft =   Nfft
       WK_fft%aNfft =  one / dble(Nfft)
       WK_fft%Nfft_c = Nfft / 2 + 1
       WK_fft%Nfft_r = 2 * WK_fft%Nfft_c
-      WK_fft%Nbytes = WK_fft%Nfft_r * fwd%Ncomp * kreal
+!
+      fwd%Nbytes = WK_fft%Nfft_r * fwd%Ncomp * kreal
+      bwd%Nbytes = WK_fft%Nfft_r * bwd%Ncomp * kreal
 !
       end subroutine calypso_ROCmFFT_set_size
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_pin_ROCmFFT_alloc(Ncomp, WK_fft)
+      subroutine calypso_ROCmFFT_alloc(fwd, bwd, WK_fft)
 !
-      use hipfort
-      use hipfort_check
-      use hipfort_rocfft
-!
-      integer(c_size_t), intent(in) :: Ncomp
+      type(calypso_ROCmfft_params), intent(in) :: fwd, bwd
       type(calypso_ROCmfft_work), intent(inout), target :: WK_fft
 !
+      integer(kind = kint) :: max_size
 !
       call hipCheck(hipMalloc(WK_fft%data_ptr, WK_fft%Nbytes))
 !
-      allocate(WK_fft%X_ROCmFFT(WK_fft%Nfft_r,Ncomp))
-      allocate(WK_fft%C_ROCmFFT(WK_fft%Nfft_c,Ncomp))
+      max_size = max(fwd%Ncomp, bwd%Ncomp)
+      allocate(WK_fft%X_ROCmFFT(max_size*WK_fft%Nfft_r))
+      allocate(WK_fft%C_ROCmFFT(max_size*WK_fft%Nfft_c))
 !$omp parallel workshare
-      WK_fft%X_ROCmFFT(1:WK_fft%Nfft_r,1:Ncomp) = 0.0d0
+      WK_fft%X_ROCmFFT(1:max_size*WK_fft%Nfft_r) = 0.0d0
 !$omp end parallel workshare
 !$omp parallel workshare
-      WK_fft%C_ROCmFFT(1:WK_fft%Nfft_c,1:Ncomp) = 0.0d0
+      WK_fft%C_ROCmFFT(1:max_size*WK_fft%Nfft_c) = 0.0d0
 !$omp end parallel workshare
 !
-      end subroutine calypso_pin_ROCmFFT_alloc
+      max_size = max(fwd%Nbytes, bwd%Nbytes)
+      call hipCheck(hipMalloc(WK_fft%data_ptr, max_size))
 !
-! ------------------------------------------------------------------
-!
-      subroutine calypso_pout_ROCmFFT_alloc(Ncomp, WK_fft)
-!
-      use hipfort
-      use hipfort_check
-      use hipfort_rocfft
-!
-      integer(c_size_t), intent(in) :: Ncomp
-      type(calypso_ROCmfft_work), intent(inout), target :: WK_fft
-!
-!
-      call hipCheck(hipMalloc(WK_fft%data_ptr, WK_fft%Nbytes))
-!
-      allocate(WK_fft%X_ROCmFFT(Ncomp,WK_fft%Nfft_r))
-      allocate(WK_fft%C_ROCmFFT(Ncomp,WK_fft%Nfft_c))
-!$omp parallel workshare
-      WK_fft%X_ROCmFFT(1:Ncomp,1:WK_fft%Nfft_r) = 0.0d0
-!$omp end parallel workshare
-!$omp parallel workshare
-      WK_fft%C_ROCmFFT(1:Ncomp,1:WK_fft%Nfft_c) = 0.0d0
-!$omp end parallel workshare
-!
-      end subroutine calypso_pout_ROCmFFT_alloc
+      end subroutine calypso_ROCmFFT_alloc
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
