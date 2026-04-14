@@ -22,8 +22,7 @@
 !
       type(calypso_ROCmfft_params), target :: fwd
       type(calypso_ROCmfft_params), target :: bwd
-      type(calypso_ROCmfft_work), target :: WK_fwd
-      type(calypso_ROCmfft_work), target :: WK_bwd
+      type(calypso_ROCmfft_work), target :: WK_fft
 !
       integer(kind = kint) :: i, nd
       integer(kind = kint) :: icou
@@ -34,8 +33,7 @@
 !
 !   Initialize Fourier transform
       start = OMP_GET_WTIME()
-      call calypso_ROCmFFT_initialize(n_field, ngrid,                   &
-     &                                fwd, WK_fwd, bwd, WK_bwd)
+      call calypso_pout_ROCmFFT_init(n_field, ngrid, fwd, bwd, WK_fft)
       elapsed(3) = OMP_GET_WTIME() - start
 !
       elapsed(1:2) = zero
@@ -49,7 +47,7 @@
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !   Forward transform
-        call multi_pout_fwd_ROCmFFT(fwd, WK_fwd, ft1%s_k(1,1),          &
+        call multi_pout_fwd_ROCmFFT(fwd, WK_fft, ft1%s_k(1,1),          &
      &                              elapsed(1), elapsed(2))
 !
         start = OMP_GET_WTIME()
@@ -59,13 +57,13 @@
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !   Backword transform
-        call multi_pout_bwd_ROCmFFT(bwd, WK_bwd, ft1%f_x(1,1),          &
+        call multi_pout_bwd_ROCmFFT(bwd, WK_fft, ft1%f_x(1,1),          &
      &                              elapsed(1), elapsed(2))
       end do
 !
 !   Finalize
       start = OMP_GET_WTIME()
-      call calypso_ROCmFFT_finalize(fwd, WK_fwd, bwd, WK_bwd)
+      call calypso_ROCmFFT_finalize(fwd, bwd, WK_fft)
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
   10  continue
