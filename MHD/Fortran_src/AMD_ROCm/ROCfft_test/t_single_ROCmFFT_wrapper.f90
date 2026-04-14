@@ -9,15 +9,12 @@
 !!@verbatim
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT by FFTW
-!!      subroutine calypso_sgl_ROCmFFT_set_size(Nfft, f_param, WORK)
-!!      subroutine calypso_sgl_ROCmFFT_init(Nfft, fwd, WK_fwd,          &
-!!     &                                          bwd, WK_bwd)
-!!      subroutine calypso_single_ROCmFFT_fin(fwd, bwd)
-!!        integer(c_size_t), intent(in) :: Nfft_r
+!!      subroutine calypso_sgl_ROCmFFT_init(Nfft, fwd, bwd, WK_fft)
+!!      subroutine calypso_single_ROCmFFT_fin(fwd, bwd, WK_fft)
+!!        integer(c_size_t), intent(in) :: Nfft
 !!        type(single_ROCmfft_params), intent(inout), target :: fwd
 !!        type(single_ROCmfft_params), intent(inout), target :: bwd
-!!        type(c_ptr), intent(inout), target :: fwd_data_ptr
-!!        type(c_ptr), intent(inout), target :: bwd_data_ptr
+!!        type(single_ROCmfft_work), intent(inout), target :: WK_fft
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by FFTW3
@@ -83,12 +80,10 @@
 !
       type single_ROCmfft_params
         integer(c_size_t) :: Nfft =   0
-        integer(c_size_t) :: Ncomp =  0
-!
         type(c_ptr) :: ROCfft_plan = c_null_ptr
       end type single_ROCmfft_params
 !
-      type calypso_ROCmfft_work
+      type single_ROCmfft_work
         real(kind = kreal) ::   aNfft = 0.0d0
         integer(kind = kint) :: Nfft_c = 0
         integer(kind = kint) :: Nfft_r = 0
@@ -97,9 +92,14 @@
         type(c_ptr) :: data_ptr = c_null_ptr
         real(kind = kreal), allocatable :: X_ROCmFFT(:)
         complex(kind = kreal), allocatable :: C_ROCmFFT(:)
-      end type calypso_ROCmfft_work
+      end type single_ROCmfft_work
 !
       integer(c_size_t), parameter, private :: ione_c =  ione
+!
+      private :: calypso_sgl_ROCmFFT_set_size
+      private :: calypso_sgl_ROCmFFT_alloc
+      private :: calypso_sgl_fwd_ROCmFFT_init
+      private :: calypso_sgl_bwd_ROCmFFT_init
 !
 ! ------------------------------------------------------------------
 !
@@ -107,93 +107,84 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_sgl_ROCmFFT_init(Nfft, fwd, WK_fwd,            &
-     &                                          bwd, WK_bwd)
+      subroutine calypso_sgl_ROCmFFT_init(Nfft, fwd, bwd, WK_fft)
 !
       integer(c_size_t), intent(in) :: Nfft
       type(single_ROCmfft_params), intent(inout), target :: fwd
       type(single_ROCmfft_params), intent(inout), target :: bwd
-      type(calypso_ROCmfft_work), intent(inout), target :: WK_fwd
-      type(calypso_ROCmfft_work), intent(inout), target :: WK_bwd
+      type(single_ROCmfft_work), intent(inout), target :: WK_fft
 !
+!
+      call calypso_sgl_ROCmFFT_set_size(Nfft, fwd, bwd, WK_fft)
+      call calypso_sgl_ROCmFFT_alloc(WK_fft)
 !
 !   Initialize Forward transform
-      call calypso_sgl_ROCmFFT_set_size(Nfft, fwd, WK_fwd)
-      call calypso_sgl_fwd_ROCmFFT_alloc(fwd, WK_fwd)
       call calypso_sgl_fwd_ROCmFFT_init(fwd)
-!
 !   Initialize Backword transform
-      call calypso_sgl_ROCmFFT_set_size(Nfft, bwd, WK_bwd)
-      call calypso_sgl_bwd_ROCmFFT_alloc(bwd, WK_bwd)
       call calypso_sgl_bwd_ROCmFFT_init(bwd)
 !
       end subroutine calypso_sgl_ROCmFFT_init
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_sgl_ROCmFFT_set_size(Nfft, f_param, WORK)
-!
-      integer(c_size_t), intent(in) :: Nfft
-      type(single_ROCmfft_params), intent(inout) :: f_param
-      type(calypso_ROCmfft_work), intent(inout), target :: WORK
-!
-      f_param%Nfft =   Nfft
-      WORK%aNfft =  one / dble(f_param%Nfft)
-      WORK%Nfft_c = f_param%Nfft / 2 + 1
-      WORK%Nfft_r = 2 * WORK%Nfft_c
-      WORK%Nbytes = WORK%Nfft_r * kreal
-!
-      end subroutine calypso_sgl_ROCmFFT_set_size
-!
-! ------------------------------------------------------------------
-!
-      subroutine calypso_sgl_fwd_ROCmFFT_alloc(fwd, WK_fwd)
+      subroutine calypso_single_ROCmFFT_fin(fwd, bwd, WK_fft)
 !
       use hipfort
       use hipfort_check
       use hipfort_rocfft
 !
       type(single_ROCmfft_params), intent(inout), target :: fwd
-      type(calypso_ROCmfft_work), intent(inout), target :: WK_fwd
+      type(single_ROCmfft_params), intent(inout), target :: bwd
+      type(single_ROCmfft_work), intent(inout), target :: WK_fft
 !
-!   Initialize Forward transform
-      call hipCheck(hipMalloc(WK_fwd%data_ptr, WK_fwd%Nbytes))
+      call rocfftCheck(rocfft_plan_destroy(bwd%ROCfft_plan))
+      call rocfftCheck(rocfft_plan_destroy(fwd%ROCfft_plan))
+      call hipCheck(hipFree(WK_fft%data_ptr))
+      deallocate(WK_fft%C_ROCmFFT, WK_fft%X_ROCmFFT)
 !
-      allocate(WK_fwd%X_ROCmFFT(WK_fwd%Nfft_r))
-      allocate(WK_fwd%C_ROCmFFT(WK_fwd%Nfft_c))
-!$omp parallel workshare
-      WK_fwd%X_ROCmFFT(1:WK_fwd%Nfft_r) = 0.0d0
-!$omp end parallel workshare
-!$omp parallel workshare
-      WK_fwd%C_ROCmFFT(1:WK_fwd%Nfft_c) = 0.0d0
-!$omp end parallel workshare
+      end subroutine calypso_single_ROCmFFT_fin
 !
-      end subroutine calypso_sgl_fwd_ROCmFFT_alloc
+! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
+      subroutine calypso_sgl_ROCmFFT_set_size(Nfft, fwd, bwd, WK_fft)
+!
+      integer(c_size_t), intent(in) :: Nfft
+      type(single_ROCmfft_params), intent(inout) :: fwd, bwd
+      type(single_ROCmfft_work), intent(inout), target :: WK_fft
+!
+      fwd%Nfft =   Nfft
+      bwd%Nfft =   Nfft
+      WK_fft%aNfft =  one / dble(Nfft)
+      WK_fft%Nfft_c = Nfft / 2 + 1
+      WK_fft%Nfft_r = 2 * WK_fft%Nfft_c
+      WK_fft%Nbytes = WK_fft%Nfft_r * kreal
+!
+      end subroutine calypso_sgl_ROCmFFT_set_size
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_sgl_bwd_ROCmFFT_alloc(bwd, WK_bwd)
+      subroutine calypso_sgl_ROCmFFT_alloc(WK_fft)
 !
       use hipfort
       use hipfort_check
       use hipfort_rocfft
 !
-      type(single_ROCmfft_params), intent(inout), target :: bwd
-      type(calypso_ROCmfft_work), intent(inout), target :: WK_bwd
+      type(single_ROCmfft_work), intent(inout), target :: WK_fft
 !
-!   Initialize Backword transform
-      call hipCheck(hipMalloc(WK_bwd%data_ptr, WK_bwd%Nbytes))
+!   Initialize Forward transform
+      call hipCheck(hipMalloc(WK_fft%data_ptr, WK_fft%Nbytes))
 !
-      allocate(WK_bwd%X_ROCmFFT(WK_bwd%Nfft_r))
-      allocate(WK_bwd%C_ROCmFFT(WK_bwd%Nfft_r))
+      allocate(WK_fft%X_ROCmFFT(WK_fft%Nfft_r))
+      allocate(WK_fft%C_ROCmFFT(WK_fft%Nfft_c))
 !$omp parallel workshare
-      WK_bwd%X_ROCmFFT(1:WK_bwd%Nfft_r) = 0.0d0
+      WK_fft%X_ROCmFFT(1:WK_fft%Nfft_r) = 0.0d0
 !$omp end parallel workshare
 !$omp parallel workshare
-      WK_bwd%C_ROCmFFT(1:WK_bwd%Nfft_c) = 0.0d0
+      WK_fft%C_ROCmFFT(1:WK_fft%Nfft_c) = 0.0d0
 !$omp end parallel workshare
 !
-      end subroutine calypso_sgl_bwd_ROCmFFT_alloc
+      end subroutine calypso_sgl_ROCmFFT_alloc
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
@@ -235,28 +226,6 @@
      &                                           ione_c, c_null_ptr))
 !
       end subroutine calypso_sgl_bwd_ROCmFFT_init
-!
-! ------------------------------------------------------------------
-!
-      subroutine calypso_single_ROCmFFT_fin(fwd, WK_fwd, bwd, WK_bwd)
-!
-      use hipfort
-      use hipfort_check
-      use hipfort_rocfft
-!
-      type(single_ROCmfft_params), intent(inout), target :: fwd
-      type(single_ROCmfft_params), intent(inout), target :: bwd
-      type(calypso_ROCmfft_work), intent(inout), target :: WK_fwd
-      type(calypso_ROCmfft_work), intent(inout), target :: WK_bwd
-!
-      call rocfftCheck(rocfft_plan_destroy(bwd%ROCfft_plan))
-      call rocfftCheck(rocfft_plan_destroy(fwd%ROCfft_plan))
-      call hipCheck(hipFree(WK_bwd%data_ptr))
-      call hipCheck(hipFree(WK_fwd%data_ptr))
-      deallocate(WK_fwd%C_ROCmFFT, WK_fwd%X_ROCmFFT)
-      deallocate(WK_bwd%C_ROCmFFT, WK_bwd%X_ROCmFFT)
-!
-      end subroutine calypso_single_ROCmFFT_fin
 !
 ! ------------------------------------------------------------------
 !

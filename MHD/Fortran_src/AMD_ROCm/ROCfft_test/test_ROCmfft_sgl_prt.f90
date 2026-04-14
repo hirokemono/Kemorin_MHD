@@ -27,8 +27,7 @@
 !
       type(single_ROCmfft_params), target :: fwd
       type(single_ROCmfft_params), target :: bwd
-      type(single_ROCmfft_work), target :: WK_fwd
-      type(single_ROCmfft_work), target :: WK_bwd
+      type(single_ROCmfft_work), target :: WK_fft
 !
       integer(c_size_t), parameter :: ione_c = ione
 !
@@ -39,7 +38,7 @@
       call swap_fft_test_input_to_pin(ft1)
 !
       start = OMP_GET_WTIME()
-      call calypso_sgl_ROCmFFT_init(ngrid, fwd, WK_fwd, bwd, WK_bwd)
+      call calypso_sgl_ROCmFFT_init(ngrid, fwd, bwd, WK_fft)
       elapsed(3) = OMP_GET_WTIME() - start
 !
       elapsed(1:2) = 0.0d0
@@ -53,7 +52,7 @@
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !   Forward transform
-        call single_pin_fwd_ROCmFFT(fwd, WK_fwd, ft1%nfld, ft1%s_k,     &
+        call single_pin_fwd_ROCmFFT(fwd, WK_fft, ft1%nfld, ft1%s_k,     &
      &                              elapsed(1), elapsed(2))
 !
         start = OMP_GET_WTIME()
@@ -63,12 +62,12 @@
         elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !   Backword transform
-        call single_pin_bwd_ROCmFFT(bwd, WK_bwd, ft1%nfld, ft1%f_x,     &
+        call single_pin_bwd_ROCmFFT(bwd, WK_fft, ft1%nfld, ft1%f_x,     &
      &                              elapsed(1), elapsed(2))
       end do
 !
       start = OMP_GET_WTIME()
-      call calypso_single_ROCmFFT_fin(fwd, WK_fwd, bwd, WK_bwd)
+      call calypso_single_ROCmFFT_fin(fwd, bwd, WK_fft)
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
    10 continue
