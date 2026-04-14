@@ -91,7 +91,8 @@
       type(calypso_ROCmfft_work), intent(inout), target :: WK_fft
 !
 !
-      call calypso_ROCmFFT_set_size(Ncomp, Nfft, fwd, bwd, WK_fft)
+      call calypso_ROCmFFT_set_size(Ncomp_fwd, Ncomp_bwd, Nfft,         &
+     &                              fwd, bwd, WK_fft)
       call calypso_ROCmFFT_alloc(fwd, bwd, WK_fft)
 !
 !   Initialize Forward transform
@@ -178,7 +179,7 @@
         call calypso_forward_ROCmFFT(fwd,                               &
      &                            WK_fwd%Nfft_r, WK_fwd%X_ROCmFFT(1),   &
      &                            WK_fwd%Nfft_c, WK_fwd%C_ROCmFFT(1),   &
-     &                            WK_fwd%Nbytes, WK_fwd%data_ptr)
+     &                            fwd%Nbytes, WK_fwd%data_ptr)
         elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
@@ -203,7 +204,7 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, ist
 !
 !
       start = OMP_GET_WTIME()
@@ -215,13 +216,16 @@
       call calypso_backward_ROCmFFT(bwd,                                &
      &                            WK_bwd%Nfft_c, WK_bwd%C_ROCmFFT(1),   &
      &                            WK_bwd%Nfft_r, WK_bwd%X_ROCmFFT(1),   &
-     &                            WK_bwd%Nbytes, WK_bwd%data_ptr)
+     &                            bwd%Nbytes, WK_bwd%data_ptr)
       elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
-!$omp parallel  workshare
-      X(1:bwd%Ncomp*bwd%Nfft) = WK_bwd%X_ROCmFFT(1:bwd%Ncomp*bwd%Nfft)
-!$omp end workshare
+!$omp parallel do private(i,ist)
+      do i = 1, bwd%Nfft
+        ist = (i-1) * bwd%Ncomp
+        X(1:bwd%Ncomp,i) = WK_bwd%X_ROCmFFT(ist+1:ist+bwd%Ncomp)
+      end do
+!$omp end parallel do
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       end subroutine multi_pout_bwd_ROCmFFT

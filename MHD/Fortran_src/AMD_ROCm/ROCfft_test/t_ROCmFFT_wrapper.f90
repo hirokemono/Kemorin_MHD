@@ -157,12 +157,14 @@
 !
       subroutine calypso_ROCmFFT_alloc(fwd, bwd, WK_fft)
 !
+      use hipfort
+      use hipfort_check
+!
       type(calypso_ROCmfft_params), intent(in) :: fwd, bwd
       type(calypso_ROCmfft_work), intent(inout), target :: WK_fft
 !
-      integer(kind = kint) :: max_size
+      integer(c_size_t) :: max_size
 !
-      call hipCheck(hipMalloc(WK_fft%data_ptr, WK_fft%Nbytes))
 !
       max_size = max(fwd%Ncomp, bwd%Ncomp)
       allocate(WK_fft%X_ROCmFFT(max_size*WK_fft%Nfft_r))
