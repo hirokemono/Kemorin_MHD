@@ -9,15 +9,21 @@
 !!@verbatim
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT by FFTW
-!!      subroutine calypso_ROCmFFT_initialize(Nfft_r, Nbytes,           &
-!!     &                                      l_real, fwd, bwd)
+!!      subroutine calypso_ROCmFFT_set_size(Ncomp, Nfft,                &
+!!     &                                    fwd, bwd, WK_fft)
+!!        integer(c_size_t), intent(in) :: Ncomp
+!!        integer(c_size_t), intent(in) :: Nfft
+!!        type(calypso_ROCmfft_params), intent(inout) :: fwd, bwd
+!!        type(calypso_ROCmfft_work), intent(inout), target :: WK_fft
+!!      subroutine calypso_fwd_ROCmFFT_init(fwd)
+!!      subroutine calypso_bwd_ROCmFFT_init(bwd)
 !!      subroutine calypso_ROCmFFT_finalize(fwd, bwd)
-!!        integer(c_size_t), intent(in) :: Nfft_r
-!!        integer(c_size_t), intent(in) :: Nbytes
 !!        type(calypso_ROCmfft_params), intent(inout), target :: fwd
 !!        type(calypso_ROCmfft_params), intent(inout), target :: bwd
-!!        type(c_ptr), intent(inout), target :: fwd_data_ptr
-!!        type(c_ptr), intent(inout), target :: bwd_data_ptr
+!!      subroutine calypso_pin_ROCmFFT_alloc(Ncomp, WK_fft)
+!!      subroutine calypso_pout_ROCmFFT_alloc(Ncomp, WK_fft)
+!!        integer(c_size_t), intent(in) :: Ncomp
+!!        type(calypso_ROCmfft_work), intent(inout), target :: WK_fft
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by FFTW3
@@ -120,63 +126,10 @@
 !
       integer(c_size_t), parameter, private :: ione_c =  ione
 !
-      private :: calypso_ROCmFFT_set_size
-!
 ! ------------------------------------------------------------------
 !
       contains
 !
-! ------------------------------------------------------------------
-!
-      subroutine calypso_pin_ROCmFFT_init(Ncomp, Nfft,                  &
-     &                                    fwd, bwd, WK_fft)
-!
-      integer(c_size_t), intent(in) :: Ncomp
-      integer(c_size_t), intent(in) :: Nfft
-      type(calypso_ROCmfft_params), intent(inout), target :: fwd
-      type(calypso_ROCmfft_params), intent(inout), target :: bwd
-      type(calypso_ROCmfft_work), intent(inout), target :: WK_fft
-!
-!
-      call calypso_ROCmFFT_set_size(Ncomp, Nfft, fwd, bwd, WK_fft)
-      call calypso_pin_ROCmFFT_alloc(fwd%Ncomp, WK_fft)
-!
-!   Initialize Forward transform
-      call calypso_pin_fwd_ROCmFFT_init(WK_fft%Nfft_r, fwd)
-      call calypso_fwd_ROCmFFT_init(fwd)
-!
-!   Initialize Backword transform
-      call calypso_pin_bwd_ROCmFFT_init(WK_fft%Nfft_r, bwd)
-      call calypso_bwd_ROCmFFT_init(bwd)
-!
-      end subroutine calypso_pin_ROCmFFT_init
-!
-! ------------------------------------------------------------------
-!
-      subroutine calypso_pout_ROCmFFT_init(Ncomp, Nfft,                 &
-     &                                     fwd, bwd, WK_fft)
-!
-      integer(c_size_t), intent(in) :: Ncomp
-      integer(c_size_t), intent(in) :: Nfft
-      type(calypso_ROCmfft_params), intent(inout), target :: fwd
-      type(calypso_ROCmfft_params), intent(inout), target :: bwd
-      type(calypso_ROCmfft_work), intent(inout), target :: WK_fft
-!
-!
-      call calypso_ROCmFFT_set_size(Ncomp, Nfft, fwd, bwd, WK_fft)
-      call calypso_pout_ROCmFFT_alloc(fwd%Ncomp, WK_fft)
-!
-!   Initialize Forward transform
-      call calypso_pout_fwd_ROCmFFT_init(fwd)
-      call calypso_fwd_ROCmFFT_init(fwd)
-!
-!   Initialize Backword transform
-      call calypso_pout_bwd_ROCmFFT_init(bwd)
-      call calypso_bwd_ROCmFFT_init(bwd)
-!
-      end subroutine calypso_pout_ROCmFFT_init
-!
-! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
       subroutine calypso_ROCmFFT_set_size(Ncomp, Nfft,                  &
@@ -198,6 +151,7 @@
 !
       end subroutine calypso_ROCmFFT_set_size
 !
+! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
       subroutine calypso_pin_ROCmFFT_alloc(Ncomp, WK_fft)
@@ -247,78 +201,6 @@
 !$omp end parallel workshare
 !
       end subroutine calypso_pout_ROCmFFT_alloc
-!
-! ------------------------------------------------------------------
-! ------------------------------------------------------------------
-!
-      subroutine calypso_pin_fwd_ROCmFFT_init(Nfft_r, fwd)
-!
-      integer(kind = kint), intent(in) :: Nfft_r
-      type(calypso_ROCmfft_params), intent(inout), target :: fwd
-!
-!   Initialize Forward transform
-      fwd%in_strides_size =   1
-      fwd%in_strides(1) =     1
-      fwd%in_distance =       Nfft_r
-      fwd%out_strides_size =  0
-      fwd%out_strides(1) =    1
-      fwd%out_distance =      0
-!
-      end subroutine calypso_pin_fwd_ROCmFFT_init
-!
-! ------------------------------------------------------------------
-!
-      subroutine calypso_pin_bwd_ROCmFFT_init(Nfft_r, bwd)
-!
-      use hipfort
-      use hipfort_check
-      use hipfort_rocfft
-!
-      integer(kind = kint), intent(in) :: Nfft_r
-      type(calypso_ROCmfft_params), intent(inout), target :: bwd
-!
-!   Initialize Backword transform
-      bwd%in_strides_size =  1
-      bwd%in_strides(1) =    1
-      bwd%in_distance =      0
-      bwd%out_strides_size = 1
-      bwd%out_strides(1) =   1
-      bwd%out_distance =     Nfft_r
-!
-      end subroutine calypso_pin_bwd_ROCmFFT_init
-!
-! ------------------------------------------------------------------
-! ------------------------------------------------------------------
-!
-      subroutine calypso_pout_fwd_ROCmFFT_init(fwd)
-!
-      type(calypso_ROCmfft_params), intent(inout), target :: fwd
-!
-!   Initialize Forward transform
-      fwd%in_strides_size =  1
-      fwd%in_strides(1) =    fwd%Ncomp
-      fwd%in_distance =      1
-      fwd%out_strides_size = 1
-      fwd%out_strides(1) =   fwd%Ncomp
-      fwd%out_distance =     1
-!
-      end subroutine calypso_pout_fwd_ROCmFFT_init
-!
-! ------------------------------------------------------------------
-!
-      subroutine calypso_pout_bwd_ROCmFFT_init(bwd)
-!
-      type(calypso_ROCmfft_params), intent(inout), target :: bwd
-!
-!   Initialize Forward transform
-      bwd%in_strides_size =  1
-      bwd%in_strides(1) =    bwd%Ncomp
-      bwd%in_distance =      1
-      bwd%out_strides_size = 1
-      bwd%out_strides(1) =   bwd%Ncomp
-      bwd%out_distance =     1
-!
-      end subroutine calypso_pout_bwd_ROCmFFT_init
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
@@ -405,7 +287,6 @@
       call rocfftCheck                                                  &
      &   (rocfft_plan_get_work_buffer_size(bwd%ROCfft_plan,             &
      &                                     bwd%ROCfft_wk_buf_size))
-      write(*,*) 'bwd%ROCfft_wk_buf_size', bwd%ROCfft_wk_buf_size
       call rocfftCheck                                                  &
      &   (rocfft_execution_info_create(bwd%ROCfft_wk_info))
       if(bwd%ROCfft_wk_buf_size > 0) then
@@ -419,6 +300,7 @@
 !
       end subroutine calypso_bwd_ROCmFFT_init
 !
+! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
       subroutine calypso_ROCmFFT_finalize(fwd, bwd, WK_fft)
