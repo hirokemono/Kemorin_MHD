@@ -213,9 +213,9 @@
 !
         start = OMP_GET_WTIME()
         call calypso_backward_ROCmFFT(bwd,                              &
-     &                                WK_bwd%Nfft_c, WK_bwd%C_ROCmFFT,  &
-     &                                WK_bwd%Nfft_r, WK_bwd%X_ROCmFFT,  &
-     &                                WK_bwd%Nbytes, WK_bwd%data_ptr)
+     &                             WK_bwd%Nfft_c, WK_bwd%C_ROCmFFT(1),  &
+     &                             WK_bwd%Nfft_r, WK_bwd%X_ROCmFFT(1),  &
+     &                             WK_bwd%Nbytes, WK_bwd%data_ptr)
         elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
