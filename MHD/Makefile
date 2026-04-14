@@ -201,8 +201,9 @@ makemake:
 	$(GMAKE) makeheaders \
 		MAKENAME="$(TESTS_MAKEHEAD)"
 	@echo '#' >> $(TESTS_MAKEHEAD)
-	@echo '# ----  library lists ----------------------------------------' >> $(TESTS_MAKEHEAD)
-	@echo '#' >> $(TESTS_MAKEHEAD)
+	@echo '# -----------------------------------------------------------' >> $(TESTS_MAKEHEAD)
+	@echo '# library lists' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(TESTS_MAKEHEAD)
 	$(GMAKE) makelib_list \
 		MAKENAME="$(TESTS_MAKEHEAD)"
 	
@@ -240,19 +241,26 @@ makemake:
 		 ) \
 	done
 	@echo '#' >> $(MAKENAME)
-	@echo '# ----  target lists  ----------------------------------------' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '# target lists ' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	$(GMAKE) maketarget_list 
 		MAKENAME="$(MAKENAME)"
 	@echo '#' >> $(MAKENAME)
-	@echo '# ----  library lists ----------------------------------------' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '# library lists' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	$(GMAKE) makelib_list \
 		MAKENAME="$(MAKENAME)"
 	@echo '#' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '# objects list' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@echo '# objects list' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo 'create object module list...'
 	@for dir in $(SUBDIRS) ; do \

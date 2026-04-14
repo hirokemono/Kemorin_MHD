@@ -48,8 +48,9 @@
       type(merged_mesh), save :: mgd_mesh_pm
       type(second_mesh), save :: sec_mesh_pm
 !
-      integer(kind=kint ) :: ist, ied, iint
-      integer(kind=kint ) ::  istep
+      integer(kind=kint) :: ist, ied, iint
+      integer(kind=kint) ::  istep
+      real(kind=kreal) ::  elapsed_fft = 0.0d0, elapsed_cpy = 0.0d0
 !
 !  ===========
 ! . for local 
@@ -204,7 +205,7 @@
      &      plane_fft_wk1%kx_max, plane_fft_wk1%ky_max,                 &
      &      plane_fft_wk1%iz_max, plane_fft_wk1%num_spectr,             &
      &      plane_fft_wk1%num_fft, plane_fft_wk1%wk_pfft,               &
-     &      plane_fft_wk1%phys_d)
+     &      plane_fft_wk1%phys_d, elapsed_fft, elapsed_cpy)
 
         call copy_2_inverted_udt(c_size1%nx_all, c_size1%ny_all,        &
      &      plane_fft_wk1%kx_max, plane_fft_wk1%ky_max,                 &

@@ -1,1 +1,0 @@
-../../../../MHD/Fortran_src/CORE_src/FFT_wrapper/m_fftw_parameters.f90

@@ -15,8 +15,7 @@
 !!      subroutine verify_sph_test_FFT                                  &
 !!     &         (nidx_rtp, ncomp_bwd, ncomp_fwd, FFT_t)
 !!
-!!      subroutine alloc_test_ordering_FFT                              &
-!!     &         (Nfft, ncomp_bwd, ncomp_fwd, FFT_t)
+!!      subroutine alloc_test_ordering_FFT(Nfft, FFT_t)
 !!      subroutine dealloc_test_ordering_FFT(FFT_t)
 !!
 !!   wrapper subroutine for initierize FFT by FFTW
@@ -264,7 +263,7 @@
             m = (nidx_rtp(3)+1)/2 + 1
             ic_rtp = j + irt_rtp_smp_stack(np_smp)
             ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
-            WS(ic_send) = two*FFT_t%aNfft * real(FFT_t%C(m,ip))
+            WS(ic_send) = FFT_t%aNfft * real(FFT_t%C(m,ip))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
 !
 !            if(iflag_FFT_time) FFT_t%t_omp(ip,3)= FFT_t%t_omp(ip,3)   &
@@ -346,8 +345,7 @@
             m = (nidx_rtp(3)+1)/2 + 1
             ic_rtp = j + irt_rtp_smp_stack(np_smp)
             ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
-            FFT_t%C(m,ip)                                              &
-     &              = half * cmplx(WR(ic_recv), zero, kind(0d0))
+            FFT_t%C(m,ip) = cmplx(WR(ic_recv), zero, kind(0d0))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !            if(iflag_FFT_time) FFT_t%t_omp(ip,1)= FFT_t%t_omp(ip,1)   &
 !     &                       + MPI_WTIME() - FFT_t%t_omp(ip,0)
@@ -411,7 +409,7 @@
       FFT_t%howmany_bwd = int(ncomp_bwd)
       FFT_t%howmany_fwd = int(ncomp_fwd)
       FFT_t%Nfft_r = Nfft
-      FFT_t%Nfft_c = Nfft/2 + 1
+      FFT_t%Nfft_c = (Nfft+1)/2 + 1
 !
       allocate(FFT_t%plan_fwd(Nsmp))
       allocate(FFT_t%plan_bwd(Nsmp))
@@ -437,10 +435,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine alloc_test_ordering_FFT                                &
-     &         (Nfft, ncomp_bwd, ncomp_fwd, FFT_t)
+      subroutine alloc_test_ordering_FFT(Nfft, FFT_t)
 !
-      integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
       integer(kind = kint), intent(in) :: Nfft
       type(work_for_test_FFT), intent(inout) :: FFT_t
 !

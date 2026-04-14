@@ -1,19 +1,44 @@
+!>@file   inverse_fft_4_plane.f90
+!!@brief  module inverse_fft_4_plane
+!!
+!!@author H. Matsui
+!!@date Programmed in Oct., 2009
 !
 !      module inverse_fft_4_plane
 !
-!      Written by H. Matsui
 !
+!>@brief  Horizontal backward fourier transforms for plane layer model
+!!
+!!@verbatim
 !!      subroutine s_inverse_fft_4_plane                                &
 !!     &         (npl_spec, nx_all, ny_all, nz_all,                     &
 !!     &          kx_max, ky_max, iz_max, num_spectr,                   &
-!!     &          num_fft, wk_pfft, phys_d)
+!!     &          num_fft, wk_pfft, phys_d, elapsed_fft, elapsed_cpy)
+!!        integer(kind=kint), intent(in) :: iflag_FFT
+!!        integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
+!!        integer(kind = kint), intent(in) :: kx_max, ky_max, iz_max
+!!        integer(kind = kint), intent(in) :: num_spectr, num_fft
+!!        type(new_plane_spectr), intent(in) :: npl_spec
+!!        real(kind=kreal), intent(inout) :: wk_pfft(num_spectr*num_fft)
+!!        real(kind=kreal), intent(inout) :: phys_d(num_spectr*num_fft)
+!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !!      subroutine copy_2_inverted_data(nx_all, ny_all, nz_all,         &
 !!     &          kx_max, ky_max, iz_max, num_spectr, num_fft,          &
 !!     &          wk_pfft, phys_d)
+!!        integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
+!!        integer(kind = kint), intent(in) :: kx_max, ky_max, iz_max
+!!        integer(kind = kint), intent(in) :: num_spectr, num_fft
+!!        real(kind=kreal), intent(in) :: wk_pfft(num_spectr*num_fft)
+!!        real(kind=kreal), intent(inout) :: phys_d(num_spectr*num_fft)
 !!      subroutine copy_2_inverted_udt(nx_all, ny_all,                  &
 !!     &          kx_max, ky_max, iz_max, num_spectr, num_fft,          &
 !!     &          wk_pfft, merged_fld)
+!!        integer(kind=kint), intent(in) :: nx_all, ny_all
+!!        integer(kind = kint), intent(in) :: kx_max, ky_max, iz_max
+!!        integer(kind = kint), intent(in) :: num_spectr, num_fft
+!!        real(kind=kreal), intent(in)  ::  wk_pfft(num_spectr*num_fft)
 !!        type(phys_data), intent(inout) :: merged_fld
+!!@endverbatim
 !
       module inverse_fft_4_plane
 !
@@ -37,7 +62,7 @@
       subroutine s_inverse_fft_4_plane                                  &
      &         (iflag_FFT, npl_spec, nx_all, ny_all, nz_all,            &
      &          kx_max, ky_max, iz_max, num_spectr,                     &
-     &          num_fft, wk_pfft, phys_d)
+     &          num_fft, wk_pfft, phys_d, elapsed_fft, elapsed_cpy)
 !
       use t_FFT_selector
 !
@@ -49,6 +74,7 @@
 !
       real(kind=kreal), intent(inout)  ::  wk_pfft(num_spectr*num_fft)
       real(kind=kreal), intent(inout)  ::  phys_d(num_spectr*num_fft)
+      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       type(working_FFTs) :: WK_FFTS
       integer(kind=kint ) :: n1
@@ -63,10 +89,10 @@
       n1 = num_fft*iz_max*kx_max
       Nstacksmp(1) = n1
 !
-      call verify_FFT_select                                            &
-     &   (iflag_FFT, Nsmp, Nstacksmp, ky_max, WK_FFTS)
-      call backward_FFT_select                                          &
-     &   (iflag_FFT, Nsmp, Nstacksmp, n1, ky_max, wk_pfft, WK_FFTS)
+      call verify_FFT_select(iflag_FFT, Nsmp, Nstacksmp,                &
+     &    ky_max, WK_FFTS)
+      call backward_FFT_select(iflag_FFT, Nsmp, Nstacksmp,              &
+     &    n1, ky_max, wk_pfft, WK_FFTS, elapsed_fft, elapsed_cpy)
 !
       call copy_4_inversse_fft_x(kx_max, ky_max, iz_max,                &
      &    num_spectr, num_fft, wk_pfft, phys_d)
@@ -75,10 +101,10 @@
       Nstacksmp(1) = n1
 !
 !      write(*,*) 'start FFT', n1, kx_max
-      call verify_FFT_select                                            &
-     &   (iflag_FFT, Nsmp, Nstacksmp, kx_max, WK_FFTS)
-      call backward_FFT_select                                          &
-     &   (iflag_FFT, Nsmp, Nstacksmp, n1, kx_max, wk_pfft, WK_FFTS)
+      call verify_FFT_select(iflag_FFT, Nsmp, Nstacksmp,                &
+     &   kx_max, WK_FFTS)
+      call backward_FFT_select(iflag_FFT, Nsmp, Nstacksmp,              &
+     &    n1, kx_max, wk_pfft, WK_FFTS, elapsed_fft, elapsed_cpy)
 !
       end subroutine s_inverse_fft_4_plane
 !
