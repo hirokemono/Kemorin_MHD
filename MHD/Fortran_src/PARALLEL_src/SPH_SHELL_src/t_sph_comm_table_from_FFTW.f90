@@ -13,7 +13,7 @@
 !!
 !!      subroutine copy_all_prt_FFTW_to_send(nnod_rt, ncomp_fwd,        &
 !!     &          Nfft_c, C_fft, comm_sph_FFTW, n_WS, WS)
-!!      subroutine copy_all_rtp_FFTW_to_send_smp                        &
+!!      subroutine pout_FFTW_smp_all_field_to_send                      &
 !!     &         (irt_rtp_smp_stack, Nfft_c, ncomp_fwd, C_fft,          &
 !!     &          comm_sph_FFTW, n_WS, WS)
 !!
@@ -92,7 +92,7 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine copy_all_rtp_FFTW_to_send_smp                          &
+      subroutine pout_FFTW_smp_all_field_to_send                        &
      &         (irt_rtp_smp_stack, Nfft_c, ncomp_fwd, C_fft,            &
      &          comm_sph_FFTW, n_WS, WS)
 !
@@ -126,7 +126,7 @@
       end do
 !$end parallel do
 !
-      end subroutine copy_all_rtp_FFTW_to_send_smp
+      end subroutine pout_FFTW_smp_all_field_to_send
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------

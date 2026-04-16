@@ -137,7 +137,7 @@
 !
       call alloc_comm_table_sph_FFTW                                    &
      &   (comm_rtp%ntot_item_sr, FFTW_f%comm_sph_FFTW)
-      call set_comm_item_rtp_4_FFTW                                     &
+      call set_comm_item_pout_FFTW_smp                                  &
      &   (sph_rtp%nnod_rtp, comm_rtp%ntot_item_sr, comm_rtp%irev_sr,    &
      &    sph_rtp%istack_rtp_rt_smp, FFTW_f%Nfft_c, FFTW_f%aNfft,       &
      &    FFTW_f%comm_sph_FFTW)
