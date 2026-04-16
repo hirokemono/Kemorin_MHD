@@ -174,7 +174,7 @@
 !
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
-      call copy_FFTPACK_from_rtp_field                                  &
+      call pout_FFT_from_rtp_field                                      &
      &  (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp, &
      &   ncomp_fwd, X_rtp(1,1), fftpack_t%X(1))
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
@@ -254,7 +254,7 @@
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
-      call copy_FFTPACK_to_rtp_field                                    &
+      call pout_FFT_to_rtp_field                                        &
      &  (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp, &
      &   ncomp_bwd, fftpack_t%X, X_rtp(1,1))
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)

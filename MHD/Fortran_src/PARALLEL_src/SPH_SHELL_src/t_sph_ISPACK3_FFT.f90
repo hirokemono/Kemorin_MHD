@@ -247,7 +247,7 @@
      &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp,                &
      &      ncomp_fwd, X_rtp(1,1), ispack3_t%X)
       else
-        call copy_FFTPACK_from_rtp_field(sph_rtp%nnod_rtp,              &
+        call pout_FFT_from_rtp_field(sph_rtp%nnod_rtp,                  &
      &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp,                &
      &      ncomp_fwd, X_rtp(1,1), ispack3_t%X)
       end if
@@ -327,7 +327,7 @@
      &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp, ncomp_bwd,     &
      &      ispack3_t%X, X_rtp(1,1))
       else
-        call copy_FFTPACK_to_rtp_field(sph_rtp%nnod_rtp,                &
+        call pout_FFT_to_rtp_field(sph_rtp%nnod_rtp,                    &
      &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp, ncomp_bwd,     &
      &      ispack3_t%X, X_rtp(1,1))
       end if
