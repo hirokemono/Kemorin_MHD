@@ -9,10 +9,10 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine init_sph_OMP_FFTW                                    &
+!!      subroutine init_rtp_OMP_FFTW                                    &
 !!     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, OFFTW)
-!!      subroutine finalize_sph_OMP_FFTW(OFFTW)
-!!      subroutine verify_sph_OMP_FFTW                                  &
+!!      subroutine finalize_rtp_OMP_FFTW(OFFTW)
+!!      subroutine verify_rtp_OMP_FFTW                                  &
 !!     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, OFFTW)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -20,7 +20,7 @@
 !!   wrapper subroutine for initierize FFT by FFTW
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sph_forward_OFFTW_to_send                            &
+!!      subroutine rtp_fwd_OMP_FFTW_from_recv                           &
 !!     &         (sph_rtp, ncomp_fwd, n_WS, X_rtp, WS, OFFTW)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -37,7 +37,7 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sph_backward_OFFTW_from_recv                         &
+!!      subroutine rtp_back_OMP_FFTW_from_recv                          &
 !!     &         (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, X_rtp, OFFTW)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -122,7 +122,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_OMP_FFTW                                      &
+      subroutine init_rtp_OMP_FFTW                                      &
      &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, OFFTW)
 !
       use set_comm_table_rtp_OMP_FFTW
@@ -158,16 +158,16 @@
 !
       call alloc_comm_table_sph_FFTW                                    &
      &   (comm_rtp%ntot_item_sr, OFFTW%comm_FFTW)
-      call set_comm_item_rtp_OMP_FFTW                                   &
+      call set_comm_item_pout_OMP_FFTW                                  &
      &   (sph_rtp%nnod_rtp, sph_rtp%istack_rtp_rt_smp(np_smp),          &
      &    comm_rtp%irev_sr, OFFTW%Nfft_c, OFFTW%aNfft,                  &
      &    OFFTW%comm_FFTW)
 !
-      end subroutine init_sph_OMP_FFTW
+      end subroutine init_rtp_OMP_FFTW
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_OMP_FFTW(OFFTW)
+      subroutine finalize_rtp_OMP_FFTW(OFFTW)
 !
       type(work_for_OpenMP_FFTW), intent(inout) :: OFFTW
 !
@@ -180,11 +180,11 @@
 !
       call dealloc_OMP_FFTW_plan(OFFTW)
 !
-      end subroutine finalize_sph_OMP_FFTW
+      end subroutine finalize_rtp_OMP_FFTW
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_sph_OMP_FFTW                                    &
+      subroutine verify_rtp_OMP_FFTW                                    &
      &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, OFFTW)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -197,7 +197,7 @@
 !
 !
       if(allocated(OFFTW%X) .eqv. .false.) then
-        call init_sph_OMP_FFTW                                          &
+        call init_rtp_OMP_FFTW                                          &
      &     (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, OFFTW)
         return
       end if
@@ -207,17 +207,17 @@
       if(     int(hm_bw) .ne. OFFTW%howmany_bwd                         &
      &   .or. int(hm_fw) .ne. OFFTW%howmany_fwd                         &
      &   .or. sph_rtp%nidx_rtp(3) .ne. OFFTW%Nfft_r) then
-        call finalize_sph_OMP_FFTW(OFFTW)
-        call init_sph_OMP_FFTW                                          &
+        call finalize_rtp_OMP_FFTW(OFFTW)
+        call init_rtp_OMP_FFTW                                          &
      &     (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, OFFTW)
       end if
 !
-      end subroutine verify_sph_OMP_FFTW
+      end subroutine verify_rtp_OMP_FFTW
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine sph_forward_OFFTW_to_send                              &
+      subroutine rtp_fwd_OMP_FFTW_from_recv                             &
      &         (sph_rtp, ncomp_fwd, n_WS, X_rtp, WS, OFFTW)
 !
       use set_comm_table_rtp_OMP_FFTW
@@ -245,16 +245,16 @@
 !
 !   normalization
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
-      call copy_all_rtp_FFTW_to_send                                    &
+      call pout_OMP_FFTW_all_field_to_send                              &
      &   (sph_rtp%istack_rtp_rt_smp(np_smp), OFFTW%Nfft_c,              &
      &    ncomp_fwd, OFFTW%C, OFFTW%comm_FFTW, n_WS, WS)
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
 !
-      end subroutine sph_forward_OFFTW_to_send
+      end subroutine rtp_fwd_OMP_FFTW_from_recv
 !
 ! ------------------------------------------------------------------
 !
-      subroutine sph_backward_OFFTW_from_recv                           &
+      subroutine rtp_back_OMP_FFTW_from_recv                            &
      &         (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, X_rtp, OFFTW)
 !
       use set_comm_table_rtp_OMP_FFTW
@@ -272,7 +272,7 @@
 !
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
-      call set_OMP_FFTW_field_from_recv                                 &
+      call pout_OMP_FFTW_fields_from_recv                               &
      &   (sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nnod_rtp,          &
      &    ncomp_bwd, n_WR, comm_rtp%irev_sr, WR, OFFTW%Nfft_c,          &
      &    OFFTW%C(1))
@@ -288,7 +288,7 @@
      &   (sph_rtp%nnod_rtp, ncomp_bwd, OFFTW%X(1), X_rtp(1,1))
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
 !
-      end subroutine sph_backward_OFFTW_from_recv
+      end subroutine rtp_back_OMP_FFTW_from_recv
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------

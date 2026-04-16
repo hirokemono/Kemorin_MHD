@@ -8,7 +8,7 @@
 !>@brief  communication table from FFTW with OpenMP
 !!
 !!@verbatim
-!!      subroutine set_comm_item_rtp_OMP_FFTW(nnod_rt, nnod_rtp,        &
+!!      subroutine set_comm_item_pout_OMP_FFTW(nnod_rt, nnod_rtp,       &
 !!     &          irev_sr_rtp, Nfft_c, aNfft, C_fft)
 !!        integer(kind = kint), intent(in) :: nnod_rtp
 !!        integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
@@ -16,7 +16,7 @@
 !!        real(kind = kreal), intent(in) :: aNfft
 !!        type(comm_tbl_from_FFTW), intent(inout) :: comm_sph_FFT
 !!
-!!      subroutine set_OMP_FFTW_field_from_recv                         &
+!!      subroutine pout_OMP_FFTW_fields_from_recv                       &
 !!     &         (nnod_rt, nnod_rtp, ncomp_bwd,                         &
 !!     &          n_WR, irev_sr_rtp, WR, Nfft_c, C_fft)
 !!      subroutine set_OMP_FFTW_comp_from_recv                          &
@@ -56,7 +56,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine set_comm_item_rtp_OMP_FFTW(nnod_rtp, nnod_rt,          &
+      subroutine set_comm_item_pout_OMP_FFTW(nnod_rtp, nnod_rt,         &
      &          irev_sr_rtp, Nfft_c, aNfft, comm_sph_FFT)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
@@ -111,12 +111,12 @@
         end if
       end do
 !
-      end subroutine set_comm_item_rtp_OMP_FFTW
+      end subroutine set_comm_item_pout_OMP_FFTW
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine set_OMP_FFTW_field_from_recv                           &
+      subroutine pout_OMP_FFTW_fields_from_recv                         &
      &         (nnod_rt, nnod_rtp, ncomp_bwd,                           &
      &          n_WR, irev_sr_rtp, WR, Nfft_c, C_fft)
 !
@@ -166,7 +166,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine set_OMP_FFTW_field_from_recv
+      end subroutine pout_OMP_FFTW_fields_from_recv
 !
 ! ------------------------------------------------------------------
 !

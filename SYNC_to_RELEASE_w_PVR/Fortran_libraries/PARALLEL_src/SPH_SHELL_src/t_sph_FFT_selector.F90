@@ -168,7 +168,7 @@
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_ONCE) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           if(id_rank .eq. 0) write(*,*) 'Use prt FFTW'
-          call init_prt_FFTW(sph_rtp, comm_rtp,                         &
+          call init_prt_FFTW_smp(sph_rtp, comm_rtp,                     &
      &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
         else
           if(id_rank .eq. 0) write(*,*) 'Use rtp FFTW'
@@ -287,7 +287,7 @@
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_ONCE) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           if(iflag_debug .gt. 0) write(*,*) 'Use prt FFTW'
-          call verify_prt_FFTW(sph_rtp, comm_rtp,                       &
+          call verify_prt_FFTW_smp(sph_rtp, comm_rtp,                   &
      &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
         else
           if(iflag_debug .gt. 0) write(*,*) 'Use rtp FFTW'
@@ -362,7 +362,7 @@
 #ifdef FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_ONCE) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
-          call prt_fwd_FFTW_to_send(sph_rtp, comm_rtp,                  &
+          call prt_fwd_FFTW_smp_to_send(sph_rtp, comm_rtp,              &
      &        ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_fld_FFTW)
         else
           call rtp_fwd_FFTW_smp_to_send(sph_rtp, ncomp_fwd, n_WS,       &
@@ -433,7 +433,7 @@
 #ifdef FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_ONCE) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
-          call prt_back_FFTW_from_recv(sph_rtp, comm_rtp,               &
+          call prt_back_FFTW_smp_from_recv(sph_rtp, comm_rtp,           &
      &        ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)
         else
           call rtp_back_FFTW_smp_from_recv(sph_rtp, comm_rtp,           &

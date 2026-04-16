@@ -9,17 +9,17 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine init_prt_FFTW(sph_rtp, comm_rtp,                     &
-!!     &                         ncomp_bwd, ncomp_fwd, FFTW_f)
-!!      subroutine verify_prt_FFTW(sph_rtp, comm_rtp,                   &
-!!     &                           ncomp_bwd, ncomp_fwd, FFTW_f)
+!!      subroutine init_prt_FFTW_smp(sph_rtp, comm_rtp,                 &
+!!     &                             ncomp_bwd, ncomp_fwd, FFTW_f)
+!!      subroutine verify_prt_FFTW_smp(sph_rtp, comm_rtp,               &
+!!     &                               ncomp_bwd, ncomp_fwd, FFTW_f)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
 !!
 !!   wrapper subroutine for initierize FFT by FFTW
 !! ------------------------------------------------------------------
 !!
-!!      subroutine prt_fwd_FFTW_to_send                                 &
+!!      subroutine prt_fwd_FFTW_smp_to_send                             &
 !!     &         (sph_rtp, comm_rtp, ncomp_fwd, n_WS, X_rtp, WS, FFTW_f)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -36,7 +36,7 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine prt_back_FFTW_from_recv                              &
+!!      subroutine prt_back_FFTW_smp_from_recv                          &
 !!     &         (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, X_rtp, FFTW_f)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -91,8 +91,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_prt_FFTW(sph_rtp, comm_rtp,                       &
-     &                         ncomp_bwd, ncomp_fwd, FFTW_f)
+      subroutine init_prt_FFTW_smp(sph_rtp, comm_rtp,                   &
+     &                             ncomp_bwd, ncomp_fwd, FFTW_f)
 !
       use set_comm_table_prt_FFTW
 !
@@ -147,12 +147,12 @@
      &    comm_rtp%ntot_item_sr, comm_rtp%irev_sr,                      &
      &    FFTW_f%Nfft_c, FFTW_f%aNfft, FFTW_f%comm_sph_FFTW)
 !
-      end subroutine init_prt_FFTW
+      end subroutine init_prt_FFTW_smp
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_prt_FFTW(sph_rtp, comm_rtp,                     &
-     &                           ncomp_bwd, ncomp_fwd, FFTW_f)
+      subroutine verify_prt_FFTW_smp(sph_rtp, comm_rtp,                 &
+     &                               ncomp_bwd, ncomp_fwd, FFTW_f)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -162,23 +162,23 @@
 !
 !
       if(allocated(FFTW_f%X) .eqv. .false.) then
-        call init_prt_FFTW(sph_rtp, comm_rtp,                           &
-     &                     ncomp_bwd, ncomp_fwd, FFTW_f)
+        call init_prt_FFTW_smp(sph_rtp, comm_rtp,                       &
+     &                         ncomp_bwd, ncomp_fwd, FFTW_f)
         return
       end if
 !
       if(size(FFTW_f%X) .ne. sph_rtp%nnod_rtp) then
         call finalize_sph_field_FFTW(FFTW_f)
-        call init_prt_FFTW(sph_rtp, comm_rtp,                           &
-     &                     ncomp_bwd, ncomp_fwd, FFTW_f)
+        call init_prt_FFTW_smp(sph_rtp, comm_rtp,                       &
+     &                         ncomp_bwd, ncomp_fwd, FFTW_f)
       end if
 !
-      end subroutine verify_prt_FFTW
+      end subroutine verify_prt_FFTW_smp
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine prt_fwd_FFTW_to_send                                   &
+      subroutine prt_fwd_FFTW_smp_to_send                               &
      &         (sph_rtp, comm_rtp, ncomp_fwd, n_WS, X_rtp, WS, FFTW_f)
 !
       use copy_field_smp
@@ -219,20 +219,20 @@
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
-!      call copy_prt_field_FFTW_to_send                                 &
+!      call pin_FFTW_fields_to_send                                     &
 !     &   (sph_rtp%nnod_rtp, comm_rtp%irev_sr,                          &
 !     &    sph_rtp%istack_rtp_rt_smp(np_smp), ncomp_fwd,                &
 !     &    FFTW_f%Nfft_c, FFTW_f%aNfft, FFTW_f%C(1), n_WS, WS)
-      call copy_all_prt_FFTW_to_send                                    &
+      call pin_FFTW_all_field_to_send                                   &
      &   (sph_rtp%istack_rtp_rt_smp(np_smp),  ncomp_fwd, FFTW_f%Nfft_c, &
      &    FFTW_f%C(1), FFTW_f%comm_sph_FFTW, n_WS, WS)
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
 !
-      end subroutine prt_fwd_FFTW_to_send
+      end subroutine prt_fwd_FFTW_smp_to_send
 !
 ! ------------------------------------------------------------------
 !
-      subroutine prt_back_FFTW_from_recv                                &
+      subroutine prt_back_FFTW_smp_from_recv                            &
      &         (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, X_rtp, FFTW_f)
 !
       use copy_field_smp
@@ -255,7 +255,7 @@
 !
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
-      call copy_prt_FFTW_field_from_recv                                &
+      call pin_FFTW_fields_from_recv                                    &
      &   (sph_rtp%nnod_rtp, sph_rtp%istep_rtp,                          &
      &    sph_rtp%istack_rtp_rt_smp(np_smp), comm_rtp%irev_sr,          &
      &    ncomp_bwd, n_WR, WR, FFTW_f%Nfft_c, FFTW_f%C(1))
@@ -279,7 +279,7 @@
       call copy_nod_scalar_smp(ntot, FFTW_f%X(1), X_rtp(1,1))
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
 !
-      end subroutine prt_back_FFTW_from_recv
+      end subroutine prt_back_FFTW_smp_from_recv
 !
 ! ------------------------------------------------------------------
 !
