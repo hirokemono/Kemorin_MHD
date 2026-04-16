@@ -192,7 +192,7 @@
 !
       do nd = 1, ncomp_fwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
-          call copy_FFTPACK_from_rtp_comp                               &
+          call pout_FFT_from_rtp_comp                                   &
      &       (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                       &
      &        sph_rtp%istack_rtp_rt_smp, X_rtp(1,nd), FFTW_f%X)
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
@@ -261,8 +261,7 @@
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
-        call copy_FFTPACK_to_rtp_comp                                   &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
+        call pout_FFT_to_rtp_comp(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,   &
      &      sph_rtp%istack_rtp_rt_smp, FFTW_f%X, X_rtp(1,nd))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
       end do

@@ -12,9 +12,9 @@
 !!      subroutine pout_FFT_from_rtp_field(nnod_rtp, nidx_rtp,          &
 !!     &          irt_rtp_smp_stack, ncomp_fwd, X_rtp, X_FFT)
 !!
-!!      subroutine copy_FFTPACK_to_rtp_comp(nnod_rtp, nidx_rtp,         &
+!!      subroutine pout_FFT_to_rtp_comp(nnod_rtp, nidx_rtp,             &
 !!     &          irt_rtp_smp_stack, X_FFT, X_rtp)
-!!      subroutine copy_FFTPACK_from_rtp_comp(nnod_rtp, nidx_rtp,       &
+!!      subroutine pout_FFT_from_rtp_comp(nnod_rtp, nidx_rtp,           &
 !!     &          irt_rtp_smp_stack, X_rtp, X_FFT)
 !!@endverbatim
 !!
@@ -108,7 +108,7 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine copy_FFTPACK_to_rtp_comp(nnod_rtp, nidx_rtp,           &
+      subroutine pout_FFT_to_rtp_comp(nnod_rtp, nidx_rtp,               &
      &          irt_rtp_smp_stack, X_FFT, X_rtp)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
@@ -137,11 +137,11 @@
       end do
 !$omp end parallel do
 !
-      end subroutine copy_FFTPACK_to_rtp_comp
+      end subroutine pout_FFT_to_rtp_comp
 !
 ! ------------------------------------------------------------------
 !
-      subroutine copy_FFTPACK_from_rtp_comp(nnod_rtp, nidx_rtp,         &
+      subroutine pout_FFT_from_rtp_comp(nnod_rtp, nidx_rtp,             &
      &          irt_rtp_smp_stack, X_rtp, X_FFT)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
@@ -170,7 +170,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine copy_FFTPACK_from_rtp_comp
+      end subroutine pout_FFT_from_rtp_comp
 !
 ! ------------------------------------------------------------------
 !
