@@ -9,6 +9,10 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
+!!     Field data order:
+!!         Grid:   X(r,theta,phi,field)
+!!
+!! ------------------------------------------------------------------
 !!      subroutine init_rtp_FFTW(sph_rtp, comm_rtp,                     &
 !!     &                         ncomp_bwd, ncomp_fwd, FFTW_f)
 !!      subroutine verify_rtp_FFTW(sph_rtp, comm_rtp,                   &

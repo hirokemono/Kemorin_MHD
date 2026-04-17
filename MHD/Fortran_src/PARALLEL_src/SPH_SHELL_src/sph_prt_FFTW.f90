@@ -9,6 +9,10 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
+!!     Field data order:
+!!         Grid:   X(phi,r,theta,field)
+!!
+!! ------------------------------------------------------------------
 !!      subroutine init_prt_FFTW(sph_rtp, comm_rtp,                     &
 !!     &                         ncomp_bwd, ncomp_fwd, FFTW_f)
 !!      subroutine verify_prt_FFTW(sph_rtp, comm_rtp,                   &
@@ -65,8 +69,8 @@
 !!
 !!@n @param Nstacksmp(0:np_smp)   End number for each SMP process
 !!@n @param Ncomp           Number of components for Fourier transforms
-!!@n @param Nfft        Data length for eadh FFT
-!!@n @param X(Ncomp, Nfft)  Data for Fourier transform
+!!@n @param Nfft              Data length for eadh FFT
+!!@n @param X(Ncomp, Nfft)    Data for Fourier transform
 !
       module sph_prt_FFTW
 !
