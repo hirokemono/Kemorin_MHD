@@ -16,6 +16,10 @@ dnl Include OpenMP related definitions
 builtin(include,MHD/confdb/ax_pthread.m4)
 builtin(include,MHD/confdb/ax_openmp.m4)
 
+dnl Include AMD ROCm environment
+builtin(include,MHD/confdb/ax_var_push.m4)
+builtin(include,MHD/confdb/ax_rocm.m4)
+
 dnl Include MPI related definitions
 builtin(include,MHD/confdb/ax_mpi.m4)
 
@@ -66,6 +70,16 @@ AC_ARG_ENABLE(gl,
   USE_gl='no'
  fi],
 [USE_gl='no'])
+
+AC_ARG_WITH(rocm,
+[  --with-rocm             Use AMD ROCm environment
+   --without-rocm to disable AMD ROCm environment],
+[if test "$withval" != no ; then
+  USE_rocm='yes'
+ else
+  USE_rocm='no'
+ fi],
+[USE_rocm='no'])
 
 
 AC_ARG_WITH(fftw3,
@@ -122,6 +136,7 @@ AC_ARG_WITH(ffmpeg,
 AC_MSG_RESULT(enable-cocoa... "${USE_Cocoa}")
 AC_MSG_RESULT(enable-OpenGL.. "${USE_gl}")
 
+AC_MSG_RESULT(with-rocm...   "${USE_rocm}")
 AC_MSG_RESULT(with-fftw3...  "${USE_fftw3}")
 AC_MSG_RESULT(with-libpng... "${USE_libpng}")
 AC_MSG_RESULT(with-gtk...    "${USE_gtk}")
@@ -255,6 +270,15 @@ AC_SUBST(MPIINCDIR)
 
 AC_ARG_VAR(MPIRUN, Command and options to invoke tests using MPI (Default: mpirun))
 
+# Check AMD ROCm
+AC_MSG_RESULT(USE_rocm..."${USE_rocm}")
+if test ${USE_rocm} = "yes"
+then
+    AC_MSG_RESULT(ROCm check)
+    AX_ROCM
+fi
+
+# Check "mpirun" command
 if test -n "${MPIRUN}"; then
     AC_MSG_RESULT(Defined MPIRUN..."${MPIRUN}")
 else
