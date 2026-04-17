@@ -1,1 +1,0 @@
-../../../../MHD/Fortran_src/MHD_src/sph_MHD/cal_sph_exp_center_diffuse2.f90

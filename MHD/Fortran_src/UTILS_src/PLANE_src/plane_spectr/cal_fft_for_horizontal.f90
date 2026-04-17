@@ -1,13 +1,28 @@
+!>@file   cal_fft_for_horizontal.f90
+!!@brief  module cal_fft_for_horizontal
+!!
+!!@author H. Matsui
+!!@date Programmed in Oct., 2009
 !
-!     module cal_fft_for_horizontal
+!      module cal_fft_for_horizontal
 !
-!      Written by H.Matsui
-!      Modified by H.Matsui on June, 2006
 !
+!>@brief  Horizontal fourier transforms for plane layer model
+!!
+!!@verbatim
 !!      subroutine s_cal_fft_for_horizontal                             &
 !!     &         (iflag_FFT, kx_max, ky_max, iz_max,                    &
 !!     &          num_spectr, num_io, num_fft, icomp_fft,               &
-!!     &          phys_d, wk_pfft, phys_io)
+!!     &          phys_d, wk_pfft, phys_io, elapsed_fft, elapsed_cpy)
+!!        integer(kind = kint), intent(in) :: iflag_FFT
+!!        integer(kind = kint), intent(in) :: kx_max, ky_max, iz_max
+!!        integer(kind = kint), intent(in) :: num_spectr, num_io, num_fft
+!!        integer(kind = kint), intent(in) :: icomp_fft(num_fft)
+!!        real(kind=kreal), intent(inout) :: phys_d(num_spectr*num_fft)
+!!        real(kind=kreal), intent(inout) :: wk_pfft(num_spectr*num_fft)
+!!        real(kind=kreal), intent(inout) :: phys_io(num_io*num_fft)
+!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
+!!@endverbatim
 !
       module cal_fft_for_horizontal
 !
@@ -24,7 +39,7 @@
       subroutine s_cal_fft_for_horizontal                               &
      &         (iflag_FFT, kx_max, ky_max, iz_max,                      &
      &          num_spectr, num_io, num_fft, icomp_fft,                 &
-     &          phys_d, wk_pfft, phys_io)
+     &          phys_d, wk_pfft, phys_io, elapsed_fft, elapsed_cpy)
 !
       use t_FFT_selector
 !
@@ -33,9 +48,10 @@
       integer(kind = kint), intent(in) :: num_spectr, num_io, num_fft
       integer(kind = kint), intent(in) :: icomp_fft(num_fft)
 !
-      real(kind=kreal), intent(inout)  ::  phys_d(num_spectr*num_fft)
-      real(kind=kreal), intent(inout)  ::  wk_pfft(num_spectr*num_fft)
-      real(kind=kreal), intent(inout)  ::  phys_io(num_io*num_fft)
+      real(kind=kreal), intent(inout)  :: phys_d(num_spectr*num_fft)
+      real(kind=kreal), intent(inout)  :: wk_pfft(num_spectr*num_fft)
+      real(kind=kreal), intent(inout)  :: phys_io(num_io*num_fft)
+      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       integer(kind = kint) :: Nsmp
       integer(kind = kint), allocatable :: Nstacksmp(:)
@@ -46,43 +62,42 @@
       integer(kind=kint ) :: i_org, n1, inod
 !
 !
-!
       Nsmp = num_fft
       allocate (Nstacksmp(0:Nsmp))
 !
 !    set array
 !
-!      do j = 1, num_fft
+!     do j = 1, num_fft
 !       do iy = 1, ky_max
-!        do ix = 1, kx_max
-!         do iz = 1, iz_max
+!         do ix = 1, kx_max
+!           do iz = 1, iz_max
 !
-!          i = (j-1)*num_spectr + ix + (iy-1)*kx_max                    &
-!     &          + (iz-1)*(kx_max*ky_max)
+!             i = (j-1)*num_spectr + ix + (iy-1)*kx_max                 &
+!     &         + (iz-1)*(kx_max*ky_max)
 !
-!           write(40,*) j, iz, iy, ix, phys_d(i)
+!              write(40,*) j, iz, iy, ix, phys_d(i)
 !
+!            end do
 !          end do
-!         end do
 !        end do
-!       end do
+!      end do
 !
       do j = 1, num_fft
-       do iz = 1, iz_max
-        do iy = 1, ky_max
-         do ix = 1, kx_max
+        do iz = 1, iz_max
+          do iy = 1, ky_max
+            do ix = 1, kx_max
 !
-          i_org = (j-1)*num_spectr + ix + (iy-1)*kx_max                 &
-     &          + (iz-1)*(kx_max*ky_max)
-          i = (ix-1)*(num_fft*iz_max*ky_max) + (j-1)*(iz_max*ky_max)    &
-     &          + (iz-1)*ky_max + iy
+              i_org = (j-1)*num_spectr + ix + (iy-1)*kx_max             &
+     &             + (iz-1)*(kx_max*ky_max)
+              i = (ix-1)*(num_fft*iz_max*ky_max)                        &
+     &           + (j-1)*(iz_max*ky_max) + (iz-1)*ky_max + iy
 !
-           wk_pfft(i) = phys_d (i_org)
+              wk_pfft(i) = phys_d (i_org)
 !
+            end do
           end do
-         end do
         end do
-       end do
+      end do
 !
       n1 = num_fft*iz_max*ky_max
       Nstacksmp(0) = 0
@@ -90,10 +105,10 @@
         Nstacksmp(j) = Nstacksmp(j-1) + iz_max*kx_max
       end do
 !
-      call verify_FFT_select                                            &
-     &   (iflag_FFT, num_fft, Nstacksmp, kx_max, WK_FFTS)
-      call forward_FFT_select                                           &
-     &   (iflag_FFT, Nsmp, Nstacksmp, n1, kx_max, wk_pfft, WK_FFTS)
+      call verify_FFT_select(iflag_FFT, num_fft, Nstacksmp,             &
+     &    kx_max, WK_FFTS)
+      call forward_FFT_select(iflag_FFT, Nsmp, Nstacksmp,               &
+     &    n1, kx_max, wk_pfft, WK_FFTS, elapsed_fft, elapsed_cpy)
 !
 !    swap array
 !
@@ -105,35 +120,35 @@
       end do
 !
 !      do j = 1, num_fft
-!       do iy = 1, ky_max
-!        do ix = 1, kx_max
-!         do iz = 1, iz_max
+!        do iy = 1, ky_max
+!          do ix = 1, kx_max
+!            do iz = 1, iz_max
 !
-!          i = (ix-1)*(num_fft*iz_max*ky_max) + (j-1)*(iz_max*ky_max)   &
-!     &          + (iz-1)*ky_max + iy
+!               i = (ix-1)*(num_fft*iz_max*ky_max)                      &
+!     &            + (j-1)*(iz_max*ky_max)  + (iz-1)*ky_max + iy
 !
-!           write(41,*) j, iz, iy, ix, phys_d (i)
+!              write(41,*) j, iz, iy, ix, phys_d (i)
 !
+!            end do
 !          end do
-!         end do
 !        end do
-!       end do
+!      end do
 !
       do j = 1, num_fft
-       do iz = 1, iz_max
-        do ix = 1, kx_max
-         do iy = 1, ky_max
+        do iz = 1, iz_max
+          do ix = 1, kx_max
+            do iy = 1, ky_max
 !
-          i_org = (ix-1)*(num_fft*iz_max*ky_max)                        &
+              i_org = (ix-1)*(num_fft*iz_max*ky_max)                    &
      &           + (j-1)*(iz_max*ky_max) + (iz-1)*ky_max + iy
-          i = (iy-1)*(num_fft*iz_max*kx_max) + (j-1)*(iz_max*kx_max)    &
-     &          + (iz-1)*kx_max + ix
+              i = (iy-1)*(num_fft*iz_max*kx_max)                        &
+     &           + (j-1)*(iz_max*kx_max) + (iz-1)*kx_max + ix
 !
           wk_pfft(i) = phys_d(i_org)
 !
-         end do
+            end do
+          end do
         end do
-       end do
       end do
 !
       n1 = num_fft*iz_max*kx_max
@@ -142,109 +157,109 @@
         Nstacksmp(j) = Nstacksmp(j-1) + iz_max*kx_max
       end do
 !
-      call verify_FFT_select                                            &
-     &   (iflag_FFT, num_fft, Nstacksmp, ky_max, WK_FFTS)
-      call forward_FFT_select                                           &
-     &   (iflag_FFT, Nsmp, Nstacksmp, n1, ky_max, wk_pfft, WK_FFTS)
+      call verify_FFT_select(iflag_FFT, num_fft, Nstacksmp,             &
+     &    ky_max, WK_FFTS)
+      call forward_FFT_select(iflag_FFT, Nsmp, Nstacksmp,               &
+     &    n1, ky_max, wk_pfft, WK_FFTS, elapsed_fft, elapsed_cpy)
 !
 !    swap array
 !
 !
       do j = 1, num_fft
-       do iz = 1, iz_max
-        do ix = 1, kx_max
-         do iy = 1, ky_max
+        do iz = 1, iz_max
+          do ix = 1, kx_max
+            do iy = 1, ky_max
 !
-          i_org = (iy-1)*(num_fft*iz_max*kx_max)                        &
-     &           + (j-1)*(iz_max*kx_max) + (iz-1)*kx_max + ix 
-          i     = (j-1)*num_spectr + (iy-1)*(iz_max*kx_max)             &
-     &           + (ix-1)*iz_max + iz
+              i_org = (iy-1)*(num_fft*iz_max*kx_max)                    &
+     &               + (j-1)*(iz_max*kx_max) + (iz-1)*kx_max + ix 
+              i     = (j-1)*num_spectr + (iy-1)*(iz_max*kx_max)         &
+     &               + (ix-1)*iz_max + iz
 !
-          phys_io(i) = wk_pfft(i_org)
+              phys_io(i) = wk_pfft(i_org)
 !
-         end do
+            end do
+          end do
         end do
-       end do
       end do
 !
 !      do j = 1, num_fft
-!       do iy = 1, ky_max
-!        do ix = 1, kx_max
-!         do iz = 1, iz_max
+!        do iy = 1, ky_max
+!          do ix = 1, kx_max
+!            do iz = 1, iz_max
 !
-!          i   = (j-1)*num_spectr + (iy-1)*(iz_max*kx_max)              &
-!     &          + (ix-1)*iz_max + iz
+!              i   = (j-1)*num_spectr + (iy-1)*(iz_max*kx_max)          &
+!     &              + (ix-1)*iz_max + iz
 !
-!           write(42,*) j, iz, iy, ix, phys_io (i)
+!               write(42,*) j, iz, iy, ix, phys_io (i)
 !
-!          end do
-!         end do
+!             end do
+!           end do
 !        end do
-!       end do
+!      end do
 !
 !
 !    lead amplitude
 !
-       do j = 1, num_fft
+      do j = 1, num_fft
         if ( icomp_fft(j) .eq. -1) then
-         do iz = 1, iz_max
-          do ix = 1, kx_max
-           do iy = 1, ky_max
+          do iz = 1, iz_max
+            do ix = 1, kx_max
+              do iy = 1, ky_max
 !
-            i1 = (j-4)*num_spectr + (iy-1)*(iz_max*kx_max)              &
-     &          + (ix-1)*iz_max + iz
-            i2 = (j-3)*num_spectr + (iy-1)*(iz_max*kx_max)              &
-     &          + (ix-1)*iz_max + iz
-            i3 = (j-2)*num_spectr + (iy-1)*(iz_max*kx_max)              &
-     &          + (ix-1)*iz_max + iz
-            i = (j-1)*num_spectr + (iy-1)*(iz_max*kx_max)               &
-     &          + (ix-1)*iz_max + iz
+                i1 = (j-4)*num_spectr + (iy-1)*(iz_max*kx_max)          &
+     &              + (ix-1)*iz_max + iz
+                i2 = (j-3)*num_spectr + (iy-1)*(iz_max*kx_max)          &
+     &              + (ix-1)*iz_max + iz
+                i3 = (j-2)*num_spectr + (iy-1)*(iz_max*kx_max)          &
+     &              + (ix-1)*iz_max + iz
+                i = (j-1)*num_spectr + (iy-1)*(iz_max*kx_max)           &
+     &              + (ix-1)*iz_max + iz
 !
-            phys_io(i) = sqrt( phys_io(i1) * phys_io(i1)                &
-     &                           + phys_io(i2) * phys_io(i2)            &
-     &                           + phys_io(i3) * phys_io(i3) )
+                phys_io(i) = sqrt( phys_io(i1) * phys_io(i1)            &
+     &                               + phys_io(i2) * phys_io(i2)        &
+     &                               + phys_io(i3) * phys_io(i3) )
 !
-           end do
+              end do
+            end do
           end do
-         end do
         end if
-       end do
+      end do
 !
 !    lead amplitude
 !
-       do j = 1, num_fft
+      do j = 1, num_fft
         if ( icomp_fft(j) .eq. -2) then
-         do iz = 1, iz_max
-          do ix = 1, kx_max
-           do iy = 1, ky_max
+          do iz = 1, iz_max
+            do ix = 1, kx_max
+              do iy = 1, ky_max
 !
-            i1 = (j-7)*num_spectr + (iy-1)*(iz_max*kx_max)              &
-     &          + (ix-1)*iz_max + iz
-            i2 = (j-6)*num_spectr + (iy-1)*(iz_max*kx_max)              &
-     &          + (ix-1)*iz_max + iz
-            i3 = (j-5)*num_spectr + (iy-1)*(iz_max*kx_max)              &
-     &          + (ix-1)*iz_max + iz
-            i4 = (j-4)*num_spectr + (iy-1)*(iz_max*kx_max)              &
-     &          + (ix-1)*iz_max + iz
-            i5 = (j-3)*num_spectr + (iy-1)*(iz_max*kx_max)              &
-     &          + (ix-1)*iz_max + iz
-            i6 = (j-2)*num_spectr + (iy-1)*(iz_max*kx_max)              &
-     &          + (ix-1)*iz_max + iz
-            i = (j-1)*num_spectr + (iy-1)*(iz_max*kx_max)               &
-     &          + (ix-1)*iz_max + iz
+                i1 = (j-7)*num_spectr + (iy-1)*(iz_max*kx_max)          &
+     &              + (ix-1)*iz_max + iz
+                i2 = (j-6)*num_spectr + (iy-1)*(iz_max*kx_max)          &
+     &              + (ix-1)*iz_max + iz
+                i3 = (j-5)*num_spectr + (iy-1)*(iz_max*kx_max)          &
+     &              + (ix-1)*iz_max + iz
+                i4 = (j-4)*num_spectr + (iy-1)*(iz_max*kx_max)          &
+     &              + (ix-1)*iz_max + iz
+                i5 = (j-3)*num_spectr + (iy-1)*(iz_max*kx_max)          &
+     &                  + (ix-1)*iz_max + iz
+                i6 = (j-2)*num_spectr + (iy-1)*(iz_max*kx_max)          &
+     &              + (ix-1)*iz_max + iz
+                i = (j-1)*num_spectr + (iy-1)*(iz_max*kx_max)           &
+     &              + (ix-1)*iz_max + iz
 !
-            phys_io(i) =    phys_io(i1) * phys_io(i1)                   &
-     &                  + 2*phys_io(i2) * phys_io(i2)                   &
-     &                  + 2*phys_io(i3) * phys_io(i3)                   &
-     &                  +   phys_io(i4) * phys_io(i4)                   &
-     &                  + 2*phys_io(i5) * phys_io(i5)                   &
-     &                  +   phys_io(i6) * phys_io(i6)
+                phys_io(i) =    phys_io(i1) * phys_io(i1)               &
+     &                      + 2*phys_io(i2) * phys_io(i2)               &
+     &                      + 2*phys_io(i3) * phys_io(i3)               &
+     &                      +   phys_io(i4) * phys_io(i4)               &
+     &                      + 2*phys_io(i5) * phys_io(i5)               &
+     &                      +   phys_io(i6) * phys_io(i6)
 !
-           end do
+              end do
+            end do
           end do
-         end do
         end if
-       end do
+      end do
 !
       deallocate(Nstacksmp)
 !

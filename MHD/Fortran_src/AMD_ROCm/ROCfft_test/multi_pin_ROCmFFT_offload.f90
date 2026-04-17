@@ -1,0 +1,236 @@
+!>@file   multi_pin_ROCmFFT_offload.f90
+!!@brief  module multi_pin_ROCmFFT_offload
+!!
+!!@author H. Matsui
+!!@date Programmed in April, 2013
+!
+!>@brief  Fourier transform using FFTW Ver.3
+!!
+!!@verbatim
+!! wrapper subroutine for initialization of ROCmFFT
+!!      subroutine calypso_pin_ROCmFFT_init(Ncomp_fwd, Ncomp_bwd, Nfft, &
+!!     &                                    fwd, bwd, WK_fft)
+!!        integer(kind = kint), intent(in) :: Ncomp_fwd, Ncomp_bwd
+!!        integer(kind = kint), intent(in) :: Nfft
+!!        type(calypso_ROCmfft_params), intent(inout), target :: fwd
+!!        type(calypso_ROCmfft_params), intent(inout), target :: bwd
+!!        type(calypso_ROCmfft_work), intent(inout), target :: WK_fft
+!!
+!! wrapper subroutine for forward Fourier transform by FFTW3
+!!      subroutine multi_pin_fwd_ROCmFFT(fwd, WK_fwd, X,                &
+!!     &                                 elapsed_fft, elapsed_cpy)
+!!        type(calypso_ROCmfft_params), intent(in), target :: fwd
+!!        type(calypso_ROCmfft_work), intent(inout) :: WK_fwd
+!!        real(kind = kreal), intent(inout) :: X(fwd%Ncomp,fwd%Nfft)
+!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
+!! ------------------------------------------------------------------
+!!
+!!   a_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\frac{2\pi j k}{Nfft})
+!!   b_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \sin (\frac{2\pi j k}{Nfft})
+!!
+!!   a_{0} = \frac{1}{Nfft} \sum_{j=0}^{Nfft-1} x_{j}
+!!    K = Nfft/2....
+!!   a_{k} = \frac{1}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\frac{2\pi j k}{Nfft})
+!!
+!! ------------------------------------------------------------------
+!!
+!! wrapper subroutine for backward Fourier transform by FFTW3
+!!      subroutine multi_pin_bwd_ROCmFFT(bwd, WK_bwd, X,                &
+!!     &                                 elapsed_fft, elapsed_cpy)
+!!        type(calypso_ROCmfft_params), intent(in), target :: bwd
+!!        type(calypso_ROCmfft_work), intent(inout) :: WK_bwd
+!!        real(kind = kreal), intent(inout) :: X(bwd%Ncomp,bwd%Nfft)
+!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
+!! ------------------------------------------------------------------
+!!
+!!   x_{k} = a_{0} + (-1)^{j} a_{Nfft/2} + sum_{k=1}^{Nfft/2-1}
+!!          (a_{k} \cos(2\pijk/Nfft) + b_{k} \sin(2\pijk/Nfft))
+!!
+!! ------------------------------------------------------------------
+!!
+!!       i = 1:     a_{0}
+!!       i = 2:     a_{Nfft/2}
+!!       i = 3:     a_{1}
+!!       i = 4:     b_{1}
+!!       ...
+!!       i = 2*k+1: a_{k}
+!!       i = 2*k+2: b_{k}
+!!       ...
+!!       i = Nfft-1:   a_{Nfft/2-1}
+!!       i = Nfft:     b_{Nfft/2-1}
+!!
+!! ------------------------------------------------------------------
+!!@endverbatim
+!
+      module multi_pin_ROCmFFT_offload
+!
+      use omp_lib
+!
+      use m_precision
+      use m_constants
+      use t_ROCmFFT_wrapper
+!
+      implicit none
+!
+! ------------------------------------------------------------------
+!
+      contains
+!
+! ------------------------------------------------------------------
+!
+      subroutine calypso_pin_ROCmFFT_init(Ncomp_fwd, Ncomp_bwd, Nfft,   &
+     &                                    fwd, bwd, WK_fft)
+!
+      integer(kind = kint), intent(in) :: Ncomp_fwd, Ncomp_bwd
+      integer(kind = kint), intent(in) :: Nfft
+      type(calypso_ROCmfft_params), intent(inout), target :: fwd
+      type(calypso_ROCmfft_params), intent(inout), target :: bwd
+      type(calypso_ROCmfft_work), intent(inout), target :: WK_fft
+!
+!
+      call calypso_ROCmFFT_set_size(Ncomp_fwd, Ncomp_bwd, Nfft,         &
+     &                              fwd, bwd, WK_fft)
+      call calypso_ROCmFFT_alloc(fwd, bwd, WK_fft)
+!
+!   Initialize Forward transform
+      call calypso_pin_fwd_ROCmFFT_init(WK_fft%Nfft_r, fwd)
+      call calypso_fwd_ROCmFFT_init(fwd)
+!
+!   Initialize Backword transform
+      call calypso_pin_bwd_ROCmFFT_init(WK_fft%Nfft_r, bwd)
+      call calypso_bwd_ROCmFFT_init(bwd)
+!
+      end subroutine calypso_pin_ROCmFFT_init
+!
+! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
+      subroutine calypso_pin_fwd_ROCmFFT_init(Nfft_r, fwd)
+!
+      integer(kind = kint), intent(in) :: Nfft_r
+      type(calypso_ROCmfft_params), intent(inout), target :: fwd
+!
+!   Initialize Forward transform
+      fwd%in_strides_size =   1
+      fwd%in_strides(1) =     1
+      fwd%in_distance =       Nfft_r
+      fwd%out_strides_size =  0
+      fwd%out_strides(1) =    1
+      fwd%out_distance =      0
+!
+      end subroutine calypso_pin_fwd_ROCmFFT_init
+!
+! ------------------------------------------------------------------
+!
+      subroutine calypso_pin_bwd_ROCmFFT_init(Nfft_r, bwd)
+!
+      use hipfort
+      use hipfort_check
+      use hipfort_rocfft
+!
+      integer(kind = kint), intent(in) :: Nfft_r
+      type(calypso_ROCmfft_params), intent(inout), target :: bwd
+!
+!   Initialize Backword transform
+      bwd%in_strides_size =  1
+      bwd%in_strides(1) =    1
+      bwd%in_distance =      0
+      bwd%out_strides_size = 1
+      bwd%out_strides(1) =   1
+      bwd%out_distance =     Nfft_r
+!
+      end subroutine calypso_pin_bwd_ROCmFFT_init
+!
+! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
+      subroutine multi_pin_fwd_ROCmFFT(fwd, WK_fwd, X,                  &
+     &                                 elapsed_fft, elapsed_cpy)
+!
+      use normalize_for_OMP_FFTW
+!
+      type(calypso_ROCmfft_params), intent(in), target :: fwd
+!
+      type(calypso_ROCmfft_work), intent(inout) :: WK_fwd
+      real(kind = kreal), intent(inout) :: X(fwd%Nfft,fwd%Ncomp)
+      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
+!
+      real(kind = kreal) :: start
+      integer(kind = kint) :: nd, i, j
+!
+!
+        start = OMP_GET_WTIME()
+!$omp parallel do private(nd,i,j)
+        do nd = 1, fwd%Ncomp
+          do i = 1, fwd%Nfft
+            j = i + (nd-1) * WK_fwd%Nfft_r
+            WK_fwd%X_ROCmFFT(j) = X(i,nd)
+          end do
+          do i = fwd%Nfft+1, WK_fwd%Nfft_r
+            j = i + (nd-1) * WK_fwd%Nfft_r
+            WK_fwd%X_ROCmFFT(j) = zero
+          end do
+        end do
+!$omp end parallel do
+        elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+!
+        start = OMP_GET_WTIME()
+        call calypso_forward_ROCmFFT(fwd,                               &
+     &                               WK_fwd%Nfft_r, WK_fwd%X_ROCmFFT,   &
+     &                               WK_fwd%Nfft_c, WK_fwd%C_ROCmFFT,   &
+     &                               fwd%Nbytes, WK_fwd%data_ptr)
+        elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
+!
+        start = OMP_GET_WTIME()
+        call norm_prt_from_fwd_OMP_FFTW(int(fwd%Ncomp), WK_fwd%aNfft,   &
+     &                            WK_fwd%NFFT_c, WK_fwd%C_ROCmFFT(1),   &
+     &                               int(fwd%Nfft), X(1,1))
+        elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+!
+      end subroutine multi_pin_fwd_ROCmFFT
+!
+! ------------------------------------------------------------------
+!
+      subroutine multi_pin_bwd_ROCmFFT(bwd, WK_bwd, X,                  &
+     &                                 elapsed_fft, elapsed_cpy)
+!
+      use normalize_for_OMP_FFTW
+!
+      type(calypso_ROCmfft_params), intent(in), target :: bwd
+!
+      type(calypso_ROCmfft_work), intent(inout) :: WK_bwd
+      real(kind = kreal), intent(inout) :: X(bwd%Nfft,bwd%Ncomp)
+      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
+!
+      real(kind = kreal) :: start
+      integer(kind = kint) :: nd, i, j
+!
+!
+        start = OMP_GET_WTIME()
+        call norm_prt_to_bwd_OMP_FFTW(int(bwd%Ncomp), int(bwd%Nfft),    &
+     &                  X(1,1), WK_bwd%Nfft_c, WK_bwd%C_ROCmFFT(1))
+        elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+!
+        start = OMP_GET_WTIME()
+        call calypso_backward_ROCmFFT(bwd,                              &
+     &                             WK_bwd%Nfft_c, WK_bwd%C_ROCmFFT(1),  &
+     &                             WK_bwd%Nfft_r, WK_bwd%X_ROCmFFT(1),  &
+     &                             bwd%Nbytes, WK_bwd%data_ptr)
+        elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
+!
+        start = OMP_GET_WTIME()
+!$omp parallel do private(nd,i,j)
+        do nd = 1, bwd%Ncomp
+          do i = 1, bwd%Nfft
+            j = i + (nd-1) * WK_bwd%Nfft_r
+            X(i,nd) = WK_bwd%X_ROCmFFT(j)
+          end do
+        end do
+!$omp end parallel do
+        elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+!
+      end subroutine multi_pin_bwd_ROCmFFT
+!
+! ------------------------------------------------------------------
+!
+      end module multi_pin_ROCmFFT_offload

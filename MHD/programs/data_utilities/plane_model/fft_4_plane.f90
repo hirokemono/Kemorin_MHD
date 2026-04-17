@@ -42,6 +42,7 @@
       type(ucd_data), save :: fft_ucd
 !
       type(merged_mesh), save :: mgd_mesh_pm
+      real(kind = kreal) :: elapsed_fft = 0.0d0, elapsed_cpy = 0.0d0
 !
       integer(kind=kint ) :: istep
       integer(kind=kint ) :: ist, ied, iint
@@ -117,7 +118,7 @@
      &     plane_fft_wk1%num_spectr, plane_fft_wk1%num_io,              &
      &     plane_fft_wk1%num_fft, plane_fft_wk1%icomp_fft,              &
      &     plane_fft_wk1%phys_d, plane_fft_wk1%wk_pfft,                 &
-     &     plane_fft_wk1%phys_io)
+     &     plane_fft_wk1%phys_io, elapsed_fft, elapsed_cpy)
 !
 !
 !     ======================

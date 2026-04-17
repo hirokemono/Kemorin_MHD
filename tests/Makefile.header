@@ -106,8 +106,8 @@ SPH_TEST_BINDIR = /Users/matsui/src_kemo/bin/tests
 FEM_UTIL_BINDIR = /Users/matsui/src_kemo/bin/FEM_utils
 #
 #
-# ----  library lists ----------------------------------------
-#
+# -----------------------------------------------------------
+# -----------------------------------------------------------
 LIB_KEMO =      -lcalipso_kemo
 LIB_KEMO_FILE = libcalipso_kemo.a
 #

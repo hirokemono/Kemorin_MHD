@@ -30,7 +30,7 @@
 !! wrapper subroutine for forward Fourier transform by ISPACK
 !!
 !! a_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\frac{2\pi j k}{Nfft})
-!! b_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\frac{2\pi j k}{Nfft})
+!! b_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \sin (\frac{2\pi j k}{Nfft})
 !!
 !! a_{0} = \frac{1}{Nfft} \sum_{j=0}^{Nfft-1} x_{j}
 !! K = Nfft/2....
@@ -235,7 +235,7 @@
      &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp,                &
      &      ncomp_fwd, X_rtp(1,1), ispack_t%X)
       else
-        call copy_FFTPACK_from_rtp_field(sph_rtp%nnod_rtp,              &
+        call pout_FFT_from_rtp_field(sph_rtp%nnod_rtp,                  &
      &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp,                &
      &      ncomp_fwd, X_rtp(1,1), ispack_t%X)
       end if
@@ -315,7 +315,7 @@
      &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp, ncomp_bwd,     &
      &      ispack_t%X, X_rtp(1,1))
       else
-        call copy_FFTPACK_to_rtp_field(sph_rtp%nnod_rtp,                &
+        call pout_FFT_to_rtp_field(sph_rtp%nnod_rtp,                    &
      &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp,                &
      &      ncomp_bwd, ispack_t%X, X_rtp(1,1))
       end if

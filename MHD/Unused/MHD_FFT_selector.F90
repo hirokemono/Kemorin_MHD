@@ -29,7 +29,7 @@
 !!   wrapper subroutine for FFT in ISPACK
 !!
 !!   a_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\frac{2\pi j k}{Nfft})
-!!   b_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\frac{2\pi j k}{Nfft})
+!!   b_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \sin (\frac{2\pi j k}{Nfft})
 !!
 !!   a_{0} = \frac{1}{Nfft} \sum_{j=0}^{Nfft-1} x_{j}
 !!    K = Nfft/2....
@@ -215,8 +215,8 @@
      &      MHD_mul_FFTW%v_tmp, fld_rtp)
       else if(iflag_FFT .eq. iflag_FFTW_DOMAIN) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
-          call prt_field_fwd_FFTW_to_send(sph_rtp, comm_rtp,            &
-     &        ncomp_fwd, n_WS, fld_rtp, WS(1), WK_FFTs%sph_fld_FFTW)
+          call prt_field_fwd_FFTW_to_send(sph_rtp, ncomp_fwd, n_WS,     &
+     &        fld_rtp, WS(1), WK_FFTs%sph_fld_FFTW)
         else
           call rtp_field_fwd_FFTW_to_send(sph_rtp, comm_rtp,            &
      &        ncomp_fwd, n_WS, fld_rtp, WS(1), WK_FFTs%sph_fld_FFTW)

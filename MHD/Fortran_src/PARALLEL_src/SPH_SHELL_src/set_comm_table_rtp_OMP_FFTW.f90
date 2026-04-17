@@ -8,9 +8,37 @@
 !>@brief  communication table from FFTW with OpenMP
 !!
 !!@verbatim
-!!      subroutine set_comm_item_rtp_OMP_FFTW(nnod_rt, nnod_rtp,        &
+!!      subroutine set_comm_item_pout_OMP_FFTW(nnod_rt, nnod_rtp,       &
 !!     &          irev_sr_rtp, Nfft_c, aNfft, C_fft)
+!!        integer(kind = kint), intent(in) :: nnod_rtp
+!!        integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
+!!        integer(kind = kint), intent(in) :: Nfft_c, nnod_rt
+!!        real(kind = kreal), intent(in) :: aNfft
 !!        type(comm_tbl_from_FFTW), intent(inout) :: comm_sph_FFT
+!!
+!!      subroutine pout_OMP_FFTW_fields_from_recv                       &
+!!     &         (nnod_rt, nnod_rtp, ncomp_bwd,                         &
+!!     &          n_WR, irev_sr_rtp, WR, Nfft_c, C_fft)
+!!      subroutine set_OMP_FFTW_comp_from_recv                          &
+!!     &         (nd, nnod_rt, nnod_rtp, ncomp_bwd,                     &
+!!     &          n_WR, irev_sr_rtp, WR, Nfft_c, C_fft)
+!!        integer(kind = kint), intent(in) :: nd
+!!        integer(kind = kint), intent(in) :: Nfft_c, nnod_rt
+!!        integer(kind = kint), intent(in) :: nnod_rtp
+!!        integer(kind = kint), intent(in) :: ncomp_bwd
+!!        integer(kind = kint), intent(in) :: n_WR
+!!        integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
+!!        real(kind=kreal), intent(in):: WR(n_WR)
+!!        complex(kind = fftw_complex), intent(inout)                   &
+!!     &                             :: C_fft(ncomp_bwd,nnod_rt,Nfft_c)
+!!
+!!      subroutine copy_rtp_field_from_OMP_FFTW                         &
+!!     &         (nnod_rtp, ncomp_bwd, X_FFT, X_rtp)
+!!      subroutine copy_rtp_field_to_OMP_FFTW                           &
+!!     &         (nnod_rtp, ncomp_fwd, X_rtp, X_FFT)
+!!        integer(kind = kint), intent(in) :: nnod_rtp, ncomp_bwd
+!!        real(kind = kreal), intent(in) :: X_FFT(ncomp_bwd, nnod_rtp)
+!!        real(kind = kreal), intent(inout) :: X_rtp(nnod_rtp, ncomp_bwd)
 !!@endverbatim
 !!
       module set_comm_table_rtp_OMP_FFTW
@@ -28,7 +56,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine set_comm_item_rtp_OMP_FFTW(nnod_rtp, nnod_rt,          &
+      subroutine set_comm_item_pout_OMP_FFTW(nnod_rtp, nnod_rt,         &
      &          irev_sr_rtp, Nfft_c, aNfft, comm_sph_FFT)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
@@ -79,16 +107,16 @@
         if(ic_send .le. comm_sph_FFT%ntot_item) then
           comm_sph_FFT%kl_fftw(ic_send) = j
           comm_sph_FFT%m_fftw(ic_send) =  2
-          comm_sph_FFT%cnrm_sr_rtp(ic_send) = two * aNfft * ru
+          comm_sph_FFT%cnrm_sr_rtp(ic_send) = aNfft * ru
         end if
       end do
 !
-      end subroutine set_comm_item_rtp_OMP_FFTW
+      end subroutine set_comm_item_pout_OMP_FFTW
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine set_OMP_FFTW_field_from_recv                           &
+      subroutine pout_OMP_FFTW_fields_from_recv                         &
      &         (nnod_rt, nnod_rtp, ncomp_bwd,                           &
      &          n_WR, irev_sr_rtp, WR, Nfft_c, C_fft)
 !
@@ -110,8 +138,8 @@
 !$omp parallel do private(j,ic_recv)
       do j = 1, nnod_rt
         ic_recv = (irev_sr_rtp(j) - 1) * ncomp_bwd
-        C_fft(1:ncomp_bwd,j,1) = cmplx(WR(ic_recv+1:ic_recv+ncomp_bwd), &
-     &                                 zero, kind(0d0))
+        C_fft(1:ncomp_bwd,j,1)                                          &
+     &     = cmplx(WR(ic_recv+1:ic_recv+ncomp_bwd), zero, kind(0d0))
       end do
 !$omp end parallel do
 !
@@ -133,13 +161,12 @@
       do j = 1, nnod_rt
         ic_rtp = j + nnod_rt
         ic_recv = (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
-        C_fft(1:ncomp_bwd,j,Nfft_c) = half                              &
-     &                        * cmplx(WR(ic_recv+1:ic_recv+ncomp_bwd),  &
-     &                                   zero, kind(0d0))
+        C_fft(1:ncomp_bwd,j,Nfft_c)                                     &
+     &     = cmplx(WR(ic_recv+1:ic_recv+ncomp_bwd), zero, kind(0d0))
       end do
 !$omp end parallel do
 !
-      end subroutine set_OMP_FFTW_field_from_recv
+      end subroutine pout_OMP_FFTW_fields_from_recv
 !
 ! ------------------------------------------------------------------
 !
@@ -187,7 +214,7 @@
       do j = 1, nnod_rt
         ic_rtp = j + nnod_rt
         ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
-        C_fft(j,Nfft_c) = half * cmplx(WR(ic_recv), zero, kind(0d0))
+        C_fft(j,Nfft_c) = cmplx(WR(ic_recv), zero, kind(0d0))
       end do
 !$omp end parallel do
 !

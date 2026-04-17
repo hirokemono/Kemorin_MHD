@@ -1,13 +1,15 @@
 !
       program test_FFT
 !
+      use omp_lib
+!
       use m_precision
       use m_constants
       use m_machine_parameter
+      use m_FFT_size
 !
-      use m_FFT_selector
-      use t_FFT_selector
       use t_fft_test_data
+      use FFT_test_loop
 !
       implicit none
 !
@@ -15,40 +17,42 @@
       type(fft_test_data) :: ft0
       integer(kind = kint) :: iflag_FFT_t
 !
-      integer(kind = kint), parameter ::  ngrid = 128
-!
       iflag_debug = 1
-      np_smp = 2
-      call init_fft_test_data(ngrid, ft0)
+      write(*,'(a)') '-----  Test FFT  -----'
+      call init_fft_test_data(n_field, ngrid, ft0)
 !
-      write(*,*) 'select FFT library'
-      write(*,*) '1: FFTPACK5'
-      write(*,*) '2: FFTW3 (if avaiable)'
-      write(*,*) '3: SINGLE FFTW3 (if avaiable)'
-      write(*,*) '4: ISPACK-0.93'
-      write(*,*) '5: ISPACK-3.01'
+      write(*,*) ' Select FFT library'
+      write(*,*) 'Negative values is set to use wave number ', &
+     &           'as the inner most loop'
+      write(*,*) ' 1: FFTPACK5'
+      write(*,*) ' 2: SINGLE FFTPACK5'
+      write(*,*) '11: FFTW3        (if avaiable)'
+      write(*,*) '12: SINGLE FFTW3 (if avaiable)'
+      write(*,*) '21: ISPACK-0.93'
+      write(*,*) '24: SINGLE ISPACK-0.93'
+      write(*,*) '31: ISPACK-3.01'
+      write(*,*) '34: SINGLE ISPACK-3.01'
       read(*,*) iflag_FFT_t
 !
+      write(*,*) 'iflag_FFT_t', iflag_FFT_t, iflag_ISPACK3_SINGLE
+      if(iflag_FFT_t .lt. 0) then
+        call FFT_test_with_phi_in_data(iflag_FFT_t, n_loop,             &
+     &                                 ft0, WK_FFTS)
+      else
+        call FFT_test_with_phi_out_data(iflag_FFT_t, n_loop,            &
+     &                                  ft0, WK_FFTS)
+      end if
 !
-!$omp parallel workshare
-      ft0%z(1:ft0%nfld,1:ft0%ngrd) = ft0%x(1:ft0%nfld,1:ft0%ngrd)
-!$omp end parallel workshare
 !
-      call initialize_FFT_select                                        &
-     &   (0, iflag_FFT_t, np_smp, ft0%nstack, ft0%ngrd, WK_FFTS)
-!
-      call forward_FFT_select(iflag_FFT_t, np_smp,                      &
-     &    ft0%nstack, ft0%nfld, ft0%ngrd, ft0%x, WK_FFTS)
-!
-!$omp parallel workshare
-      ft0%y(1:ft0%nfld,1:ft0%ngrd) = ft0%x(1:ft0%nfld,1:ft0%ngrd)
-!$omp end parallel workshare
-!
-      call backward_FFT_select(iflag_FFT_t, np_smp,                     &
-     &    ft0%nstack, ft0%nfld, ft0%ngrd, ft0%x, WK_FFTS)
-!
-      call write_fft_test_data('fft_test.dat', ft0)
+      if(n_loop .eq. 1) call write_fft_test_data('fft_test.dat', ft0)
       call dealloc_fft_test_data(ft0)
+!
+      write(*,'(a,i4)') 'Number of threads:  ', np_smp
+      write(*, '(a,3i6)')                                               &
+     &        "Num (point, field, loop): ", ngrid, n_field, n_loop
+      write(*, '("Initialize:      ",1pE16.6e3)') ft0%elapsed(1)
+      write(*, '("Wrapped FFTPACK: ",1pE16.6e3)') ft0%elapsed(2)
+      write(*, '("Data copy:       ",1pE16.6e3)') ft0%elapsed(3)
 !
       stop
       end program test_FFT

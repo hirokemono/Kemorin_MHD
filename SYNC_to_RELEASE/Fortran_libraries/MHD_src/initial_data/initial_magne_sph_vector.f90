@@ -1,0 +1,1 @@
+/Volumes/Sources/matsui/git/Kemorin_MHD/MHD/Fortran_src/MHD_src/initial_data/initial_magne_sph_vector.f90
