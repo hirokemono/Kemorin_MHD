@@ -103,8 +103,6 @@
       call calypso_pout_bwd_ROCmFFT_init(bwd)
       call calypso_bwd_ROCmFFT_init(bwd)
 !
-      write(*,*) 'takotakotako'
-!
       end subroutine calypso_pout_ROCmFFT_init
 !
 ! ------------------------------------------------------------------
