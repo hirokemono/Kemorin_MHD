@@ -314,6 +314,7 @@
       end subroutine calypso_ROCmFFT_finalize
 !
 ! ------------------------------------------------------------------
+! ------------------------------------------------------------------
 !
       subroutine calypso_forward_ROCmFFT(fwd, Nfft_r, X_ROCmFFT,        &
      &          Nfft_c, C_ROCmFFT, Nbytes, data_ptr)
@@ -372,6 +373,116 @@
      &                        Nbytes, hipMemcpyDeviceToHost))
 !
       end subroutine calypso_backward_ROCmFFT
+!
+! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
+      subroutine calypso_forward_ROCmFFT2(fwd, Nfft_r, X_ROCmFFT,       &
+     &                                   Nbytes, data_ptr)
+!
+      use hipfort
+      use hipfort_check
+      use hipfort_rocfft
+!
+      type(calypso_ROCmfft_params), intent(in), target :: fwd
+      integer(kind = kint), intent(in) :: Nfft_r
+      integer(c_size_t), intent(in) :: Nbytes
+!
+      real(kind = kreal), intent(inout), target                         &
+     &                   :: X_ROCmFFT(Nfft_r*fwd%Ncomp)
+      type(c_ptr), intent(inout) :: data_ptr
+!
+!
+      call hipCheck(hipMemcpy(data_ptr, c_loc(X_ROCmFFT(1)),            &
+     &                        Nbytes, hipMemcpyHostToDevice))
+      call rocfftCheck(rocfft_execute(fwd%ROCfft_plan, data_ptr,        &
+     &                                c_null_ptr, fwd%ROCfft_wk_info))
+      call hipCheck(hipDeviceSynchronize())
+      call hipCheck(hipMemcpy(c_loc(X_ROCmFFT(1)), data_ptr,            &
+     &                        Nbytes, hipMemcpyDeviceToHost))
+!
+      end subroutine calypso_forward_ROCmFFT2
+!
+! ------------------------------------------------------------------
+!
+      subroutine calypso_backward_ROCmFFT2(bwd, Nfft_r, X_ROCmFFT,      &
+     &                                    Nbytes, data_ptr)
+!
+      use hipfort
+      use hipfort_check
+      use hipfort_rocfft
+!
+      type(calypso_ROCmfft_params), intent(in), target :: bwd
+      integer(kind = kint), intent(in) :: Nfft_r
+      integer(c_size_t), intent(in) :: Nbytes
+!
+      real(kind = kreal), intent(inout), target                         &
+     &                   :: X_ROCmFFT(Nfft_r*bwd%Ncomp)
+      type(c_ptr), intent(inout) :: data_ptr
+!
+!
+      call hipCheck(hipMemcpy(data_ptr, c_loc(X_ROCmFFT(1)),            &
+     &                        Nbytes, hipMemcpyHostToDevice))
+      call rocfftCheck(rocfft_execute(bwd%ROCfft_plan, data_ptr,        &
+     &                                c_null_ptr, bwd%ROCfft_wk_info))
+      call hipCheck(hipDeviceSynchronize())
+      call hipCheck(hipMemcpy(c_loc(X_ROCmFFT(1)), data_ptr,            &
+     &                        Nbytes, hipMemcpyDeviceToHost))
+!
+      end subroutine calypso_backward_ROCmFFT2
+!
+! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
+      subroutine calypso_fwd_OpenMP_ROCmFFT(fwd, Nfft_r, X_ROCmFFT)
+!
+      use hipfort
+      use hipfort_check
+      use hipfort_rocfft
+!
+      type(calypso_ROCmfft_params), intent(in), target :: fwd
+      integer(kind = kint), intent(in) :: Nfft_r
+!
+      real(kind = kreal), intent(inout), target                         &
+     &                   :: X_ROCmFFT(Nfft_r*fwd%Ncomp)
+!
+!
+!$OMP target enter data map(to:X_ROCmFFT)
+!$OMP target data use_device_addr(X_ROCmFFT)
+!      call rocblasCheck(rocblas_set_pointer_mode(rocblas_handle, 0))
+      call rocfftCheck(rocfft_execute(fwd%ROCfft_plan,                  &
+     &    c_loc(X_ROCmFFT(1)), c_null_ptr, fwd%ROCfft_wk_info))
+!$OMP end target data
+!$OMP target update from(X_ROCmFFT)
+!$OMP target exit data map(delete:X_ROCmFFT)
+!
+      end subroutine calypso_fwd_OpenMP_ROCmFFT
+!
+! ------------------------------------------------------------------
+!
+      subroutine calypso_bwd_OpenMP_ROCmFFT(bwd, Nfft_r, X_ROCmFFT)
+!
+      use hipfort
+      use hipfort_check
+      use hipfort_rocfft
+!
+      type(calypso_ROCmfft_params), intent(in), target :: bwd
+      integer(kind = kint), intent(in) :: Nfft_r
+!
+      real(kind = kreal), intent(inout), target                         &
+     &                   :: X_ROCmFFT(Nfft_r*bwd%Ncomp)
+!
+!
+!$OMP target enter data map(to:X_ROCmFFT)
+!$OMP target data use_device_addr(X_ROCmFFT)
+!      call rocblasCheck(rocblas_set_pointer_mode(rocblas_handle, 0))
+      call rocfftCheck(rocfft_execute(bwd%ROCfft_plan,                  &
+     &    c_loc(X_ROCmFFT(1)), c_null_ptr, bwd%ROCfft_wk_info))
+!$OMP target update from(X_ROCmFFT)
+!$OMP target exit data map(delete:X_ROCmFFT)
+!$OMP end target data
+!
+      end subroutine calypso_bwd_OpenMP_ROCmFFT
 !
 ! ------------------------------------------------------------------
 !
