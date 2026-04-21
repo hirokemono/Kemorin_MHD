@@ -63,9 +63,25 @@ OPTFLAGS = -O3 -Wall
 CXXFLAGS = -O2 -Wall
 DEPFLAGS= -MM -w -DDEPENDENCY_CHECK
 #
+#   AMD ROCm settings
+#
+PKGFLAGS_ROCm = rocm
+OCM_CFLAGS =    -I/opt/rocm-7.2.0/include/hipfort/amdgcn
+ROCM_LIBDIR =   -L/opt/rocm-7.2.0/lib
+ROCM_LIBS =     -lrocblas -lrocfft -lhipfort-amdgcn -lamdhip64
+ROCM_ROCPROFV2_LDFLAGS =  -lrocprofiler64v2
+ROCM_ROCPROFSDK_LDFLAGS = -lrocprofiler-sdk
+#
 #   BLAS settings
 #
 BLAS_LIBS = -framework veclib
+#
+#    FFTW3 settings
+#
+PKGFLAGS_FFTW3=   fftw3
+FFTW3_CFLAGS=     -I/opt/homebrew/Cellar/fftw/3.3.10_1/include
+FFTW3_LIBS=       -L/opt/homebrew/Cellar/fftw/3.3.10_1/lib -lfftw3
+FFTW3_OMP_LIBS=   -L/opt/homebrew/Cellar/fftw/3.3.10_1/lib -lfftw3_omp
 #
 #   libpng and zlib settings
 #
@@ -75,14 +91,6 @@ ZLIB_LIBS =   -L/Users/matsui/local/lib -lz
 PKGFLAGS_PNG =  png
 PNG_CFLAGS =  -I/Users/matsui/local/include
 PNG_LIBS =    -L/Users/matsui/local/lib -lpng 
-#
-#    FFTW3 settings
-#
-PKGFLAGS_FFTW3=   fftw3
-FFTW3_CFLAGS=     -I/opt/homebrew/Cellar/fftw/3.3.10_1/include
-FFTW3_LIBS=       -L/opt/homebrew/Cellar/fftw/3.3.10_1/lib -lfftw3
-FFTW3_OMP_LIBS=   -L/opt/homebrew/Cellar/fftw/3.3.10_1/lib -lfftw3_omp
-#
 #
 #    HDF5 fortran wrapper settings
 #
@@ -131,6 +139,67 @@ GLFW_LIBS=        -L/opt/homebrew/Cellar/ffmpeg/7.0_1/lib -lavcodec -lavformat -
 MAKE_MOD_DEP= $(BUILDDIR)/make_f90depends
 #
 
+MAKE_PARAMETERS= \
+GMAKE="$(GMAKE)"             \
+SRCDIR="$(SRCDIR)"           \
+INSTDIR="$(INSTDIR)"         \
+PYTHONDIR="$(PYTHONDIR)"     \
+MHDDIR="$(MHDDIR)"           \
+MPICHDIR="$(MPICHDIR)"       \
+MPICHLIBDIR="$(MPICHLIBDIR)" \
+MPILIBS="$(MPILIBS)"         \
+MPICHBINDIR="$(MPICHBINDIR)" \
+MPICHINCDIR="$(MPICHINCDIR)" \
+\
+BLAS_LIBS="$(BLAS_LIBS)"           \
+ZLIB_CFLAGS="$(ZLIB_CFLAGS)"       \
+ZLIB_LIBS="$(ZLIB_LIBS)"           \
+PNG_CFLAGS="$(PNG_CFLAGS)"         \
+PNG_LIBS="$(PNG_LIBS)"             \
+FFTW3_CFLAGS="$(FFTW3_CFLAGS)"     \
+FFTW3_LIBS="$(FFTW3_LIBS)"         \
+FFTW3_OMP_LIBS="$(FFTW3_OMP_LIBS)" \
+X_LIBS="$(X_LIBS)"                 \
+X_CFLAGS="$(X_CFLAGS)"             \
+OPENGL_INC="$(OPENGL_INC)"         \
+OPENGL_LIBS="$(OPENGL_LIBS)"       \
+PGPLOT_LIBS="$(PGPLOT_LIBS)"       \
+GTK3_CFLAGS="$(GTK3_CFLAGS)"       \
+GTK3_LIBS="$(GTK3_LIBS)"           \
+GLFW_CFLAGS="$(GLFW_CFLAGS)"       \
+GLFW_LIBS="$(GLFW_LIBS)"           \
+FFMPEG_CFLAGS="$(FFMPEG_CFLAGS)"   \
+FFMPEG_LIBS="$(FFMPEG_LIBS)"       \
+HDF5_FFLAGS="$(HDF5_FFLAGS)"       \
+HDF5_LDFLAGS="$(HDF5_LDFLAGS)"     \
+HDF5_FLIBS="$(HDF5_FLIBS)"         \
+\
+COCOA_FLAG="$(COCOA_FLAG)"         \
+OPTFLAGS="$(OPTFLAGS)"             \
+F90OPTFLAGS="$(F90OPTFLAGS)"       \
+OPENMP_FCFLAGS="$(OPENMP_FCFLAGS)" \
+OPENMP_CFLAGS="$(OPENMP_CFLAGS)"   \
+CXXFLAGS="$(CXXFLAGS)"             \
+DEPFLAGS="$(DEPFLAGS)"             \
+F90LIB="$(F90LIB)"                 \
+F90_LOCAL="$(F90_LOCAL)"           \
+CC="$(CC)"                         \
+CXX="$(CXX)"                       \
+AS="$(AS)"                         \
+MPIF90="$(MPIF90)"                 \
+MPICC="$(MPICC)"                   \
+MPIRUN="$(MPIRUN)"                 \
+AR="$(AR)"                         \
+RANLIB="$(RANLIB)"                 \
+XL_FORTRAN="$(XL_FORTRAN)"         \
+SSE_FLAG="$(SSE_FLAG)"             \
+SSE_CPU="$(SSE_CPU)"               \
+SSE4="$(SSE4)"                     \
+SSE8="$(SSE8)"                     \
+MAKE_MOD_DEP='$(MAKE_MOD_DEP)'
+#
+#  -------------------------------------------------------
+#
 all: mpif.h makemake makemake64
 	cd $(MAKEDIR);   $(GMAKE);
 	cd $(MAKE64DIR); $(GMAKE)

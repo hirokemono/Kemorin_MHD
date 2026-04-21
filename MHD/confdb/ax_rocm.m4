@@ -44,6 +44,7 @@ AC_DEFUN([AX_ROCM],
 #
         AS_IF([test "x$ac_cv_header_rocprofiler_v2_rocprofiler_h" = xyes \
                 || test "x$ac_cv_header_rocprofiler_sdk_rocprofiler_h" = xyes], [
+            ROCM_CFLAGS="$user_rocm_inc_flags"
             ROCM_CPPFLAGS="$user_rocm_inc_flags"
         ], [
             AS_IF([test "x$with_rocm" != xcheck], [AC_MSG_ERROR([Cannot find ROCm headers])])
@@ -80,7 +81,10 @@ AC_DEFUN([AX_ROCM],
             AC_MSG_ERROR([Cannot find ROCm libraries])
         ])
     ])
+    PKGFLAGS_ROCm = "rocm"
 
+    AC_SUBST([PKGFLAGS_ROCm])
+    AC_SUBST([ROCM_CFLAGS])
     AC_SUBST([ROCM_CPPFLAGS])
     AC_SUBST([ROCM_LIBDIR])
     AC_SUBST([ROCM_ROCPROFV2_LDFLAGS])

@@ -72,7 +72,7 @@ AC_ARG_ENABLE(gl,
 [USE_gl='no'])
 
 AC_ARG_WITH(rocm,
-[  --with-rocm             Use AMD ROCm environment
+[  --with-rocm[[=ROCm dir]]  Use AMD ROCm environment in [[ROCm dir]] directory
    --without-rocm to disable AMD ROCm environment],
 [if test "$withval" != no ; then
   USE_rocm='yes'
@@ -272,11 +272,25 @@ AC_ARG_VAR(MPIRUN, Command and options to invoke tests using MPI (Default: mpiru
 
 # Check AMD ROCm
 AC_MSG_RESULT(USE_rocm..."${USE_rocm}")
-if test ${USE_rocm} = "yes"
-then
-    AC_MSG_RESULT(ROCm check)
-    AX_ROCM
-fi
+AC_MSG_RESULT(ROCm check)
+AX_ROCM
+
+AC_SUBST([ROCM_CFLAGS])
+AC_SUBST([ROCM_CPPFLAGS])
+AC_SUBST([ROCM_LIBDIR])
+AC_SUBST([ROCM_LIBS])
+AC_SUBST([ROCM_ROCPROFV2_LDFLAGS])
+AC_SUBST([ROCM_ROCPROFSDK_LDFLAGS])
+AC_SUBST([PKGFLAGS_ROCM])
+
+AC_MSG_RESULT(PKGFLAGS_ROCm... "${PKGFLAGS_ROCM}")
+AC_MSG_RESULT(ROCM_CFLAGS...   "${ROCM_CFLAGS}")
+AC_MSG_RESULT(ROCM_CPPFLAGS... "${ROCM_CPPFLAGS}")
+AC_MSG_RESULT(ROCM_LIBDIR...   "${ROCM_LIBDIR}")
+AC_MSG_RESULT(ROCM_LIBS...     "${ROCM_LIBS}")
+AC_MSG_RESULT(ROCM_ROCPROFV2_LDFLAGS... "${ROCM_ROCPROFV2_LDFLAGS}")
+AC_MSG_RESULT(ROCM_ROCPROFSDK_LDFLAGS..."${ROCM_ROCPROFSDK_LDFLAGS}")
+
 
 # Check "mpirun" command
 if test -n "${MPIRUN}"; then
@@ -547,15 +561,10 @@ if test -n "${OPENMP_FCFLAGS}"; then
 else
         AC_MSG_RESULT(    Use OpenMP ...         no)
 fi
-if test -n "${COCOA_FLAG}"; then
-        AC_MSG_RESULT(    Use Cocoa...          yes)
+if test -n "${ROCM_LIBS}"; then
+        AC_MSG_RESULT(    Use AMD ROCm ...      yes)
 else
-        AC_MSG_RESULT(    Use Cocoa...           no)
-fi
-if test -n "${X_LIBS}"; then
-        AC_MSG_RESULT(    Use X Window...       yes)
-else
-        AC_MSG_RESULT(    Use X Window...        no)
+        AC_MSG_RESULT(    Use AMD ROCm ...       no)
 fi
 AC_MSG_RESULT()
 if test -n "${BLAS_LIBS}"; then
@@ -569,7 +578,7 @@ if test -n "${FFTW3_LIBS}"; then
 	if test -n "${FFTW3_OMP_LIBS}"; then
         AC_MSG_RESULT(    Use FFTW3 with OpenMP ... yes)
 	else
-        AC_MSG_RESULT(    Use FFTW3 with OpenMP ... no)
+        AC_MSG_RESULT(    Use FFTW3 with OpenMP ...  no)
 	fi
 else
         AC_MSG_RESULT(    Use FFTW3 ...          no)
@@ -591,6 +600,16 @@ else
         AC_MSG_RESULT(    Use libpng output...      no)
 fi
 AC_MSG_RESULT()
+if test -n "${COCOA_FLAG}"; then
+        AC_MSG_RESULT(    Use Cocoa...          yes)
+else
+        AC_MSG_RESULT(    Use Cocoa...           no)
+fi
+if test -n "${X_LIBS}"; then
+        AC_MSG_RESULT(    Use X Window...       yes)
+else
+        AC_MSG_RESULT(    Use X Window...        no)
+fi
 if test -n "${GTK3_LIBS}"; then
         AC_MSG_RESULT(    Use GTK3+...          yes)
 else
