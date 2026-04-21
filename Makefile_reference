@@ -42,7 +42,7 @@ AR = ar
 RANLIB = ranlib
 
 #
-# OPENMP_FCFLAGS OprnMP option for fortran compiler
+# OPENMP_FCFLAGS OpenMP option for fortran compiler
 # COCOA_FLAG is defined to use cocoa Framework
 # XL_FORTRAN   Set "-WF," option for cpp preprocessor
 # SSE_FLAG     X86 instruction flag

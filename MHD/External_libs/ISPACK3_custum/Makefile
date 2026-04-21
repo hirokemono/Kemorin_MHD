@@ -36,7 +36,9 @@ $(addsuffix .o,$(basename $(SRC_MXPACK3_SSE8)))
 F90EXT = '.f90'
 ASMEXT = '.s'
 
-F90BUILD = '$$(F90) -c $$(F90OPTFLAGS) -fno-range-check $$<'
+ISPACKFLAG = $$(F90OPTFLAGS)
+# ISPACKFLAG = $$(F90OPTFLAGS) -fno-range-check
+F90BUILD = '$$(F90) -c $(ISPACKFLAG) $$<'
 ASMBUILD = '$$(AS) -c -x assembler $$< -o $$@'
 
 ifeq ($(SSE4),fort)
