@@ -80,7 +80,7 @@
       write(*, '("Time for Initialize:     ",1pE16.6e3)') elapsed(1)
       write(*, '("Time for OpenMP ROCmfft: ",1pE16.6e3)') elapsed(2)
       write(*, '("Time for Data copy:      ",1pE16.6e3)') elapsed(3)
-      write(*, '("Total FFT:       ",1pE16.6e3)')                       &
+      write(*, '("Total FFT:               ",1pE16.6e3)')               &
      &                           elapsed(2) + elapsed(3)
 !
       stop 'finish'

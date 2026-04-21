@@ -452,9 +452,12 @@
 !      call rocblasCheck(rocblas_set_pointer_mode(rocblas_handle, 0))
       call rocfftCheck(rocfft_execute(fwd%ROCfft_plan,                  &
      &    c_loc(X_ROCmFFT(1)), c_null_ptr, fwd%ROCfft_wk_info))
+      call hipCheck(hipDeviceSynchronize())
 !$OMP end target data
 !$OMP target update from(X_ROCmFFT)
 !$OMP target exit data map(delete:X_ROCmFFT)
+!
+      write(*,*) 'ahoooo'
 !
       end subroutine calypso_fwd_OpenMP_ROCmFFT
 !
@@ -478,9 +481,10 @@
 !      call rocblasCheck(rocblas_set_pointer_mode(rocblas_handle, 0))
       call rocfftCheck(rocfft_execute(bwd%ROCfft_plan,                  &
      &    c_loc(X_ROCmFFT(1)), c_null_ptr, bwd%ROCfft_wk_info))
+      call hipCheck(hipDeviceSynchronize())
+!$OMP end target data
 !$OMP target update from(X_ROCmFFT)
 !$OMP target exit data map(delete:X_ROCmFFT)
-!$OMP end target data
 !
       end subroutine calypso_bwd_OpenMP_ROCmFFT
 !

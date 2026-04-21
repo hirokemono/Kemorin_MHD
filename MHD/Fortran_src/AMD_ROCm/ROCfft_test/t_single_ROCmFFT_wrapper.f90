@@ -245,14 +245,13 @@
       type(c_ptr), intent(inout) :: data_ptr
 !
 !
-          call hipCheck(hipMemcpy(data_ptr, c_loc(X_ROCmFFT(1)),        &
-     &                            Nbytes, hipMemcpyHostToDevice))
-          call rocfftCheck                                              &
-     &       (rocfft_execute(fwd%ROCfft_plan, data_ptr,                 &
-     &                       c_null_ptr, c_null_ptr))
-          call hipCheck(hipDeviceSynchronize())
-          call hipCheck(hipMemcpy(c_loc(C_ROCmFFT(1)), data_ptr,        &
-     &                  Nbytes, hipMemcpyDeviceToHost))
+      call hipCheck(hipMemcpy(data_ptr, c_loc(X_ROCmFFT(1)),            &
+     &                        Nbytes, hipMemcpyHostToDevice))
+      call rocfftCheck(rocfft_execute(fwd%ROCfft_plan, data_ptr,        &
+     &                                c_null_ptr, c_null_ptr))
+      call hipCheck(hipDeviceSynchronize())
+      call hipCheck(hipMemcpy(c_loc(C_ROCmFFT(1)), data_ptr,            &
+     &                        Nbytes, hipMemcpyDeviceToHost))
 !
       end subroutine calypso_sgl_fwd_ROCmFFT
 !
@@ -274,15 +273,70 @@
       type(c_ptr), intent(inout) :: data_ptr
 !
 !
-          call hipCheck(hipMemcpy(data_ptr, c_loc(C_ROCmFFT(1)),        &
-     &                            Nbytes, hipMemcpyHostToDevice))
-          call rocfftCheck(rocfft_execute(bwd%ROCfft_plan, data_ptr,    &
-     &                                    c_null_ptr, c_null_ptr))
-          call hipCheck(hipDeviceSynchronize())
-          call hipCheck(hipMemcpy(c_loc(X_ROCmFFT(1)), data_ptr,        &
-     &                            Nbytes, hipMemcpyDeviceToHost))
+      call hipCheck(hipMemcpy(data_ptr, c_loc(C_ROCmFFT(1)),            &
+     &                        Nbytes, hipMemcpyHostToDevice))
+      call rocfftCheck(rocfft_execute(bwd%ROCfft_plan, data_ptr,        &
+     &                                c_null_ptr, c_null_ptr))
+      call hipCheck(hipDeviceSynchronize())
+      call hipCheck(hipMemcpy(c_loc(X_ROCmFFT(1)), data_ptr,            &
+     &                        Nbytes, hipMemcpyDeviceToHost))
 !
       end subroutine calypso_sgl_bwd_ROCmFFT
+!
+! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
+      subroutine calypso_sgl_fwd_ROCmFFT2(fwd, Nfft_r, X_ROCmFFT,       &
+     &                                    Nbytes, data_ptr)
+!
+      use hipfort
+      use hipfort_check
+      use hipfort_rocfft
+!
+      type(single_ROCmfft_params), intent(in), target :: fwd
+      integer(kind = kint), intent(in) :: Nfft_r
+      integer(c_size_t), intent(in) :: Nbytes
+!
+      real(kind = kreal), intent(inout), target :: X_ROCmFFT(Nfft_r)
+      type(c_ptr), intent(inout) :: data_ptr
+!
+!
+      call hipCheck(hipMemcpy(data_ptr, c_loc(X_ROCmFFT(1)),            &
+     &                        Nbytes, hipMemcpyHostToDevice))
+      call rocfftCheck(rocfft_execute(fwd%ROCfft_plan, data_ptr,        &
+     &                                c_null_ptr, c_null_ptr))
+      call hipCheck(hipDeviceSynchronize())
+      call hipCheck(hipMemcpy(c_loc(X_ROCmFFT(1)), data_ptr,            &
+     &                        Nbytes, hipMemcpyDeviceToHost))
+!
+      end subroutine calypso_sgl_fwd_ROCmFFT2
+!
+! ------------------------------------------------------------------
+!
+      subroutine calypso_sgl_bwd_ROCmFFT2(bwd, Nfft_r, X_ROCmFFT,       &
+     &                                    Nbytes, data_ptr)
+!
+      use hipfort
+      use hipfort_check
+      use hipfort_rocfft
+!
+      type(single_ROCmfft_params), intent(in), target :: bwd
+      integer(kind = kint), intent(in) :: Nfft_r
+      integer(c_size_t), intent(in) :: Nbytes
+!
+      real(kind = kreal), intent(inout), target :: X_ROCmFFT(Nfft_r)
+      type(c_ptr), intent(inout) :: data_ptr
+!
+!
+      call hipCheck(hipMemcpy(data_ptr, c_loc(X_ROCmFFT(1)),            &
+     &                        Nbytes, hipMemcpyHostToDevice))
+      call rocfftCheck(rocfft_execute(bwd%ROCfft_plan, data_ptr,        &
+     &                                c_null_ptr, c_null_ptr))
+      call hipCheck(hipDeviceSynchronize())
+      call hipCheck(hipMemcpy(c_loc(X_ROCmFFT(1)), data_ptr,            &
+     &                        Nbytes, hipMemcpyDeviceToHost))
+!
+      end subroutine calypso_sgl_bwd_ROCmFFT2
 !
 ! ------------------------------------------------------------------
 !

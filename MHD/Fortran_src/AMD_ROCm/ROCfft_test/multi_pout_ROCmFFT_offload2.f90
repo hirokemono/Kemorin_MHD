@@ -195,9 +195,8 @@
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call calypso_forward_ROCmFFT2(fwd,                              &
-     &                            WK_fwd%Nfft_r, WK_fwd%X_ROCmFFT(1),   &
-     &                            fwd%Nbytes, WK_fwd%data_ptr)
+        call calypso_fwd_OpenMP_ROCmFFT(fwd, WK_fwd%Nfft_r,             &
+     &                                  WK_fwd%X_ROCmFFT(1))
         elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
