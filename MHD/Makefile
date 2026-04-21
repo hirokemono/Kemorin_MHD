@@ -33,12 +33,38 @@ FEM_UTIL_BINDIR= $(BUILDDIR)/FEM_utils
 MAKENAME=       $(MAKEDIR)/Makefile
 EXP_MAKEHEAD=   $(EXPDIR)/Makefile.header
 TESTS_MAKEHEAD= $(TESTDIR)/Makefile.header
-
 #
-#   zlib and libpng settings
+#   AMD ROCm settings
+#
+ROCM_CFLAGS=
+ROCM_LIBDIR=
+ROCM_LIBS=
+ROCM_ROCPROFV2_LDFLAGS=
+ROCM_ROCPROFSDK_LDFLAGS=
+#
+#   BLAS settings
+#
+BLAS_LIBS =
+#
+#    FFTW3 settings
+#
+PKGFLAGS_FFTW3 =
+FFTW3_CFLAGS =
+FFTW3_LIBS =
+FFTW3_OMP_LIBS =
+#
+#    HDF5 fortran wrapper settings
+#
+HDF5_FFLAGS =
+HDF5_LDFLAGS =
+HDF5_FLIBS =
+#
+#   zlib settings
 #
 ZLIB_CFLAGS =
 ZLIB_LIBS =
+#
+#   libpng settings
 #
 PNG_CFLAGS =
 PNG_LIBS = 
@@ -77,7 +103,7 @@ endif
 ifdef FFTW3_OMP_LIBS
   CPP_FLAGS+= -DOMP_FFTW3
   F_INCLUDE+= $$(FFTW3_CFLAGS)
-  F90LIBS+= $$(FFTW3_OMP_LIBS)
+  F90LIBS+=   $$(FFTW3_OMP_LIBS)
 endif
 
 ifdef FFTW3_LIBS
@@ -89,6 +115,13 @@ endif
 ifdef BLAS_LIBS
   CPP_FLAGS += -DBLAS
   F90LIBS+= $$(BLAS_LIBS)
+endif
+
+ifdef ROCM_LIBS
+  CPP_FLAGS += -D_AMD_ROCM_
+  F_INCLUDE+= $$(ROCM_CFLAGS)
+  C_INCLUDE+= $$(ROCM_CFLAGS) 
+  F90LIBS+= $$(ROCM_LIBDIR) $$(ROCM_LIBS)
 endif
 
 ifdef HDF5_FLIBS
@@ -382,6 +415,14 @@ makeheaders:
 	@echo '#' >> $(MAKENAME)
 	@echo 'PNG_CFLAGS = $(PNG_CFLAGS)'   >> $(MAKENAME)
 	@echo 'PNG_LIBS =    $(PNG_LIBS)'    >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '#   AMD ROCm settings' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo 'ROCM_CFLAGS =   $(ROCM_CFLAGS)' >> $(MAKENAME)
+	@echo 'ROCM_LIBDIR =   $(ROCM_LIBDIR)' >> $(MAKENAME)
+	@echo 'ROCM_LIBS =     $(ROCM_LIBS)'   >> $(MAKENAME)
+	@echo 'ROCM_ROCPROFV2_LDFLAGS =   $(ROCM_ROCPROFV2_LDFLAGS)'   >> $(MAKENAME)
+	@echo 'ROCM_ROCPROFSDK_LDFLAGS =  $(ROCM_ROCPROFSDK_LDFLAGS)'  >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo '# BLAS settings' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
