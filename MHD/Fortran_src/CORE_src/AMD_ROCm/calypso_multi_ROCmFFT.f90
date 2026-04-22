@@ -121,7 +121,7 @@
       call hipCheck(hipMemcpy(c_loc(C_ROCmFFT(1)), data_ptr,            &
      &                        Nbytes, hipMemcpyDeviceToHost))
 !
-      end subroutine calypso_forward_ROCmFFT
+      end subroutine calypso_forward_ROCmFFT_r2c
 !
 ! ------------------------------------------------------------------
 !

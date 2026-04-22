@@ -19,6 +19,10 @@ FDM_test      \
 \
 BC_file_test
 
+ifdef ROCM_CFLAGS
+  SUBDIRS += ROCm_test
+endif
+
 #
 #  -------------------------------------------------------------------------
 #

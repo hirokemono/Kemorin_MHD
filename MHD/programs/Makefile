@@ -59,6 +59,7 @@ dir_list:
 		cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
+		ROCM_CFLAGS='$(ROCM_CFLAGS)' \
 		MAKENAME='$(MAKENAME)' \
 		dir_list \
 		) \
@@ -71,6 +72,7 @@ target_list:
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		BUILDDIR='$(BUILDDIR)' \
+		ROCM_CFLAGS='$(ROCM_CFLAGS)' \
 		MAKENAME='$(MAKENAME)' \
 		target_list \
 		) \
@@ -97,6 +99,7 @@ target_task:
 		FORTRAN_C_CONNECT='$(FORTRAN_C_CONNECT)' \
 		FFTW3_LIBS='$(FFTW3_LIBS)' \
 		FFTW3_OMP_LIBS='$(FFTW3_OMP_LIBS)' \
+		ROCM_CFLAGS='$(ROCM_CFLAGS)' \
 		target_task \
 		) \
 	done
@@ -165,6 +168,7 @@ mod_list:
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
+		ROCM_CFLAGS='$(ROCM_CFLAGS)' \
 		mod_list \
 		) \
 	done
@@ -185,6 +189,7 @@ depends:
 		OPTFLAGS='$(OPTFLAGS)' \
 		C_INCLUDE='$(C_INCLUDE)' \
 		FFMPEG_CFLAGS='$(FFMPEG_CFLAGS)' \
+		ROCM_CFLAGS='$(ROCM_CFLAGS)' \
 		depends; \
 		) \
 	done
@@ -194,6 +199,7 @@ clean:
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
+		ROCM_CFLAGS='$(ROCM_CFLAGS)' \
 		clean \
 		) \
 	done
