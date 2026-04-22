@@ -7,7 +7,7 @@ AMD_ROCM_DIR = $$(CORE_SRCDIR)/AMD_ROCm
 LIB_CALYPSO_ROCM =       -lkemo_ROCm
 LIB_CALYPSO_ROCM_FILE =  liblkemo_ROCm.a
 
-SOURCES = $(shell ls *.F90)
+SOURCES = $(shell ls *.f90 *.F90)
 MOD_AMD_ROCM = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
