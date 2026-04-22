@@ -13,6 +13,8 @@ MOD_MESH = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'MESHDIR = $(MESHDIR)'  >> $(MAKENAME)
 
+lib_name:
+
 libtarget:
 
 lib_archve: libtarget

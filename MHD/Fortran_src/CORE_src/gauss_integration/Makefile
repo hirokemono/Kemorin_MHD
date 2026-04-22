@@ -14,6 +14,8 @@ MOD_GAUSS = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'GAUSSDIR = $(GAUSSDIR)'  >> $(MAKENAME)
 
+lib_name:
+
 libtarget:
 
 lib_archve: libtarget

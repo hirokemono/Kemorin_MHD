@@ -13,6 +13,8 @@ MOD_ITP = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'INTERPOLATE_DIR = $(INTERPOLATE_DIR)'  >> $(MAKENAME)
 
+lib_name:
+
 libtarget:
 
 lib_archve: libtarget

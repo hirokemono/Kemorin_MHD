@@ -13,6 +13,8 @@ MOD_INT64 = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'INT64DIR = $(INT64DIR)'  >> $(MAKENAME)
 
+lib_name:
+
 libtarget:
 
 lib_archve: libtarget

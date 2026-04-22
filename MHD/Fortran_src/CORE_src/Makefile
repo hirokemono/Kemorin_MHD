@@ -33,6 +33,9 @@ FFT_wrapper          \
 SPH_SPECTR_src       \
 modify_MESH
 
+ifdef ROCM_CFLAGS
+  SUBDIRS += AMD_ROCm
+endif
 
 #
 #  -------------------------------------------------------------------------
@@ -54,7 +57,16 @@ dir_list:
 lib_name:
 	@echo  'LIB_MESH =      $(LIB_MESH)'      >> $(MAKENAME)
 	@echo  'LIB_MESH_FILE = $(LIB_MESH_FILE)' >> $(MAKENAME)
-	@echo   >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@for dir in $(SUBDIRS); do \
+		( cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MAKENAME='$(MAKENAME)' \
+		lib_name; \
+		) \
+	done
+	@echo '#' >> $(MAKENAME)
 
 lib_tasks: libtarget lib_archve
 	@echo '	''$$(RANLIB) $$@' >> $(MAKENAME)

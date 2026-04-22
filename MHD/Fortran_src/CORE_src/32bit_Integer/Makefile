@@ -13,6 +13,8 @@ MOD_INT32 = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'INT32DIR = $(INT32DIR)'  >> $(MAKENAME)
 
+lib_name:
+
 libtarget:
 
 lib_archve: libtarget

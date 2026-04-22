@@ -10,8 +10,8 @@
 !
       use m_FFT_size
       use t_fft_test_data
-      use t_ROCmFFT_wrapper
-      use multi_pin_ROCmFFT_offload
+      use t_multi_ROCmFFT_wrapper
+      use multi_pin_complex_ROCmFFT
 !
       implicit none
 !
@@ -47,8 +47,8 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Forward transform
-        call multi_pin_fwd_ROCmFFT(fwd, WK_fft, ft1%s_k(1,1),           &
-     &                             elapsed(2), elapsed(3))
+        call multi_pin_fwd_ROCmFFT_r2c(fwd, WK_fft, ft1%s_k(1,1),       &
+     &                                 elapsed(2), elapsed(3))
 !
         start = OMP_GET_WTIME()
 !$omp parallel workshare
@@ -57,8 +57,8 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Backword transform
-        call multi_pin_bwd_ROCmFFT(bwd, WK_fft, ft1%f_x,                &
-     &                             elapsed(2), elapsed(3))
+        call multi_pin_bwd_ROCmFFT_c2r(bwd, WK_fft, ft1%f_x,            &
+     &                                 elapsed(2), elapsed(3))
       end do
 !
 !   Finalize

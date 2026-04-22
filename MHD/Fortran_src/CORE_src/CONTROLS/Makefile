@@ -13,6 +13,8 @@ MOD_CTL = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'CTL_DIR = $(CTL_DIR)'  >> $(MAKENAME)
 
+lib_name:
+
 libtarget:
 
 lib_archve: libtarget

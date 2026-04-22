@@ -13,6 +13,8 @@ MOD_BINARY_IO = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'BINARY_IO_DIR = $(BINARY_IO_DIR)'  >> $(MAKENAME)
 
+lib_name:
+
 libtarget:
 
 lib_archve: libtarget

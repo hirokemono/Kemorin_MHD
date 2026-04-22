@@ -13,6 +13,8 @@ MOD_SPH = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'SPH_DIR = $(SPH_DIR)'  >> $(MAKENAME)
 
+lib_name:
+
 libtarget:
 
 lib_archve: libtarget

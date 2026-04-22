@@ -14,6 +14,8 @@ MOD_MESH_T = $(addsuffix .o,$(basename $(SOURCES)) )
 dir_list:
 	@echo 'MESH_TYPE_DIR = $(MESH_TYPE_DIR)'  >> $(MAKENAME)
 
+lib_name:
+
 libtarget:
 
 lib_archve: libtarget

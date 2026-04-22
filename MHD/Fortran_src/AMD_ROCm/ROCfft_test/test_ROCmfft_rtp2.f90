@@ -10,9 +10,9 @@
 !
       use m_FFT_size
       use t_fft_test_data
-      use t_ROCmFFT_wrapper
-      use multi_pout_ROCmFFT_offload
-      use multi_pout_ROCmFFT_offload2
+      use t_multi_ROCmFFT_wrapper
+      use multi_pout_complex_ROCmFFT
+      use multi_pout_real_ROCmFFT
 !
       implicit none
 !

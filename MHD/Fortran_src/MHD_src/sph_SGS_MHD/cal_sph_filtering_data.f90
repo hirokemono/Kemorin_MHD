@@ -41,7 +41,8 @@
       real(kind = kreal), intent(inout) :: weight(0:l_truncation)
       real(kind = kreal), intent(inout) :: filter_mom(0:num_momentum-1)
 !
-      integer(kind = kint) :: i, l, l_rest, k_rev
+      integer(kind = kint) :: i, l, l_rest
+!      integer(kind = kint) :: k_rev
       real(kind = kreal) :: b, pi
 !
 !

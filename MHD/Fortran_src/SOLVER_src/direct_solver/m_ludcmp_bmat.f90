@@ -146,7 +146,7 @@
       real(kind = kreal), intent(in) :: a(np,np)
       real(kind = kreal), intent(inout) :: b(n)
 !
-      integer(kind = kint) :: i,ii,j,ll, jst, jed, nb
+      integer(kind = kint) :: i, ii, j, ll, jst, jed, nb
       real(kind = kreal) :: sum
 !
 !
@@ -160,7 +160,7 @@
       end do
 !
       do i = 1, n
-        if (b(i) .ne. 0.0d0) then
+        if(b(i) .ne. 0.0d0) then
           ii = i
           exit
         end if
