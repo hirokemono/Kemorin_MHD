@@ -68,7 +68,7 @@
 !
       use m_precision
       use m_constants
-      use t_ROCmFFT_wrapper
+      use t_multi_ROCmFFT_wrapper
 !
       implicit none
 !
@@ -107,7 +107,7 @@
 !
       subroutine calypso_pin_fwd_ROCmFFT_init(Nfft_r, fwd)
 !
-      integer(kind = kint), intent(in) :: Nfft_r
+      integer(c_size_t), intent(in) :: Nfft_r
       type(calypso_ROCmfft_params), intent(inout), target :: fwd
 !
 !   Initialize Forward transform
@@ -128,7 +128,7 @@
       use hipfort_check
       use hipfort_rocfft
 !
-      integer(kind = kint), intent(in) :: Nfft_r
+      integer(c_size_t), intent(in) :: Nfft_r
       type(calypso_ROCmfft_params), intent(inout), target :: bwd
 !
 !   Initialize Backword transform

@@ -29,7 +29,7 @@
 !!      subroutine calypso_forward_ROCmFFT(fwd, Nfft_r, X_ROCmFFT,      &
 !!     &          Nfft_c, C_ROCmFFT, Nbytes, data_ptr)
 !!        type(calypso_ROCmfft_params), intent(in), target :: fwd
-!!        integer(kind = kint), intent(in) :: Nfft_r, Nfft_c
+!!        integer(c_size_t), intent(in) :: Nfft_r, Nfft_c
 !!        integer(c_size_t), intent(in) :: Nbytes
 !!        real(kind = kreal), intent(in), target                        &
 !!     &                   :: X_ROCmFFT(Nfft_r*fwd%Ncomp)
@@ -51,7 +51,7 @@
 !!      subroutine calypso_backward_ROCmFFT(bwd, Nfft_c, C_ROCmFFT,     &
 !!     &          Nfft_r, X_ROCmFFT, Nbytes, data_ptr)
 !!        type(calypso_ROCmfft_params), intent(in), target :: bwd
-!!        integer(kind = kint), intent(in) :: Nfft_r, Nfft_c
+!!        integer(c_size_t), intent(in) :: Nfft_r, Nfft_c
 !!        integer(c_size_t), intent(in) :: Nbytes
 !!        complex(kind = kreal), intent(in), target                     &
 !!     &                   :: C_ROCmFFT(Nfft_c*bwd%Ncomp)
@@ -115,8 +115,8 @@
 !
       type calypso_ROCmfft_work
         real(kind = kreal) ::   aNfft = 0.0d0
-        integer(kind = kint) :: Nfft_c = 0
-        integer(kind = kint) :: Nfft_r = 0
+        integer(c_size_t) :: Nfft_c = 0
+        integer(c_size_t) :: Nfft_r = 0
 !
         type(c_ptr) :: data_ptr = c_null_ptr
         real(kind = kreal), allocatable :: X_ROCmFFT(:)
@@ -324,7 +324,7 @@
       use hipfort_rocfft
 !
       type(calypso_ROCmfft_params), intent(in), target :: fwd
-      integer(kind = kint), intent(in) :: Nfft_r, Nfft_c
+      integer(c_size_t), intent(in) :: Nfft_r, Nfft_c
       integer(c_size_t), intent(in) :: Nbytes
       real(kind = kreal), intent(in), target                            &
      &                   :: X_ROCmFFT(Nfft_r*fwd%Ncomp)
@@ -354,7 +354,7 @@
       use hipfort_rocfft
 !
       type(calypso_ROCmfft_params), intent(in), target :: bwd
-      integer(kind = kint), intent(in) :: Nfft_r, Nfft_c
+      integer(c_size_t), intent(in) :: Nfft_r, Nfft_c
       integer(c_size_t), intent(in) :: Nbytes
       complex(kind = kreal), intent(in), target                         &
      &                   :: C_ROCmFFT(Nfft_c*bwd%Ncomp)
@@ -385,7 +385,7 @@
       use hipfort_rocfft
 !
       type(calypso_ROCmfft_params), intent(in), target :: fwd
-      integer(kind = kint), intent(in) :: Nfft_r
+      integer(c_size_t), intent(in) :: Nfft_r
       integer(c_size_t), intent(in) :: Nbytes
 !
       real(kind = kreal), intent(inout), target                         &
@@ -413,7 +413,7 @@
       use hipfort_rocfft
 !
       type(calypso_ROCmfft_params), intent(in), target :: bwd
-      integer(kind = kint), intent(in) :: Nfft_r
+      integer(c_size_t), intent(in) :: Nfft_r
       integer(c_size_t), intent(in) :: Nbytes
 !
       real(kind = kreal), intent(inout), target                         &
@@ -441,7 +441,7 @@
       use hipfort_rocfft
 !
       type(calypso_ROCmfft_params), intent(in), target :: fwd
-      integer(kind = kint), intent(in) :: Nfft_r
+      integer(c_size_t), intent(in) :: Nfft_r
 !
       real(kind = kreal), intent(inout), target                         &
      &                   :: X_ROCmFFT(Nfft_r*fwd%Ncomp)
@@ -468,7 +468,7 @@
       use hipfort_rocfft
 !
       type(calypso_ROCmfft_params), intent(in), target :: bwd
-      integer(kind = kint), intent(in) :: Nfft_r
+      integer(c_size_t), intent(in) :: Nfft_r
 !
       real(kind = kreal), intent(inout), target                         &
      &                   :: X_ROCmFFT(Nfft_r*bwd%Ncomp)

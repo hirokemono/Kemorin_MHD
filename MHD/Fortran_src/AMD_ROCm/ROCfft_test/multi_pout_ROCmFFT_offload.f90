@@ -68,7 +68,7 @@
 !
       use m_precision
       use m_constants
-      use t_ROCmFFT_wrapper
+      use t_multi_ROCmFFT_wrapper
 !
       implicit none
 !
