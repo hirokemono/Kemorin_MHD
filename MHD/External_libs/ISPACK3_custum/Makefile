@@ -39,7 +39,7 @@ ASMEXT = '.s'
 ISPACKFLAG = $$(F90OPTFLAGS)
 # ISPACKFLAG = $$(F90OPTFLAGS) -fno-range-check
 F90BUILD = '$$(F90) -c $(ISPACKFLAG) $$<'
-ASMBUILD = '$$(AS) -c -x $$< -o $$@'
+ASMBUILD = '$$(AS) -c -x assembler $$< -o $$@'
 
 ifeq ($(SSE4),fort)
   EXT4 = $(F90EXT)
