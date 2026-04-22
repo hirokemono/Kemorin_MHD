@@ -83,6 +83,7 @@ depends:
 		SSE_CPU="$(SSE_CPU)" \
 		SSE4="$(SSE4)" \
 		SSE8="$(SSE8)" \
+		ROCM_LIBS="$(ROCM_LIBS)" \
 		depends; \
 		) \
 	done

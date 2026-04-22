@@ -36,8 +36,12 @@ $(addsuffix .o,$(basename $(SRC_MXPACK3_SSE8)))
 F90EXT = '.f90'
 ASMEXT = '.s'
 
-ISPACKFLAG = $$(F90OPTFLAGS)
-# ISPACKFLAG = $$(F90OPTFLAGS) -fno-range-check
+ifdef ROCM_LIBS
+    ISPACKFLAG = $$(F90OPTFLAGS)
+else
+    ISPACKFLAG = $$(F90OPTFLAGS) -fno-range-check
+endif
+
 F90BUILD = '$$(F90) -c $(ISPACKFLAG) $$<'
 ASMBUILD = '$$(AS) -c -x assembler $$< -o $$@'
 
