@@ -1,0 +1,43 @@
+include ../../Mkinclude
+
+ifeq ($(SSE),fort)
+     CPU = cpufort
+     SSE4 = fort
+     SSE8 = fort512
+endif
+
+ifeq ($(SSE),avx)
+     CPU = cpuavx
+     SSE4 = avx
+     SSE8 = fort512
+endif
+
+ifeq ($(SSE),fma)
+     CPU = cpufma
+     SSE4 = fma
+     SSE8 = fort512
+endif
+
+ifeq ($(SSE),avx512)
+     CPU = cpuavx512
+     SSE4 = fma
+     SSE8 = avx512
+endif
+
+ifeq ($(SSE),fx)
+     CPU = cpufx
+     SSE4 = fort
+     SSE8 = fort512
+endif
+
+ifeq ($(SSE),sx)
+     CPU = cpusx
+     SSE4 = fort
+     SSE8 = fort512
+endif
+
+all: $(OBJS)
+src: $(TMPSRC)
+clean:
+	$(RM) $(OBJS) $(TMPSRC) *~ *.o
+

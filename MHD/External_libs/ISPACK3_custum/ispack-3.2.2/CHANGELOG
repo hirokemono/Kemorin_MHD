@@ -1,0 +1,64 @@
+2024/03/14
+	Fix problems with the avx512 version that occurred on AMD EPYC(Milan)
+	Suppress warning message when GNU ld links assembly code
+	Generate a shared library by default
+	Released of ispack-3.2.2
+
+2022/05/15
+	Further optimization for NEC SX-Aurora (faster forward transform)
+	Release of ispack-3.2.1
+
+2021/03/30
+	Add optimizations for NEC SX-Aurora
+	Concise OpenMP writing in SXPACK and SYPACK(s2g, g2s, s2v, v2s)
+	Modify sxts2v and sytv2s to prevent compile error in gfortran 10 and later
+	Release of ispack-3.2.0
+
+2021/06/27
+	Add optimizations for FUJITSU A64FX
+	Release of ispack-3.1.0
+
+2019/12/29
+	Bugfix in SYL2NM (Thanks to Dr. Takehiro)
+	Release of ispack-3.0.1
+
+2019/03/04
+	Release of ispack-3.0.0
+
+2019/02/17
+	Correct SXINID, which is enbuged in beta1 (undefined # of threads).
+	Release of ispack-3.0.0-beta2
+
+2019/02/17
+	Release of ispack-3.0.0-beta1
+
+2019/02/16
+	Add MXSOMP and MXGOMP to MXPACK.
+	This version is packaged as ispack-3.0.0-alpha7.
+
+2019/02/14
+	Change LXGCPU to MXGCPU.
+
+2019/02/11
+	Documentation for sypack is written and several subroutines are added.
+	This version is packaged as ispack-3.0.0-alpha6.
+
+2018/11/15
+	sypack is made as MPI version of sxpack.
+	This version is packaged as ispack-3.0.0-alpha5.
+
+2018/11/02
+	lxinig is modified for Cray complier.
+	Release of ispack-3.0.0-alpha4
+
+2018/10/24
+	lxtszp is added in lxpack.
+
+2018/10/22
+	Codes for avx512 cannot be executed on KNL (thanks to Dr. Matsushima).
+	So, changes are made for the code to be executed on KNL.
+	Release of ispack-3.0.0-alpha3
+
+2018/10/17
+	Implementation has been almost completed except for MPI routines.
+	Release of ispack-3.0.0-alpha2

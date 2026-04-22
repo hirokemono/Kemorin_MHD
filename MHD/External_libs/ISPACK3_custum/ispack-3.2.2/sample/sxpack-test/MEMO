@@ -1,0 +1,51 @@
+***********************************************************************
+*     Sample sxpack-test                       last modified 2022/03/30
+***********************************************************************
+-----------------------------------------------------------------------
+Outline
+-----------------------------------------------------------------------
+
+   These sample programs are test programs for transform subroutines in
+SXPACK. Use them to check whether the installation of ISPACK on your
+system is successful or to check the efficiency of parallelization.
+
+-----------------------------------------------------------------------
+Contents
+-----------------------------------------------------------------------
+
+  - test.f90: Test program for backward and forwad transforms in SXPACK.
+              It also provides a speed check.
+  - testv.f90: Test program for paired backward and forwad transforms 
+              in SXPACK. It also provides a speed check.
+  - test2.f90: Test program for backward and forwad transforms with 
+               latitudinal and longitudinal derivatives in SXPACK.
+
+If you did make ISPACK with setting either SSE=avx or SSE=fma, several
+arrays must be 32byte aligned.  Similarly, when you set as SSE=avx512, 
+several arrays must be 64byte aligned. In case your Fortran77 compiler
+cannot do it automatically, memory allocation is done with MXPACK in
+these programs.
+
+-----------------------------------------------------------------------
+Usage
+-----------------------------------------------------------------------
+
+ After modifying macro definitions in Makefile appropriately in accordance 
+with your system, do the following:
+
+ % make (program name).out
+
+Then you obtain an executable. When you want to run test.f90, do as
+follows for example.
+
+ % make test.out
+ % ./test.out
+
+Note that SUPACK also implements OpenMP parallelization. Hence, you can 
+set the number of threads beforehand as,
+
+ % export OMP_NUM_THREADS=4
+ 
+Furthermore, if you are using ifort, you may have to enlarge the stack
+size beforehand by typing "ulimit -s 1000000000", for expamle, depending
+on your ifort version .

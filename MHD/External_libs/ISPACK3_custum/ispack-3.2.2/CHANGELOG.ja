@@ -1,0 +1,65 @@
+2024/03/14
+	AMD EPYC(Milan)での avx512版の不具合に関する修正
+	アセンブリコードを GNU ld がリンクする際の警告メッセージの抑止
+	共有ライブラリをデフォルトで生成するようにした
+	ここまでを ispack-3.2.2 としてリリース
+
+2022/05/15
+	NEC SX-Aurora用の最適化を更新(正変換の高速化)
+	ここまでを ispack-3.2.1 としてリリース
+
+2022/03/30
+	NEC SX-Aurora用の最適化を追加
+	SXPACKとSYPACKでOpenMPの書き方を簡潔にした(s2g, g2s, s2v, v2s)
+	gfortran10以降でのコンパイルエラーを防ぐために syts2v と sytv2s の修正
+	ここまでを ispack-3.2.0 としてリリース
+
+2021/06/27
+	FUJITSU A64FX用の最適化を追加
+	ここまでを ispack-3.1.0 としてリリース
+
+2019/12/29
+	SYL2NMのバグフィックス (Thanks to Dr. Takehiro)
+	ここまでを ispack-3.0.1 としてリリース
+
+2019/03/04
+	ここまでを ispack-3.0.0 としてリリース
+
+2019/02/28
+	beta1でエンバクしてしまった SXINIDを修正(スレッド数が未定義だった).
+	ここまでを ispack-3.0.0-beta2 のリリース
+
+2019/02/17
+	ここまでを ispack-3.0.0-beta1 のリリース
+
+2019/02/16
+	MXPACKに MXSOMP と MXGOMPを追加.
+	ここまでを ispack-3.0.0-alpha7 とした.
+
+2019/02/14
+	LXGCPU を MXGCPU に変更.
+
+2019/02/11
+	sypackのドキュメントの整備およびいくつかのサブルーチンの追加
+	ここまでを ispack-3.0.0-alpha6 とした.
+
+2018/11/15
+	sxpackを MPI化したものを sypackとして仮に作成.
+	ここまでを ispack-3.0.0-alpha5 とした.
+
+2018/11/02
+	lxinig を Cray compiler でも暴走しなくなるように書き換えた.
+	ispack-3.0.0-alpha4 のリリース
+
+2018/10/24
+	lxpackに lxtszp を追加.
+
+2018/10/22
+	avx512のコードが KNLで動かなかった(Skylake用の AVX512VLを使って
+	しまっていた(thanks to 松嶋君)ので, KNLでも動くように修正.
+	ispack-3.0.0-alpha3 のリリース
+
+2018/10/17
+	MPI以外のについての実装はほぼ完了.
+	ispack-3.0.0-alpha2 のリリース
+

@@ -1,0 +1,58 @@
+***********************************************************************
+*     Sample sypack-test                       last modified 2022/03/30
+***********************************************************************
+-----------------------------------------------------------------------
+Outline
+-----------------------------------------------------------------------
+
+   These sample programs are test programs for transform subroutines in
+SYPACK. Use them to check whether the installation of ISPACK on your
+system is successful or to check the efficiency of parallelization.
+
+-----------------------------------------------------------------------
+Contents
+-----------------------------------------------------------------------
+
+  - test.f90: Test program for backward and forwad transforms in SYPACK.
+              It also provides a speed check.
+  - testv.f90: Test program for paired backward and forwad transforms 
+              in SYPACK. It also provides a speed check.
+  - test2.f90: Test program for backward and forwad transforms with 
+               latitudinal and longitudinal derivatives in SYPACK.
+  - testk.f90: Test program for multi-layer transforms in SYPACK.
+              It also provides a speed check.
+	      (You must set the number of MPI processes not to be
+	       smaller than NDV, which is set in the program.)
+  - test-large.f90: A modified version of test.f90 for huge problems.
+
+If you did make ISPACK with setting either SSE=avx or SSE=fma, several
+arrays must be 32byte aligned.  Similarly, when you set as SSE=avx512, 
+several arrays must be 64byte aligned. In case your Fortran90 compiler
+cannot do it automatically, memory allocation is done with MXPACK in
+these programs.
+
+-----------------------------------------------------------------------
+Usage
+-----------------------------------------------------------------------
+
+ After modifying macro definitions in Makefile appropriately in accordance 
+with your system, do the following:
+
+ % make (program name).out
+
+Then you obtain an executable. When you want to run test.f90, do as
+follows for example.
+
+ % make test.out
+ % mpirun -np 4 ./test.out 
+
+Here, the MPI command, "mpirun -np 4", should be changed appropriately
+in accordance with your system. Note that SYPACK also implements MPI-OpenMP
+hybrid-parallelization. Hence, you can set the number of threads beforehand
+as,
+
+ % export OMP_NUM_THREADS=4
+
+Furthermore, if you are using ifort, you may have to enlarge the stack
+size beforehand by typing "ulimit -s 1000000000", for expamle, depending
+on your ifort version .

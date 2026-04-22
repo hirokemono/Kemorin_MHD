@@ -1,0 +1,59 @@
+# macro definitions
+
+DIRS = mxpack fxpack lxpack sxpack sypack
+LIBNAME		= libispack3
+DESTDIR		= .
+STATICLIB	= $(DESTDIR)/$(LIBNAME).a
+SHAREDLIB       = $(DESTDIR)/shared/$(LIBNAME).so
+SHELL		= /bin/sh
+MAKE		= make
+#-- for gfortran
+FC		= gfortran
+FFLAGS		= -O3 -march=native -fopenmp -fno-range-check -fPIC
+MPIFC		= mpif90
+MPIFFLAGS	= -O3 -march=native -fopenmp -fPIC
+CC		= gcc
+CFLAGS		= -O3 -march=native -fPIC
+#-- for Intel ifort
+#FC		= ifort
+#FFLAGS		= -xHost -qopenmp -align array64byte -fPIC
+#MPIFC		= mpiifort
+#MPIFFLAGS	= -xHost -qopenmp -align array64byte -fPIC
+#CC		= gcc
+#CFLAGS		= -O3 -march=native -fPIC
+#-- for Kyoto-U supercomputer
+#FC		= ftn
+#MPIFC		= ftn -fPIC
+#CC		= gcc
+#CFLAGS		= -O3 -march=native -fPIC
+#-- for A64FX
+#FC = frtpx
+#FFLAGS = -Kfast -Kopenmp -fPIC
+#MPIFC = mpifrtpx
+#MPIFFLAGS = -Kfast -Kopenmp -fPIC
+#CC = fccpx
+#CFLAGS = -Kfast -Kopenmp -fPIC
+#-- for SX-Aurora
+#FC              = nfort
+#FFLAGS          = -fopenmp -fPIC
+#MPIFC           = mpinfort
+#MPIFFLAGS       = -fopenmp -ftrace -fPIC
+#CC              = ncc
+#CFLAGS          = -fPIC
+#----
+LD		= $(MPIFC)
+LDFLAGS		= $(MPIFFLAGS)
+AR		= ar
+ARFLAGS		= vru
+RM		= rm -f
+AS		= as
+#AS		= clang -c -x assembler # for MacOSX 
+MV		= mv -f
+RANLIB		= ranlib
+CAT		= cat
+SSE		= fort
+#SSE		= avx
+#SSE		= fma
+#SSE		= avx512
+#SSE		= fx
+#SSE		= sx
