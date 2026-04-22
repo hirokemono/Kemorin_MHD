@@ -1,5 +1,181 @@
 Settings for Makefiles
 
+# -------------------------------------------------------------------------------
+# AMD Mi300A
+#
+#   Environment commands
+#
+#
+# module load rocm/7.2.0
+# module load openmpi/5.0.7/rocm7.2.0_amdflang
+# export OMPI_FC=amdflang
+# export OMPI_CC=hipcc
+# export HSA_XNACK=1
+# export OFFLOAD_TRACK_ALLOCATION_TRACES=true
+#
+#  CC= amdclang -fopenmp --offload-arch=gfx942:xnack+ -fopenmp-target-fast \
+#     -mcmodel=medium
+#  FC= amdflang -fopenmp --offload-arch=gfx942:xnack+ -fopenmp-target-fast \
+#     -mcmodel=medium -fdefault-integer-8
+#
+#  MPICC= mpicc -fopenmp --offload-arch=gfx942:xnack+ -fopenmp-target-fast \
+#     -mcmodel=medium
+#  MPIFC= mpif90 -fopenmp --offload-arch=gfx942:xnack+ -fopenmp-target-fast \
+#     -mcmodel=medium -fdefault-integer-8
+#
+#    Failed configure command
+#
+#   $ ./configure --prefix=/home/hrmatsui/local FC=mpif90 F77=mpif77 CC=mpicc \
+#     CFLAGS='--offload-arch=gfx942  -fopenmp-target-fast -mcmodel=medium -O3 -g' \
+#    'FCFLAGS=''-offload-arch=gfx942  -fopenmp-target-fast  -mcmodel=medium -O3 -g' \
+#     PKG_CONFIG_PATH=/home/hrmatsui/local/amd/lib/pkgconfig \
+#     --with-zlib=/home/hrmatsui/local/amd --with-libpng --with-fftw3 \
+#     --with-blas --with-rocm=/opt/rocm-7.2.0
+#
+## -------------------------------------------------------------------------------
+#
+
+#
+#  Makefile for Kemo's Dynamo toolkit
+#    Written by H. Matsui
+#
+SHELL           = /bin/bash
+#
+#  directories of Kemo's Dynamo toolkit
+#
+SRCDIR = /home/hrmatsui/src_kemo
+INSTDIR= /home/hrmatsui/local/amd
+#
+MHDDIR =   $(SRCDIR)/MHD
+MAKEDIR=   $(SRCDIR)/work
+BUILDDIR=  $(SRCDIR)/bin
+TESTDIR=   $(SRCDIR)/tests
+PYTHONDIR= $(MHDDIR)/pythons
+
+MAKE64DIR= $(SRCDIR)/work_64
+BUILD64DIR= $(SRCDIR)/bin_64
+
+#
+# MPI settings
+#
+MPICHDIR =    /system/apps/rhel9/library/openmpi/5.0.7/rocm/7.2.0-rocm_amdflang/
+ompi
+MPICHLIBDIR = $(MPICHDIR)/lib
+MPICHBINDIR = $(MPICHDIR)/bin
+MPICHINCDIR = $(MPICHDIR)/include
+MPILIBS =
+MPIRUN =      mpirun
+#
+#    compilers
+#
+F90 = mpif90
+CC =  mpicc
+CXX = mpicxx
+AS =  amdclang
+
+F90_LOCAL = $(F90)
+
+F90_LOCAL = gfortran
+
+MPIF90 = mpif90
+MPICC =  mpicc
+
+GMAKE =  make
+AR =     llvm-ar
+RANLIB = llvm-ranlib
+#
+# OPENMP_FCFLAGS OpenMP option for fortran compiler
+# COCOA_FLAG is defined to use cocoa Framework
+# XL_FORTRAN   Set "-WF," option for cpp preprocessor
+# SSE_FLAG     X86 instruction flag
+#
+OPENMP_FCFLAGS = -fopenmp -fopenmp-target-fast
+OPENMP_CFLAGS =  -fopenmp -fopenmp-target-fast
+COCOA_FLAG =
+XL_FORTRAN =
+
+SSE_FLAG = "avx512f"
+SSE_CPU =  "cpuavx512"
+SSE4 =     "fma"
+SSE8 =     "avx512"
+
+#
+#  optimization
+#
+F90OPTFLAGS= --offload-arch=gfx942 -mcmodel=medium -mcmodel=medium -O3 -g
+OPTFLAGS =   --offload-arch=gfx942 -mcmodel=medium -mcmodel=medium -O3 -g
+CXXFLAGS =   --offload-arch=gfx942 -mcmodel=medium -mcmodel=medium -O3 -g
+DEPFLAGS= -MM -w -DDEPENDENCY_CHECK
+#
+#   AMD ROCm settings
+#
+PKGFLAGS_ROCm= rocm
+ROCM_CFLAGS=   -I/opt/rocm-7.2.0/include/hipfort/amdgcn
+ROCM_LIBDIR=   -L/opt/rocm-6.3.3/lib
+ROCM_LIBS=     -lrocfft -lrocblas -lamdhip64
+ROCM_ROCPROFV2_LDFLAGS=
+ROCM_ROCPROFSDK_LDFLAGS=
+#
+#   BLAS settings
+#
+BLAS_LIBS = -L/home/hrmatsui/local/amd/lib -lopenblas
+#
+#    FFTW3 settings
+#
+PKGFLAGS_FFTW3=   fftw3
+FFTW3_CFLAGS=     -I/home/hrmatsui/local/amd/include
+FFTW3_LIBS=       -L/home/hrmatsui/local/amd/lib -lfftw3
+FFTW3_OMP_LIBS=
+#
+#   libpng and zlib settings
+#
+PKGFLAGS_ZLIB = zlib
+ZLIB_CFLAGS =   -I/home/hrmatsui/local/amd/include
+ZLIB_LIBS =     -L/home/hrmatsui/local/amd/lib -lz
+PKGFLAGS_PNG =  libpng
+PNG_CFLAGS =    -I/home/hrmatsui/local/amd/include
+PNG_LIBS =      -L/home/hrmatsui/local/amd/lib -lpng
+
+#
+#    HDF5 fortran wrapper settings
+#
+HDF5_FFLAGS=
+HDF5_LDFLAGS=
+HDF5_FLIBS=
+#
+#   X window settings
+#
+X_CFLAGS =
+X_LIBS=
+#
+#   OpenGL settings (Requirement: OpenGL, libpng)
+#
+PKGFLAGS_GL=
+OPENGL_INC =
+OPENGL_LIBS=
+#
+#   PGPLOT settings (Requirement: pgplot, libpng)
+#
+PGPLOT_LIBS=
+#
+#   GTK+ settings (Requirement: OpenGL, libpng)
+#
+PKGFLAGS_GTK=
+GTK3_CFLAGS=
+GTK3_LIBS=
+#
+#   GLFW settings (Requirement: OpenGL, libpng)
+#
+PKGFLAGS_GLFW=
+GLFW_CFLAGS=
+GLFW_LIBS=
+#
+#   FFMPEG settings
+#
+PKGFLAGS_FFMPEG=
+FFMPEG_CFLAGS=
+FFMPEG_LIBS=
+#
 
 # -------------------------------------------------------------------------------
 # Mac mini with Intel oneAPI

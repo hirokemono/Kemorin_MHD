@@ -457,8 +457,6 @@
 !$OMP target update from(X_ROCmFFT)
 !$OMP target exit data map(delete:X_ROCmFFT)
 !
-      write(*,*) 'ahoooo'
-!
       end subroutine calypso_fwd_OpenMP_ROCmFFT
 !
 ! ------------------------------------------------------------------

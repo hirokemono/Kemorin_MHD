@@ -38,7 +38,7 @@
       call init_fft_test_data(n_field, ngrid, ft1)
 !
       start = OMP_GET_WTIME()
-      call calypso_sgl_ROCmFFT_init(ngrid, fwd, bwd, WK_fft)
+      call calypso_sgl_ROCmFFT_init(ngrid, WK_fft)
       elapsed(1) = OMP_GET_WTIME() - start
 !
       elapsed(2:3) = 0.0d0
@@ -52,8 +52,8 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Forward transform
-        call single_pout_fwd_ROCmFFT(fwd, WK_fft, ft1%nfld, ft1%s_k,    &
-     &                               elapsed(2), elapsed(3))
+        call single_pout_fwd_ROCmFFT_r2c(WK_fft, ft1%nfld, ft1%s_k,     &
+     &                                   elapsed(2), elapsed(3))
 !
         start = OMP_GET_WTIME()
 !$omp parallel workshare
@@ -62,12 +62,12 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Backword transform
-        call single_pout_bwd_ROCmFFT(bwd, WK_fft, ft1%nfld, ft1%f_x,    &
-     &                               elapsed(2), elapsed(3))
+        call single_pout_bwd_ROCmFFT_c2r(WK_fft, ft1%nfld, ft1%f_x,     &
+     &                                   elapsed(2), elapsed(3))
       end do
 !
       start = OMP_GET_WTIME()
-      call calypso_single_ROCmFFT_fin(fwd, bwd, WK_fft)
+      call calypso_single_ROCmFFT_fin(WK_fft)
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
    10 continue
@@ -80,7 +80,7 @@
       write(*, '("Time for Initialize: ",1pE16.6e3)') elapsed(3)
       write(*, '("Time for ROCmfft:    ",1pE16.6e3)') elapsed(1)
       write(*, '("Time for Data copy:  ",1pE16.6e3)') elapsed(2)
-      write(*, '("Total FFT:       ",1pE16.6e3)')                       &
+      write(*, '("Total FFT:           ",1pE16.6e3)')                   &
      &                           elapsed(2) + elapsed(3)
 !
       stop 'finish'
