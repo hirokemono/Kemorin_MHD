@@ -175,10 +175,11 @@
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call calypso_forward_ROCmFFT(fwd,                               &
-     &                               WK_fwd%Nfft_r, WK_fwd%X_ROCmFFT,   &
-     &                               WK_fwd%Nfft_c, WK_fwd%C_ROCmFFT,   &
-     &                               fwd%Nbytes, WK_fwd%data_ptr)
+        call calypso_forward_ROCmFFT_r2c                                &
+     &     (fwd%ROCfft_plan, fwd%ROCfft_wk_info, fwd%Ncomp,             &
+     &      WK_fwd%Nfft_r, WK_fwd%X_ROCmFFT,                            &
+     &      WK_fwd%Nfft_c, WK_fwd%C_ROCmFFT,                            &
+     &      fwd%Nbytes, WK_fwd%data_ptr)
         elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
@@ -206,28 +207,29 @@
       integer(kind = kint) :: nd, i, j
 !
 !
-        start = OMP_GET_WTIME()
-        call norm_prt_to_bwd_OMP_FFTW(int(bwd%Ncomp), int(bwd%Nfft),    &
+      start = OMP_GET_WTIME()
+      call norm_prt_to_bwd_OMP_FFTW(int(bwd%Ncomp), int(bwd%Nfft),      &
      &                  X(1,1), WK_bwd%Nfft_c, WK_bwd%C_ROCmFFT(1))
-        elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
-        start = OMP_GET_WTIME()
-        call calypso_backward_ROCmFFT(bwd,                              &
-     &                             WK_bwd%Nfft_c, WK_bwd%C_ROCmFFT(1),  &
-     &                             WK_bwd%Nfft_r, WK_bwd%X_ROCmFFT(1),  &
-     &                             bwd%Nbytes, WK_bwd%data_ptr)
-        elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
+      start = OMP_GET_WTIME()
+      call calypso_backward_ROCmFFT_c2r                                 &
+     &   (bwd%ROCfft_plan, bwd%ROCfft_wk_info, bwd%Ncomp,               &
+     &    WK_bwd%Nfft_c, WK_bwd%C_ROCmFFT(1),                           &
+     &    WK_bwd%Nfft_r, WK_bwd%X_ROCmFFT(1),                           &
+     &    bwd%Nbytes, WK_bwd%data_ptr)
+      elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
-        start = OMP_GET_WTIME()
+      start = OMP_GET_WTIME()
 !$omp parallel do private(nd,i,j)
-        do nd = 1, bwd%Ncomp
-          do i = 1, bwd%Nfft
-            j = i + (nd-1) * WK_bwd%Nfft_r
-            X(i,nd) = WK_bwd%X_ROCmFFT(j)
-          end do
+      do nd = 1, bwd%Ncomp
+        do i = 1, bwd%Nfft
+          j = i + (nd-1) * WK_bwd%Nfft_r
+          X(i,nd) = WK_bwd%X_ROCmFFT(j)
         end do
+      end do
 !$omp end parallel do
-        elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       end subroutine multi_pin_bwd_ROCmFFT
 !
