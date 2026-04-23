@@ -29,6 +29,8 @@ lib_archve: libtarget
 
 
 mod_list:
+	@echo  'MOD_CORE+= $$(MOD_AMD_ROCM)' >> $(MAKENAME)
+	@echo  '#'  >> $(MAKENAME)
 	@echo  MOD_AMD_ROCM=  \\ >> $(MAKENAME)
 	@echo  $(MOD_AMD_ROCM)   >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
