@@ -41,16 +41,55 @@ DGEMM_test_openmp.o
 
 MOD_HIPM_DGEMM_TEST = test_HIPmBLAS_DGEMM
 
-MOD_CPLX_ROCFFT_PRT_TEST =   test_cplx_rocFFT_prt.o
-MOD_CPLX_ROCFFT_RTP_TEST =   test_cplx_rocFFT_rtp.o
-MOD_REAL_ROCFFT_PRT_TEST =   test_real_rocFFT_prt.o
-MOD_REAL_ROCFFT_RTP_TEST =   test_real_rocFFT_rtp.o
-MOD_OMP_ROCFFT_PRT_TEST =    test_OMP_rocFFT_prt.o
-MOD_OMP_ROCFFT_RTP_TEST =    test_OMP_rocFFT_rtp.o
-MOD_SGL_CP_ROCFFT_PRT_TEST = test_sgl_cplx_rocFFT_prt.o
-MOD_SGL_CP_ROCFFT_RTP_TEST = test_sgl_cplx_rocFFT_rtp.o
-MOD_SGL_RL_ROCFFT_PRT_TEST = test_sgl_real_rocFFT_prt.o
-MOD_SGL_RL_ROCFFT_RTP_TEST = test_sgl_real_rocFFT_rtp.o
+MOD_CPLX_ROCFFT_PRT_TEST = \
+test_cplx_rocFFT_prt.o \
+m_FFT_size.o \
+t_fft_test_data.o
+
+MOD_CPLX_ROCFFT_RTP_TEST = \
+test_cplx_rocFFT_rtp.o \
+m_FFT_size.o \
+t_fft_test_data.o
+
+MOD_REAL_ROCFFT_PRT_TEST = \
+test_real_rocFFT_prt.o \
+m_FFT_size.o \
+t_fft_test_data.o
+
+MOD_REAL_ROCFFT_RTP_TEST = \
+test_real_rocFFT_rtp.o \
+m_FFT_size.o \
+t_fft_test_data.o
+
+MOD_OMP_ROCFFT_PRT_TEST = \
+test_OMP_rocFFT_prt.o \
+m_FFT_size.o \
+t_fft_test_data.o
+
+MOD_OMP_ROCFFT_RTP_TEST = \
+test_OMP_rocFFT_rtp.o \
+m_FFT_size.o \
+t_fft_test_data.o
+
+MOD_SGL_CP_ROCFFT_PRT_TEST = \
+test_sgl_cplx_rocFFT_prt.o \
+m_FFT_size.o \
+t_fft_test_data.o
+
+MOD_SGL_CP_ROCFFT_RTP_TEST = \
+test_sgl_cplx_rocFFT_rtp.o \
+m_FFT_size.o \
+t_fft_test_data.o
+
+MOD_SGL_RL_ROCFFT_PRT_TEST = \
+test_sgl_real_rocFFT_prt.o \
+m_FFT_size.o \
+t_fft_test_data.o
+
+MOD_SGL_RL_ROCFFT_RTP_TEST = \
+test_sgl_real_rocFFT_rtp.o \
+m_FFT_size.o \
+t_fft_test_data.o
 
 #
 #  ------------------------------------------------------------------
