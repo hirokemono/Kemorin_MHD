@@ -218,8 +218,8 @@
 !$OMP target enter data map(to:X_rocFFT)
 !$OMP target data use_device_addr(X_rocFFT)
 !      call rocblasCheck(rocblas_set_pointer_mode(rocblas_handle, 0))
-      call rocfftCheck(rocfft_execute(fwd%rocFFT_plan,                  &
-     &    c_loc(X_rocFFT(1)), c_null_ptr, fwd%rocFFT_wk_info))
+      call rocfftCheck(rocfft_execute(fwd_plan,                         &
+     &    c_loc(X_rocFFT(1)), c_null_ptr, fwd_wk_info))
       call hipCheck(hipDeviceSynchronize())
 !$OMP end target data
 !$OMP target update from(X_rocFFT)
