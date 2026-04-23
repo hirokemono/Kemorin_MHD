@@ -188,8 +188,8 @@
 !
         start = OMP_GET_WTIME()
         call norm_prt_from_fwd_OMP_FFTW(int(fwd%Ncomp), WK_fft%aNfft,   &
-     &                            WK_fft%NFFT_c, WK_fft%C_rocFFT(1),    &
-     &                               int(fwd%Nfft), X(1,1))
+     &      int(WK_fft%NFFT_c), WK_fft%C_rocFFT(1),                     &
+     &      int(fwd%Nfft), X(1,1))
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       end subroutine multi_pin_fwd_ROCmFFT_r2c
@@ -214,7 +214,7 @@
 !
       start = OMP_GET_WTIME()
       call norm_prt_to_bwd_OMP_FFTW(int(bwd%Ncomp), int(bwd%Nfft),      &
-     &                  X(1,1), WK_fft%Nfft_c, WK_fft%C_rocFFT(1))
+     &    X(1,1), int(WK_fft%Nfft_c), WK_fft%C_rocFFT(1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
