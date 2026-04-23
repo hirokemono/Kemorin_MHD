@@ -17,7 +17,9 @@
       use DGEMM_test_openmp
       use DGEMM_test_omp_target
 !
-      use, intrinsic :: iso_fortran_env, only: real64
+      use iso_fortran_env, only: real64
+!      use, intrinsic :: iso_fortran_env, only: real64
+!
       implicit none
 !
 !

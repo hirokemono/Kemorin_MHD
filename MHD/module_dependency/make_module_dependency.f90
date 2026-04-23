@@ -32,9 +32,10 @@
       character(len=43), parameter, private :: command_cpp              &
      &   = '	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<'
 !
-      integer, parameter :: num_exclude = 8
+      integer, parameter :: num_exclude = 9
       character(len=31) ::  exclude_list(num_exclude)                   &
      &                    = (/'ISO_C_BINDING  ',                        &
+     &                        'iso_fortran_env',                        &
      &                        'hdf5           ',                        &
      &                        'hipfort        ',                        &
      &                        'hipfort_check  ',                        &
