@@ -13,8 +13,8 @@
 !!     &                                   elapsed_fft, elapsed_cpy)
 !!      subroutine multi_pout_fwd_OMP_ROCmFFT(fwd, WK_fft, X,           &
 !!     &                                      elapsed_fft, elapsed_cpy)
-!!        type(calypso_ROCmfft_params), intent(in), target :: fwd
-!!        type(calypso_ROCmfft_work), intent(inout) :: WK_fft
+!!        type(calypso_rocFFT_params), intent(in), target :: fwd
+!!        type(calypso_rocFFT_work), intent(inout) :: WK_fft
 !!        real(kind = kreal), intent(inout) :: X(fwd%Ncomp,fwd%Nfft)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
@@ -33,8 +33,8 @@
 !!     &                                   elapsed_fft, elapsed_cpy)
 !!      subroutine multi_pout_bwd_OMP_ROCmFFT(bwd, WK_fft, X,           &
 !!     &                                      elapsed_fft, elapsed_cpy)
-!!        type(calypso_ROCmfft_params), intent(in), target :: bwd
-!!        type(calypso_ROCmfft_work), intent(inout) :: WK_fft
+!!        type(calypso_rocFFT_params), intent(in), target :: bwd
+!!        type(calypso_rocFFT_work), intent(inout) :: WK_fft
 !!        real(kind = kreal), intent(inout) :: X(bwd%Ncomp,bwd%Nfft)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
@@ -80,9 +80,9 @@
       use normalize_for_ROCmFFT
       use calypso_multi_ROCmFFT
 !
-      type(calypso_ROCmfft_params), intent(in), target :: fwd
+      type(calypso_rocFFT_params), intent(in), target :: fwd
 !
-      type(calypso_ROCmfft_work), intent(inout) :: WK_fft
+      type(calypso_rocFFT_work), intent(inout) :: WK_fft
       real(kind = kreal), intent(inout) :: X(fwd%Ncomp,fwd%Nfft)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
@@ -130,9 +130,9 @@
       use normalize_for_ROCmFFT
       use calypso_multi_ROCmFFT
 !
-      type(calypso_ROCmfft_params), intent(in), target :: bwd
+      type(calypso_rocFFT_params), intent(in), target :: bwd
 !
-      type(calypso_ROCmfft_work), intent(inout) :: WK_fft
+      type(calypso_rocFFT_work), intent(inout) :: WK_fft
       real(kind = kreal), intent(inout) :: X(bwd%Ncomp,bwd%Nfft)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
@@ -173,9 +173,9 @@
       use normalize_for_ROCmFFT
       use calypso_multi_ROCmFFT
 !
-      type(calypso_ROCmfft_params), intent(in), target :: fwd
+      type(calypso_rocFFT_params), intent(in), target :: fwd
 !
-      type(calypso_ROCmfft_work), intent(inout) :: WK_fft
+      type(calypso_rocFFT_work), intent(inout) :: WK_fft
       real(kind = kreal), intent(inout) :: X(fwd%Ncomp,fwd%Nfft)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
@@ -222,9 +222,9 @@
       use normalize_for_ROCmFFT
       use calypso_multi_ROCmFFT
 !
-      type(calypso_ROCmfft_params), intent(in), target :: bwd
+      type(calypso_rocFFT_params), intent(in), target :: bwd
 !
-      type(calypso_ROCmfft_work), intent(inout) :: WK_fft
+      type(calypso_rocFFT_work), intent(inout) :: WK_fft
       real(kind = kreal), intent(inout) :: X(bwd%Ncomp,bwd%Nfft)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !

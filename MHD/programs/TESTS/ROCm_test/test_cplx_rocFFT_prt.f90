@@ -20,9 +20,9 @@
 !
       type(fft_test_data) :: ft1
 !
-      type(calypso_ROCmfft_params), target :: fwd
-      type(calypso_ROCmfft_params), target :: bwd
-      type(calypso_ROCmfft_work), target :: WK_fft
+      type(calypso_rocFFT_params), target :: fwd
+      type(calypso_rocFFT_params), target :: bwd
+      type(calypso_rocFFT_work), target :: WK_fft
 !
       integer(kind = kint) :: i, nd, icou
 !
