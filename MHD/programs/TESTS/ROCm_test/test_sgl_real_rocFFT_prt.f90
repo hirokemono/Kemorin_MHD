@@ -58,7 +58,7 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Backword transform
-        call single_pin_fwd_ROCmFFT_r2r(WK_fft, ft1%nfld, ft1%f_x,      &
+        call single_pin_bwd_ROCmFFT_r2r(WK_fft, ft1%nfld, ft1%f_x,      &
      &                                  elapsed(2), elapsed(3))
       end do
 !
