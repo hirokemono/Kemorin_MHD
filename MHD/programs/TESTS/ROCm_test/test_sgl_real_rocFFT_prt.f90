@@ -48,8 +48,8 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Forward transform
-        call single_pin_fwd_ROCmFFT_r2re(WK_fft, ft1%nfld, ft1%s_k,     &
-     &                                   elapsed(2), elapsed(3))
+        call single_pin_fwd_ROCmFFT_r2r(WK_fft, ft1%nfld, ft1%s_k,      &
+     &                                  elapsed(2), elapsed(3))
 !
         start = OMP_GET_WTIME()
 !$omp parallel workshare
