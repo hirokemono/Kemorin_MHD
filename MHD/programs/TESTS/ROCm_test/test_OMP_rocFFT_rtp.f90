@@ -1,5 +1,5 @@
 !
-      program test_ROCmfft_prt2
+      program test_OMP_rocFFT_rtp
 !
       use iso_c_binding
       use omp_lib
@@ -11,13 +11,13 @@
       use m_FFT_size
       use t_fft_test_data
       use t_multi_ROCmFFT_wrapper
-      use multi_pin_complex_ROCmFFT
-      use multi_pin_real_ROCmFFT
+      use multi_pout_complex_ROCmFFT
+      use multi_pout_real_ROCmFFT
 !
       implicit none
 !
-      character(len=kchara) :: file_name = 'prt_ROCmfft2_test.dat'
-      real(kind = kreal) :: start, finish, elapsed(4)
+      character(len=kchara) :: file_name = 'rtp_OMP_ROCmfft_test.dat'
+      real(kind = kreal) :: start, finish, elapsed(3)
 !
       type(fft_test_data) :: ft1
 !
@@ -25,41 +25,42 @@
       type(calypso_ROCmfft_params), target :: bwd
       type(calypso_ROCmfft_work), target :: WK_fft
 !
-      integer(kind = kint) :: i, nd, icou
+      integer(kind = kint) :: i, nd
+      integer(kind = kint) :: icou
 !
-      write(*,'(a)') '-----  Test prt REAL only ROCmFFT  -----'
+!
+      write(*,'(a)') '-----  Test rtp OpenMP ROCmFFT  -----'
       call init_fft_test_data(n_field, ngrid, ft1)
-      call swap_fft_test_input_to_pin(ft1)
 !
 !   Initialize Fourier transform
       start = OMP_GET_WTIME()
-      call calypso_pin_ROCmFFT_init(n_field, n_field, ngrid,            &
-     &                              fwd, bwd, WK_fft)
+      call calypso_pout_ROCmFFT_init(n_field, n_field, ngrid,           &
+     &                               fwd, bwd, WK_fft)
       elapsed(1) = OMP_GET_WTIME() - start
 !
-      elapsed(2:4) = zero
+      elapsed(2:3) = zero
       do icou = 1, n_loop
         if(mod(icou, 20) .eq. 0) write(*,*) 'loop count: ', icou
 !
         start = OMP_GET_WTIME()
 !$omp parallel workshare
-        ft1%s_k(1:ft1%ngrd,1:ft1%nfld) = ft1%org(1:ft1%ngrd,1:ft1%nfld)
+        ft1%s_k(1:ft1%nfld,1:ft1%ngrd) = ft1%org(1:ft1%nfld,1:ft1%ngrd)
 !$omp end parallel workshare
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Forward transform
-        call multi_pin_fwd_ROCmFFT_r2r(fwd, WK_fft, ft1%s_k(1,1),       &
-     &                                 elapsed(2), elapsed(3))
+        call multi_pout_fwd_OMP_ROCmFFT(fwd, WK_fft, ft1%s_k(1,1),      &
+     &                                  elapsed(2), elapsed(3))
 !
         start = OMP_GET_WTIME()
 !$omp parallel workshare
-        ft1%f_x(1:ft1%ngrd,1:ft1%nfld) = ft1%s_k(1:ft1%ngrd,1:ft1%nfld)
+        ft1%f_x(1:ft1%nfld,1:ft1%ngrd) = ft1%s_k(1:ft1%nfld,1:ft1%ngrd)
 !$omp end parallel workshare
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Backword transform
-        call multi_pin_bwd_ROCmFFT_r2r(bwd, WK_fft, ft1%f_x,            &
-     &                                 elapsed(2), elapsed(3))
+        call multi_pout_bwd_OMP_ROCmFFT(bwd, WK_fft, ft1%f_x(1,1),      &
+     &                                  elapsed(2), elapsed(3))
       end do
 !
 !   Finalize
@@ -68,20 +69,17 @@
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
   10  continue
-      if(n_loop .eq. 1) then
-        call swap_fft_test_data_to_pout(ft1)
-        call write_fft_test_data(file_name, ft1)
-      end if
+      if(n_loop .eq. 1) call write_fft_test_data(file_name, ft1)
       call dealloc_fft_test_data(ft1)
 !
       write(*,'(a,i4)') 'Number of threads:  ', np_smp
       write(*, '(a,3i6)')                                               &
      &        "Num (point, field, loop): ", ngrid, n_field, n_loop
-      write(*, '("Time for Initialize: ",1pE16.6e3)') elapsed(1)
-      write(*, '("Time for ROCmfft:    ",1pE16.6e3)') elapsed(2)
-      write(*, '("Time for Data copy:  ",1pE16.6e3)') elapsed(3)
-      write(*, '("Total FFT:       ",1pE16.6e3)')                       &
+      write(*, '("Time for Initialize:     ",1pE16.6e3)') elapsed(1)
+      write(*, '("Time for OpenMP ROCmfft: ",1pE16.6e3)') elapsed(2)
+      write(*, '("Time for Data copy:      ",1pE16.6e3)') elapsed(3)
+      write(*, '("Total FFT:               ",1pE16.6e3)')               &
      &                           elapsed(2) + elapsed(3)
 !
       stop 'finish'
-      end program test_ROCmfft_prt2
+      end program test_OMP_rocFFT_rtp

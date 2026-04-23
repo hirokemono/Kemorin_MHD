@@ -1,5 +1,5 @@
 !
-      program test_ROCmfft_single_prt2
+      program test_sgl_cplx_rocFFT_rtp
 !
       use iso_c_binding
       use omp_lib
@@ -15,12 +15,11 @@
       use m_FFT_size
       use t_fft_test_data
       use t_single_ROCmFFT_wrapper
-      use single_pin_ROCmFFT_offload
+      use single_pout_ROCmFFT_offload
 !
       implicit none
 !
-      character(len = kchara)                                           &
-     &              :: file_name = 'sgl_prt_ROCmfft2_test.dat'
+      character(len = kchara) :: file_name = 'sgl_rtp_ROCmfft_test.dat'
 !
       real(kind = kreal) :: start, finish, elapsed(3)
 !
@@ -32,11 +31,11 @@
 !
       integer(c_size_t), parameter :: ione_c = ione
 !
+      integer(kind = kint) :: i, nd
       integer(kind = kint) :: icou
 !
-      write(*,'(a)') '-----  Test single prt REAL only ROCmFFT  -----'
+      write(*,'(a)') '-----  Test single rtp ROCmFFT  -----'
       call init_fft_test_data(n_field, ngrid, ft1)
-      call swap_fft_test_input_to_pin(ft1)
 !
       start = OMP_GET_WTIME()
       call calypso_sgl_ROCmFFT_init(ngrid, WK_fft)
@@ -48,23 +47,23 @@
 !
         start = OMP_GET_WTIME()
 !$omp parallel workshare
-        ft1%s_k(1:ft1%ngrd,1:ft1%nfld) = ft1%org(1:ft1%ngrd,1:ft1%nfld)
+        ft1%s_k(1:ft1%nfld,1:ft1%ngrd) = ft1%org(1:ft1%nfld,1:ft1%ngrd)
 !$omp end parallel workshare
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Forward transform
-        call single_pin_fwd_ROCmFFT2(fwd, WK_fft, ft1%nfld, ft1%s_k,    &
-     &                              elapsed(2), elapsed(3))
+        call single_pout_fwd_ROCmFFT_r2c(WK_fft, ft1%nfld, ft1%s_k,     &
+     &                                   elapsed(2), elapsed(3))
 !
         start = OMP_GET_WTIME()
 !$omp parallel workshare
-        ft1%f_x(1:ft1%ngrd,1:ft1%nfld) = ft1%s_k(1:ft1%ngrd,1:ft1%nfld)
+        ft1%f_x(1:ft1%nfld,1:ft1%ngrd) = ft1%s_k(1:ft1%nfld,1:ft1%ngrd)
 !$omp end parallel workshare
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Backword transform
-        call single_pin_bwd_ROCmFFT2(bwd, WK_fft, ft1%nfld, ft1%f_x,    &
-     &                              elapsed(2), elapsed(3))
+        call single_pout_bwd_ROCmFFT_c2r(WK_fft, ft1%nfld, ft1%f_x,     &
+     &                                   elapsed(2), elapsed(3))
       end do
 !
       start = OMP_GET_WTIME()
@@ -72,20 +71,17 @@
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
    10 continue
-      if(n_loop .eq. 1) then
-        call swap_fft_test_data_to_pout(ft1)
-        call write_fft_test_data(file_name, ft1)
-      end if
+      if(n_loop .eq. 1) call write_fft_test_data(file_name, ft1)
       call dealloc_fft_test_data(ft1)
 !
       write(*,'(a,i4)') 'Number of threads:  ', np_smp
       write(*, '(a,3i6)')                                               &
      &        "Num (point, field, loop): ", ngrid, n_field, n_loop
-      write(*, '("Time for Initialize: ",1pE16.6e3)') elapsed(1)
-      write(*, '("Time for ROCmfft:    ",1pE16.6e3)') elapsed(2)
-      write(*, '("Time for Data copy:  ",1pE16.6e3)') elapsed(3)
-      write(*, '("Total FFT:       ",1pE16.6e3)')                       &
+      write(*, '("Time for Initialize: ",1pE16.6e3)') elapsed(3)
+      write(*, '("Time for ROCmfft:    ",1pE16.6e3)') elapsed(1)
+      write(*, '("Time for Data copy:  ",1pE16.6e3)') elapsed(2)
+      write(*, '("Total FFT:           ",1pE16.6e3)')                   &
      &                           elapsed(2) + elapsed(3)
 !
       stop 'finish'
-      end program test_ROCmfft_single_prt2
+      end program test_sgl_cplx_rocFFT_rtp

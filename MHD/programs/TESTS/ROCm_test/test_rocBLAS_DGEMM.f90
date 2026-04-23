@@ -1,6 +1,6 @@
 !
 ! Copyright AMD 2024-2025, MIT License, contact Bob.Robey@amd.com
-      program test_ROCmBLAS_DGEMM
+      program test_rocBLAS_DGEMM
 !
 !
       use iso_c_binding
@@ -237,5 +237,5 @@
       end do
 !   Finalize
 !
-      end program test_ROCmBLAS_DGEMM
+      end program test_rocBLAS_DGEMM
 !

@@ -1,5 +1,5 @@
 !
-      program test_ROCmfft_single_prt
+      program test_sgl_cplx_rocFFT_prt
 !
       use iso_c_binding
       use omp_lib
@@ -87,4 +87,4 @@
      &                           elapsed(2) + elapsed(3)
 !
       stop 'finish'
-      end program test_ROCmfft_single_prt
+      end program test_sgl_cplx_rocFFT_prt

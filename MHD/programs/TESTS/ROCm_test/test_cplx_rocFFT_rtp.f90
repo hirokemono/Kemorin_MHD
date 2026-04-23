@@ -1,5 +1,5 @@
 !
-      program test_ROCmfft_rtp
+      program test_cplx_rocFFT_rtp
 !
       use iso_c_binding
       use omp_lib
@@ -12,11 +12,10 @@
       use t_fft_test_data
       use t_multi_ROCmFFT_wrapper
       use multi_pout_complex_ROCmFFT
-      use multi_pout_real_ROCmFFT
 !
       implicit none
 !
-      character(len=kchara) :: file_name = 'rtp_ROCmfft2_test.dat'
+      character(len=kchara) :: file_name = 'rtp_ROCmfft_test.dat'
       real(kind = kreal) :: start, finish, elapsed(3)
 !
       type(fft_test_data) :: ft1
@@ -29,7 +28,7 @@
       integer(kind = kint) :: icou
 !
 !
-      write(*,'(a)') '-----  Test rtp REAL only ROCmFFT  -----'
+      write(*,'(a)') '-----  Test rtp ROCmFFT  -----'
       call init_fft_test_data(n_field, ngrid, ft1)
 !
 !   Initialize Fourier transform
@@ -49,8 +48,8 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Forward transform
-        call multi_pout_fwd_ROCmFFT2(fwd, WK_fft, ft1%s_k(1,1),         &
-     &                              elapsed(2), elapsed(3))
+        call multi_pout_fwd_ROCmFFT_r2c(fwd, WK_fft, ft1%s_k(1,1),      &
+     &                                  elapsed(2), elapsed(3))
 !
         start = OMP_GET_WTIME()
 !$omp parallel workshare
@@ -59,8 +58,8 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Backword transform
-        call multi_pout_bwd_ROCmFFT2(bwd, WK_fft, ft1%f_x(1,1),         &
-     &                              elapsed(2), elapsed(3))
+        call multi_pout_bwd_ROCmFFT_c2r(bwd, WK_fft, ft1%f_x(1,1),      &
+     &                                  elapsed(2), elapsed(3))
       end do
 !
 !   Finalize
@@ -82,4 +81,4 @@
      &                           elapsed(2) + elapsed(3)
 !
       stop 'finish'
-      end program test_ROCmfft_rtp
+      end program test_cplx_rocFFT_rtp
