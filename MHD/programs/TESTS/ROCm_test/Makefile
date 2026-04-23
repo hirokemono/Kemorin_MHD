@@ -37,7 +37,7 @@ test_rocBLAS_DGEMM.o \
 \
 m_DGEMM_test_size.o \
 DGEMM_test_omp_target.o \
-DGEMM_test_openmp
+DGEMM_test_openmp.o
 
 MOD_HIPM_DGEMM_TEST = test_HIPmBLAS_DGEMM
 

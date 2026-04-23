@@ -8,12 +8,17 @@
 !!
 !!@verbatim
 !! wrapper subroutine for forward Fourier transform by FFTW3
-!!      subroutine single_pin_fwd_ROCmFFT(fwd, WK_fwd, n_comp, X,       &
+!!      subroutine single_pin_fwd_ROCmFFT_r2c(WK_fft, n_comp, X,        &
 !!     &                                  elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) :: n_comp
-!!        type(single_ROCmfft_params), intent(in), target :: fwd
-!!        type(single_ROCmfft_work), intent(inout) :: WK_fwd
+!!        type(single_ROCmfft_work), intent(inout) :: WK_fft
 !!        real(kind = kreal), intent(inout) :: X(fwd%Nfft,n_comp)
+!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
+!!      subroutine single_pin_fwd_ROCmFFT_r2r(WK_fft, n_comp, X,        &
+!!     &                                      elapsed_fft, elapsed_cpy)
+!!        integer(kind = kint), intent(in) :: n_comp
+!!        type(single_ROCmfft_work), intent(inout) :: WK_fft
+!!        real(kind = kreal), intent(inout) :: X(WK_fft%Nfft,n_comp)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
 !!
@@ -27,12 +32,17 @@
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by FFTW3
-!!      subroutine single_pin_bwd_ROCmFFT(bwd, WK_bwd, n_comp, X,       &
-!!     &                                  elapsed_fft, elapsed_cpy)
+!!      subroutine single_pin_bwd_ROCmFFT_c2r(WK_fft, n_comp, X,        &
+!!     &                                      elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) :: n_comp
-!!        type(single_ROCmfft_params), intent(in), target :: bwd
-!!        type(single_ROCmfft_work), intent(inout) :: WK_bwd
+!!        type(single_ROCmfft_work), intent(inout) :: WK_fft
 !!        real(kind = kreal), intent(inout) :: X(bwd%Nfft,n_comp)
+!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
+!!      subroutine single_pin_bwd_ROCmFFT_r2r(WK_fft, n_comp, X,        &
+!!     &                                      elapsed_fft, elapsed_cpy)
+!!        integer(kind = kint), intent(in) :: n_comp
+!!        type(single_ROCmfft_work), intent(inout) :: WK_fft
+!!        real(kind = kreal), intent(inout) :: X(WK_fft%Nfft,n_comp)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
 !!
@@ -71,16 +81,15 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine single_pin_fwd_ROCmFFT(fwd, WK_fwd, n_comp, X,         &
-     &                                  elapsed_fft, elapsed_cpy)
+      subroutine single_pin_fwd_ROCmFFT_r2c(WK_fft, n_comp, X,          &
+     &                                      elapsed_fft, elapsed_cpy)
 !
       use calypso_single_ROCmFFT
 !
       integer(kind = kint), intent(in) :: n_comp
-      type(single_ROCmfft_params), intent(in), target :: fwd
 !
-      type(single_ROCmfft_work), intent(inout) :: WK_fwd
-      real(kind = kreal), intent(inout) :: X(WK_fwd%Nfft,n_comp)
+      type(single_ROCmfft_work), intent(inout) :: WK_fft
+      real(kind = kreal), intent(inout) :: X(WK_fft%Nfft,n_comp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
@@ -90,46 +99,45 @@
       do nd = 1, n_comp
         start = OMP_GET_WTIME()
 !$omp parallel workshare
-        WK_fwd%X_rocFFT(1:WK_fwd%Nfft_r) = 0.0d0
+        WK_fft%X_rocFFT(1:WK_fft%Nfft_r) = 0.0d0
 !$omp end parallel workshare
 !$omp parallel workshare
-        WK_fwd%X_rocFFT(1:WK_fwd%Nfft) = X(1:WK_fwd%Nfft,nd)
+        WK_fft%X_rocFFT(1:WK_fft%Nfft) = X(1:WK_fft%Nfft,nd)
 !$omp end parallel workshare
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 
         start = OMP_GET_WTIME()
-        call calypso_sgl_fwd_ROCmFFT_r2c(WK_fwd%rocFFT_fwd_plan,        &
-     &                               WK_fwd%Nfft_r, WK_fwd%X_rocFFT,    &
-     &                               WK_fwd%Nfft_c, WK_fwd%C_rocFFT,    &
-     &                               fwd%Nbytes, WK_fwd%data_ptr)
+        call calypso_sgl_fwd_ROCmFFT_r2c(WK_fft%rocFFT_fwd_plan,        &
+     &                               WK_fft%Nfft_r, WK_fft%X_rocFFT,    &
+     &                               WK_fft%Nfft_c, WK_fft%C_rocFFT,    &
+     &                               WK_fft%Nbytes, WK_fft%data_ptr)
         elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        X(1,nd) = WK_fwd%aNfft * real(WK_fwd%C_rocFFT(1))
-        X(2,nd) = WK_fwd%aNfft * real(WK_fwd%C_rocFFT(WK_fwd%NFFT_c))
+        X(1,nd) = WK_fft%aNfft * real(WK_fft%C_rocFFT(1))
+        X(2,nd) = WK_fft%aNfft * real(WK_fft%C_rocFFT(WK_fft%NFFT_c))
 !$omp parallel do
-        do i = 2, WK_fwd%NFFT_c - 1
-          X(2*i-1,nd) =  two * WK_fwd%aNfft * real(WK_fwd%C_rocFFT(i))
-          X(2*i,  nd) = -two * WK_fwd%aNfft * imag(WK_fwd%C_rocFFT(i))
+        do i = 2, WK_fft%NFFT_c - 1
+          X(2*i-1,nd) =  two * WK_fft%aNfft * real(WK_fft%C_rocFFT(i))
+          X(2*i,  nd) = -two * WK_fft%aNfft * imag(WK_fft%C_rocFFT(i))
         end do
 !$omp end parallel do
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
       end do
 !
-      end subroutine single_pin_fwd_ROCmFFT
+      end subroutine single_pin_fwd_ROCmFFT_r2c
 !
 ! ------------------------------------------------------------------
 !
-      subroutine single_pin_bwd_ROCmFFT(bwd, WK_bwd, n_comp, X,         &
-     &                                  elapsed_fft, elapsed_cpy)
+      subroutine single_pin_bwd_ROCmFFT_c2r(WK_fft, n_comp, X,          &
+     &                                      elapsed_fft, elapsed_cpy)
 !
       use calypso_single_ROCmFFT
 !
       integer(kind = kint), intent(in) :: n_comp
-      type(single_ROCmfft_params), intent(in), target :: bwd
 !
-      type(single_ROCmfft_work), intent(inout) :: WK_bwd
-      real(kind = kreal), intent(inout) :: X(WK_bwd%Nfft,n_comp)
+      type(single_ROCmfft_work), intent(inout) :: WK_fft
+      real(kind = kreal), intent(inout) :: X(WK_fft%Nfft,n_comp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
@@ -139,46 +147,45 @@
 !   Backword transform
       do nd = 1, n_comp
         start = OMP_GET_WTIME()
-        WK_bwd%C_rocFFT(1) = cmplx(X(1,nd), zero, kind(0d0))
+        WK_fft%C_rocFFT(1) = cmplx(X(1,nd), zero, kind(0d0))
 !$omp parallel do
-        do i = 2, WK_bwd%Nfft_c - 1
-          WK_bwd%C_rocFFT(i)                                            &
+        do i = 2, WK_fft%Nfft_c - 1
+          WK_fft%C_rocFFT(i)                                            &
      &         = half * cmplx(X(2*i-1,nd), -X(2*i,nd),kind(0d0))
         end do
 !$omp end parallel do
-        WK_bwd%C_rocFFT(WK_bwd%Nfft_c)                                  &
+        WK_fft%C_rocFFT(WK_fft%Nfft_c)                                  &
      &         = cmplx(X(2,nd), zero, kind(0d0))
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call calypso_sgl_bwd_ROCmFFT_c2r(WK_fwd%rocFFT_bwd_plan,        &
-     &                               WK_bwd%Nfft_c, WK_bwd%C_rocFFT,    &
-     &                               WK_bwd%Nfft_r, WK_bwd%X_rocFFT,    &
-     &                               fwd%Nbytes, WK_bwd%data_ptr)
+        call calypso_sgl_bwd_ROCmFFT_c2r(WK_fft%rocFFT_bwd_plan,        &
+     &                               WK_fft%Nfft_c, WK_fft%C_rocFFT,    &
+     &                               WK_fft%Nfft_r, WK_fft%X_rocFFT,    &
+     &                               WK_fft%Nbytes, WK_fft%data_ptr)
         elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
 !$omp parallel workshare
-        X(1:WK_bwd%Nfft,nd) = WK_bwd%X_rocFFT(1:WK_bwd%Nfft)
+        X(1:WK_fft%Nfft,nd) = WK_fft%X_rocFFT(1:WK_fft%Nfft)
 !$omp end parallel workshare
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
       end do
 !
-      end subroutine single_pin_bwd_ROCmFFT
+      end subroutine single_pin_bwd_ROCmFFT_c2r
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine single_pin_fwd_ROCmFFT2(fwd, WK_fwd, n_comp, X,        &
-     &                                   elapsed_fft, elapsed_cpy)
+      subroutine single_pin_fwd_ROCmFFT_r2r(WK_fft, n_comp, X,          &
+     &                                      elapsed_fft, elapsed_cpy)
 !
       use calypso_single_ROCmFFT
 !
       integer(kind = kint), intent(in) :: n_comp
-      type(single_ROCmfft_params), intent(in), target :: fwd
 !
-      type(single_ROCmfft_work), intent(inout) :: WK_fwd
-      real(kind = kreal), intent(inout) :: X(WK_fwd%Nfft,n_comp)
+      type(single_ROCmfft_work), intent(inout) :: WK_fft
+      real(kind = kreal), intent(inout) :: X(WK_fft%Nfft,n_comp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
@@ -188,45 +195,44 @@
       do nd = 1, n_comp
         start = OMP_GET_WTIME()
 !$omp parallel workshare
-        WK_fwd%X_rocFFT(1:WK_fwd%Nfft_r) = 0.0d0
+        WK_fft%X_rocFFT(1:WK_fft%Nfft_r) = 0.0d0
 !$omp end parallel workshare
 !$omp parallel workshare
-        WK_fwd%X_rocFFT(1:WK_fwd%Nfft) = X(1:WK_fwd%Nfft,nd)
+        WK_fft%X_rocFFT(1:WK_fft%Nfft) = X(1:WK_fft%Nfft,nd)
 !$omp end parallel workshare
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 
         start = OMP_GET_WTIME()
-        call calypso_sgl_fwd_ROCmFFT_r2r(WK_fwd%rocFFT_fwd_plan,        &
-     &                               WK_fwd%Nfft_r, WK_fwd%X_rocFFT,    &
-     &                               fwd%Nbytes, WK_fwd%data_ptr)
+        call calypso_sgl_fwd_ROCmFFT_r2r(WK_fft%rocFFT_fwd_plan,        &
+     &                               WK_fft%Nfft_r, WK_fft%X_rocFFT,    &
+     &                               WK_fft%Nbytes, WK_fft%data_ptr)
         elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        X(1,nd)= WK_fwd%aNfft * real(WK_fwd%X_rocFFT(1))
-        X(2,nd)= WK_fwd%aNfft * real(WK_fwd%X_rocFFT(WK_fwd%NFFT_r-1))
+        X(1,nd)= WK_fft%aNfft * real(WK_fft%X_rocFFT(1))
+        X(2,nd)= WK_fft%aNfft * real(WK_fft%X_rocFFT(WK_fft%NFFT_r-1))
 !$omp parallel do
-        do i = 2, WK_fwd%Nfft_r/2 - 1
-          X(2*i-1,nd) =  two * WK_fwd%aNfft * WK_fwd%X_rocFFT(2*i-1)
-          X(2*i,  nd) = -two * WK_fwd%aNfft * WK_fwd%X_rocFFT(2*i  )
+        do i = 2, WK_fft%Nfft_r/2 - 1
+          X(2*i-1,nd) =  two * WK_fft%aNfft * WK_fft%X_rocFFT(2*i-1)
+          X(2*i,  nd) = -two * WK_fft%aNfft * WK_fft%X_rocFFT(2*i  )
         end do
 !$omp end parallel do
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
       end do
 !
-      end subroutine single_pin_fwd_ROCmFFT2
+      end subroutine single_pin_fwd_ROCmFFT_r2r
 !
 ! ------------------------------------------------------------------
 !
-      subroutine single_pin_bwd_ROCmFFT2(bwd, WK_bwd, n_comp, X,        &
-     &                                   elapsed_fft, elapsed_cpy)
+      subroutine single_pin_bwd_ROCmFFT_r2r(WK_fft, n_comp, X,          &
+     &                                      elapsed_fft, elapsed_cpy)
 !
       use calypso_single_ROCmFFT
 !
       integer(kind = kint), intent(in) :: n_comp
-      type(single_ROCmfft_params), intent(in), target :: bwd
 !
-      type(single_ROCmfft_work), intent(inout) :: WK_bwd
-      real(kind = kreal), intent(inout) :: X(WK_bwd%Nfft,n_comp)
+      type(single_ROCmfft_work), intent(inout) :: WK_fft
+      real(kind = kreal), intent(inout) :: X(WK_fft%Nfft,n_comp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
@@ -236,32 +242,32 @@
 !   Backword transform
       do nd = 1, n_comp
         start = OMP_GET_WTIME()
-        WK_bwd%X_rocFFT(1) = X(1,nd)
-        WK_bwd%X_rocFFT(2) = zero
+        WK_fft%X_rocFFT(1) = X(1,nd)
+        WK_fft%X_rocFFT(2) = zero
 !$omp parallel do
-        do i = 2, WK_bwd%Nfft_r/2 - 1
-          WK_bwd%X_rocFFT(2*i-1) =  half * X(2*i-1,nd)
-          WK_bwd%X_rocFFT(2*i  ) = -half * X(2*i,  nd)
+        do i = 2, WK_fft%Nfft_r/2 - 1
+          WK_fft%X_rocFFT(2*i-1) =  half * X(2*i-1,nd)
+          WK_fft%X_rocFFT(2*i  ) = -half * X(2*i,  nd)
         end do
 !$omp end parallel do
-        WK_bwd%X_rocFFT(WK_bwd%Nfft_r-1) = X(2,nd)
-        WK_bwd%X_rocFFT(WK_bwd%Nfft_r  ) = zero
+        WK_fft%X_rocFFT(WK_fft%Nfft_r-1) = X(2,nd)
+        WK_fft%X_rocFFT(WK_fft%Nfft_r  ) = zero
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call calypso_sgl_bwd_ROCmFFT_r2r(WK_fwd%rocFFT_bwd_plan,        &
-     &                               WK_bwd%Nfft_r, WK_bwd%X_rocFFT,    &
-     &                               fwd%Nbytes, WK_bwd%data_ptr)
+        call calypso_sgl_bwd_ROCmFFT_r2r(WK_fft%rocFFT_bwd_plan,        &
+     &                               WK_fft%Nfft_r, WK_fft%X_rocFFT,    &
+     &                               WK_fft%Nbytes, WK_fft%data_ptr)
         elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
 !$omp parallel workshare
-        X(1:WK_bwd%Nfft,nd) = WK_bwd%X_rocFFT(1:WK_bwd%Nfft)
+        X(1:WK_fft%Nfft,nd) = WK_fft%X_rocFFT(1:WK_fft%Nfft)
 !$omp end parallel workshare
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
       end do
 !
-      end subroutine single_pin_bwd_ROCmFFT2
+      end subroutine single_pin_bwd_ROCmFFT_r2r
 !
 ! ------------------------------------------------------------------
 !

@@ -24,12 +24,7 @@
       real(kind = kreal) :: start, finish, elapsed(3)
 !
       type(fft_test_data) :: ft1
-!
-      type(single_ROCmfft_params), target :: fwd
-      type(single_ROCmfft_params), target :: bwd
       type(single_ROCmfft_work), target :: WK_fft
-!
-      integer(c_size_t), parameter :: ione_c = ione
 !
       integer(kind = kint) :: icou
 !
@@ -52,8 +47,8 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Forward transform
-        call single_pin_fwd_ROCmFFT(fwd, WK_fft, ft1%nfld, ft1%s_k,     &
-     &                              elapsed(2), elapsed(3))
+        call single_pin_fwd_ROCmFFT_r2c(WK_fft, ft1%nfld, ft1%s_k,      &
+     &                                  elapsed(2), elapsed(3))
 !
         start = OMP_GET_WTIME()
 !$omp parallel workshare
@@ -62,7 +57,7 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Backword transform
-        call single_pin_bwd_ROCmFFT(bwd, WK_fft, ft1%nfld, ft1%f_x,     &
+        call single_pin_bwd_ROCmFFT_c2r(WK_fft, ft1%nfld, ft1%f_x,      &
      &                              elapsed(2), elapsed(3))
       end do
 !

@@ -25,12 +25,7 @@
       real(kind = kreal) :: start, finish, elapsed(3)
 !
       type(fft_test_data) :: ft1
-!
-      type(single_ROCmfft_params), target :: fwd
-      type(single_ROCmfft_params), target :: bwd
       type(single_ROCmfft_work), target :: WK_fft
-!
-      integer(c_size_t), parameter :: ione_c = ione
 !
       integer(kind = kint) :: i, nd
       integer(kind = kint) :: icou
