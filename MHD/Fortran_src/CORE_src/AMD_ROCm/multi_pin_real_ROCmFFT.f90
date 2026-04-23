@@ -230,8 +230,9 @@
 !
 !
         start = OMP_GET_WTIME()
-        call norm_prt_to_bwd_ROCmFFT(int(bwd%Ncomp), int(bwd%Nfft),     &
-     &                  X(1,1), WK_fft%Nfft_r, WK_fft%X_rocFFT(1))
+        call norm_prt_to_bwd_ROCmFFT                                    &
+     &     (int(bwd%Ncomp), int(bwd%Nfft), X(1,1),                      &
+     &      int(WK_fft%Nfft_r), WK_fft%X_rocFFT(1))
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
