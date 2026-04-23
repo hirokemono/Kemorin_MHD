@@ -36,7 +36,9 @@ TESTS_MAKEHEAD= $(TESTDIR)/Makefile.header
 #
 #   AMD ROCm settings
 #
+ROCM_PATH=
 ROCM_CFLAGS=
+ROCM_FCFLAGS=
 ROCM_LIBDIR=
 ROCM_LIBS=
 ROCM_ROCPROFV2_LDFLAGS=
@@ -119,8 +121,8 @@ endif
 
 ifdef ROCM_LIBS
   CPP_FLAGS += -D_AMD_ROCM_
-  F_INCLUDE+= $$(ROCM_CFLAGS)
-  C_INCLUDE+= $$(ROCM_CFLAGS) 
+  F_INCLUDE+= $$(ROCM_FCFLAGS)
+  C_INCLUDE+= $$(ROCM_CFLAGS)
   F90LIBS+= $$(ROCM_LIBDIR) $$(ROCM_LIBS)
 endif
 
@@ -419,7 +421,9 @@ makeheaders:
 	@echo '#' >> $(MAKENAME)
 	@echo '#   AMD ROCm settings' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
+	@echo 'ROCM_PATH =     $(ROCM_PATH)' >> $(MAKENAME)
 	@echo 'ROCM_CFLAGS =   $(ROCM_CFLAGS)' >> $(MAKENAME)
+	@echo 'ROCM_FCFLAGS =  $(ROCM_FCFLAGS)' >> $(MAKENAME)
 	@echo 'ROCM_LIBDIR =   $(ROCM_LIBDIR)' >> $(MAKENAME)
 	@echo 'ROCM_LIBS =     $(ROCM_LIBS)'   >> $(MAKENAME)
 	@echo 'ROCM_ROCPROFV2_LDFLAGS =   $(ROCM_ROCPROFV2_LDFLAGS)'   >> $(MAKENAME)
