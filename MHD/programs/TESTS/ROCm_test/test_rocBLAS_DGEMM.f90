@@ -99,6 +99,27 @@
 ! ----  CPU OpenMP --------------
       do iloop = 1, nloop
         write(*,"(a)",advance="no")                                     &
+     &                           "--- DGEMM by BLAS -- "
+!
+!   Copy matrices from original
+        call copy_dgemm_matrices_omp_target                             &
+     &     (m, n, k, A_org, lda, B_org, ldb, C_org, ldc, A, B, C)
+!
+        start = OMP_GET_WTIME()
+        call dgemm(m, n, k, alpha, A, lda, B, ldb, beta, C, ldc)
+        elapsed(iloop) = OMP_GET_WTIME() - start
+!
+        call check_matmul_error(sum_matmul_error_omp_target(n, ldc,     &
+     &                                                      C_ref, C))
+      end do
+      do iloop = 1, nloop
+        write(*,'(a, i3, a, 1pE16.6e3)')   "  Time of ", iloop,         &
+     &       "-th CPU BLAS: ", elapsed(iloop)
+      end do
+!
+! ----  CPU OpenMP --------------
+      do iloop = 1, nloop
+        write(*,"(a)",advance="no")                                     &
      &                           "--- DGEMM with OpenMP 2-collpase -- "
 !
 !   Copy matrices from original
@@ -106,8 +127,8 @@
      &     (m, n, k, A_org, lda, B_org, ldb, C_org, ldc, A, B, C)
 !
         start = OMP_GET_WTIME()
-      call calypso_dgemm_openmp                                         &
-     &   (m, n, k, alpha, A, lda, B, ldb, beta, C, ldc)
+        call calypso_dgemm_openmp                                       &
+     &     (m, n, k, alpha, A, lda, B, ldb, beta, C, ldc)
         elapsed(iloop) = OMP_GET_WTIME() - start
 !
         call check_matmul_error(sum_matmul_error_omp_target(n, ldc,     &
