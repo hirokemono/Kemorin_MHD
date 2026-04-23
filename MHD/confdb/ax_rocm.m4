@@ -17,10 +17,12 @@ AC_DEFUN([AX_ROCM],
                 user_rocm_inc_flags="-I$with_rocm/include"
             ])
             AS_IF([test -d "$with_rocm/lib"], [
+                user_rocm_dir="$with_rocm"
                 user_rocm_libdir="$with_rocm/lib"
                 user_rocm_lib_flags="-L$with_rocm/lib -Wl,-rpath,$with_rocm/lib"
             ])
             AS_IF([test -d "$with_rocm/lib64"], [
+                user_rocm_dir="$with_rocm"
                 user_rocm_libdir="$with_rocm/lib64"
                 user_rocm_lib_flags="-L$with_rocm/lib64 -Wl,-rpath,$with_rocm/lib64"
             ])
@@ -61,6 +63,7 @@ AC_DEFUN([AX_ROCM],
             AC_SEARCH_LIBS([rocprofiler_initialize], [rocprofiler64v2], [
                 rocm_rocprofv2_plugin=yes
                 ROCM_ROCPROFV2_LDFLAGS="$user_rocm_lib_flags $LIBS"
+                ROCM_PATH="$user_rocm_dir"
                 ROCM_LIBDIR="$user_rocm_libdir"
             ])
         ])
@@ -69,6 +72,7 @@ AC_DEFUN([AX_ROCM],
             AC_SEARCH_LIBS([rocprofiler_is_initialized], [rocprofiler-sdk], [
                 rocm_rocprofsdk_plugin=yes
                 ROCM_ROCPROFSDK_LDFLAGS="$user_rocm_lib_flags $LIBS"
+                ROCM_PATH="$user_rocm_dir"
                 ROCM_LIBDIR="$user_rocm_libdir"
             ])
         ])
@@ -86,6 +90,7 @@ AC_DEFUN([AX_ROCM],
     AC_SUBST([PKGFLAGS_ROCm])
     AC_SUBST([ROCM_CFLAGS])
     AC_SUBST([ROCM_CPPFLAGS])
+    AC_SUBST([ROCM_PATH])
     AC_SUBST([ROCM_LIBDIR])
     AC_SUBST([ROCM_ROCPROFV2_LDFLAGS])
     AC_SUBST([ROCM_ROCPROFSDK_LDFLAGS])

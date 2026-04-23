@@ -704,6 +704,7 @@ GREP
 SED
 PKGFLAGS_ROCM
 ROCM_LIBS
+ROCM_FCFLAGS
 ROCM_ROCPROFSDK_PLUGIN_FALSE
 ROCM_ROCPROFSDK_PLUGIN_TRUE
 ROCM_ROCPROFV2_PLUGIN_FALSE
@@ -711,6 +712,7 @@ ROCM_ROCPROFV2_PLUGIN_TRUE
 ROCM_ROCPROFSDK_LDFLAGS
 ROCM_ROCPROFV2_LDFLAGS
 ROCM_LIBDIR
+ROCM_PATH
 ROCM_CPPFLAGS
 ROCM_CFLAGS
 PKGFLAGS_ROCm
@@ -8850,6 +8852,7 @@ fi
             if test -d "$with_rocm/lib"
 then :
 
+                user_rocm_dir="$with_rocm"
                 user_rocm_libdir="$with_rocm/lib"
                 user_rocm_lib_flags="-L$with_rocm/lib -Wl,-rpath,$with_rocm/lib"
 
@@ -8857,6 +8860,7 @@ fi
             if test -d "$with_rocm/lib64"
 then :
 
+                user_rocm_dir="$with_rocm"
                 user_rocm_libdir="$with_rocm/lib64"
                 user_rocm_lib_flags="-L$with_rocm/lib64 -Wl,-rpath,$with_rocm/lib64"
 
@@ -9015,6 +9019,7 @@ then :
 
                 rocm_rocprofv2_plugin=yes
                 ROCM_ROCPROFV2_LDFLAGS="$user_rocm_lib_flags $LIBS"
+                ROCM_PATH="$user_rocm_dir"
                 ROCM_LIBDIR="$user_rocm_libdir"
 
 fi
@@ -9092,6 +9097,7 @@ then :
 
                 rocm_rocprofsdk_plugin=yes
                 ROCM_ROCPROFSDK_LDFLAGS="$user_rocm_lib_flags $LIBS"
+                ROCM_PATH="$user_rocm_dir"
                 ROCM_LIBDIR="$user_rocm_libdir"
 
 fi
@@ -9127,6 +9133,7 @@ fi
 
 
 
+
      if test "x$rocm_rocprofv2_plugin" = xyes; then
   ROCM_ROCPROFV2_PLUGIN_TRUE=
   ROCM_ROCPROFV2_PLUGIN_FALSE='#'
@@ -9153,10 +9160,16 @@ fi
 
 
 
+
+
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: PKGFLAGS_ROCm... \"${PKGFLAGS_ROCM}\"" >&5
 printf "%s\n" "PKGFLAGS_ROCm... \"${PKGFLAGS_ROCM}\"" >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: ROCM_PATH...     \"${ROCM_PATH}\"" >&5
+printf "%s\n" "ROCM_PATH...     \"${ROCM_PATH}\"" >&6; }
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: ROCM_CFLAGS...   \"${ROCM_CFLAGS}\"" >&5
 printf "%s\n" "ROCM_CFLAGS...   \"${ROCM_CFLAGS}\"" >&6; }
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: ROCM_FCFLAGS...  \"${ROCM_FCFLAGS}\"" >&5
+printf "%s\n" "ROCM_FCFLAGS...  \"${ROCM_FCFLAGS}\"" >&6; }
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: ROCM_CPPFLAGS... \"${ROCM_CPPFLAGS}\"" >&5
 printf "%s\n" "ROCM_CPPFLAGS... \"${ROCM_CPPFLAGS}\"" >&6; }
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: ROCM_LIBDIR...   \"${ROCM_LIBDIR}\"" >&5
