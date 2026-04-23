@@ -19,7 +19,7 @@
 !
       implicit none
 !
-      character(len = kchara) :: ROCfft_test = 'sgl_rtp_ROCmfft_test.dat'
+      character(len = kchara) :: file_name = 'sgl_rtp_ROCmfft_test.dat'
 !
       real(kind = kreal) :: start, finish, elapsed(3)
 !
@@ -71,7 +71,7 @@
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
    10 continue
-      if(n_loop .eq. 1) call write_fft_test_data(ROCfft_test, ft1)
+      if(n_loop .eq. 1) call write_fft_test_data(file_name, ft1)
       call dealloc_fft_test_data(ft1)
 !
       write(*,'(a,i4)') 'Number of threads:  ', np_smp

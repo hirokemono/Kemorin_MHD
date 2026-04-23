@@ -4,35 +4,34 @@
 !!@author H. Matsui
 !!@date Programmed in Apr., 2026
 !
-!>@brief  Single Fourier transform using AMD ROCfft
+!>@brief  Single Fourier transform using AMD rocFFT
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine calypso_sgl_fwd_ROCmFFT_init(Nfft, ROCfft_fwd_plan)
+!!      subroutine calypso_sgl_fwd_ROCmFFT_init(Nfft, rocFFT_fwd_plan)
 !!        integer(c_size_t), intent(in), target :: Nfft
-!!        type(c_ptr), intent(inout), target :: ROCfft_fwd_plan
+!!        type(c_ptr), intent(inout), target :: rocFFT_fwd_plan
 !!   wrapper subroutine for initierize FFT by FFTW
-!!      subroutine calypso_sgl_bwd_ROCmFFT_init(Nfft, ROCfft_bwd_plan)
+!!      subroutine calypso_sgl_bwd_ROCmFFT_init(Nfft, rocFFT_bwd_plan)
 !!        integer(c_size_t), intent(in), target :: Nfft
-!!        type(c_ptr), intent(inout), target :: ROCfft_bwd_plan
+!!        type(c_ptr), intent(inout), target :: rocFFT_bwd_plan
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by FFTW3
-!!      subroutine calypso_sgl_fwd_ROCmFFT_r2c(ROCfft_fwd_plan,         &
-!!     &          Nfft_r, X_ROCmFFT, Nfft_c, C_ROCmFFT,                 &
-!!     &          Nbytes, data_ptr)
-!!        type(c_ptr), intent(in), target :: ROCfft_fwd_plan
+!!      subroutine calypso_sgl_fwd_ROCmFFT_r2c(rocFFT_fwd_plan,         &
+!!     &          Nfft_r, X_rocFFT, Nfft_c, C_rocFFT, Nbytes, data_ptr)
+!!        type(c_ptr), intent(in), target :: rocFFT_fwd_plan
 !!        integer(kind = kint), intent(in) :: Nfft_r, Nfft_c
 !!        integer(c_size_t), intent(in) :: Nbytes
-!!        real(kind = kreal), intent(in), target :: X_ROCmFFT(Nfft_r)
-!!        complex(kind = kreal), intent(inout),target:: C_ROCmFFT(Nfft_c)
+!!        real(kind = kreal), intent(in), target :: X_rocFFT(Nfft_r)
+!!        complex(kind = kreal), intent(inout),target:: C_rocFFT(Nfft_c)
 !!        type(c_ptr), intent(inout) :: data_ptr
-!!      subroutine calypso_sgl_fwd_ROCmFFT_r2r(ROCfft_fwd_plan,         &
-!!     &          Nfft_r, X_ROCmFFT, Nbytes, data_ptr)
-!!        type(c_ptr), intent(in), target :: ROCfft_fwd_plan
+!!      subroutine calypso_sgl_fwd_ROCmFFT_r2r(rocFFT_fwd_plan,         &
+!!     &          Nfft_r, X_rocFFT, Nbytes, data_ptr)
+!!        type(c_ptr), intent(in), target :: rocFFT_fwd_plan
 !!        integer(kind = kint), intent(in) :: Nfft_r
 !!        integer(c_size_t), intent(in) :: Nbytes
-!!        real(kind = kreal), intent(inout), target :: X_ROCmFFT(Nfft_r)
+!!        real(kind = kreal), intent(inout), target :: X_rocFFT(Nfft_r)
 !!        type(c_ptr), intent(inout) :: data_ptr
 !! ------------------------------------------------------------------
 !!
@@ -46,21 +45,20 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine calypso_sgl_bwd_ROCmFFT_c2r(ROCfft_bwd_plan,         &
-!!     &          Nfft_c, C_ROCmFFT, Nfft_r, X_ROCmFFT,                 &
-!!     &          Nbytes, data_ptr)
-!!        type(c_ptr), intent(in), target :: ROCfft_bwd_plan
+!!      subroutine calypso_sgl_bwd_ROCmFFT_c2r(rocFFT_bwd_plan,         &
+!!     &          Nfft_c, C_rocFFT, Nfft_r, X_rocFFT, Nbytes, data_ptr)
+!!        type(c_ptr), intent(in), target :: rocFFT_bwd_plan
 !!        integer(kind = kint), intent(in) :: Nfft_r, Nfft_c
 !!        integer(c_size_t), intent(in) :: Nbytes
-!!        complex(kind = kreal), intent(in), target:: C_ROCmFFT(Nfft_c)
-!!        real(kind = kreal), intent(inout), target :: X_ROCmFFT(Nfft_r)
+!!        complex(kind = kreal), intent(in), target:: C_rocFFT(Nfft_c)
+!!        real(kind = kreal), intent(inout), target :: X_rocFFT(Nfft_r)
 !!        type(c_ptr), intent(inout) :: data_ptr
-!!      subroutine calypso_sgl_bwd_ROCmFFT_r2r(ROCfft_bwd_plan,         &
-!!     &          Nfft_r, X_ROCmFFT, Nbytes, data_ptr)
-!!        type(c_ptr), intent(in), target :: ROCfft_bwd_plan
+!!      subroutine calypso_sgl_bwd_ROCmFFT_r2r(rocFFT_bwd_plan,         &
+!!     &          Nfft_r, X_rocFFT, Nbytes, data_ptr)
+!!        type(c_ptr), intent(in), target :: rocFFT_bwd_plan
 !!        integer(kind = kint), intent(in) :: Nfft_r
 !!        integer(c_size_t), intent(in) :: Nbytes
-!!        real(kind = kreal), intent(inout), target :: X_ROCmFFT(Nfft_r)
+!!        real(kind = kreal), intent(inout), target :: X_rocFFT(Nfft_r)
 !!        type(c_ptr), intent(inout) :: data_ptr
 !! ------------------------------------------------------------------
 !!
@@ -102,17 +100,17 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_sgl_fwd_ROCmFFT_init(Nfft, ROCfft_fwd_plan)
+      subroutine calypso_sgl_fwd_ROCmFFT_init(Nfft, rocFFT_fwd_plan)
 !
       use hipfort
       use hipfort_check
       use hipfort_rocfft
 !
       integer(c_size_t), intent(in), target :: Nfft
-      type(c_ptr), intent(inout), target :: ROCfft_fwd_plan
+      type(c_ptr), intent(inout), target :: rocFFT_fwd_plan
 !
 !
-      call rocfftCheck(rocfft_plan_create(ROCfft_fwd_plan,              &
+      call rocfftCheck(rocfft_plan_create(rocFFT_fwd_plan,              &
      &                                      rocfft_placement_inplace,   &
      &                            rocfft_transform_type_real_forward,   &
      &                                       rocfft_precision_double,   &
@@ -123,17 +121,17 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_sgl_bwd_ROCmFFT_init(Nfft, ROCfft_bwd_plan)
+      subroutine calypso_sgl_bwd_ROCmFFT_init(Nfft, rocFFT_bwd_plan)
 !
       use hipfort
       use hipfort_check
       use hipfort_rocfft
 !
       integer(c_size_t), intent(in), target :: Nfft
-      type(c_ptr), intent(inout), target :: ROCfft_bwd_plan
+      type(c_ptr), intent(inout), target :: rocFFT_bwd_plan
 !
 !
-      call rocfftCheck(rocfft_plan_create(ROCfft_bwd_plan,              &
+      call rocfftCheck(rocfft_plan_create(rocFFT_bwd_plan,              &
      &                                      rocfft_placement_inplace,   &
      &                            rocfft_transform_type_real_inverse,   &
      &                                       rocfft_precision_double,   &
@@ -144,58 +142,56 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_sgl_fwd_ROCmFFT_r2c(ROCfft_fwd_plan,           &
-     &          Nfft_r, X_ROCmFFT, Nfft_c, C_ROCmFFT,                   &
-     &          Nbytes, data_ptr)
+      subroutine calypso_sgl_fwd_ROCmFFT_r2c(rocFFT_fwd_plan,           &
+     &          Nfft_r, X_rocFFT, Nfft_c, C_rocFFT, Nbytes, data_ptr)
 !
       use hipfort
       use hipfort_check
       use hipfort_rocfft
 !
-      type(c_ptr), intent(in), target :: ROCfft_fwd_plan
+      type(c_ptr), intent(in), target :: rocFFT_fwd_plan
       integer(kind = kint), intent(in) :: Nfft_r, Nfft_c
       integer(c_size_t), intent(in) :: Nbytes
-      real(kind = kreal), intent(in), target :: X_ROCmFFT(Nfft_r)
+      real(kind = kreal), intent(in), target :: X_rocFFT(Nfft_r)
 !
-      complex(kind = kreal), intent(inout), target :: C_ROCmFFT(Nfft_c)
+      complex(kind = kreal), intent(inout), target :: C_rocFFT(Nfft_c)
       type(c_ptr), intent(inout) :: data_ptr
 !
 !
-      call hipCheck(hipMemcpy(data_ptr, c_loc(X_ROCmFFT(1)),            &
+      call hipCheck(hipMemcpy(data_ptr, c_loc(X_rocFFT(1)),             &
      &                        Nbytes, hipMemcpyHostToDevice))
-      call rocfftCheck(rocfft_execute(ROCfft_fwd_plan, data_ptr,        &
+      call rocfftCheck(rocfft_execute(rocFFT_fwd_plan, data_ptr,        &
      &                                c_null_ptr, c_null_ptr))
       call hipCheck(hipDeviceSynchronize())
-      call hipCheck(hipMemcpy(c_loc(C_ROCmFFT(1)), data_ptr,            &
+      call hipCheck(hipMemcpy(c_loc(C_rocFFT(1)), data_ptr,             &
      &                        Nbytes, hipMemcpyDeviceToHost))
 !
       end subroutine calypso_sgl_fwd_ROCmFFT_r2c
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_sgl_bwd_ROCmFFT_c2r(ROCfft_bwd_plan,           &
-     &          Nfft_c, C_ROCmFFT, Nfft_r, X_ROCmFFT,                   &
-     &          Nbytes, data_ptr)
+      subroutine calypso_sgl_bwd_ROCmFFT_c2r(rocFFT_bwd_plan,           &
+     &          Nfft_c, C_rocFFT, Nfft_r, X_rocFFT, Nbytes, data_ptr)
 !
       use hipfort
       use hipfort_check
       use hipfort_rocfft
 !
-      type(c_ptr), intent(in), target :: ROCfft_bwd_plan
+      type(c_ptr), intent(in), target :: rocFFT_bwd_plan
       integer(kind = kint), intent(in) :: Nfft_r, Nfft_c
       integer(c_size_t), intent(in) :: Nbytes
-      complex(kind = kreal), intent(in), target :: C_ROCmFFT(Nfft_c)
+      complex(kind = kreal), intent(in), target :: C_rocFFT(Nfft_c)
 !
-      real(kind = kreal), intent(inout), target :: X_ROCmFFT(Nfft_r)
+      real(kind = kreal), intent(inout), target :: X_rocFFT(Nfft_r)
       type(c_ptr), intent(inout) :: data_ptr
 !
 !
-      call hipCheck(hipMemcpy(data_ptr, c_loc(C_ROCmFFT(1)),            &
+      call hipCheck(hipMemcpy(data_ptr, c_loc(C_rocFFT(1)),             &
      &                        Nbytes, hipMemcpyHostToDevice))
-      call rocfftCheck(rocfft_execute(ROCfft_bwd_plan, data_ptr,        &
+      call rocfftCheck(rocfft_execute(rocFFT_bwd_plan, data_ptr,        &
      &                                c_null_ptr, c_null_ptr))
       call hipCheck(hipDeviceSynchronize())
-      call hipCheck(hipMemcpy(c_loc(X_ROCmFFT(1)), data_ptr,            &
+      call hipCheck(hipMemcpy(c_loc(X_rocFFT(1)), data_ptr,             &
      &                        Nbytes, hipMemcpyDeviceToHost))
 !
       end subroutine calypso_sgl_bwd_ROCmFFT_c2r
@@ -203,54 +199,54 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_sgl_fwd_ROCmFFT_r2r(ROCfft_fwd_plan,           &
-     &          Nfft_r, X_ROCmFFT, Nbytes, data_ptr)
+      subroutine calypso_sgl_fwd_ROCmFFT_r2r(rocFFT_fwd_plan,           &
+     &          Nfft_r, X_rocFFT, Nbytes, data_ptr)
 !
       use hipfort
       use hipfort_check
       use hipfort_rocfft
 !
-      type(c_ptr), intent(in), target :: ROCfft_fwd_plan
+      type(c_ptr), intent(in), target :: rocFFT_fwd_plan
       integer(kind = kint), intent(in) :: Nfft_r
       integer(c_size_t), intent(in) :: Nbytes
 !
-      real(kind = kreal), intent(inout), target :: X_ROCmFFT(Nfft_r)
+      real(kind = kreal), intent(inout), target :: X_rocFFT(Nfft_r)
       type(c_ptr), intent(inout) :: data_ptr
 !
 !
-      call hipCheck(hipMemcpy(data_ptr, c_loc(X_ROCmFFT(1)),            &
+      call hipCheck(hipMemcpy(data_ptr, c_loc(X_rocFFT(1)),             &
      &                        Nbytes, hipMemcpyHostToDevice))
-      call rocfftCheck(rocfft_execute(ROCfft_fwd_plan, data_ptr,        &
+      call rocfftCheck(rocfft_execute(rocFFT_fwd_plan, data_ptr,        &
      &                                c_null_ptr, c_null_ptr))
       call hipCheck(hipDeviceSynchronize())
-      call hipCheck(hipMemcpy(c_loc(X_ROCmFFT(1)), data_ptr,            &
+      call hipCheck(hipMemcpy(c_loc(X_rocFFT(1)), data_ptr,             &
      &                        Nbytes, hipMemcpyDeviceToHost))
 !
       end subroutine calypso_sgl_fwd_ROCmFFT_r2r
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_sgl_bwd_ROCmFFT_r2r(ROCfft_bwd_plan,           &
-     &          Nfft_r, X_ROCmFFT, Nbytes, data_ptr)
+      subroutine calypso_sgl_bwd_ROCmFFT_r2r(rocFFT_bwd_plan,           &
+     &          Nfft_r, X_rocFFT, Nbytes, data_ptr)
 !
       use hipfort
       use hipfort_check
       use hipfort_rocfft
 !
-      type(c_ptr), intent(in), target :: ROCfft_bwd_plan
+      type(c_ptr), intent(in), target :: rocFFT_bwd_plan
       integer(kind = kint), intent(in) :: Nfft_r
       integer(c_size_t), intent(in) :: Nbytes
 !
-      real(kind = kreal), intent(inout), target :: X_ROCmFFT(Nfft_r)
+      real(kind = kreal), intent(inout), target :: X_rocFFT(Nfft_r)
       type(c_ptr), intent(inout) :: data_ptr
 !
 !
-      call hipCheck(hipMemcpy(data_ptr, c_loc(X_ROCmFFT(1)),            &
+      call hipCheck(hipMemcpy(data_ptr, c_loc(X_rocFFT(1)),             &
      &                        Nbytes, hipMemcpyHostToDevice))
-      call rocfftCheck(rocfft_execute(ROCfft_bwd_plan, data_ptr,        &
+      call rocfftCheck(rocfft_execute(rocFFT_bwd_plan, data_ptr,        &
      &                                c_null_ptr, c_null_ptr))
       call hipCheck(hipDeviceSynchronize())
-      call hipCheck(hipMemcpy(c_loc(X_ROCmFFT(1)), data_ptr,            &
+      call hipCheck(hipMemcpy(c_loc(X_rocFFT(1)), data_ptr,             &
      &                        Nbytes, hipMemcpyDeviceToHost))
 !
       end subroutine calypso_sgl_bwd_ROCmFFT_r2r

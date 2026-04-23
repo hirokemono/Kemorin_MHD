@@ -99,28 +99,28 @@
       do nd = 1, n_comp
         start = OMP_GET_WTIME()
 !$omp parallel workshare
-        WK_fft%X_ROCmFFT(1:WK_fft%Nfft_r) = 0.0d0
+        WK_fft%X_rocFFT(1:WK_fft%Nfft_r) = 0.0d0
 !$omp end parallel workshare
 !$omp parallel workshare
-        WK_fft%X_ROCmFFT(1:WK_fft%Nfft) = X(nd,1:WK_fft%Nfft)
+        WK_fft%X_rocFFT(1:WK_fft%Nfft) = X(nd,1:WK_fft%Nfft)
 !$omp end parallel workshare
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 
         start = OMP_GET_WTIME()
-        call calypso_sgl_fwd_ROCmFFT_r2c(WK_fft%ROCfft_fwd_plan,        &
-     &                               WK_fft%Nfft_r, WK_fft%X_ROCmFFT,   &
-     &                               WK_fft%Nfft_c, WK_fft%C_ROCmFFT,   &
+        call calypso_sgl_fwd_ROCmFFT_r2c(WK_fft%rocFFT_fwd_plan,        &
+     &                               WK_fft%Nfft_r, WK_fft%X_rocFFT,    &
+     &                               WK_fft%Nfft_c, WK_fft%C_rocFFT,    &
      &                               WK_fft%Nbytes, WK_fft%data_ptr)
         elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        X(nd,1) = WK_fft%aNfft * real(WK_fft%C_ROCmFFT(1))
-        X(nd,2) = WK_fft%aNfft * real(WK_fft%C_ROCmFFT(WK_fft%NFFT_c))
+        X(nd,1) = WK_fft%aNfft * real(WK_fft%C_rocFFT(1))
+        X(nd,2) = WK_fft%aNfft * real(WK_fft%C_rocFFT(WK_fft%NFFT_c))
 !$omp parallel do
         do i = 2, WK_fft%NFFT_c - 1
-          X(nd,2*i-1) =  two * WK_fft%aNfft * real(WK_fft%C_ROCmFFT(i))
-          X(nd,2*i  ) = -two * WK_fft%aNfft * imag(WK_fft%C_ROCmFFT(i))
-        end do 
+          X(nd,2*i-1) =  two * WK_fft%aNfft * real(WK_fft%C_rocFFT(i))
+          X(nd,2*i  ) = -two * WK_fft%aNfft * imag(WK_fft%C_rocFFT(i))
+        end do
 !$omp end parallel do
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
       end do
@@ -146,27 +146,27 @@
 !   Backword transform
       do nd = 1, n_comp
         start = OMP_GET_WTIME()
-        WK_fft%C_ROCmFFT(1) = cmplx(X(nd,1), zero, kind(0d0))
+        WK_fft%C_rocFFT(1) = cmplx(X(nd,1), zero, kind(0d0))
 !$omp parallel do
         do i = 2, WK_fft%NFFT_c - 1
-          WK_fft%C_ROCmFFT(i) = half * cmplx( X(nd,2*i-1),              &
+          WK_fft%C_rocFFT(i) = half * cmplx( X(nd,2*i-1),               &
      &                                       -X(nd,2*i  ), kind(0d0))
         end do
 !$omp end parallel do
-        WK_fft%C_ROCmFFT(WK_fft%NFFT_c) = cmplx(X(nd,2),                &
+        WK_fft%C_rocFFT(WK_fft%NFFT_c) = cmplx(X(nd,2),                 &
      &                                          zero, kind(0d0))
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call calypso_sgl_bwd_ROCmFFT_c2r(WK_fft%ROCfft_bwd_plan,        &
-     &                               WK_fft%Nfft_c, WK_fft%C_ROCmFFT,   &
-     &                               WK_fft%Nfft_r, WK_fft%X_ROCmFFT,   &
+        call calypso_sgl_bwd_ROCmFFT_c2r(WK_fft%rocFFT_bwd_plan,        &
+     &                               WK_fft%Nfft_c, WK_fft%C_rocFFT,    &
+     &                               WK_fft%Nfft_r, WK_fft%X_rocFFT,    &
      &                               WK_fft%Nbytes, WK_fft%data_ptr)
         elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
 !$omp parallel workshare
-        X(nd,1:WK_fft%Nfft) = WK_fft%X_ROCmFFT(1:WK_fft%Nfft)
+        X(nd,1:WK_fft%Nfft) = WK_fft%X_rocFFT(1:WK_fft%Nfft)
 !$omp end parallel workshare
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
       end do
@@ -194,27 +194,27 @@
       do nd = 1, n_comp
         start = OMP_GET_WTIME()
 !$omp parallel workshare
-        WK_fft%X_ROCmFFT(1:WK_fft%Nfft_r) = 0.0d0
+        WK_fft%X_rocFFT(1:WK_fft%Nfft_r) = 0.0d0
 !$omp end parallel workshare
 !$omp parallel workshare
-        WK_fft%X_ROCmFFT(1:WK_fft%Nfft) = X(nd,1:WK_fft%Nfft)
+        WK_fft%X_rocFFT(1:WK_fft%Nfft) = X(nd,1:WK_fft%Nfft)
 !$omp end parallel workshare
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 
         start = OMP_GET_WTIME()
-        call calypso_sgl_fwd_ROCmFFT_r2r(WK_fft%ROCfft_fwd_plan,        &
-     &                               WK_fft%Nfft_r, WK_fft%X_ROCmFFT,   &
+        call calypso_sgl_fwd_ROCmFFT_r2r(WK_fft%rocFFT_fwd_plan,        &
+     &                               WK_fft%Nfft_r, WK_fft%X_rocFFT,    &
      &                               WK_fft%Nbytes, WK_fft%data_ptr)
         elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        X(nd,1) = WK_fft%aNfft * WK_fft%X_ROCmFFT(1)
-        X(nd,2) = WK_fft%aNfft * WK_fft%X_ROCmFFT(WK_fft%NFFT_r-1)
+        X(nd,1) = WK_fft%aNfft * WK_fft%X_rocFFT(1)
+        X(nd,2) = WK_fft%aNfft * WK_fft%X_rocFFT(WK_fft%NFFT_r-1)
 !$omp parallel do
         do i = 2, WK_fft%NFFT_r/2 - 1
-          X(nd,2*i-1) =  two * WK_fft%aNfft * WK_fft%X_ROCmFFT(2*i-1)
-          X(nd,2*i  ) = -two * WK_fft%aNfft * WK_fft%X_ROCmFFT(2*i  )
-        end do 
+          X(nd,2*i-1) =  two * WK_fft%aNfft * WK_fft%X_rocFFT(2*i-1)
+          X(nd,2*i  ) = -two * WK_fft%aNfft * WK_fft%X_rocFFT(2*i  )
+        end do
 !$omp end parallel do
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
       end do
@@ -240,27 +240,27 @@
 !   Backword transform
       do nd = 1, n_comp
         start = OMP_GET_WTIME()
-        WK_fft%X_ROCmFFT(1) = cmplx(X(nd,1), zero, kind(0d0))
-        WK_fft%X_ROCmFFT(2) = cmplx(X(nd,1), zero, kind(0d0))
+        WK_fft%X_rocFFT(1) = cmplx(X(nd,1), zero, kind(0d0))
+        WK_fft%X_rocFFT(2) = cmplx(X(nd,1), zero, kind(0d0))
 !$omp parallel do
         do i = 2, WK_fft%NFFT_r/2 - 1
-          WK_fft%X_ROCmFFT(2*i-1) =  half * X(nd,2*i-1)
-          WK_fft%X_ROCmFFT(2*i  ) = -half * X(nd,2*i  )
+          WK_fft%X_rocFFT(2*i-1) =  half * X(nd,2*i-1)
+          WK_fft%X_rocFFT(2*i  ) = -half * X(nd,2*i  )
         end do
 !$omp end parallel do
-        WK_fft%X_ROCmFFT(WK_fft%NFFT_r-1) = X(nd,2)
-        WK_fft%X_ROCmFFT(WK_fft%NFFT_r  ) = zero
+        WK_fft%X_rocFFT(WK_fft%NFFT_r-1) = X(nd,2)
+        WK_fft%X_rocFFT(WK_fft%NFFT_r  ) = zero
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call calypso_sgl_bwd_ROCmFFT_r2r(WK_fft%ROCfft_bwd_plan,        &
-     &                               WK_fft%Nfft_r, WK_fft%X_ROCmFFT,   &
+        call calypso_sgl_bwd_ROCmFFT_r2r(WK_fft%rocFFT_bwd_plan,        &
+     &                               WK_fft%Nfft_r, WK_fft%X_rocFFT,    &
      &                               WK_fft%Nbytes, WK_fft%data_ptr)
         elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
 !$omp parallel workshare
-        X(nd,1:WK_fft%Nfft) = WK_fft%X_ROCmFFT(1:WK_fft%Nfft)
+        X(nd,1:WK_fft%Nfft) = WK_fft%X_rocFFT(1:WK_fft%Nfft)
 !$omp end parallel workshare
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
       end do

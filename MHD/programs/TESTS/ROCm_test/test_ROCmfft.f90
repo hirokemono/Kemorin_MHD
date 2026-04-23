@@ -33,16 +33,16 @@
 !
       if(command_argument_count() .le. 0) then
         write(*,*) 'compare_fft_test FFT mode'
-        write(*,*) 'Single real and complex rtp ROCfft:   -1'
-        write(*,*) 'Single real and complex prt ROCfft:    1'
-        write(*,*) 'Single real only rtp ROCfft:          -2'
-        write(*,*) 'Single real only prt ROCfft:           2'
-        write(*,*) 'Real and complex rtp ROCfft:         -11'
-        write(*,*) 'Real and complex prt ROCfft:          11'
-        write(*,*) 'At once real only rtp ROCfft:        -12'
-        write(*,*) 'At once real only prt ROCfft:         12'
-        write(*,*) 'Real only rtp OpenMP ROCfft:         -22'
-        write(*,*) 'Real only prt OpenMP ROCfft:          22'
+        write(*,*) 'At once real and complex rtp rocFFT:  -1'
+        write(*,*) 'At once real and complex prt rocFFT:   1'
+        write(*,*) 'At once real only rtp rocFFT:         -2'
+        write(*,*) 'At once real only prt rocFFT:          2'
+        write(*,*) 'Real only rtp OpenMP rocFFT:          -3'
+        write(*,*) 'Real only prt OpenMP rocFFT:           3'
+        write(*,*) 'Single real and complex rtp rocFFT:  -11'
+        write(*,*) 'Single real and complex prt rocFFT:   11'
+        write(*,*) 'Single real only rtp rocFFT:         -12'
+        write(*,*) 'Single real only prt rocFFT:          12'
         stop
       end if
       call get_command_argument(1, tmpchara)

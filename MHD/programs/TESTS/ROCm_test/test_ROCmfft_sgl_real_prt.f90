@@ -20,7 +20,7 @@
       implicit none
 !
       character(len = kchara)                                           &
-     &              :: ROCfft_test = 'sgl_prt_ROCmfft2_test.dat'
+     &              :: file_name = 'sgl_prt_ROCmfft2_test.dat'
 !
       real(kind = kreal) :: start, finish, elapsed(3)
 !
@@ -74,7 +74,7 @@
    10 continue
       if(n_loop .eq. 1) then
         call swap_fft_test_data_to_pout(ft1)
-        call write_fft_test_data(ROCfft_test, ft1)
+        call write_fft_test_data(file_name, ft1)
       end if
       call dealloc_fft_test_data(ft1)
 !

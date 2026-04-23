@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed in Apr., 2026
 !
-!>@brief  Fourier transform using AMD ROCfft
+!>@brief  Fourier transform using AMD rocFFT
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
@@ -70,12 +70,12 @@
         integer(c_size_t) ::    Ncomp =  0
         integer(c_size_t) ::    Nbytes = 0
 !
-        type(c_ptr) :: ROCfft_plan =        c_null_ptr
-        type(c_ptr) :: ROCfft_description = c_null_ptr
+        type(c_ptr) :: rocFFT_plan =        c_null_ptr
+        type(c_ptr) :: rocFFT_description = c_null_ptr
 !
-        integer(c_size_t) :: ROCfft_wk_buf_size = 0
-        type(c_ptr) :: ROCfft_wk_buffer = c_null_ptr
-        type(c_ptr) :: ROCfft_wk_info =   c_null_ptr
+        integer(c_size_t) :: rocFFT_wk_buf_size = 0
+        type(c_ptr) :: rocFFT_wk_buffer = c_null_ptr
+        type(c_ptr) :: rocFFT_wk_info =   c_null_ptr
 !
         type(c_ptr) :: in_offsets =  c_null_ptr
         type(c_ptr) :: out_offsets = c_null_ptr
@@ -89,13 +89,13 @@
       end type calypso_ROCmfft_params
 !
       type calypso_ROCmfft_work
-        real(kind = kreal) ::   aNfft = 0.0d0
+        real(kind = kreal) :: aNfft = 0.0d0
         integer(c_size_t) :: Nfft_c = 0
         integer(c_size_t) :: Nfft_r = 0
 !
         type(c_ptr) :: data_ptr = c_null_ptr
-        real(kind = kreal), allocatable :: X_ROCmFFT(:)
-        complex(kind = kreal), allocatable :: C_ROCmFFT(:)
+        real(kind = kreal), allocatable :: X_rocFFT(:)
+        complex(kind = kreal), allocatable :: C_rocFFT(:)
       end type calypso_ROCmfft_work
 !
       integer(c_size_t), parameter, private :: ione_c =  ione
@@ -142,13 +142,13 @@
 !
 !
       max_size = max(fwd%Ncomp, bwd%Ncomp)
-      allocate(WK_fft%X_ROCmFFT(max_size*WK_fft%Nfft_r))
-      allocate(WK_fft%C_ROCmFFT(max_size*WK_fft%Nfft_c))
+      allocate(WK_fft%X_rocFFT(max_size*WK_fft%Nfft_r))
+      allocate(WK_fft%C_rocFFT(max_size*WK_fft%Nfft_c))
 !$omp parallel workshare
-      WK_fft%X_ROCmFFT(1:max_size*WK_fft%Nfft_r) = 0.0d0
+      WK_fft%X_rocFFT(1:max_size*WK_fft%Nfft_r) = 0.0d0
 !$omp end parallel workshare
 !$omp parallel workshare
-      WK_fft%C_ROCmFFT(1:max_size*WK_fft%Nfft_c) = 0.0d0
+      WK_fft%C_rocFFT(1:max_size*WK_fft%Nfft_c) = 0.0d0
 !$omp end parallel workshare
 !
       max_size = max(fwd%Nbytes, bwd%Nbytes)
@@ -169,9 +169,9 @@
 !
 !
       call rocfftCheck                                                  &
-     &   (rocfft_plan_description_create(fwd%ROCfft_description))
+     &   (rocfft_plan_description_create(fwd%rocFFT_description))
       call rocfftCheck(rocfft_plan_description_set_data_layout          &
-     &                                      (fwd%ROCfft_description,    &
+     &                                      (fwd%rocFFT_description,    &
      &                                       rocfft_array_type_real,    &
      &                                      rocfft_array_type_unset,    &
      &                                               fwd%in_offsets,    &
@@ -182,25 +182,25 @@
      &                                         fwd%out_strides_size,    &
      &                                    c_loc(fwd%out_strides(1)),    &
      &                                            fwd%out_distance))
-      call rocfftCheck(rocfft_plan_create(fwd%ROCfft_plan,              &
+      call rocfftCheck(rocfft_plan_create(fwd%rocFFT_plan,              &
      &                                    rocfft_placement_inplace,     &
      &                          rocfft_transform_type_real_forward,     &
      &                                     rocfft_precision_double,     &
      &                                     ione_c, c_loc(fwd%Nfft),     &
-     &                           fwd%Ncomp, fwd%ROCfft_description))
+     &                           fwd%Ncomp, fwd%rocFFT_description))
 !
       call rocfftCheck                                                  &
-     &   (rocfft_plan_get_work_buffer_size(fwd%ROCfft_plan,             &
-     &                                     fwd%ROCfft_wk_buf_size))
+     &   (rocfft_plan_get_work_buffer_size(fwd%rocFFT_plan,             &
+     &                                     fwd%rocFFT_wk_buf_size))
       call rocfftCheck                                                  &
-     &   (rocfft_execution_info_create(fwd%ROCfft_wk_info))
-      if(fwd%ROCfft_wk_buf_size > 0) then
-        call hipCheck(hipMalloc(fwd%ROCfft_wk_buffer,                   &
-     &                          fwd%ROCfft_wk_buf_size))
+     &   (rocfft_execution_info_create(fwd%rocFFT_wk_info))
+      if(fwd%rocFFT_wk_buf_size > 0) then
+        call hipCheck(hipMalloc(fwd%rocFFT_wk_buffer,                   &
+     &                          fwd%rocFFT_wk_buf_size))
         call rocfftCheck(rocfft_execution_info_set_work_buffer          &
-     &                                        (fwd%ROCfft_wk_info,      &
-     &                                         fwd%ROCfft_wk_buffer,    &
-     &                                         fwd%ROCfft_wk_buf_size))
+     &                                        (fwd%rocFFT_wk_info,      &
+     &                                         fwd%rocFFT_wk_buffer,    &
+     &                                         fwd%rocFFT_wk_buf_size))
       end if
 !
       end subroutine calypso_fwd_ROCmFFT_init
@@ -217,9 +217,9 @@
 !
 !
       call rocfftCheck                                                  &
-     &   (rocfft_plan_description_create(bwd%ROCfft_description))
+     &   (rocfft_plan_description_create(bwd%rocFFT_description))
       call rocfftCheck(rocfft_plan_description_set_data_layout          &
-     &                                      (bwd%ROCfft_description,    &
+     &                                      (bwd%rocFFT_description,    &
      &                                      rocfft_array_type_unset,    &
      &                                       rocfft_array_type_real,    &
      &                                               bwd%in_offsets,    &
@@ -231,25 +231,25 @@
      &                                    c_loc(bwd%out_strides(1)),    &
      &                                            bwd%out_distance))
 !
-      call rocfftCheck(rocfft_plan_create(bwd%ROCfft_plan,              &
+      call rocfftCheck(rocfft_plan_create(bwd%rocFFT_plan,              &
                                           rocfft_placement_inplace,     &
                                   rocfft_transform_type_real_inverse,   &
                                           rocfft_precision_double,      &
                                           ione_c, c_loc(bwd%Nfft),      &
-                                  bwd%Ncomp, bwd%ROCfft_description))
+                                  bwd%Ncomp, bwd%rocFFT_description))
 !
       call rocfftCheck                                                  &
-     &   (rocfft_plan_get_work_buffer_size(bwd%ROCfft_plan,             &
-     &                                     bwd%ROCfft_wk_buf_size))
+     &   (rocfft_plan_get_work_buffer_size(bwd%rocFFT_plan,             &
+     &                                     bwd%rocFFT_wk_buf_size))
       call rocfftCheck                                                  &
-     &   (rocfft_execution_info_create(bwd%ROCfft_wk_info))
-      if(bwd%ROCfft_wk_buf_size > 0) then
-        call hipCheck(hipMalloc(bwd%ROCfft_wk_buffer,                   &
-     &                          bwd%ROCfft_wk_buf_size))
+     &   (rocfft_execution_info_create(bwd%rocFFT_wk_info))
+      if(bwd%rocFFT_wk_buf_size > 0) then
+        call hipCheck(hipMalloc(bwd%rocFFT_wk_buffer,                   &
+     &                          bwd%rocFFT_wk_buf_size))
         call rocfftCheck(rocfft_execution_info_set_work_buffer          &
-     &                                       (bwd%ROCfft_wk_info,       &
-     &                                        bwd%ROCfft_wk_buffer,     &
-     &                                        bwd%ROCfft_wk_buf_size))
+     &                                       (bwd%rocFFT_wk_info,       &
+     &                                        bwd%rocFFT_wk_buffer,     &
+     &                                        bwd%rocFFT_wk_buf_size))
       end if
 !
       end subroutine calypso_bwd_ROCmFFT_init
@@ -268,23 +268,23 @@
       type(calypso_ROCmfft_work), intent(inout), target :: WK_fft
 !
       call rocfftCheck                                                  &
-     &   (rocfft_execution_info_destroy(fwd%ROCfft_wk_info))
+     &   (rocfft_execution_info_destroy(fwd%rocFFT_wk_info))
       call rocfftCheck                                                  &
-     &   (rocfft_execution_info_destroy(bwd%ROCfft_wk_info))
-      if(fwd%ROCfft_wk_buf_size > 0) then
-        call hipCheck(hipFree(fwd%ROCfft_wk_buffer))
+     &   (rocfft_execution_info_destroy(bwd%rocFFT_wk_info))
+      if(fwd%rocFFT_wk_buf_size > 0) then
+        call hipCheck(hipFree(fwd%rocFFT_wk_buffer))
       end if
-      if(bwd%ROCfft_wk_buf_size > 0) then
-        call hipCheck(hipFree(bwd%ROCfft_wk_buffer))
+      if(bwd%rocFFT_wk_buf_size > 0) then
+        call hipCheck(hipFree(bwd%rocFFT_wk_buffer))
       end if
       call rocfftCheck                                                  &
-     &   (rocfft_plan_description_destroy(bwd%ROCfft_description))
+     &   (rocfft_plan_description_destroy(bwd%rocFFT_description))
       call rocfftCheck                                                  &
-     &   (rocfft_plan_description_destroy(fwd%ROCfft_description))
-      call rocfftCheck(rocfft_plan_destroy(bwd%ROCfft_plan))
-      call rocfftCheck(rocfft_plan_destroy(fwd%ROCfft_plan))
+     &   (rocfft_plan_description_destroy(fwd%rocFFT_description))
+      call rocfftCheck(rocfft_plan_destroy(bwd%rocFFT_plan))
+      call rocfftCheck(rocfft_plan_destroy(fwd%rocFFT_plan))
       call hipCheck(hipFree(WK_fft%data_ptr))
-      deallocate(WK_fft%C_ROCmFFT, WK_fft%X_ROCmFFT)
+      deallocate(WK_fft%C_rocFFT, WK_fft%X_rocFFT)
 !
       end subroutine calypso_ROCmFFT_finalize
 !
