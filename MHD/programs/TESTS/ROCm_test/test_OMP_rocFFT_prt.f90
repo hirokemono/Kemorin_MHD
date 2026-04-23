@@ -12,7 +12,7 @@
       use t_fft_test_data
       use t_multi_ROCmFFT_wrapper
       use multi_pin_complex_ROCmFFT
-      use multi_pout_real_ROCmFFT
+      use multi_pin_real_ROCmFFT
 !
       implicit none
 !
