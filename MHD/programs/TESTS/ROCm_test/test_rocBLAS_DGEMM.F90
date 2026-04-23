@@ -96,7 +96,8 @@
 !
       call copy_dgemm_matrix_omp_target(ldc, n, C, C_ref)
 !
-! ----  CPU OpenMP --------------
+! ----  CPU BLAS --------------
+#ifdef BLAS
       do iloop = 1, nloop
         write(*,"(a)",advance="no")                                     &
      &                           "--- DGEMM by BLAS -- "
@@ -116,6 +117,7 @@
         write(*,'(a, i3, a, 1pE16.6e3)')   "  Time of ", iloop,         &
      &       "-th CPU BLAS: ", elapsed(iloop)
       end do
+#endif
 !
 ! ----  CPU OpenMP --------------
       do iloop = 1, nloop
