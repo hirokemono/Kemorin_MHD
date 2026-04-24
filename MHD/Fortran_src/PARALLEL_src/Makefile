@@ -7,6 +7,8 @@ PARA_SRCDIR =   $$(F_SRCDIR)/PARALLEL_src
 LIB_PARA =        -lkemo_parallel
 LIB_PARA_FILE = libkemo_parallel.a
 
+UPPER_MODULES = MOD_PARALLEL
+
 SUBDIRS = \
 COMM_src             \
 MPI_IO               \
@@ -61,19 +63,13 @@ lib_archve:
 	done
 
 mod_list:
-	@echo  MOD_PARALLEL= \\ >> $(MAKENAME)
-	@echo  \
-	'$$(MOD_COMM)       $$(MOD_FEM_INT)'          \
-	'$$(MOD_MPI_IO)     $$(MOD_MPI_ZLIB_IO)'      \
-	'$$(MOD_MULTIGRID)  $$(MOD_FILTERING)'        \
-	'$$(MOD_COMM_SPH)   $$(MOD_SOLVER_SET_ORDER)' \
-	'$$(MOD_ITP_PARA)   $$(MOD_SPH_GRID)'         \
-	'$$(MOD_MODIFY_PARA_MESH)'                      >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)= ' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
+		UPPER_MODULES='$(UPPER_MODULES)' \
 		mod_list; \
 		) \
 	done

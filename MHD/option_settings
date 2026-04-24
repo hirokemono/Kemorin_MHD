@@ -30,7 +30,7 @@ Settings for Makefiles
 #    'FCFLAGS=''-offload-arch=gfx942  -fopenmp-target-fast  -mcmodel=medium -O3 -g' \
 #     PKG_CONFIG_PATH=/home/hrmatsui/local/amd/lib/pkgconfig \
 #     --with-zlib=/home/hrmatsui/local/amd --with-libpng --with-fftw3 \
-#     --with-blas --with-rocm=/opt/rocm-7.2.0
+#     --without-blas --with-rocm=/opt/rocm-7.2.0
 #
 ## -------------------------------------------------------------------------------
 #

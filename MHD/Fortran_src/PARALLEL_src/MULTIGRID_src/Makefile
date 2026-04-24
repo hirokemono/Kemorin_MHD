@@ -20,8 +20,9 @@ lib_archve: libtarget
 
 
 mod_list:
-	@echo  MOD_MULTIGRID=  \\ >> $(MAKENAME)
-	@echo  $(MOD_MULTIGRID) >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$(MOD_MULTIGRID)' >> $(MAKENAME)
+	@echo  'MOD_MULTIGRID=  ' \\ >> $(MAKENAME)
+	@echo  '$(MOD_MULTIGRID)'    >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
 depends:

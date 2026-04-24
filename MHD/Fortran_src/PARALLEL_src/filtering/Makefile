@@ -20,8 +20,10 @@ lib_archve: libtarget
 
 
 mod_list:
-	@echo MOD_FILTERING=  \\ >> $(MAKENAME)
-	@echo $(MOD_FILTERING) >> $(MAKENAME)
+	@echo '$(UPPER_MODULES)+= $$(MOD_FILTERING)' >> $(MAKENAME)
+	@echo 'MOD_FILTERING=  ' \\ >> $(MAKENAME)
+	@echo '$(MOD_FILTERING)'    >> $(MAKENAME)
+	@echo '#'  >> $(MAKENAME)
 
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(FILTER_DIR)' $(SOURCES)

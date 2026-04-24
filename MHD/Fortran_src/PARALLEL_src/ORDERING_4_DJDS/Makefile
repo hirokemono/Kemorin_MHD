@@ -20,8 +20,10 @@ lib_archve: libtarget
 
 
 mod_list:
-	@echo MOD_SOLVER_SET_ORDER= \\  >> $(MAKENAME)
-	@echo $(MOD_SOLVER_SET_ORDER) >> $(MAKENAME)
+	@echo '$(UPPER_MODULES)+= $$(MOD_SOLVER_SET_ORDER)' >> $(MAKENAME)
+	@echo 'MOD_SOLVER_SET_ORDER=  ' \\  >> $(MAKENAME)
+	@echo '$(MOD_SOLVER_SET_ORDER)'     >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 depends:
