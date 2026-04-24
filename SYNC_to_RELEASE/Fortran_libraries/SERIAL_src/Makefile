@@ -7,6 +7,8 @@ CORE_SRCDIR = $$(F_SRCDIR)/SERIAL_src
 LIB_MESH =       -lcalypso_core
 LIB_MESH_FILE = libcalypso_core.a
 
+UPPER_MODULES= MOD_CORE
+
 SUBDIRS = \
 Fortran2003          \
 \
@@ -18,7 +20,6 @@ spherical_harmonics  \
 gauss_integration    \
 FFT_wrapper          \
 SPH_SPECTR_src
-
 
 #
 #  -------------------------------------------------------------------------
@@ -68,6 +69,7 @@ mod_list:
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
+		UPPER_MODULES='$(UPPER_MODULES)' \
 		mod_list; \
 		) \
 	done

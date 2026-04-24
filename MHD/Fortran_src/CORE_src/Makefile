@@ -7,6 +7,8 @@ CORE_SRCDIR = $$(F_SRCDIR)/CORE_src
 LIB_MESH =       -lkemo_core
 LIB_MESH_FILE = libkemo_core.a
 
+UPPER_MODULES = MOD_CORE
+
 ifdef 64BIT_INT
   SUBDIRS = 64bit_Integer
 else
@@ -36,7 +38,7 @@ modify_MESH
 ifdef ROCM_CFLAGS
   SUBDIRS += AMD_ROCm
 endif
-
+#
 #
 #  -------------------------------------------------------------------------
 #
@@ -86,13 +88,14 @@ lib_archve:
 	done
 
 mod_list:
-	@echo  'MOD_CORE= ' >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)= ' >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
+		UPPER_MODULES='$(UPPER_MODULES)' \
 		mod_list; \
 		) \
 	done
