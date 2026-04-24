@@ -22,8 +22,10 @@ lib_archve: libtarget
 
 
 mod_list:
-	@echo  MOD_F2003=  \\ >> $(MAKENAME)
-	@echo  $(MOD_F2003) >> $(MAKENAME)
+	@echo  'MOD_CORE+= $$(MOD_F2003)' >> $(MAKENAME)
+	@echo  '#'  >> $(MAKENAME)
+	@echo  'MOD_F2003=  ' \\ >> $(MAKENAME)
+	@echo  '$(MOD_F2003)' >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
 depends:

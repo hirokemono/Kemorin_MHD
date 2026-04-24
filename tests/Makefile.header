@@ -47,7 +47,9 @@ PNG_LIBS =    -L/opt/homebrew/opt/libpng/lib -lpng16
 #
 #   AMD ROCm settings
 #
+ROCM_PATH =     
 ROCM_CFLAGS =   
+ROCM_FCFLAGS =  
 ROCM_LIBDIR =   
 ROCM_LIBS =     
 ROCM_ROCPROFV2_LDFLAGS =   

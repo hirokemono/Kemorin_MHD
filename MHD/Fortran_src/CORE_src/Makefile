@@ -88,14 +88,6 @@ lib_archve:
 mod_list:
 	@echo  MOD_CORE= \\ >> $(MAKENAME)
 	@echo  \
-	'$$(MOD_F2003)'       \
-	'$$(MOD_BASE)'        \
-	'$$(MOD_CTL)'         \
-	'$$(MOD_IO)'          \
-	'$$(MOD_BINARY_IO)'   \
-	'$$(MOD_ZLIB_IO)'     \
-	'$$(MOD_MPI_IO)'      \
-	'$$(MOD_MESH)'        \
 	'$$(MOD_MESH_T)'      \
 	'$$(MOD_FIELDS)'      \
 	'$$(MOD_GAUSS)'       \

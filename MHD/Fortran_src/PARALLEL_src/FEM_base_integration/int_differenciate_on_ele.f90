@@ -124,7 +124,7 @@
        integer(kind = kint) :: istart, iend, nd
 !
 !
-      do nd = 1, 9
+      do nd = 1, 3
 !$omp parallel do
         do iele = 1, numele
           dvx(iele,nd) = 0.0d0
