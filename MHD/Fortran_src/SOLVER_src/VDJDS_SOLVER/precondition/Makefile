@@ -14,9 +14,10 @@ dir_list:
 	@echo 'SOLVER_PRECOND_DIR = $(SOLVER_PRECOND_DIR)' >> $(MAKENAME)
 
 mod_list:
-	@echo MOD_SOLVE_PRECONDS= \\  >> $(MAKENAME)
-	@echo $(MOD_SOLVE_PRECONDS) >> $(MAKENAME)
-	@echo >> $(MAKENAME)
+	@echo '$(MOD_DJDS_SOLVER)+= $$(MOD_SOLVE_PRECONDS)' >> $(MAKENAME)
+	@echo 'MOD_SOLVE_PRECONDS=  ' \\  >> $(MAKENAME)
+	@echo '$(MOD_SOLVE_PRECONDS)' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
 
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(SOLVER_PRECOND_DIR)' $(SOURCES)

@@ -30,8 +30,9 @@ dir_list:
 
 
 mod_list:
-	@echo MOD_SOLVER_33= \\  >> $(MAKENAME)
-	@echo $(MOD_SOLVER_33) >> $(MAKENAME)
+	@echo '$(MOD_CRS_SOLVER)+= $$(MOD_SOLVER_33)' >> $(MAKENAME)
+	@echo 'MOD_SOLVER_33=  ' \\  >> $(MAKENAME)
+	@echo '$(MOD_SOLVER_33)'     >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 
 depends:

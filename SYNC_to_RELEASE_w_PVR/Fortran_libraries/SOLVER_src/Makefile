@@ -55,18 +55,14 @@ lib_archve:
 
 
 mod_list:
-	@echo  MOD_SOLVERS=  \\ >> $(MAKENAME)
-	@echo  \
-	'        $$(MOD_DJDS_SOLVER)'  \
-	'$$(MOD_CRS_SOLVER) $$(MOD_CRS_SOLVER_S) ' \
-	 >> $(MAKENAME)
+	@echo '$(MOD_SOLVERS)= ' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
-		mod_list; \
 		MOD_SOLVERS='$(MOD_SOLVERS)' \
+		mod_list; \
 		) \
 	done
 

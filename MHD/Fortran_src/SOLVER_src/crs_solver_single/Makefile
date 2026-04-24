@@ -4,6 +4,8 @@
 
 CRS_SOLVER_S_DIR = $$(SOLVER_SRCDIR)/crs_solver_single
 
+MOD_CRS_SOLVER_S = 'MOD_CRS_SOLVER_S'
+
 SUBDIRS = \
 scalar
 
@@ -34,15 +36,15 @@ lib_archve: libtarget
 
 
 mod_list:
-	@echo MOD_CRS_SOLVER_S= \\ >> $(MAKENAME)
-	@echo '$$(MOD_SOLVER_11_S)' \\ >> $(MAKENAME)
-	@echo >> $(MAKENAME)
-	
+	@echo '$(MOD_SOLVERS)+= $$(MOD_CRS_SOLVER_S)' >> $(MAKENAME)
+	@echo '$(MOD_CRS_SOLVER_S)= '  >> $(MAKENAME)
+	@echo '#'>> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
+		MOD_CRS_SOLVER_S='$(MOD_CRS_SOLVER_S)' \
 		mod_list \
 		) \
 	done

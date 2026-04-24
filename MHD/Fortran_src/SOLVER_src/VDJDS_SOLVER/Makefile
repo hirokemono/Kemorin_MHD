@@ -4,6 +4,8 @@
 
 DJDS_SOLVER_DIR = $$(SOLVER_SRCDIR)/VDJDS_SOLVER
 
+MOD_DJDS_SOLVER = 'MOD_DJDS_SOLVER'
+
 SUBDIRS = \
 cal_4_each_solvers \
 cal_matvecs \
@@ -37,22 +39,15 @@ lib_archve: libtarget
 
 
 mod_list:
-	@echo MOD_DJDS_SOLVER= \\             >> $(MAKENAME)
-	@echo '$$(MOD_SOLVE_EACH)' \\         >> $(MAKENAME)
-	@echo '$$(MOD_SOLVE_MATVEC)' \\       >> $(MAKENAME)
-	@echo '$$(MOD_SOLVE_ORDERINGS)' \\    >> $(MAKENAME)
-	@echo '$$(MOD_SOLVE_VECCALS)' \\      >> $(MAKENAME)
-	@echo '$$(MOD_SOLVE_PRECONDS)' \\     >> $(MAKENAME)
-	@echo '$$(MOD_SOLVE_SET_PRECONDS)' \\ >> $(MAKENAME)
-	@echo '$$(MOD_SOLVER_MAINS)' \\       >> $(MAKENAME)
-	@echo '$$(MOD_SOLVER_FL_MAINS)'       >> $(MAKENAME)
-	@echo >> $(MAKENAME)
-	
+	@echo '$(MOD_SOLVERS)+= $$(MOD_DJDS_SOLVER)' >> $(MAKENAME)
+	@echo 'MOD_DJDS_SOLVER= ' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
+		MOD_DJDS_SOLVER='$(MOD_DJDS_SOLVER)' \
 		mod_list \
 		) \
 	done

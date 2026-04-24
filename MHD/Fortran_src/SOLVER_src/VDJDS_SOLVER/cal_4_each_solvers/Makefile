@@ -14,9 +14,10 @@ dir_list:
 	@echo 'SOLVER_EACH_DIR = $(SOLVER_EACH_DIR)' >> $(MAKENAME)
 
 mod_list:
-	@echo MOD_SOLVE_EACH= \\  >> $(MAKENAME)
-	@echo $(MOD_SOLVE_EACH) >> $(MAKENAME)
-	@echo >> $(MAKENAME)
+	@echo '$(MOD_DJDS_SOLVER)+= $$(MOD_SOLVE_EACH)' >> $(MAKENAME)
+	@echo 'MOD_SOLVE_EACH=  ' \\  >> $(MAKENAME)
+	@echo '$(MOD_SOLVE_EACH)'     >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
 
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(SOLVER_EACH_DIR)' $(SOURCES)

@@ -14,8 +14,9 @@ dir_list:
 	@echo 'SOLVER_NN_DIR =  $(SOLVER_NN_DIR)'       >> $(MAKENAME)
 
 mod_list:
-	@echo MOD_SOLVER_NN= \\  >> $(MAKENAME)
-	@echo $(MOD_SOLVER_NN) >> $(MAKENAME)
+	@echo '$(MOD_CRS_SOLVER)+= $$(MOD_SOLVER_NN)' >> $(MAKENAME)
+	@echo 'MOD_SOLVER_NN=  ' \\  >> $(MAKENAME)
+	@echo '$(MOD_SOLVER_NN)'     >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 
 depends:
