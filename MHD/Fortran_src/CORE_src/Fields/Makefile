@@ -22,8 +22,9 @@ lib_archve: libtarget
 
 
 mod_list:
-	@echo  MOD_FIELDS=  \\ >> $(MAKENAME)
-	@echo  $(MOD_FIELDS) >> $(MAKENAME)
+	@echo  'MOD_CORE+= $$(MOD_FIELDS)' >> $(MAKENAME)
+	@echo  'MOD_FIELDS= '  \\ >> $(MAKENAME)
+	@echo  '$(MOD_FIELDS)'    >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
 depends:

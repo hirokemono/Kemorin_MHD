@@ -22,9 +22,8 @@ lib_archve: libtarget
 
 mod_list:
 	@echo  'MOD_CORE+= $$(MOD_ZLIB_IO)' >> $(MAKENAME)
-	@echo  '#'  >> $(MAKENAME)
-	@echo  'MOD_ZLIB_IO=  '  \\ >> $(MAKENAME)
-	@echo  '$(MOD_ZLIB_IO)'   >> $(MAKENAME)
+	@echo  'MOD_ZLIB_IO=  ' \\ >> $(MAKENAME)
+	@echo  '$(MOD_ZLIB_IO)'    >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
 depends:

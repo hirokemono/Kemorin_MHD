@@ -36,9 +36,10 @@ lib_archve:
 
 
 mod_list:
-	@echo  MOD_MODIFY_MESH=  \\ >> $(MAKENAME)
-	@echo  $(MOD_MODIFY_MESH) >> $(MAKENAME)
-	@echo   >> $(MAKENAME)
+	@echo  'MOD_CORE+= $$(MOD_MODIFY_MESH)' >> $(MAKENAME)
+	@echo  'MOD_MODIFY_MESH= ' \\ >> $(MAKENAME)
+	@echo  '$(MOD_MODIFY_MESH)'   >> $(MAKENAME)
+	@echo  '#'  >> $(MAKENAME)
 
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(MODIFY_MESHDIR)' $(SOURCES)

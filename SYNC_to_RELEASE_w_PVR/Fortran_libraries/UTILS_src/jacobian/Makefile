@@ -18,8 +18,10 @@ lib_archve:
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_JACOBI)' >> $(MAKENAME)
 
 mod_list:
-	@echo MOD_JACOBI=  \\ >> $(MAKENAME)
-	@echo $(MOD_JACOBI) >> $(MAKENAME)
+	@echo  'MOD_KEMO_UTILS+= $$(MOD_JACOBI)' >> $(MAKENAME)
+	@echo  'MOD_JACOBI= ' \\ >> $(MAKENAME)
+	@echo  '$(MOD_JACOBI)'   >> $(MAKENAME)
+	@echo  '#' >> $(MAKENAME)
 
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(JACOBIDIR)' $(SOURCES)

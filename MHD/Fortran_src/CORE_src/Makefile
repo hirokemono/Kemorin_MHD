@@ -86,17 +86,7 @@ lib_archve:
 	done
 
 mod_list:
-	@echo  MOD_CORE= \\ >> $(MAKENAME)
-	@echo  \
-	'$$(MOD_MESH_T)'      \
-	'$$(MOD_FIELDS)'      \
-	'$$(MOD_GAUSS)'       \
-	'$$(MOD_JACOBI)'      \
-	'$$(MOD_SPH)'         \
-	'$$(MOD_FFT_WRAP)'    \
-	'$$(MOD_SPH_SPECTR)'  \
-	'$$(MOD_MODIFY_MESH)' \
-	'$$(MOD_ITP)'     >> $(MAKENAME)
+	@echo  'MOD_CORE= ' >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
