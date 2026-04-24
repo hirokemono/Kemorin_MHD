@@ -7,7 +7,7 @@ MHD_SRCDIR = $$(F_SRCDIR)/MHD_src
 LIB_MHD=       -lkemo_MHD
 LIB_MHD_FILE= libkemo_MHD.a
 
-UPPER_MODULES= MOD_MHD
+MOD_MHD= 'MOD_MHD'
 
 SUBDIRS = \
 common \
@@ -68,7 +68,7 @@ lib_archve:
 	done
 
 mod_list:
-	@echo '$(UPPER_MODULES)=' >> $(MAKENAME)
+	@echo '$(MOD_MHD)=' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	
 	@for dir in $(SUBDIRS); do \
@@ -76,7 +76,7 @@ mod_list:
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
-		UPPER_MODULES='$(UPPER_MODULES)' \
+		MOD_MHD='$(MOD_MHD)' \
 		mod_list; \
 		) \
 	done

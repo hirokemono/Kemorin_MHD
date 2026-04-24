@@ -20,7 +20,7 @@ lib_archve: libtarget
 	>> $(MAKENAME)
 
 mod_list:
-	@echo '$(UPPER_MODULES)+= $$(MOD_MHD_SOLVE)' >> $(MAKENAME)
+	@echo '$(MOD_MHD)+= $$(MOD_MHD_SOLVE)' >> $(MAKENAME)
 	@echo 'MOD_MHD_SOLVE= ' \\ >> $(MAKENAME)
 	@echo '$(MOD_MHD_SOLVE)'   >> $(MAKENAME)
 	@echo '#'>> $(MAKENAME)
