@@ -8,10 +8,10 @@
 !!
 !!@verbatim
 !! wrapper subroutine for forward Fourier transform by FFTW3
-!!      subroutine multi_pin_fwd_ROCmFFT_r2r(fwd, WK_fft, X,            &
-!!     &                                     elapsed_fft, elapsed_cpy)
-!!      subroutine multi_pin_fwd_OMP_ROCmFFT(fwd, WK_fft, X,            &
-!!     &                                     elapsed_fft, elapsed_cpy)
+!!      subroutine multi_pin_fwd_rocFFT_r2r(fwd, WK_fft, X,             &
+!!     &                                    elapsed_fft, elapsed_cpy)
+!!      subroutine multi_pin_fwd_OMP_rocFFT(fwd, WK_fft, X,             &
+!!     &                                    elapsed_fft, elapsed_cpy)
 !!        type(calypso_rocFFT_params), intent(in), target :: fwd
 !!        type(calypso_rocFFT_work), intent(inout) :: WK_fft
 !!        real(kind = kreal), intent(inout) :: X(fwd%Nfft,fwd%Ncomp)
@@ -28,10 +28,10 @@
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by FFTW3
-!!      subroutine multi_pin_bwd_ROCmFFT_r2r(bwd, WK_fft, X,            &
-!!     &                                     elapsed_fft, elapsed_cpy)
-!!      subroutine multi_pin_bwd_OMP_ROCmFFT(bwd, WK_fft, X,            &
-!!     &                                     elapsed_fft, elapsed_cpy)
+!!      subroutine multi_pin_bwd_rocFFT_r2r(bwd, WK_fft, X,             &
+!!     &                                    elapsed_fft, elapsed_cpy)
+!!      subroutine multi_pin_bwd_OMP_rocFFT(bwd, WK_fft, X,             &
+!!     &                                    elapsed_fft, elapsed_cpy)
 !!        type(calypso_rocFFT_params), intent(in), target :: bwd
 !!        type(calypso_rocFFT_work), intent(inout) :: WK_fft
 !!        real(kind = kreal), intent(inout) :: X(bwd%Nfft,bwd%Ncomp)
@@ -73,8 +73,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine multi_pin_fwd_ROCmFFT_r2r(fwd, WK_fft, X,              &
-     &                                     elapsed_fft, elapsed_cpy)
+      subroutine multi_pin_fwd_rocFFT_r2r(fwd, WK_fft, X,               &
+     &                                    elapsed_fft, elapsed_cpy)
 !
       use normalize_for_ROCmFFT
       use calypso_multi_ROCmFFT
@@ -117,12 +117,12 @@
      &      int(fwd%Nfft), X(1,1))
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
-      end subroutine multi_pin_fwd_ROCmFFT_r2r
+      end subroutine multi_pin_fwd_rocFFT_r2r
 !
 ! ------------------------------------------------------------------
 !
-      subroutine multi_pin_bwd_ROCmFFT_r2r(bwd, WK_fft, X,              &
-     &                                     elapsed_fft, elapsed_cpy)
+      subroutine multi_pin_bwd_rocFFT_r2r(bwd, WK_fft, X,               &
+     &                                    elapsed_fft, elapsed_cpy)
 !
       use normalize_for_ROCmFFT
       use calypso_multi_ROCmFFT
@@ -161,13 +161,13 @@
 !$omp end parallel do
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
-      end subroutine multi_pin_bwd_ROCmFFT_r2r
+      end subroutine multi_pin_bwd_rocFFT_r2r
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine multi_pin_fwd_OMP_ROCmFFT(fwd, WK_fft, X,              &
-     &                                     elapsed_fft, elapsed_cpy)
+      subroutine multi_pin_fwd_OMP_rocFFT(fwd, WK_fft, X,               &
+     &                                    elapsed_fft, elapsed_cpy)
 !
       use normalize_for_ROCmFFT
       use calypso_multi_ROCmFFT
@@ -209,12 +209,12 @@
      &      int(fwd%Nfft), X(1,1))
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
-      end subroutine multi_pin_fwd_OMP_ROCmFFT
+      end subroutine multi_pin_fwd_OMP_rocFFT
 !
 ! ------------------------------------------------------------------
 !
-      subroutine multi_pin_bwd_OMP_ROCmFFT(bwd, WK_fft, X,              &
-     &                                     elapsed_fft, elapsed_cpy)
+      subroutine multi_pin_bwd_OMP_rocFFT(bwd, WK_fft, X,               &
+     &                                    elapsed_fft, elapsed_cpy)
 !
       use normalize_for_ROCmFFT
       use calypso_multi_ROCmFFT
@@ -252,7 +252,7 @@
 !$omp end parallel do
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
-      end subroutine multi_pin_bwd_OMP_ROCmFFT
+      end subroutine multi_pin_bwd_OMP_rocFFT
 !
 ! ------------------------------------------------------------------
 !

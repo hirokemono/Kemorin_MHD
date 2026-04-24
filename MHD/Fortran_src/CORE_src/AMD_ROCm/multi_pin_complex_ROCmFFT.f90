@@ -8,8 +8,8 @@
 !!
 !!@verbatim
 !! wrapper subroutine for initialization of ROCmFFT
-!!      subroutine calypso_pin_ROCmFFT_init(Ncomp_fwd, Ncomp_bwd, Nfft, &
-!!     &                                    fwd, bwd, WK_fft)
+!!      subroutine calypso_pin_rocFFT_init(Ncomp_fwd, Ncomp_bwd, Nfft,  &
+!!     &                                   fwd, bwd, WK_fft)
 !!        integer(kind = kint), intent(in) :: Ncomp_fwd, Ncomp_bwd
 !!        integer(kind = kint), intent(in) :: Nfft
 !!        type(calypso_rocFFT_params), intent(inout), target :: fwd
@@ -81,8 +81,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_pin_ROCmFFT_init(Ncomp_fwd, Ncomp_bwd, Nfft,   &
-     &                                    fwd, bwd, WK_fft)
+      subroutine calypso_pin_rocFFT_init(Ncomp_fwd, Ncomp_bwd, Nfft,    &
+     &                                   fwd, bwd, WK_fft)
 !
       integer(kind = kint), intent(in) :: Ncomp_fwd, Ncomp_bwd
       integer(kind = kint), intent(in) :: Nfft
@@ -103,7 +103,7 @@
       call calypso_pin_bwd_ROCmFFT_init(WK_fft%Nfft_r, bwd)
       call calypso_bwd_ROCmFFT_init(bwd)
 !
-      end subroutine calypso_pin_ROCmFFT_init
+      end subroutine calypso_pin_rocFFT_init
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------

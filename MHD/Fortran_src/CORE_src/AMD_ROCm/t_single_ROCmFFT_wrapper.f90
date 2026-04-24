@@ -9,8 +9,8 @@
 !!@verbatim
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT by FFTW
-!!      subroutine calypso_sgl_ROCmFFT_init(Nfft, WK_fft)
-!!      subroutine calypso_single_ROCmFFT_fin(WK_fft)
+!!      subroutine calypso_sgl_rocFFT_init(Nfft, WK_fft)
+!!      subroutine calypso_sgl_rocFFT_fin(WK_fft)
 !!        integer(c_size_t), intent(in) :: Nfft
 !!        type(single_ROCmfft_work), intent(inout), target :: WK_fft
 !! ------------------------------------------------------------------
@@ -80,7 +80,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_sgl_ROCmFFT_init(Nfft, WK_fft)
+      subroutine calypso_sgl_rocFFT_init(Nfft, WK_fft)
 !
       use calypso_single_ROCmFFT
 !
@@ -96,11 +96,11 @@
 !   Initialize Backword transform
       call calypso_sgl_bwd_ROCmFFT_init(Nfft, WK_fft%rocFFT_bwd_plan)
 !
-      end subroutine calypso_sgl_ROCmFFT_init
+      end subroutine calypso_sgl_rocFFT_init
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_single_ROCmFFT_fin(WK_fft)
+      subroutine calypso_sgl_rocFFT_fin(WK_fft)
 !
       use hipfort
       use hipfort_check
@@ -113,7 +113,7 @@
       call hipCheck(hipFree(WK_fft%data_ptr))
       deallocate(WK_fft%C_rocFFT, WK_fft%X_rocFFT)
 !
-      end subroutine calypso_single_ROCmFFT_fin
+      end subroutine calypso_sgl_rocFFT_fin
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------

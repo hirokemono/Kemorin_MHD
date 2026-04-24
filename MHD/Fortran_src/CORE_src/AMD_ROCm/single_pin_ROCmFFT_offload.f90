@@ -8,14 +8,14 @@
 !!
 !!@verbatim
 !! wrapper subroutine for forward Fourier transform by FFTW3
-!!      subroutine single_pin_fwd_ROCmFFT_r2c(WK_fft, n_comp, X,        &
-!!     &                                  elapsed_fft, elapsed_cpy)
+!!      subroutine single_pin_fwd_rocFFT_r2c(WK_fft, n_comp, X,         &
+!!     &                                     elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) :: n_comp
 !!        type(single_ROCmfft_work), intent(inout) :: WK_fft
 !!        real(kind = kreal), intent(inout) :: X(fwd%Nfft,n_comp)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!!      subroutine single_pin_fwd_ROCmFFT_r2r(WK_fft, n_comp, X,        &
-!!     &                                      elapsed_fft, elapsed_cpy)
+!!      subroutine single_pin_fwd_rocFFT_r2r(WK_fft, n_comp, X,         &
+!!     &                                     elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) :: n_comp
 !!        type(single_ROCmfft_work), intent(inout) :: WK_fft
 !!        real(kind = kreal), intent(inout) :: X(WK_fft%Nfft,n_comp)
@@ -32,14 +32,14 @@
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by FFTW3
-!!      subroutine single_pin_bwd_ROCmFFT_c2r(WK_fft, n_comp, X,        &
-!!     &                                      elapsed_fft, elapsed_cpy)
+!!      subroutine single_pin_bwd_rocFFT_c2r(WK_fft, n_comp, X,         &
+!!     &                                     elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) :: n_comp
 !!        type(single_ROCmfft_work), intent(inout) :: WK_fft
 !!        real(kind = kreal), intent(inout) :: X(bwd%Nfft,n_comp)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!!      subroutine single_pin_bwd_ROCmFFT_r2r(WK_fft, n_comp, X,        &
-!!     &                                      elapsed_fft, elapsed_cpy)
+!!      subroutine single_pin_bwd_rocFFT_r2r(WK_fft, n_comp, X,         &
+!!     &                                     elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) :: n_comp
 !!        type(single_ROCmfft_work), intent(inout) :: WK_fft
 !!        real(kind = kreal), intent(inout) :: X(WK_fft%Nfft,n_comp)
@@ -81,8 +81,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine single_pin_fwd_ROCmFFT_r2c(WK_fft, n_comp, X,          &
-     &                                      elapsed_fft, elapsed_cpy)
+      subroutine single_pin_fwd_rocFFT_r2c(WK_fft, n_comp, X,           &
+     &                                     elapsed_fft, elapsed_cpy)
 !
       use calypso_single_ROCmFFT
 !
@@ -125,12 +125,12 @@
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
       end do
 !
-      end subroutine single_pin_fwd_ROCmFFT_r2c
+      end subroutine single_pin_fwd_rocFFT_r2c
 !
 ! ------------------------------------------------------------------
 !
-      subroutine single_pin_bwd_ROCmFFT_c2r(WK_fft, n_comp, X,          &
-     &                                      elapsed_fft, elapsed_cpy)
+      subroutine single_pin_bwd_rocFFT_c2r(WK_fft, n_comp, X,           &
+     &                                     elapsed_fft, elapsed_cpy)
 !
       use calypso_single_ROCmFFT
 !
@@ -172,13 +172,13 @@
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
       end do
 !
-      end subroutine single_pin_bwd_ROCmFFT_c2r
+      end subroutine single_pin_bwd_rocFFT_c2r
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine single_pin_fwd_ROCmFFT_r2r(WK_fft, n_comp, X,          &
-     &                                      elapsed_fft, elapsed_cpy)
+      subroutine single_pin_fwd_rocFFT_r2r(WK_fft, n_comp, X,           &
+     &                                     elapsed_fft, elapsed_cpy)
 !
       use calypso_single_ROCmFFT
 !
@@ -220,12 +220,12 @@
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
       end do
 !
-      end subroutine single_pin_fwd_ROCmFFT_r2r
+      end subroutine single_pin_fwd_rocFFT_r2r
 !
 ! ------------------------------------------------------------------
 !
-      subroutine single_pin_bwd_ROCmFFT_r2r(WK_fft, n_comp, X,          &
-     &                                      elapsed_fft, elapsed_cpy)
+      subroutine single_pin_bwd_rocFFT_r2r(WK_fft, n_comp, X,           &
+     &                                     elapsed_fft, elapsed_cpy)
 !
       use calypso_single_ROCmFFT
 !
@@ -267,7 +267,7 @@
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
       end do
 !
-      end subroutine single_pin_bwd_ROCmFFT_r2r
+      end subroutine single_pin_bwd_rocFFT_r2r
 !
 ! ------------------------------------------------------------------
 !

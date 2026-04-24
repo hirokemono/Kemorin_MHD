@@ -17,7 +17,7 @@
 !!        type(calypso_rocFFT_work), intent(inout), target :: WK_fft
 !!      subroutine calypso_fwd_ROCmFFT_init(fwd)
 !!      subroutine calypso_bwd_ROCmFFT_init(bwd)
-!!      subroutine calypso_ROCmFFT_finalize(fwd, bwd)
+!!      subroutine calypso_rocFFT_fin(fwd, bwd)
 !!        type(calypso_rocFFT_params), intent(inout), target :: fwd
 !!        type(calypso_rocFFT_params), intent(inout), target :: bwd
 !!      subroutine calypso_ROCmFFT_alloc(fwd, bwd, WK_fft)
@@ -257,7 +257,7 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_ROCmFFT_finalize(fwd, bwd, WK_fft)
+      subroutine calypso_rocFFT_fin(fwd, bwd, WK_fft)
 !
       use hipfort
       use hipfort_check
@@ -286,7 +286,7 @@
       call hipCheck(hipFree(WK_fft%data_ptr))
       deallocate(WK_fft%C_rocFFT, WK_fft%X_rocFFT)
 !
-      end subroutine calypso_ROCmFFT_finalize
+      end subroutine calypso_rocFFT_fin
 !
 ! ------------------------------------------------------------------
 !

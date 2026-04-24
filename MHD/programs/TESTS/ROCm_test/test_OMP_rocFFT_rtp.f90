@@ -34,8 +34,8 @@
 !
 !   Initialize Fourier transform
       start = OMP_GET_WTIME()
-      call calypso_pout_ROCmFFT_init(n_field, n_field, ngrid,           &
-     &                               fwd, bwd, WK_fft)
+      call calypso_pout_rocFFT_init(n_field, n_field, ngrid,            &
+     &                              fwd, bwd, WK_fft)
       elapsed(1) = OMP_GET_WTIME() - start
 !
       elapsed(2:3) = zero
@@ -49,8 +49,8 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Forward transform
-        call multi_pout_fwd_OMP_ROCmFFT(fwd, WK_fft, ft1%s_k(1,1),      &
-     &                                  elapsed(2), elapsed(3))
+        call multi_pout_fwd_OMP_rocFFT(fwd, WK_fft, ft1%s_k(1,1),       &
+     &                                 elapsed(2), elapsed(3))
 !
         start = OMP_GET_WTIME()
 !$omp parallel workshare
@@ -59,13 +59,13 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Backword transform
-        call multi_pout_bwd_OMP_ROCmFFT(bwd, WK_fft, ft1%f_x(1,1),      &
-     &                                  elapsed(2), elapsed(3))
+        call multi_pout_bwd_OMP_rocFFT(bwd, WK_fft, ft1%f_x(1,1),       &
+     &                                 elapsed(2), elapsed(3))
       end do
 !
 !   Finalize
       start = OMP_GET_WTIME()
-      call calypso_ROCmFFT_finalize(fwd, bwd, WK_fft)
+      call calypso_rocFFT_fin(fwd, bwd, WK_fft)
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
   10  continue

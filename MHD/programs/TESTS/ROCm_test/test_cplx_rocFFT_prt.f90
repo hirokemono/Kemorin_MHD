@@ -32,8 +32,8 @@
 !
 !   Initialize Fourier transform
       start = OMP_GET_WTIME()
-      call calypso_pin_ROCmFFT_init(n_field, n_field, ngrid,            &
-     &                              fwd, bwd, WK_fft)
+      call calypso_pin_rocFFT_init(n_field, n_field, ngrid,             &
+     &                             fwd, bwd, WK_fft)
       elapsed(1) = OMP_GET_WTIME() - start
 !
       elapsed(2:4) = zero
@@ -63,7 +63,7 @@
 !
 !   Finalize
       start = OMP_GET_WTIME()
-      call calypso_ROCmFFT_finalize(fwd, bwd, WK_fft)
+      call calypso_rocFFT_fin(fwd, bwd, WK_fft)
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
   10  continue
