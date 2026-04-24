@@ -20,8 +20,10 @@ lib_archve: libtarget
 
 
 mod_list:
-	@echo MOD_FEM_INT=  \\ >> $(MAKENAME)
-	@echo $(MOD_FEM_INT) >> $(MAKENAME)
+	@echo '$(UPPER_MODULES)+= $$(MOD_FEM_INT)' >> $(MAKENAME)
+	@echo 'MOD_FEM_INT=  ' \\ >> $(MAKENAME)
+	@echo '$(MOD_FEM_INT)'    >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
 
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(FEM_INT_DIR)' $(SOURCES)
