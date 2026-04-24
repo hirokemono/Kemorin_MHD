@@ -7,7 +7,7 @@ CORE_SRCDIR = $$(F_SRCDIR)/SERIAL_src
 LIB_MESH =       -lcalypso_core
 LIB_MESH_FILE = libcalypso_core.a
 
-UPPER_MODULES= MOD_CORE
+MOD_CORE= 'MOD_CORE'
 
 SUBDIRS = \
 Fortran2003          \
@@ -61,7 +61,7 @@ lib_archve:
 	done
 
 mod_list:
-	@echo  'MOD_CORE= ' >> $(MAKENAME)
+	@echo  '$(MOD_CORE)= ' >> $(MAKENAME)
 	>> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
@@ -69,7 +69,7 @@ mod_list:
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
-		UPPER_MODULES='$(UPPER_MODULES)' \
+		MOD_CORE='$(MOD_CORE)' \
 		mod_list; \
 		) \
 	done

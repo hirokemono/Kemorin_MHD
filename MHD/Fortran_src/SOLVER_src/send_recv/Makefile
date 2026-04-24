@@ -19,8 +19,10 @@ lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_SR)' >> $(MAKENAME)
 
 mod_list:
-	@echo MOD_SR=  \\ >> $(MAKENAME)
-	@echo $(MOD_SR) >> $(MAKENAME)
+	@echo '$(UPPER_MODULES)+= $$(MOD_SR)' >> $(MAKENAME)
+	@echo 'MOD_SR=  ' \\ >> $(MAKENAME)
+	@echo '$(MOD_SR)'    >> $(MAKENAME)
+	@echo  '#' >> $(MAKENAME)
 
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(SR_DIR)' $(SOURCES)

@@ -34,8 +34,9 @@ lib_archve:
 
 
 mod_list:
-	@echo MOD_SR=  \\ >> $(MAKENAME)
-	@echo $(MOD_SR) >> $(MAKENAME)
+	@echo '$(UPPER_MODULES)+= $$(MOD_SR)' >> $(MAKENAME)
+	@echo 'MOD_SR=  ' \\ >> $(MAKENAME)
+	@echo '$(MOD_SR)'    >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
 depends:

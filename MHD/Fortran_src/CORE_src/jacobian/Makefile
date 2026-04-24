@@ -22,7 +22,7 @@ lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_JACOBI)' >> $(MAKENAME)
 
 mod_list:
-	@echo  '$(UPPER_MODULES)+= $$(MOD_JACOBI)' >> $(MAKENAME)
+	@echo  '$(MOD_CORE)+= $$(MOD_JACOBI)' >> $(MAKENAME)
 	@echo  'MOD_JACOBI= ' \\ >> $(MAKENAME)
 	@echo  '$(MOD_JACOBI)'   >> $(MAKENAME)
 

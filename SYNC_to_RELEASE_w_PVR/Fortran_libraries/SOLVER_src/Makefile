@@ -7,6 +7,8 @@ SOLVER_SRCDIR = $$(F_SRCDIR)/SOLVER_src
 LIB_SOLVER =       -lcalypso_solver
 LIB_SOLVER_FILE = libcalypso_solver.a
 
+UPPER_MODULES = MOD_SOLVERS
+
 SUBDIRS = \
 direct_solver
 
@@ -55,15 +57,16 @@ lib_archve:
 mod_list:
 	@echo  MOD_SOLVERS=  \\ >> $(MAKENAME)
 	@echo  \
-	'$$(MOD_SR)         $$(MOD_DJDS_SOLVER)'  \
+	'        $$(MOD_DJDS_SOLVER)'  \
 	'$$(MOD_CRS_SOLVER) $$(MOD_CRS_SOLVER_S) ' \
-	'$$(MOD_SOLVER_LU)' >> $(MAKENAME)
+	 >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
 		mod_list; \
+		UPPER_MODULES='$(UPPER_MODULES)' \
 		) \
 	done
 

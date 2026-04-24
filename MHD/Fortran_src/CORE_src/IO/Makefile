@@ -21,7 +21,7 @@ lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_IO)' >> $(MAKENAME)
 
 mod_list:
-	@echo  '$(UPPER_MODULES)+= $$(MOD_IO)' >> $(MAKENAME)
+	@echo  '$(MOD_CORE)+= $$(MOD_IO)' >> $(MAKENAME)
 	@echo  'MOD_IO= ' \\ >> $(MAKENAME)
 	@echo  '$(MOD_IO)'   >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)

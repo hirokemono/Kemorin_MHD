@@ -22,7 +22,7 @@ lib_archve: libtarget
 
 
 mod_list:
-	@echo  '$(UPPER_MODULES)+= $$(MOD_MESH)' >> $(MAKENAME)
+	@echo  '$(MOD_CORE)+= $$(MOD_MESH)' >> $(MAKENAME)
 	@echo  'MOD_MESH= '  \\ >> $(MAKENAME)
 	@echo  '$(MOD_MESH)'    >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)

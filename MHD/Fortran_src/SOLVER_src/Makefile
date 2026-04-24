@@ -62,14 +62,15 @@ lib_archve:
 mod_list:
 	@echo  '$(UPPER_MODULES)= '  \\ >> $(MAKENAME)
 	@echo  \
-	'$$(MOD_SR)         $$(MOD_DJDS_SOLVER)'  \
+	'  $$(MOD_DJDS_SOLVER)'  \
 	'$$(MOD_CRS_SOLVER) $$(MOD_CRS_SOLVER_S) ' \
-	'$$(MOD_SOLVER_LU)' >> $(MAKENAME)
+	>> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
+		UPPER_MODULES='$(UPPER_MODULES)' \
 		mod_list; \
 		) \
 	done
