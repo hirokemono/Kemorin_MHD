@@ -20,8 +20,9 @@ lib_archve: libtarget
 	>> $(MAKENAME)
 
 mod_list:
-	@echo MOD_NOD_BD=  \\ >> $(MAKENAME)
-	@echo $(MOD_NOD_BD) >> $(MAKENAME)
+	@echo '$(UPPER_MODULES)+= $$(MOD_NOD_BD)' >> $(MAKENAME)
+	@echo 'MOD_NOD_BD=  ' \\ >> $(MAKENAME)
+	@echo '$(MOD_NOD_BD)'    >> $(MAKENAME)
 
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(MHD_NOD_BC_DIR)' $(SOURCES)

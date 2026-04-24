@@ -21,8 +21,9 @@ lib_archve: libtarget
 	>> $(MAKENAME)
 
 mod_list:
-	@echo  MOD_EVOLVE=  \\ >> $(MAKENAME)
-	@echo  $(MOD_EVOLVE) >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$(MOD_EVOLVE)' >> $(MAKENAME)
+	@echo  'MOD_EVOLVE=  ' \\ >> $(MAKENAME)
+	@echo  '$(MOD_EVOLVE)'    >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
 depends:

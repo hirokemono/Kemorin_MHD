@@ -7,6 +7,8 @@ MHD_SRCDIR = $$(F_SRCDIR)/MHD_src
 LIB_MHD=       -lkemo_MHD
 LIB_MHD_FILE= libkemo_MHD.a
 
+UPPER_MODULES= MOD_MHD
+
 SUBDIRS = \
 common \
 evolution \
@@ -66,23 +68,7 @@ lib_archve:
 	done
 
 mod_list:
-	@echo MOD_MHD= \\ >> $(MAKENAME)
-	@echo '$$(MOD_COMMON)'      \\  >> $(MAKENAME)
-	@echo '$$(MOD_MHD_IO)'      \\  >> $(MAKENAME)
-	@echo '$$(MOD_RHS)'         \\  >> $(MAKENAME)
-	@echo '$$(MOD_NOD_BD)'      \\  >> $(MAKENAME)
-	@echo '$$(MOD_SF_BD)'       \\  >> $(MAKENAME)
-	@echo '$$(MOD_RHS_BC)'      \\  >> $(MAKENAME)
-	@echo '$$(MOD_SGS)'         \\  >> $(MAKENAME)
-	@echo '$$(MOD_SGS_DYNAMIC)' \\  >> $(MAKENAME)
-	@echo '$$(MOD_SGS_BC)'      \\  >> $(MAKENAME)
-	@echo '$$(MOD_INITIAL)'     \\  >> $(MAKENAME)
-	@echo '$$(MOD_EVOLVE)'      \\  >> $(MAKENAME)
-	@echo '$$(MOD_MHD_SOLVE)'   \\  >> $(MAKENAME)
-	@echo '$$(MOD_MG_4_MHD)'    \\  >> $(MAKENAME)
-	@echo '$$(MOD_SPH_MHD_FDM)' \\  >> $(MAKENAME)
-	@echo '$$(MOD_SPH_MHD)'     \\  >> $(MAKENAME)
-	@echo '$$(MOD_SPH_SGS_MHD)'     >> $(MAKENAME)
+	@echo '$(UPPER_MODULES)=' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	
 	@for dir in $(SUBDIRS); do \
@@ -90,6 +76,7 @@ mod_list:
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
+		UPPER_MODULES='$(UPPER_MODULES)' \
 		mod_list; \
 		) \
 	done

@@ -20,8 +20,9 @@ lib_archve: libtarget
 	>> $(MAKENAME)
 
 mod_list:
-	@echo MOD_SGS_DYNAMIC=  \\ >> $(MAKENAME)
-	@echo $(MOD_SGS_DYNAMIC) >> $(MAKENAME)
+	@echo '$(UPPER_MODULES)+= $$(MOD_SGS_DYNAMIC)' >> $(MAKENAME)
+	@echo 'MOD_SGS_DYNAMIC=  ' \\ >> $(MAKENAME)
+	@echo '$(MOD_SGS_DYNAMIC) '   >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 
 depends:

@@ -20,8 +20,9 @@ lib_archve: libtarget
 	>> $(MAKENAME)
 
 mod_list:
-	@echo MOD_SF_BD=  \\ >> $(MAKENAME)
-	@echo $(MOD_SF_BD) >> $(MAKENAME)
+	@echo '$(UPPER_MODULES)+= $$(MOD_SF_BD)' >> $(MAKENAME)
+	@echo 'MOD_SF_BD=  ' \\ >> $(MAKENAME)
+	@echo '$(MOD_SF_BD)'    >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
 depends:
