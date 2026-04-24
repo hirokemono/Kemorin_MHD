@@ -12,7 +12,7 @@
 !!      subroutine calypso_sgl_rocFFT_init(Nfft, WK_fft)
 !!      subroutine calypso_sgl_rocFFT_fin(WK_fft)
 !!        integer(c_size_t), intent(in) :: Nfft
-!!        type(single_ROCmfft_work), intent(inout), target :: WK_fft
+!!        type(single_rocFFT_work), intent(inout), target :: WK_fft
 !! ------------------------------------------------------------------
 !!
 !! ------------------------------------------------------------------
@@ -56,7 +56,7 @@
 !
       implicit none
 !
-      type single_ROCmfft_work
+      type single_rocFFT_work
         type(c_ptr) :: rocFFT_fwd_plan = c_null_ptr
         type(c_ptr) :: rocFFT_bwd_plan = c_null_ptr
 !
@@ -69,7 +69,7 @@
         type(c_ptr) :: data_ptr = c_null_ptr
         real(kind = kreal), allocatable :: X_rocFFT(:)
         complex(kind = kreal), allocatable :: C_rocFFT(:)
-      end type single_ROCmfft_work
+      end type single_rocFFT_work
 !
       private :: calypso_sgl_rocFFT_set_size
       private :: calypso_sgl_rocFFT_alloc
@@ -85,7 +85,7 @@
       use calypso_single_ROCmFFT
 !
       integer(c_size_t), intent(in) :: Nfft
-      type(single_ROCmfft_work), intent(inout), target :: WK_fft
+      type(single_rocFFT_work), intent(inout), target :: WK_fft
 !
 !
       call calypso_sgl_rocFFT_set_size(Nfft, WK_fft)
@@ -106,7 +106,7 @@
       use hipfort_check
       use hipfort_rocfft
 !
-      type(single_ROCmfft_work), intent(inout), target :: WK_fft
+      type(single_rocFFT_work), intent(inout), target :: WK_fft
 !
       call rocfftCheck(rocfft_plan_destroy(WK_fft%rocFFT_bwd_plan))
       call rocfftCheck(rocfft_plan_destroy(WK_fft%rocFFT_fwd_plan))
@@ -121,7 +121,7 @@
       subroutine calypso_sgl_rocFFT_set_size(Nfft, WK_fft)
 !
       integer(c_size_t), intent(in) :: Nfft
-      type(single_ROCmfft_work), intent(inout), target :: WK_fft
+      type(single_rocFFT_work), intent(inout), target :: WK_fft
 !
       WK_fft%Nfft =   Nfft
       WK_fft%aNfft =  one / dble(Nfft)
@@ -139,7 +139,7 @@
       use hipfort_check
       use hipfort_rocfft
 !
-      type(single_ROCmfft_work), intent(inout), target :: WK_fft
+      type(single_rocFFT_work), intent(inout), target :: WK_fft
 !
 !   Initialize Forward transform
       call hipCheck(hipMalloc(WK_fft%data_ptr, WK_fft%Nbytes))

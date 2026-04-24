@@ -25,7 +25,7 @@
       real(kind = kreal) :: start, finish, elapsed(3)
 !
       type(fft_test_data) :: ft1
-      type(single_ROCmfft_work), target :: WK_fft
+      type(single_rocFFT_work), target :: WK_fft
 !
       integer(kind = kint) :: icou
 !

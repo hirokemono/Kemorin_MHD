@@ -11,13 +11,13 @@
 !!      subroutine single_pout_fwd_rocFFT_r2c(WK_fft, n_comp, X,        &
 !!     &                                      elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) :: n_comp
-!!        type(single_ROCmfft_work), intent(inout) :: WK_fft
+!!        type(single_rocFFT_work), intent(inout) :: WK_fft
 !!        real(kind = kreal), intent(inout) :: X(n_comp,fwd%Nfft)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !!      subroutine single_pout_fwd_rocFFT_r2r(WK_fft, n_comp, X,        &
 !!     &                                      elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) :: n_comp
-!!        type(single_ROCmfft_work), intent(inout) :: WK_fft
+!!        type(single_rocFFT_work), intent(inout) :: WK_fft
 !!        real(kind = kreal), intent(inout) :: X(n_comp,WK_fft%Nfft)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
@@ -35,13 +35,13 @@
 !!      subroutine single_pout_bwd_rocFFT_c2r(WK_fft, n_comp, X,        &
 !!     &                                      elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) :: n_comp
-!!        type(single_ROCmfft_work), intent(inout) :: WK_fft
+!!        type(single_rocFFT_work), intent(inout) :: WK_fft
 !!        real(kind = kreal), intent(inout) :: X(n_comp,bwd%Nfft)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !!      subroutine single_pout_bwd_rocFFT_r2r(WK_fft, n_comp, X,        &
 !!     &                                      elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) :: n_comp
-!!        type(single_ROCmfft_work), intent(inout) :: WK_fft
+!!        type(single_rocFFT_work), intent(inout) :: WK_fft
 !!        real(kind = kreal), intent(inout) :: X(n_comp,WK_fft%Nfft)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
@@ -88,7 +88,7 @@
 !
       integer(kind = kint), intent(in) :: n_comp
 !
-      type(single_ROCmfft_work), intent(inout) :: WK_fft
+      type(single_rocFFT_work), intent(inout) :: WK_fft
       real(kind = kreal), intent(inout) :: X(n_comp,WK_fft%Nfft)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
@@ -136,7 +136,7 @@
 !
       integer(kind = kint), intent(in) :: n_comp
 !
-      type(single_ROCmfft_work), intent(inout) :: WK_fft
+      type(single_rocFFT_work), intent(inout) :: WK_fft
       real(kind = kreal), intent(inout) :: X(n_comp,WK_fft%Nfft)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
@@ -183,7 +183,7 @@
 !
       integer(kind = kint), intent(in) :: n_comp
 !
-      type(single_ROCmfft_work), intent(inout) :: WK_fft
+      type(single_rocFFT_work), intent(inout) :: WK_fft
       real(kind = kreal), intent(inout) :: X(n_comp,WK_fft%Nfft)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
@@ -230,7 +230,7 @@
 !
       integer(kind = kint), intent(in) :: n_comp
 !
-      type(single_ROCmfft_work), intent(inout) :: WK_fft
+      type(single_rocFFT_work), intent(inout) :: WK_fft
       real(kind = kreal), intent(inout) :: X(n_comp,WK_fft%Nfft)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
