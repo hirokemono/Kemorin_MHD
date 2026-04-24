@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed in April, 2026
 !
-!>@brief  Fourier transform using ROCmFFT
+!>@brief  Fourier transform using rocFFT
 !!
 !!@verbatim
 !! wrapper subroutine for forward Fourier transform by FFTW3
