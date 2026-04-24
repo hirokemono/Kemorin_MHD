@@ -1,5 +1,5 @@
-!>@file   single_pin_ROCmFFT_offload.f90
-!!@brief  module single_pin_ROCmFFT_offload
+!>@file   single_pin_rocFFT_offload.f90
+!!@brief  module single_pin_rocFFT_offload
 !!
 !!@author H. Matsui
 !!@date Programmed in April, 2013
@@ -65,13 +65,13 @@
 !! ------------------------------------------------------------------
 !!@endverbatim
 !
-      module single_pin_ROCmFFT_offload
+      module single_pin_rocFFT_offload
 !
       use omp_lib
 !
       use m_precision
       use m_constants
-      use t_single_ROCmFFT_wrapper
+      use t_single_rocFFT_wrapper
 !
       implicit none
 !
@@ -84,7 +84,7 @@
       subroutine single_pin_fwd_rocFFT_r2c(WK_fft, n_comp, X,           &
      &                                     elapsed_fft, elapsed_cpy)
 !
-      use calypso_single_ROCmFFT
+      use calypso_single_rocFFT
 !
       integer(kind = kint), intent(in) :: n_comp
 !
@@ -132,7 +132,7 @@
       subroutine single_pin_bwd_rocFFT_c2r(WK_fft, n_comp, X,           &
      &                                     elapsed_fft, elapsed_cpy)
 !
-      use calypso_single_ROCmFFT
+      use calypso_single_rocFFT
 !
       integer(kind = kint), intent(in) :: n_comp
 !
@@ -180,7 +180,7 @@
       subroutine single_pin_fwd_rocFFT_r2r(WK_fft, n_comp, X,           &
      &                                     elapsed_fft, elapsed_cpy)
 !
-      use calypso_single_ROCmFFT
+      use calypso_single_rocFFT
 !
       integer(kind = kint), intent(in) :: n_comp
 !
@@ -227,7 +227,7 @@
       subroutine single_pin_bwd_rocFFT_r2r(WK_fft, n_comp, X,           &
      &                                     elapsed_fft, elapsed_cpy)
 !
-      use calypso_single_ROCmFFT
+      use calypso_single_rocFFT
 !
       integer(kind = kint), intent(in) :: n_comp
 !
@@ -271,4 +271,4 @@
 !
 ! ------------------------------------------------------------------
 !
-      end module single_pin_ROCmFFT_offload
+      end module single_pin_rocFFT_offload

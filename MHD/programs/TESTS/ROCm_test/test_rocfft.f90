@@ -1,5 +1,5 @@
 !
-      program test_ROCmfft
+      program test_rocfft
 !
       use iso_c_binding
       use omp_lib
@@ -10,9 +10,9 @@
 !
       use m_FFT_size
       use t_fft_test_data
-      use t_multi_ROCmFFT_wrapper
-      use multi_pin_complex_ROCmFFT
-      use multi_pin_real_ROCmFFT
+      use t_multi_rocFFT_wrapper
+      use multi_pin_complex_rocFFT
+      use multi_pin_real_rocFFT
 !
       implicit none
 !
@@ -107,4 +107,4 @@
      &                           elapsed(2) + elapsed(3)
 !
       stop 'finish'
-      end program test_ROCmfft
+      end program test_rocfft

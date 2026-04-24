@@ -1,5 +1,5 @@
-!>@file   normalize_for_OMP_FFTW.f90
-!!@brief  module normalize_for_ROCmFFT
+!>@file   normalize_for_rocFFT.f90
+!!@brief  module normalize_for_rocFFT
 !!
 !!@author H. Matsui
 !!@date Programmed in April, 2013
@@ -33,7 +33,7 @@
 !!        real(kind = kreal), intent(inout) :: X_FFT(NFFT_r,Ncomp)
 !! ------------------------------------------------------------------
 !!@endverbatim
-      module normalize_for_ROCmFFT
+      module normalize_for_rocFFT
 !
       use m_precision
       use m_constants
@@ -175,4 +175,4 @@
 !
 ! ------------------------------------------------------------------
 !
-      end module normalize_for_ROCmFFT
+      end module normalize_for_rocFFT

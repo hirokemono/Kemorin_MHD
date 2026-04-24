@@ -1,5 +1,5 @@
-!>@file   multi_pout_complex_ROCmFFT.f90
-!!@brief  module multi_pout_complex_ROCmFFT
+!>@file   multi_pout_complex_rocFFT.f90
+!!@brief  module multi_pout_complex_rocFFT
 !!
 !!@author H. Matsui
 !!@date Programmed in April, 2013
@@ -62,13 +62,13 @@
 !! ------------------------------------------------------------------
 !!@endverbatim
 !
-      module multi_pout_complex_ROCmFFT
+      module multi_pout_complex_rocFFT
 !
       use omp_lib
 !
       use m_precision
       use m_constants
-      use t_multi_ROCmFFT_wrapper
+      use t_multi_rocFFT_wrapper
 !
       implicit none
 !
@@ -145,7 +145,7 @@
      &                                     elapsed_fft, elapsed_cpy)
 !
       use normalize_for_OMP_FFTW
-      use calypso_multi_ROCmFFT
+      use calypso_multi_rocFFT
 !
       type(calypso_rocFFT_params), intent(in), target :: fwd
 !
@@ -196,7 +196,7 @@
      &                                     elapsed_fft, elapsed_cpy)
 !
       use normalize_for_OMP_FFTW
-      use calypso_multi_ROCmFFT
+      use calypso_multi_rocFFT
 !
       type(calypso_rocFFT_params), intent(in), target :: bwd
 !
@@ -234,4 +234,4 @@
 !
 ! ------------------------------------------------------------------
 !
-      end module multi_pout_complex_ROCmFFT
+      end module multi_pout_complex_rocFFT

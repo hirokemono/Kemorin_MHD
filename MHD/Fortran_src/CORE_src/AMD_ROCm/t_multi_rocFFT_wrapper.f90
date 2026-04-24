@@ -1,5 +1,5 @@
-!>@file   t_multi_ROCmFFT_wrapper.f90
-!!@brief  module t_multi_ROCmFFT_wrapper
+!>@file   t_multi_rocFFT_wrapper.f90
+!!@brief  module t_multi_rocFFT_wrapper
 !!
 !!@author H. Matsui
 !!@date Programmed in Apr., 2026
@@ -56,7 +56,7 @@
 !! ------------------------------------------------------------------
 !!@endverbatim
 !!
-      module t_multi_ROCmFFT_wrapper
+      module t_multi_rocFFT_wrapper
 !
       use m_precision
       use m_constants
@@ -290,4 +290,4 @@
 !
 ! ------------------------------------------------------------------
 !
-      end module t_multi_ROCmFFT_wrapper
+      end module t_multi_rocFFT_wrapper

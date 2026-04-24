@@ -14,8 +14,8 @@
 !
       use m_FFT_size
       use t_fft_test_data
-      use t_single_ROCmFFT_wrapper
-      use single_pin_ROCmFFT_offload
+      use t_single_rocFFT_wrapper
+      use single_pin_rocFFT_offload
 !
       implicit none
 !

@@ -1,5 +1,5 @@
-!>@file   calypso_single_ROCmFFT.f90
-!!@brief  module calypso_single_ROCmFFT
+!>@file   calypso_single_rocFFT.f90
+!!@brief  module calypso_single_rocFFT
 !!
 !!@author H. Matsui
 !!@date Programmed in Apr., 2026
@@ -83,7 +83,7 @@
 !! ------------------------------------------------------------------
 !!@endverbatim
 !!
-      module calypso_single_ROCmFFT
+      module calypso_single_rocFFT
 !
       use m_precision
       use m_constants
@@ -253,4 +253,4 @@
 !
 ! ------------------------------------------------------------------
 !
-      end module calypso_single_ROCmFFT
+      end module calypso_single_rocFFT

@@ -1,5 +1,5 @@
-!>@file   t_single_ROCmFFT_wrapper.f90
-!!@brief  module t_single_ROCmFFT_wrapper
+!>@file   t_single_rocFFT_wrapper.f90
+!!@brief  module t_single_rocFFT_wrapper
 !!
 !!@author H. Matsui
 !!@date Programmed in Oct., 2012
@@ -47,7 +47,7 @@
 !! ------------------------------------------------------------------
 !!@endverbatim
 !!
-      module t_single_ROCmFFT_wrapper
+      module t_single_rocFFT_wrapper
 !
       use m_precision
       use m_constants
@@ -82,7 +82,7 @@
 !
       subroutine calypso_sgl_rocFFT_init(Nfft, WK_fft)
 !
-      use calypso_single_ROCmFFT
+      use calypso_single_rocFFT
 !
       integer(c_size_t), intent(in) :: Nfft
       type(single_rocFFT_work), intent(inout), target :: WK_fft
@@ -157,4 +157,4 @@
 !
 ! ------------------------------------------------------------------
 !
-      end module t_single_ROCmFFT_wrapper
+      end module t_single_rocFFT_wrapper

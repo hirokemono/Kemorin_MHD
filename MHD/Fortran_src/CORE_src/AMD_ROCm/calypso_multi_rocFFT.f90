@@ -1,5 +1,5 @@
-!>@file   calypso_multi_ROCmFFT.f90
-!!@brief  module calypso_multi_ROCmFFT
+!>@file   calypso_multi_rocFFT.f90
+!!@brief  module calypso_multi_rocFFT
 !!
 !!@author H. Matsui
 !!@date Programmed in April, 2026
@@ -78,7 +78,7 @@
 !! ------------------------------------------------------------------
 !!@endverbatim
 !!
-      module calypso_multi_ROCmFFT
+      module calypso_multi_rocFFT
 !
       use m_precision
       use m_constants
@@ -253,4 +253,4 @@
 !
 ! ------------------------------------------------------------------
 !
-      end module calypso_multi_ROCmFFT
+      end module calypso_multi_rocFFT

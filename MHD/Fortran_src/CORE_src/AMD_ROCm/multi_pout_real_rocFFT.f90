@@ -1,5 +1,5 @@
-!>@file   multi_pout_real_ROCmFFT.f90
-!!@brief  module multi_pout_real_ROCmFFT
+!>@file   multi_pout_real_rocFFT.f90
+!!@brief  module multi_pout_real_rocFFT
 !!
 !!@author H. Matsui
 !!@date Programmed in April, 2013
@@ -58,13 +58,13 @@
 !! ------------------------------------------------------------------
 !!@endverbatim
 !
-      module multi_pout_real_ROCmFFT
+      module multi_pout_real_rocFFT
 !
       use omp_lib
 !
       use m_precision
       use m_constants
-      use t_multi_ROCmFFT_wrapper
+      use t_multi_rocFFT_wrapper
 !
       implicit none
 !
@@ -77,8 +77,8 @@
       subroutine multi_pout_fwd_rocFFT_r2r(fwd, WK_fft, X,              &
      &                                     elapsed_fft, elapsed_cpy)
 !
-      use normalize_for_ROCmFFT
-      use calypso_multi_ROCmFFT
+      use normalize_for_rocFFT
+      use calypso_multi_rocFFT
 !
       type(calypso_rocFFT_params), intent(in), target :: fwd
 !
@@ -127,8 +127,8 @@
       subroutine multi_pout_bwd_rocFFT_r2r(bwd, WK_fft, X,              &
      &                                     elapsed_fft, elapsed_cpy)
 !
-      use normalize_for_ROCmFFT
-      use calypso_multi_ROCmFFT
+      use normalize_for_rocFFT
+      use calypso_multi_rocFFT
 !
       type(calypso_rocFFT_params), intent(in), target :: bwd
 !
@@ -170,8 +170,8 @@
       subroutine multi_pout_fwd_OMP_rocFFT(fwd, WK_fft, X,              &
      &                                     elapsed_fft, elapsed_cpy)
 !
-      use normalize_for_ROCmFFT
-      use calypso_multi_ROCmFFT
+      use normalize_for_rocFFT
+      use calypso_multi_rocFFT
 !
       type(calypso_rocFFT_params), intent(in), target :: fwd
 !
@@ -219,8 +219,8 @@
       subroutine multi_pout_bwd_OMP_rocFFT(bwd, WK_fft, X,              &
      &                                     elapsed_fft, elapsed_cpy)
 !
-      use normalize_for_ROCmFFT
-      use calypso_multi_ROCmFFT
+      use normalize_for_rocFFT
+      use calypso_multi_rocFFT
 !
       type(calypso_rocFFT_params), intent(in), target :: bwd
 !
@@ -257,4 +257,4 @@
 !
 ! ------------------------------------------------------------------
 !
-      end module multi_pout_real_ROCmFFT
+      end module multi_pout_real_rocFFT
