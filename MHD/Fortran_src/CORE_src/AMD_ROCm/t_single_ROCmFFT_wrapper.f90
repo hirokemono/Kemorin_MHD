@@ -71,8 +71,8 @@
         complex(kind = kreal), allocatable :: C_rocFFT(:)
       end type single_ROCmfft_work
 !
-      private :: calypso_sgl_ROCmFFT_set_size
-      private :: calypso_sgl_ROCmFFT_alloc
+      private :: calypso_sgl_rocFFT_set_size
+      private :: calypso_sgl_rocFFT_alloc
 !
 ! ------------------------------------------------------------------
 !
@@ -88,13 +88,13 @@
       type(single_ROCmfft_work), intent(inout), target :: WK_fft
 !
 !
-      call calypso_sgl_ROCmFFT_set_size(Nfft, WK_fft)
-      call calypso_sgl_ROCmFFT_alloc(WK_fft)
+      call calypso_sgl_rocFFT_set_size(Nfft, WK_fft)
+      call calypso_sgl_rocFFT_alloc(WK_fft)
 !
 !   Initialize Forward transform
-      call calypso_sgl_fwd_ROCmFFT_init(Nfft, WK_fft%rocFFT_fwd_plan)
+      call calypso_sgl_fwd_rocFFT_init(Nfft, WK_fft%rocFFT_fwd_plan)
 !   Initialize Backword transform
-      call calypso_sgl_bwd_ROCmFFT_init(Nfft, WK_fft%rocFFT_bwd_plan)
+      call calypso_sgl_bwd_rocFFT_init(Nfft, WK_fft%rocFFT_bwd_plan)
 !
       end subroutine calypso_sgl_rocFFT_init
 !
@@ -118,7 +118,7 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_sgl_ROCmFFT_set_size(Nfft, WK_fft)
+      subroutine calypso_sgl_rocFFT_set_size(Nfft, WK_fft)
 !
       integer(c_size_t), intent(in) :: Nfft
       type(single_ROCmfft_work), intent(inout), target :: WK_fft
@@ -129,11 +129,11 @@
       WK_fft%Nfft_r = 2 * WK_fft%Nfft_c
       WK_fft%Nbytes = WK_fft%Nfft_r * kreal
 !
-      end subroutine calypso_sgl_ROCmFFT_set_size
+      end subroutine calypso_sgl_rocFFT_set_size
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_sgl_ROCmFFT_alloc(WK_fft)
+      subroutine calypso_sgl_rocFFT_alloc(WK_fft)
 !
       use hipfort
       use hipfort_check
@@ -153,7 +153,7 @@
       WK_fft%C_rocFFT(1:WK_fft%Nfft_c) = 0.0d0
 !$omp end parallel workshare
 !
-      end subroutine calypso_sgl_ROCmFFT_alloc
+      end subroutine calypso_sgl_rocFFT_alloc
 !
 ! ------------------------------------------------------------------
 !

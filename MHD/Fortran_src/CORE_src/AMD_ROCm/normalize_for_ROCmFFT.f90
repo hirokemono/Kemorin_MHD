@@ -8,26 +8,26 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine norm_rtp_from_fwd_ROCmFFT                            &
+!!      subroutine norm_rtp_from_fwd_rocFFT                             &
 !!     &         (Ncomp, aNfft, Nfft_r, X_FFT, Nfft, X)
 !!        integer(kind = kint), intent(in) :: Ncomp, Nfft, Nfft_r
 !!        real(kind = kreal), intent(in) :: aNfft
 !!        real(kind = kreal), intent(in) :: X_FFT(Ncomp*Nfft_r)
 !!        real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
-!!      subroutine norm_prt_from_fwd_ROCmFFT(Ncomp, aNfft,              &
-!!     &                                     NFFT_r, X_FFT, Nfft, X)
+!!      subroutine norm_prt_from_fwd_rocFFT(Ncomp, aNfft,               &
+!!     &                                    NFFT_r, X_FFT, Nfft, X)
 !!        integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_r
 !!        real(kind = kreal), intent(in) :: aNfft
 !!        real(kind = kreal), intent(in) :: X_FFT(NFFT_r,Ncomp)
 !!        real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
 !!
-!!      subroutine norm_rtp_to_bwd_ROCmFFT(Ncomp, Nfft, X,              &
-!!     &                                   Nfft_r, X_FFT)
+!!      subroutine norm_rtp_to_bwd_rocFFT(Ncomp, Nfft, X,               &
+!!     &                                  Nfft_r, X_FFT)
 !!        integer(kind = kint), intent(in) :: Ncomp, Nfft, Nfft_r
 !!        real(kind = kreal), intent(in) :: X(Ncomp,Nfft)
 !!        real(kind = kreal), intent(inout) :: X_FFT(Ncomp*Nfft_r)
-!!      subroutine norm_prt_to_bwd_ROCmFFT(Ncomp, Nfft, X,              &
-!!     &                                   NFFT_r, X_FFT)
+!!      subroutine norm_prt_to_bwd_rocFFT(Ncomp, Nfft, X,               &
+!!     &                                  NFFT_r, X_FFT)
 !!        integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_r
 !!        real(kind = kreal), intent(in) :: X(Nfft,Ncomp)
 !!        real(kind = kreal), intent(inout) :: X_FFT(NFFT_r,Ncomp)
@@ -46,7 +46,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine norm_rtp_from_fwd_ROCmFFT                              &
+      subroutine norm_rtp_from_fwd_rocFFT                               &
      &         (Ncomp, aNfft, Nfft_r, X_FFT, Nfft, X)
 !
       integer(kind = kint), intent(in) :: Ncomp, Nfft, Nfft_r
@@ -77,12 +77,12 @@
       end do
 !$omp end parallel
 !
-      end subroutine norm_rtp_from_fwd_ROCmFFT
+      end subroutine norm_rtp_from_fwd_rocFFT
 !
 ! ------------------------------------------------------------------
 !
-      subroutine norm_prt_from_fwd_ROCmFFT(Ncomp, aNfft,                &
-     &                                     NFFT_r, X_FFT, Nfft, X)
+      subroutine norm_prt_from_fwd_rocFFT(Ncomp, aNfft,                 &
+     &                                    NFFT_r, X_FFT, Nfft, X)
 !
       integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_r
       real(kind = kreal), intent(in) :: aNfft
@@ -103,13 +103,13 @@
       end do
 !$omp end parallel do
 !
-      end subroutine norm_prt_from_fwd_ROCmFFT
+      end subroutine norm_prt_from_fwd_rocFFT
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine norm_rtp_to_bwd_ROCmFFT(Ncomp, Nfft, X,                &
-     &                                   Nfft_r, X_FFT)
+      subroutine norm_rtp_to_bwd_rocFFT(Ncomp, Nfft, X,                 &
+     &                                  Nfft_r, X_FFT)
 !
       integer(kind = kint), intent(in) :: Ncomp, Nfft, Nfft_r
       real(kind = kreal), intent(in) :: X(Ncomp,Nfft)
@@ -144,12 +144,12 @@
       end do
 !$omp end parallel
 !
-      end subroutine norm_rtp_to_bwd_ROCmFFT
+      end subroutine norm_rtp_to_bwd_rocFFT
 !
 ! ------------------------------------------------------------------
 !
-      subroutine norm_prt_to_bwd_ROCmFFT(Ncomp, Nfft, X,                &
-     &                                   NFFT_r, X_FFT)
+      subroutine norm_prt_to_bwd_rocFFT(Ncomp, Nfft, X,                 &
+     &                                  NFFT_r, X_FFT)
 !
       integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_r
       real(kind = kreal), intent(in) :: X(Nfft,Ncomp)
@@ -171,7 +171,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine norm_prt_to_bwd_ROCmFFT
+      end subroutine norm_prt_to_bwd_rocFFT
 !
 ! ------------------------------------------------------------------
 !

@@ -8,17 +8,17 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine calypso_sgl_fwd_ROCmFFT_init(Nfft, rocFFT_fwd_plan)
+!!      subroutine calypso_sgl_fwd_rocFFT_init(Nfft, rocFFT_fwd_plan)
 !!        integer(c_size_t), intent(in), target :: Nfft
 !!        type(c_ptr), intent(inout), target :: rocFFT_fwd_plan
 !!   wrapper subroutine for initierize FFT by FFTW
-!!      subroutine calypso_sgl_bwd_ROCmFFT_init(Nfft, rocFFT_bwd_plan)
+!!      subroutine calypso_sgl_bwd_rocFFT_init(Nfft, rocFFT_bwd_plan)
 !!        integer(c_size_t), intent(in), target :: Nfft
 !!        type(c_ptr), intent(inout), target :: rocFFT_bwd_plan
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by FFTW3
-!!      subroutine calypso_sgl_fwd_ROCmFFT_r2c(rocFFT_fwd_plan,         &
+!!      subroutine calypso_sgl_fwd_rocFFT_r2c(rocFFT_fwd_plan,          &
 !!     &          Nfft_r, X_rocFFT, Nfft_c, C_rocFFT, Nbytes, data_ptr)
 !!        type(c_ptr), intent(in), target :: rocFFT_fwd_plan
 !!        integer(kind = kint), intent(in) :: Nfft_r, Nfft_c
@@ -26,7 +26,7 @@
 !!        real(kind = kreal), intent(in), target :: X_rocFFT(Nfft_r)
 !!        complex(kind = kreal), intent(inout),target:: C_rocFFT(Nfft_c)
 !!        type(c_ptr), intent(inout) :: data_ptr
-!!      subroutine calypso_sgl_fwd_ROCmFFT_r2r(rocFFT_fwd_plan,         &
+!!      subroutine calypso_sgl_fwd_rocFFT_r2r(rocFFT_fwd_plan,          &
 !!     &          Nfft_r, X_rocFFT, Nbytes, data_ptr)
 !!        type(c_ptr), intent(in), target :: rocFFT_fwd_plan
 !!        integer(kind = kint), intent(in) :: Nfft_r
@@ -45,7 +45,7 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine calypso_sgl_bwd_ROCmFFT_c2r(rocFFT_bwd_plan,         &
+!!      subroutine calypso_sgl_bwd_rocFFT_c2r(rocFFT_bwd_plan,          &
 !!     &          Nfft_c, C_rocFFT, Nfft_r, X_rocFFT, Nbytes, data_ptr)
 !!        type(c_ptr), intent(in), target :: rocFFT_bwd_plan
 !!        integer(kind = kint), intent(in) :: Nfft_r, Nfft_c
@@ -53,7 +53,7 @@
 !!        complex(kind = kreal), intent(in), target:: C_rocFFT(Nfft_c)
 !!        real(kind = kreal), intent(inout), target :: X_rocFFT(Nfft_r)
 !!        type(c_ptr), intent(inout) :: data_ptr
-!!      subroutine calypso_sgl_bwd_ROCmFFT_r2r(rocFFT_bwd_plan,         &
+!!      subroutine calypso_sgl_bwd_rocFFT_r2r(rocFFT_bwd_plan,          &
 !!     &          Nfft_r, X_rocFFT, Nbytes, data_ptr)
 !!        type(c_ptr), intent(in), target :: rocFFT_bwd_plan
 !!        integer(kind = kint), intent(in) :: Nfft_r
@@ -100,7 +100,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_sgl_fwd_ROCmFFT_init(Nfft, rocFFT_fwd_plan)
+      subroutine calypso_sgl_fwd_rocFFT_init(Nfft, rocFFT_fwd_plan)
 !
       use hipfort
       use hipfort_check
@@ -117,11 +117,11 @@
      &                                           ione_c, c_loc(Nfft),   &
      &                                           ione_c, c_null_ptr))
 !
-      end subroutine calypso_sgl_fwd_ROCmFFT_init
+      end subroutine calypso_sgl_fwd_rocFFT_init
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_sgl_bwd_ROCmFFT_init(Nfft, rocFFT_bwd_plan)
+      subroutine calypso_sgl_bwd_rocFFT_init(Nfft, rocFFT_bwd_plan)
 !
       use hipfort
       use hipfort_check
@@ -138,11 +138,11 @@
      &                                           ione_c, c_loc(Nfft),   &
      &                                           ione_c, c_null_ptr))
 !
-      end subroutine calypso_sgl_bwd_ROCmFFT_init
+      end subroutine calypso_sgl_bwd_rocFFT_init
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_sgl_fwd_ROCmFFT_r2c(rocFFT_fwd_plan,           &
+      subroutine calypso_sgl_fwd_rocFFT_r2c(rocFFT_fwd_plan,            &
      &          Nfft_r, X_rocFFT, Nfft_c, C_rocFFT, Nbytes, data_ptr)
 !
       use hipfort
@@ -166,11 +166,11 @@
       call hipCheck(hipMemcpy(c_loc(C_rocFFT(1)), data_ptr,             &
      &                        Nbytes, hipMemcpyDeviceToHost))
 !
-      end subroutine calypso_sgl_fwd_ROCmFFT_r2c
+      end subroutine calypso_sgl_fwd_rocFFT_r2c
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_sgl_bwd_ROCmFFT_c2r(rocFFT_bwd_plan,           &
+      subroutine calypso_sgl_bwd_rocFFT_c2r(rocFFT_bwd_plan,            &
      &          Nfft_c, C_rocFFT, Nfft_r, X_rocFFT, Nbytes, data_ptr)
 !
       use hipfort
@@ -194,12 +194,12 @@
       call hipCheck(hipMemcpy(c_loc(X_rocFFT(1)), data_ptr,             &
      &                        Nbytes, hipMemcpyDeviceToHost))
 !
-      end subroutine calypso_sgl_bwd_ROCmFFT_c2r
+      end subroutine calypso_sgl_bwd_rocFFT_c2r
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_sgl_fwd_ROCmFFT_r2r(rocFFT_fwd_plan,           &
+      subroutine calypso_sgl_fwd_rocFFT_r2r(rocFFT_fwd_plan,            &
      &          Nfft_r, X_rocFFT, Nbytes, data_ptr)
 !
       use hipfort
@@ -222,11 +222,11 @@
       call hipCheck(hipMemcpy(c_loc(X_rocFFT(1)), data_ptr,             &
      &                        Nbytes, hipMemcpyDeviceToHost))
 !
-      end subroutine calypso_sgl_fwd_ROCmFFT_r2r
+      end subroutine calypso_sgl_fwd_rocFFT_r2r
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_sgl_bwd_ROCmFFT_r2r(rocFFT_bwd_plan,           &
+      subroutine calypso_sgl_bwd_rocFFT_r2r(rocFFT_bwd_plan,            &
      &          Nfft_r, X_rocFFT, Nbytes, data_ptr)
 !
       use hipfort
@@ -249,7 +249,7 @@
       call hipCheck(hipMemcpy(c_loc(X_rocFFT(1)), data_ptr,             &
      &                        Nbytes, hipMemcpyDeviceToHost))
 !
-      end subroutine calypso_sgl_bwd_ROCmFFT_r2r
+      end subroutine calypso_sgl_bwd_rocFFT_r2r
 !
 ! ------------------------------------------------------------------
 !

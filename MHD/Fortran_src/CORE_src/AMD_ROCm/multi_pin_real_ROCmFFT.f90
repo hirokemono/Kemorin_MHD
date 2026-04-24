@@ -105,14 +105,14 @@
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call calypso_forward_ROCmFFT_r2r                                &
+        call calypso_forward_rocFFT_r2r                                 &
      &     (fwd%rocFFT_plan, fwd%rocFFT_wk_info,                        &
      &      fwd%Ncomp, WK_fft%Nfft_r, WK_fft%X_rocFFT,                  &
      &      fwd%Nbytes, WK_fft%data_ptr)
         elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call norm_prt_from_fwd_ROCmFFT(int(fwd%Ncomp), WK_fft%aNfft,    &
+        call norm_prt_from_fwd_rocFFT(int(fwd%Ncomp), WK_fft%aNfft,     &
      &      int(WK_fft%NFFT_r), WK_fft%X_rocFFT(1),                     &
      &      int(fwd%Nfft), X(1,1))
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
@@ -138,13 +138,13 @@
 !
 !
         start = OMP_GET_WTIME()
-        call norm_prt_to_bwd_ROCmFFT                                    &
+        call norm_prt_to_bwd_rocFFT                                     &
      &     (int(bwd%Ncomp), int(bwd%Nfft), X(1,1),                      &
      &      int(WK_fft%Nfft_r), WK_fft%X_rocFFT(1))
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call calypso_backward_ROCmFFT_r2r                               &
+        call calypso_backward_rocFFT_r2r                                &
      &     (bwd%rocFFT_plan, bwd%rocFFT_wk_info,                        &
      &      bwd%Ncomp, WK_fft%Nfft_r, WK_fft%X_rocFFT(1),               &
      &      bwd%Nbytes, WK_fft%data_ptr)
@@ -198,13 +198,13 @@
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call calypso_fwd_OpenMP_ROCmFFT                                 &
+        call calypso_fwd_OpenMP_rocFFT                                  &
      &     (fwd%rocFFT_plan, fwd%rocFFT_wk_info,                        &
      &      fwd%Ncomp, WK_fft%Nfft_r, WK_fft%X_rocFFT)
         elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call norm_prt_from_fwd_ROCmFFT(int(fwd%Ncomp), WK_fft%aNfft,    &
+        call norm_prt_from_fwd_rocFFT(int(fwd%Ncomp), WK_fft%aNfft,     &
      &      int(WK_fft%NFFT_r), WK_fft%X_rocFFT(1),                     &
      &      int(fwd%Nfft), X(1,1))
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
@@ -230,13 +230,13 @@
 !
 !
         start = OMP_GET_WTIME()
-        call norm_prt_to_bwd_ROCmFFT                                    &
+        call norm_prt_to_bwd_rocFFT                                     &
      &     (int(bwd%Ncomp), int(bwd%Nfft), X(1,1),                      &
      &      int(WK_fft%Nfft_r), WK_fft%X_rocFFT(1))
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call calypso_bwd_OpenMP_ROCmFFT                                 &
+        call calypso_bwd_OpenMP_rocFFT                                  &
            (bwd%rocFFT_plan, bwd%rocFFT_wk_info,                        &
      &      bwd%Ncomp, WK_fft%Nfft_r, WK_fft%X_rocFFT(1))
         elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start

@@ -7,7 +7,7 @@
 !>@brief  Fourier transform using FFTW Ver.3
 !!
 !!@verbatim
-!! wrapper subroutine for initialization of ROCmFFT
+!! wrapper subroutine for initialization of rocFFT
 !!      subroutine calypso_pout_rocFFT_init(Ncomp_fwd, Ncomp_bwd, Nfft, &
 !!     &                                     fwd, bwd, WK_fft)
 !!        integer(kind = kint), intent(in) :: Ncomp_fwd, Ncomp_bwd
@@ -16,7 +16,7 @@
 !!        type(calypso_rocFFT_params), intent(inout), target :: bwd
 !!        type(calypso_rocFFT_work), intent(inout), target :: WK_fft
 !!
-!! wrapper subroutine for forward Fourier transform by ROCmFFT
+!! wrapper subroutine for forward Fourier transform by rocFFT
 !!      subroutine multi_pout_fwd_rocFFT_r2c(fwd, WK_fft, X,            &
 !!     &                                     elapsed_fft, elapsed_cpy)
 !!        type(calypso_rocFFT_params), intent(in), target :: fwd
@@ -34,7 +34,7 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!! wrapper subroutine for backward Fourier transform by ROCmFFT
+!! wrapper subroutine for backward Fourier transform by rocFFT
 !!      subroutine multi_pout_bwd_rocFFT_c2r(bwd, WK_fft, X,            &
 !!     &                                     elapsed_fft, elapsed_cpy)
 !!        type(calypso_rocFFT_params), intent(in), target :: bwd
@@ -72,8 +72,8 @@
 !
       implicit none
 !
-      private :: calypso_pout_fwd_ROCmFFT_init
-      private :: calypso_pout_bwd_ROCmFFT_init
+      private :: calypso_pout_fwd_rocFFT_init
+      private :: calypso_pout_bwd_rocFFT_init
 !
 ! ------------------------------------------------------------------
 !
@@ -91,24 +91,24 @@
       type(calypso_rocFFT_work), intent(inout), target :: WK_fft
 !
 !
-      call calypso_ROCmFFT_set_size(Ncomp_fwd, Ncomp_bwd, Nfft,         &
-     &                              fwd, bwd, WK_fft)
-      call calypso_ROCmFFT_alloc(fwd, bwd, WK_fft)
+      call calypso_rocFFT_set_size(Ncomp_fwd, Ncomp_bwd, Nfft,          &
+     &                             fwd, bwd, WK_fft)
+      call calypso_rocFFT_alloc(fwd, bwd, WK_fft)
 !
 !   Initialize Forward transform
-      call calypso_pout_fwd_ROCmFFT_init(fwd)
-      call calypso_fwd_ROCmFFT_init(fwd)
+      call calypso_pout_fwd_rocFFT_init(fwd)
+      call calypso_fwd_rocFFT_init(fwd)
 !
 !   Initialize Backword transform
-      call calypso_pout_bwd_ROCmFFT_init(bwd)
-      call calypso_bwd_ROCmFFT_init(bwd)
+      call calypso_pout_bwd_rocFFT_init(bwd)
+      call calypso_bwd_rocFFT_init(bwd)
 !
       end subroutine calypso_pout_rocFFT_init
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_pout_fwd_ROCmFFT_init(fwd)
+      subroutine calypso_pout_fwd_rocFFT_init(fwd)
 !
       type(calypso_rocFFT_params), intent(inout), target :: fwd
 !
@@ -120,11 +120,11 @@
       fwd%out_strides(1) =   fwd%Ncomp
       fwd%out_distance =     1
 !
-      end subroutine calypso_pout_fwd_ROCmFFT_init
+      end subroutine calypso_pout_fwd_rocFFT_init
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_pout_bwd_ROCmFFT_init(bwd)
+      subroutine calypso_pout_bwd_rocFFT_init(bwd)
 !
       type(calypso_rocFFT_params), intent(inout), target :: bwd
 !
@@ -136,7 +136,7 @@
       bwd%out_strides(1) =   bwd%Ncomp
       bwd%out_distance =     1
 !
-      end subroutine calypso_pout_bwd_ROCmFFT_init
+      end subroutine calypso_pout_bwd_rocFFT_init
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
@@ -175,7 +175,7 @@
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call calypso_forward_ROCmFFT_r2c                                &
+        call calypso_forward_rocFFT_r2c                                 &
      &     (fwd%rocFFT_plan, fwd%rocFFT_wk_info, fwd%Ncomp,             &
      &      WK_fft%Nfft_r, WK_fft%X_rocFFT(1),                          &
      &      WK_fft%Nfft_c, WK_fft%C_rocFFT(1),                          &
@@ -214,7 +214,7 @@
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
-      call calypso_backward_ROCmFFT_c2r                                 &
+      call calypso_backward_rocFFT_c2r                                  &
      &   (bwd%rocFFT_plan, bwd%rocFFT_wk_info, bwd%Ncomp,               &
      &    WK_fft%Nfft_c, WK_fft%C_rocFFT(1),                            &
      &    WK_fft%Nfft_r, WK_fft%X_rocFFT(1),                            &

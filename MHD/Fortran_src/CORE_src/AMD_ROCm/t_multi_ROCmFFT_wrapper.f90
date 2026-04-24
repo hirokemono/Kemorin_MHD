@@ -9,18 +9,18 @@
 !!@verbatim
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT by FFTW
-!!      subroutine calypso_ROCmFFT_set_size(Ncomp_fwd, Ncomp_bwd, Nfft, &
-!!     &                                    fwd, bwd, WK_fft)
+!!      subroutine calypso_rocFFT_set_size(Ncomp_fwd, Ncomp_bwd, Nfft,  &
+!!     &                                   fwd, bwd, WK_fft)
 !!        integer(kind = kint), intent(in) :: Ncomp_fwd, Ncomp_bwd
 !!        integer(kind = kint), intent(in) :: Nfft
 !!        type(calypso_rocFFT_params), intent(inout) :: fwd, bwd
 !!        type(calypso_rocFFT_work), intent(inout), target :: WK_fft
-!!      subroutine calypso_fwd_ROCmFFT_init(fwd)
-!!      subroutine calypso_bwd_ROCmFFT_init(bwd)
+!!      subroutine calypso_fwd_rocFFT_init(fwd)
+!!      subroutine calypso_bwd_rocFFT_init(bwd)
 !!      subroutine calypso_rocFFT_fin(fwd, bwd)
 !!        type(calypso_rocFFT_params), intent(inout), target :: fwd
 !!        type(calypso_rocFFT_params), intent(inout), target :: bwd
-!!      subroutine calypso_ROCmFFT_alloc(fwd, bwd, WK_fft)
+!!      subroutine calypso_rocFFT_alloc(fwd, bwd, WK_fft)
 !!        type(calypso_rocFFT_params), intent(in) :: fwd, bwd
 !!        type(calypso_rocFFT_work), intent(inout), target :: WK_fft
 !! ------------------------------------------------------------------
@@ -106,8 +106,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_ROCmFFT_set_size(Ncomp_fwd, Ncomp_bwd, Nfft,   &
-     &                                    fwd, bwd, WK_fft)
+      subroutine calypso_rocFFT_set_size(Ncomp_fwd, Ncomp_bwd, Nfft,    &
+     &                                   fwd, bwd, WK_fft)
 !
       integer(kind = kint), intent(in) :: Ncomp_fwd, Ncomp_bwd
       integer(kind = kint), intent(in) :: Nfft
@@ -125,12 +125,12 @@
       fwd%Nbytes = WK_fft%Nfft_r * fwd%Ncomp * kreal
       bwd%Nbytes = WK_fft%Nfft_r * bwd%Ncomp * kreal
 !
-      end subroutine calypso_ROCmFFT_set_size
+      end subroutine calypso_rocFFT_set_size
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_ROCmFFT_alloc(fwd, bwd, WK_fft)
+      subroutine calypso_rocFFT_alloc(fwd, bwd, WK_fft)
 !
       use hipfort
       use hipfort_check
@@ -154,12 +154,12 @@
       max_size = max(fwd%Nbytes, bwd%Nbytes)
       call hipCheck(hipMalloc(WK_fft%data_ptr, max_size))
 !
-      end subroutine calypso_ROCmFFT_alloc
+      end subroutine calypso_rocFFT_alloc
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_fwd_ROCmFFT_init(fwd)
+      subroutine calypso_fwd_rocFFT_init(fwd)
 !
       use hipfort
       use hipfort_check
@@ -203,11 +203,11 @@
      &                                         fwd%rocFFT_wk_buf_size))
       end if
 !
-      end subroutine calypso_fwd_ROCmFFT_init
+      end subroutine calypso_fwd_rocFFT_init
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_bwd_ROCmFFT_init(bwd)
+      subroutine calypso_bwd_rocFFT_init(bwd)
 !
       use hipfort
       use hipfort_check
@@ -252,7 +252,7 @@
      &                                        bwd%rocFFT_wk_buf_size))
       end if
 !
-      end subroutine calypso_bwd_ROCmFFT_init
+      end subroutine calypso_bwd_rocFFT_init
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------

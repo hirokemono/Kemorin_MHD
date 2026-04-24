@@ -9,17 +9,17 @@
 !!@verbatim
 !! ------------------------------------------------------------------
 !! wrapper subroutine for forward Fourier transform by FFTW3
-!!      subroutine calypso_forward_ROCmFFT_r2c(fwd_plan, fwd_wk_info,   &
+!!      subroutine calypso_forward_rocFFT_r2c(fwd_plan, fwd_wk_info,    &
 !!     &          Ncomp, Nfft_r, X_rocFFT, Nfft_c, C_rocFFT,            &
 !!     &          Nbytes, data_ptr)
 !!        real(kind = kreal), intent(in), target                        &
 !!     &                   :: X_rocFFT(Nfft_r*Ncomp)
 !!        complex(kind = kreal), intent(inout), target                  &
 !!     &                   :: C_rocFFT(Nfft_c*Ncomp)
-!!      subroutine calypso_forward_ROCmFFT_r2r(fwd_plan, fwd_wk_info,   &
+!!      subroutine calypso_forward_rocFFT_r2r(fwd_plan, fwd_wk_info,    &
 !!     &          Ncomp, Nfft_r, X_rocFFT, Nbytes, data_ptr)
-!!      subroutine calypso_fwd_OpenMP_ROCmFFT(fwd_plan, fwd_wk_info,    &
-!!     &                                      Ncomp, Nfft_r, X_rocFFT)
+!!      subroutine calypso_fwd_OpenMP_rocFFT(fwd_plan, fwd_wk_info,     &
+!!     &                                     Ncomp, Nfft_r, X_rocFFT)
 !!        type(c_ptr), intent(in), target :: fwd_plan
 !!        type(c_ptr), intent(in), target :: fwd_wk_info
 !!        integer(c_size_t), intent(in) :: Ncomp, Nfft_r, Nfft_c
@@ -39,13 +39,13 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine calypso_backward_ROCmFFT_c2r(bwd_plan, bwd_wk_info,  &
+!!      subroutine calypso_backward_rocFFT_c2r(bwd_plan, bwd_wk_info,   &
 !!     &          Ncomp, Nfft_c, C_rocFFT, Nfft_r, X_rocFFT,            &
 !!     &          Nbytes, data_ptr)
-!!      subroutine calypso_backward_ROCmFFT_r2r(bwd_plan, bwd_wk_info,  &
+!!      subroutine calypso_backward_rocFFT_r2r(bwd_plan, bwd_wk_info,   &
 !!     &          Ncomp, Nfft_r, X_rocFFT, Nbytes, data_ptr)
-!!      subroutine calypso_bwd_OpenMP_ROCmFFT(bwd_plan, bwd_wk_info,    &
-!!     &                                      Ncomp, Nfft_r, X_rocFFT)
+!!      subroutine calypso_bwd_OpenMP_rocFFT(bwd_plan, bwd_wk_info,     &
+!!     &                                     Ncomp, Nfft_r, X_rocFFT)
 !!        type(c_ptr), intent(in), target :: bwd_plan
 !!        type(c_ptr), intent(in), target :: bwd_wk_info
 !!        integer(c_size_t), intent(in) :: Ncomp, Nfft_r, Nfft_c
@@ -97,7 +97,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_forward_ROCmFFT_r2c(fwd_plan, fwd_wk_info,     &
+      subroutine calypso_forward_rocFFT_r2c(fwd_plan, fwd_wk_info,      &
      &          Ncomp, Nfft_r, X_rocFFT, Nfft_c, C_rocFFT,              &
      &          Nbytes, data_ptr)
 !
@@ -121,11 +121,11 @@
       call hipCheck(hipMemcpy(c_loc(C_rocFFT(1)), data_ptr,             &
      &                        Nbytes, hipMemcpyDeviceToHost))
 !
-      end subroutine calypso_forward_ROCmFFT_r2c
+      end subroutine calypso_forward_rocFFT_r2c
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_backward_ROCmFFT_c2r(bwd_plan, bwd_wk_info,    &
+      subroutine calypso_backward_rocFFT_c2r(bwd_plan, bwd_wk_info,     &
      &          Ncomp, Nfft_c, C_rocFFT, Nfft_r, X_rocFFT,              &
      &          Nbytes, data_ptr)
 !
@@ -149,12 +149,12 @@
       call hipCheck(hipMemcpy(c_loc(X_rocFFT(1)), data_ptr,             &
      &                        Nbytes, hipMemcpyDeviceToHost))
 !
-      end subroutine calypso_backward_ROCmFFT_c2r
+      end subroutine calypso_backward_rocFFT_c2r
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_forward_ROCmFFT_r2r(fwd_plan, fwd_wk_info,     &
+      subroutine calypso_forward_rocFFT_r2r(fwd_plan, fwd_wk_info,      &
      &          Ncomp, Nfft_r, X_rocFFT, Nbytes, data_ptr)
 !
       type(c_ptr), intent(in), target :: fwd_plan
@@ -175,11 +175,11 @@
       call hipCheck(hipMemcpy(c_loc(X_rocFFT(1)), data_ptr,             &
      &                        Nbytes, hipMemcpyDeviceToHost))
 !
-      end subroutine calypso_forward_ROCmFFT_r2r
+      end subroutine calypso_forward_rocFFT_r2r
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_backward_ROCmFFT_r2r(bwd_plan, bwd_wk_info,    &
+      subroutine calypso_backward_rocFFT_r2r(bwd_plan, bwd_wk_info,     &
      &          Ncomp, Nfft_r, X_rocFFT, Nbytes, data_ptr)
 !
       type(c_ptr), intent(in), target :: bwd_plan
@@ -200,13 +200,13 @@
       call hipCheck(hipMemcpy(c_loc(X_rocFFT(1)), data_ptr,             &
      &                        Nbytes, hipMemcpyDeviceToHost))
 !
-      end subroutine calypso_backward_ROCmFFT_r2r
+      end subroutine calypso_backward_rocFFT_r2r
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_fwd_OpenMP_ROCmFFT(fwd_plan, fwd_wk_info,      &
-     &                                      Ncomp, Nfft_r, X_rocFFT)
+      subroutine calypso_fwd_OpenMP_rocFFT(fwd_plan, fwd_wk_info,       &
+     &                                     Ncomp, Nfft_r, X_rocFFT)
 !
       type(c_ptr), intent(in), target :: fwd_plan
       type(c_ptr), intent(in), target :: fwd_wk_info
@@ -225,12 +225,12 @@
 !$OMP target update from(X_rocFFT)
 !$OMP target exit data map(delete:X_rocFFT)
 !
-      end subroutine calypso_fwd_OpenMP_ROCmFFT
+      end subroutine calypso_fwd_OpenMP_rocFFT
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_bwd_OpenMP_ROCmFFT(bwd_plan, bwd_wk_info,      &
-     &                                      Ncomp, Nfft_r, X_rocFFT)
+      subroutine calypso_bwd_OpenMP_rocFFT(bwd_plan, bwd_wk_info,       &
+     &                                     Ncomp, Nfft_r, X_rocFFT)
 !
       type(c_ptr), intent(in), target :: bwd_plan
       type(c_ptr), intent(in), target :: bwd_wk_info
@@ -249,7 +249,7 @@
 !$OMP target update from(X_rocFFT)
 !$OMP target exit data map(delete:X_rocFFT)
 !
-      end subroutine calypso_bwd_OpenMP_ROCmFFT
+      end subroutine calypso_bwd_OpenMP_rocFFT
 !
 ! ------------------------------------------------------------------
 !
