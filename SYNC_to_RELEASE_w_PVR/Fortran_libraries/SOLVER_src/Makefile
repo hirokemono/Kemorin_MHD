@@ -7,7 +7,7 @@ SOLVER_SRCDIR = $$(F_SRCDIR)/SOLVER_src
 LIB_SOLVER =       -lcalypso_solver
 LIB_SOLVER_FILE = libcalypso_solver.a
 
-UPPER_MODULES = MOD_SOLVERS
+MOD_SOLVERS = 'MOD_SOLVERS'
 
 SUBDIRS = \
 direct_solver
@@ -66,7 +66,7 @@ mod_list:
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
 		mod_list; \
-		UPPER_MODULES='$(UPPER_MODULES)' \
+		MOD_SOLVERS='$(MOD_SOLVERS)' \
 		) \
 	done
 

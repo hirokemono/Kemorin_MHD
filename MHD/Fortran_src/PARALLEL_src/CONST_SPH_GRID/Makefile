@@ -25,7 +25,7 @@ lib_archve: libtarget
 
 
 mod_list:
-	@echo '$(UPPER_MODULES)+= $$(MOD_SPH_GRID)' >> $(MAKENAME)
+	@echo '$(MOD_PARALLEL)+= $$(MOD_SPH_GRID)' >> $(MAKENAME)
 	@echo  'MOD_SPH_GRID=  ' \\ >> $(MAKENAME)
 	@echo  '$(MOD_SPH_GRID)'    >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)

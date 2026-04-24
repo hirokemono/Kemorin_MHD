@@ -7,7 +7,7 @@ SOLVER_SRCDIR = $$(F_SRCDIR)/SOLVER_src
 LIB_SOLVER =       -lkemo_solver
 LIB_SOLVER_FILE = libkemo_solver.a
 
-UPPER_MODULES = MOD_SOLVERS
+MOD_SOLVERS = 'MOD_SOLVERS'
 
 SUBDIRS = \
 send_recv     \
@@ -60,7 +60,7 @@ lib_archve:
 
 
 mod_list:
-	@echo  '$(UPPER_MODULES)= '  \\ >> $(MAKENAME)
+	@echo  '$(MOD_SOLVERS)= '  \\ >> $(MAKENAME)
 	@echo  \
 	'  $$(MOD_DJDS_SOLVER)'  \
 	'$$(MOD_CRS_SOLVER) $$(MOD_CRS_SOLVER_S) ' \
@@ -70,7 +70,7 @@ mod_list:
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
-		UPPER_MODULES='$(UPPER_MODULES)' \
+		MOD_SOLVERS='$(MOD_SOLVERS)' \
 		mod_list; \
 		) \
 	done

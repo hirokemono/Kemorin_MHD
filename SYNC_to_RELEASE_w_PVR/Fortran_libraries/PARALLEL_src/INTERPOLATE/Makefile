@@ -19,7 +19,7 @@ lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_INTERPOLATE)' >> $(MAKENAME)
 
 mod_list:
-	@echo  '$(UPPER_MODULES)+= $$(MOD_INTERPOLATE)' >> $(MAKENAME)
+	@echo  '$(MOD_PARALLEL`)+= $$(MOD_INTERPOLATE)' >> $(MAKENAME)
 	@echo  'MOD_INTERPOLATE=  ' \\ >> $(MAKENAME)
 	@echo  '$(MOD_INTERPOLATE)'    >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)

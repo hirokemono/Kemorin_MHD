@@ -20,7 +20,7 @@ lib_archve: libtarget
 
 
 mod_list:
-	@echo '$(UPPER_MODULES)+= $$(MOD_FEM_INT)' >> $(MAKENAME)
+	@echo '$(MOD_PARALLEL)+= $$(MOD_FEM_INT)' >> $(MAKENAME)
 	@echo 'MOD_FEM_INT=  ' \\ >> $(MAKENAME)
 	@echo '$(MOD_FEM_INT)'    >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)

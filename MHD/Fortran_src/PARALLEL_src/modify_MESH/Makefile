@@ -36,7 +36,7 @@ lib_archve:
 
 
 mod_list:
-	@echo '$(UPPER_MODULES)+= $$(MOD_MODIFY_PARA_MESH)' >> $(MAKENAME)
+	@echo '$(MOD_PARALLEL)+= $$(MOD_MODIFY_PARA_MESH)' >> $(MAKENAME)
 	@echo 'MOD_MODIFY_PARA_MESH=  '  \\ >> $(MAKENAME)
 	@echo '$(MOD_MODIFY_PARA_MESH)'     >> $(MAKENAME)
 	@echo   >> $(MAKENAME)

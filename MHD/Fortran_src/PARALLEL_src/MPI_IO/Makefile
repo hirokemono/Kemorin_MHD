@@ -20,7 +20,7 @@ lib_archve: libtarget
 
 
 mod_list:
-	@echo  '$(UPPER_MODULES)+= $$(MOD_MPI_IO)' >> $(MAKENAME)
+	@echo  '$(MOD_PARALLEL)+= $$(MOD_MPI_IO)' >> $(MAKENAME)
 	@echo  'MOD_MPI_IO=  ' \\ >> $(MAKENAME)
 	@echo  '$(MOD_MPI_IO)'    >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
