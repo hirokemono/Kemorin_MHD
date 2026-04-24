@@ -15,7 +15,7 @@
 !
       implicit none
 !
-      character(len=kchara) :: file_name = 'rtp_ROCmfft_test.dat'
+      character(len=kchara) :: file_name = 'rtp_rocFFT_test.dat'
       real(kind = kreal) :: start, finish, elapsed(3)
 !
       type(fft_test_data) :: ft1
@@ -28,7 +28,7 @@
       integer(kind = kint) :: icou
 !
 !
-      write(*,'(a)') '-----  Test rtp ROCmFFT  -----'
+      write(*,'(a)') '-----  Test rtp rocFFT  -----'
       call init_fft_test_data(n_field, ngrid, ft1)
 !
 !   Initialize Fourier transform
@@ -75,9 +75,9 @@
       write(*, '(a,3i6)')                                               &
      &        "Num (point, field, loop): ", ngrid, n_field, n_loop
       write(*, '("Time for Initialize: ",1pE16.6e3)') elapsed(1)
-      write(*, '("Time for ROCmfft:    ",1pE16.6e3)') elapsed(2)
+      write(*, '("Time for rocFFT:     ",1pE16.6e3)') elapsed(2)
       write(*, '("Time for Data copy:  ",1pE16.6e3)') elapsed(3)
-      write(*, '("Total FFT:       ",1pE16.6e3)')                       &
+      write(*, '("Total FFT:           ",1pE16.6e3)')                   &
      &                           elapsed(2) + elapsed(3)
 !
       stop 'finish'

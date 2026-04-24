@@ -19,7 +19,7 @@
 !
       implicit none
 !
-      character(len = kchara) :: file_name = 'sgl_rtp_ROCmfft_test.dat'
+      character(len = kchara) :: file_name = 'sgl_rtp_rocFFT_test.dat'
 !
       real(kind = kreal) :: start, finish, elapsed(3)
 !
@@ -29,7 +29,7 @@
       integer(kind = kint) :: i, nd
       integer(kind = kint) :: icou
 !
-      write(*,'(a)') '-----  Test single rtp ROCmFFT  -----'
+      write(*,'(a)') '-----  Test single rtp rocFFT  -----'
       call init_fft_test_data(n_field, ngrid, ft1)
 !
       start = OMP_GET_WTIME()
@@ -72,9 +72,9 @@
       write(*,'(a,i4)') 'Number of threads:  ', np_smp
       write(*, '(a,3i6)')                                               &
      &        "Num (point, field, loop): ", ngrid, n_field, n_loop
-      write(*, '("Time for Initialize: ",1pE16.6e3)') elapsed(3)
-      write(*, '("Time for ROCmfft:    ",1pE16.6e3)') elapsed(1)
-      write(*, '("Time for Data copy:  ",1pE16.6e3)') elapsed(2)
+      write(*, '("Time for Initialize: ",1pE16.6e3)') elapsed(1)
+      write(*, '("Time for rocFFT:     ",1pE16.6e3)') elapsed(2)
+      write(*, '("Time for Data copy:  ",1pE16.6e3)') elapsed(3)
       write(*, '("Total FFT:           ",1pE16.6e3)')                   &
      &                           elapsed(2) + elapsed(3)
 !

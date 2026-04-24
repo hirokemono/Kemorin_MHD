@@ -16,7 +16,7 @@
 !
       implicit none
 !
-      character(len=kchara) :: file_name = 'prt_ROCmfft2_test.dat'
+      character(len=kchara) :: file_name = 'prt_real_rocFFT_test.dat'
       real(kind = kreal) :: start, finish, elapsed(4)
 !
       type(fft_test_data) :: ft1
@@ -27,7 +27,7 @@
 !
       integer(kind = kint) :: i, nd, icou
 !
-      write(*,'(a)') '-----  Test prt REAL only ROCmFFT  -----'
+      write(*,'(a)') '-----  Test prt REAL only rocFFT  -----'
       call init_fft_test_data(n_field, ngrid, ft1)
       call swap_fft_test_input_to_pin(ft1)
 !
@@ -78,9 +78,9 @@
       write(*, '(a,3i6)')                                               &
      &        "Num (point, field, loop): ", ngrid, n_field, n_loop
       write(*, '("Time for Initialize: ",1pE16.6e3)') elapsed(1)
-      write(*, '("Time for ROCmfft:    ",1pE16.6e3)') elapsed(2)
+      write(*, '("Time for rocFFT:     ",1pE16.6e3)') elapsed(2)
       write(*, '("Time for Data copy:  ",1pE16.6e3)') elapsed(3)
-      write(*, '("Total FFT:       ",1pE16.6e3)')                       &
+      write(*, '("Total FFT:           ",1pE16.6e3)')                   &
      &                           elapsed(2) + elapsed(3)
 !
       stop 'finish'
