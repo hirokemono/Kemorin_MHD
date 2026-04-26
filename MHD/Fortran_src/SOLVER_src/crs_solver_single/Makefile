@@ -4,11 +4,11 @@
 
 CRS_SOLVER_S_DIR = $$(SOLVER_SRCDIR)/crs_solver_single
 
-MOD_CRS_SOLVER_S = 'MOD_CRS_SOLVER_S'
-
 SUBDIRS = \
 scalar
 
+MODULE_LIST= 'MOD_CRS_SOLVER_S'
+UPPER_MODULES=
 
 #
 #  -------------------------------------------------------------------------
@@ -32,19 +32,19 @@ dir_list:
 libtarget:
 
 lib_archve: libtarget
-	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(MOD_CRS_SOLVER_S)' >> $(MAKENAME)
+	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 
 mod_list:
-	@echo '$(MOD_SOLVERS)+= $$(MOD_CRS_SOLVER_S)' >> $(MAKENAME)
-	@echo '$(MOD_CRS_SOLVER_S)= '  >> $(MAKENAME)
+	@echo '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo '$(MODULE_LIST)= '  >> $(MAKENAME)
 	@echo '#'>> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
-		UPPER_MODULES='$(MOD_CRS_SOLVER_S)' \
+		UPPER_MODULES=$(MODULE_LIST) \
 		mod_list \
 		) \
 	done

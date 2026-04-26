@@ -4,12 +4,13 @@
 
 CRS_SOLVER_DIR = $$(SOLVER_SRCDIR)/crs_solver
 
-MODULE_LIST= 'MOD_CRS_SOLVER'
-
 SUBDIRS = \
 scalar \
 block33 \
 blockNN
+
+MODULE_LIST= 'MOD_CRS_SOLVER'
+UPPER_MODULES=
 
 #
 #  -------------------------------------------------------------------------
@@ -43,7 +44,7 @@ mod_list:
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
-		UPPER_MODULES='$(MODULE_LIST)' \
+		UPPER_MODULES=$(MODULE_LIST) \
 		mod_list \
 		) \
 	done

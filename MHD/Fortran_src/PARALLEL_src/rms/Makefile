@@ -7,8 +7,8 @@ SR_DIR = $$(PARA_SRCDIR)/rms
 LIB_SR = send_recv
 SOURCES = $(shell ls *.f90)
 
-MOD_SR = $(addsuffix .o,$(basename $(SOURCES)) )
-MODULE_LIST=   'MOD_SR'
+MOD_RMS = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST=   'MOD_RMS'
 UPPER_MODULES=
 
 #
@@ -30,16 +30,16 @@ lib_tasks: lib_archve
 
 libtarget:
 	@echo '' >> $(MAKENAME)
-	@echo  '$$(LIB_SR_FILE): $$(MOD_SR)' >> $(MAKENAME)
+	@echo  '$$(LIB_SR_FILE): $$(MOD_RMS)' >> $(MAKENAME)
 
 lib_archve:
-	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_SR)' >> $(MAKENAME)
+	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_RMS)' >> $(MAKENAME)
 
 
 mod_list:
-	@echo '$(MOD_PARALLEL)+= $$(MOD_SR)' >> $(MAKENAME)
-	@echo 'MOD_SR=  ' \\ >> $(MAKENAME)
-	@echo '$(MOD_SR)'    >> $(MAKENAME)
+	@echo '$(MOD_PARALLEL)+= $$(MOD_RMS)' >> $(MAKENAME)
+	@echo 'MOD_RMS=  ' \\ >> $(MAKENAME)
+	@echo '$(MOD_RMS)'    >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
 depends:

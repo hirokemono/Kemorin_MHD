@@ -6,6 +6,8 @@ SR_DIR = $$(SOLVER_SRCDIR)/send_recv
 SOURCES = $(shell ls *.f90)
 
 MOD_SR = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST= 'MOD_SR'
+UPPER_MODULES=
 
 #
 #  -------------------------------------------------------------------------
@@ -17,11 +19,11 @@ dir_list:
 libtarget:
 
 lib_archve: libtarget
-	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_SR)' >> $(MAKENAME)
+	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 mod_list:
-	@echo '$(MOD_SOLVERS)+= $$(MOD_SR)' >> $(MAKENAME)
-	@echo 'MOD_SR=  ' \\ >> $(MAKENAME)
+	@echo '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo '$(MODULE_LIST)=  ' \\ >> $(MAKENAME)
 	@echo '$(MOD_SR)'    >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 

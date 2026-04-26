@@ -13,7 +13,8 @@ precondition \
 set_precondition \
 main_4_solvers
 
-MOD_DJDS_SOLVER = 'MOD_DJDS_SOLVER'
+MODULE_LIST= 'MOD_DJDS_SOLVER'
+UPPER_MODULES=
 
 #
 #  -------------------------------------------------------------------------
@@ -35,19 +36,19 @@ dir_list:
 libtarget:
 
 lib_archve: libtarget
-	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(MOD_DJDS_SOLVER)' >> $(MAKENAME)
+	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 
 mod_list:
-	@echo '$(MOD_SOLVERS)+= $$(MOD_DJDS_SOLVER)' >> $(MAKENAME)
-	@echo 'MOD_DJDS_SOLVER= ' >> $(MAKENAME)
+	@echo '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo '$(MODULE_LIST)=  ' \\      >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
-		UPPER_MODULES='$(MOD_DJDS_SOLVER)' \
+		UPPER_MODULES=$(MODULE_LIST) \
 		mod_list \
 		) \
 	done

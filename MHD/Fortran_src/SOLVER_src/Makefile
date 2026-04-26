@@ -7,7 +7,8 @@ SOLVER_SRCDIR = $$(F_SRCDIR)/SOLVER_src
 LIB_SOLVER =       -lkemo_solver
 LIB_SOLVER_FILE = libkemo_solver.a
 
-MOD_SOLVERS = 'MOD_SOLVERS'
+MODULE_LIST= 'MOD_SOLVERS'
+UPPER_MODULES=
 
 SUBDIRS = \
 send_recv     \
@@ -46,7 +47,7 @@ lib_tasks: libtarget lib_archve
 
 libtarget:
 	@echo '' >> $(MAKENAME)
-	@echo  '$$(LIB_SOLVER_FILE): $$(MOD_SOLVERS)' >> $(MAKENAME)
+	@echo  '$$(LIB_SOLVER_FILE): $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 lib_archve:
 	@for dir in $(SUBDIRS); do \
@@ -60,13 +61,13 @@ lib_archve:
 
 
 mod_list:
-	@echo '$(MOD_SOLVERS)= ' >> $(MAKENAME)
+	@echo $(MODULE_LIST)=  >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
-		MOD_SOLVERS='$(MOD_SOLVERS)' \
+		UPPER_MODULES=$(MODULE_LIST) \
 		mod_list; \
 		) \
 	done
