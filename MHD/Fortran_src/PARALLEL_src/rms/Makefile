@@ -6,7 +6,10 @@ SR_DIR = $$(PARA_SRCDIR)/rms
 
 LIB_SR = send_recv
 SOURCES = $(shell ls *.f90)
+
 MOD_SR = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST=   'MOD_SR'
+UPPER_MODULES=
 
 #
 #  -------------------------------------------------------------------------

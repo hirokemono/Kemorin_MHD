@@ -44,7 +44,7 @@ mod_list:
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
-		MOD_CRS_SOLVER_S='$(MOD_CRS_SOLVER_S)' \
+		UPPER_MODULES='$(MOD_CRS_SOLVER_S)' \
 		mod_list \
 		) \
 	done

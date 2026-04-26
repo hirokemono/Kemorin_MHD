@@ -4,8 +4,6 @@
 
 DJDS_SOLVER_DIR = $$(SOLVER_SRCDIR)/VDJDS_SOLVER
 
-MOD_DJDS_SOLVER = 'MOD_DJDS_SOLVER'
-
 SUBDIRS = \
 cal_4_each_solvers \
 cal_matvecs \
@@ -14,6 +12,8 @@ cal_vectors \
 precondition \
 set_precondition \
 main_4_solvers
+
+MOD_DJDS_SOLVER = 'MOD_DJDS_SOLVER'
 
 #
 #  -------------------------------------------------------------------------
@@ -47,7 +47,7 @@ mod_list:
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
-		MOD_DJDS_SOLVER='$(MOD_DJDS_SOLVER)' \
+		UPPER_MODULES='$(MOD_DJDS_SOLVER)' \
 		mod_list \
 		) \
 	done

@@ -4,22 +4,10 @@
 
 SOLVER_33_DIR = $$(CRS_SOLVER_DIR)/block33
 SOURCES = $(shell ls *.f90)
-MOD_SOLVER_33 = $(addsuffix .o,$(basename $(SOURCES)) )
 
-MOD_SOLVER_33= \
-\
-solver33.o \
-\
-solver_CG_3.o \
-solver_BiCGSTAB_3.o \
-solver_GPBiCG_3.o \
-solver_GMRES_3.o \
-\
-solver_BLCG_3.o \
-solver_BLBiCGSTAB_3.o \
-solver_BLGPBiCG_3.o \
-\
-crs_matrix_calcs_33.o
+MOD_SOLVER_33 = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST= 'MOD_SOLVER_33'
+UPPER_MODULES=
 
 #
 #  -------------------------------------------------------------------------
@@ -30,8 +18,8 @@ dir_list:
 
 
 mod_list:
-	@echo '$(MOD_CRS_SOLVER)+= $$(MOD_SOLVER_33)' >> $(MAKENAME)
-	@echo 'MOD_SOLVER_33=  ' \\  >> $(MAKENAME)
+	@echo '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo '$(MODULE_LIST)=  ' \\ >> $(MAKENAME)
 	@echo '$(MOD_SOLVER_33)'     >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 

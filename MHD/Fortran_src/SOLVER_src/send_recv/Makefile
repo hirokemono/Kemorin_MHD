@@ -4,6 +4,7 @@
 
 SR_DIR = $$(SOLVER_SRCDIR)/send_recv
 SOURCES = $(shell ls *.f90)
+
 MOD_SR = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
