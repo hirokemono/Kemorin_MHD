@@ -4,7 +4,10 @@
 
 CTL_DIR = $$(CORE_SRCDIR)/CONTROLS
 SOURCES = $(shell ls *.f90 *.F90)
+
 MOD_CTL = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST=   'MOD_CTL'
+UPPER_MODULES=
 
 #
 #  -------------------------------------------------------------------------
@@ -18,13 +21,13 @@ lib_name:
 libtarget:
 
 lib_archve: libtarget
-	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(MOD_CTL)' \
+	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$('$(MODULE_LIST)')' >> $(MAKENAME)
 	>> $(MAKENAME)
 
 mod_list:
-	@echo  '$(MOD_CORE)+= $$(MOD_CTL)' >> $(MAKENAME)
-	@echo  'MOD_CTL= '  \\ >> $(MAKENAME)
-	@echo  '$(MOD_CTL)'    >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo  '$(MODULE_LIST)=  ' \\ >> $(MAKENAME)
+	@echo  '$(MOD_CTL)'           >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 
 depends:

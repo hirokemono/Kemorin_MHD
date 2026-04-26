@@ -4,7 +4,10 @@
 
 MESH_TYPE_DIR = $$(CORE_SRCDIR)/MESH_type
 SOURCES = $(shell ls *.f90)
+
 MOD_MESH_T = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST=   'MOD_MESH_T'
+UPPER_MODULES=
 
 
 #
@@ -19,13 +22,13 @@ lib_name:
 libtarget:
 
 lib_archve: libtarget
-	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_MESH_T)' >> $(MAKENAME)
+	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 
 mod_list:
-	@echo  '$(MOD_CORE)+= $$(MOD_MESH_T)' >> $(MAKENAME)
-	@echo  'MOD_MESH_T= '  \\ >> $(MAKENAME)
-	@echo  '$(MOD_MESH_T)'    >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo  '$(MODULE_LIST)=  ' \\ >> $(MAKENAME)
+	@echo  '$(MOD_MESH_T)'        >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
 depends:

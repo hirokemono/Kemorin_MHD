@@ -4,7 +4,10 @@
 
 INT64DIR = $$(CORE_SRCDIR)/64bit_Integer
 SOURCES = $(shell ls *.f90)
+
 MOD_INT64 = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST=   'MOD_INT64'
+UPPER_MODULES=
 
 #
 #  -------------------------------------------------------------------------
@@ -18,13 +21,13 @@ lib_name:
 libtarget:
 
 lib_archve: libtarget
-	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_INT64)' >> $(MAKENAME)
+	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 
 mod_list:
-	@echo  '$(MOD_CORE)+= $$(MOD_INT64)' >> $(MAKENAME)
-	@echo  'MOD_INT64=  ' \\ >> $(MAKENAME)
-	@echo  '$(MOD_INT64)'    >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo  '$(MODULE_LIST)=  ' \\ >> $(MAKENAME)
+	@echo  '$(MOD_INT64)'         >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
 

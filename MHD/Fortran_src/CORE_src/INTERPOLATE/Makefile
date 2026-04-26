@@ -4,7 +4,10 @@
 
 INTERPOLATE_DIR = $$(CORE_SRCDIR)/INTERPOLATE
 SOURCES = $(shell ls *.f90)
+
 MOD_ITP = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST=   'MOD_ITP'
+UPPER_MODULES=
 
 #
 #  -------------------------------------------------------------------------
@@ -18,12 +21,12 @@ lib_name:
 libtarget:
 
 lib_archve: libtarget
-	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_ITP)' >> $(MAKENAME)
+	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 mod_list:
-	@echo  '$(MOD_CORE)+= $$(MOD_ITP)' >> $(MAKENAME)
-	@echo  'MOD_ITP= '  \\ >> $(MAKENAME)
-	@echo  '$(MOD_ITP)'    >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo  '$(MODULE_LIST)=  ' \\ >> $(MAKENAME)
+	@echo  '$(MOD_ITP)'           >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
 depends:

@@ -9,6 +9,8 @@ LIB_MODIFY_MESH_FILE = libmodify_mesh.a
 
 SOURCES = $(shell ls *.f90)
 MOD_MODIFY_MESH = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST=   'MOD_MODIFY_MESH'
+UPPER_MODULES=
 
 #
 #  ------------------------------------------------------------------
@@ -27,17 +29,16 @@ lib_tasks: lib_archve
 
 libtarget:
 	@echo '' >> $(MAKENAME)
-	@echo  '$$(LIB_MODIFY_MESH_FILE): $$(MOD_MODIFY_MESH)'  >> $(MAKENAME)
+	@echo  '$$(LIB_MODIFY_MESH_FILE): $$('$(MODULE_LIST)')'  >> $(MAKENAME)
 
 lib_archve:
-	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' \
-	'$$(MOD_MODIFY_MESH)' \
+	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$('$(MODULE_LIST)')' >> $(MAKENAME)
 	>> $(MAKENAME)
 
 
 mod_list:
-	@echo  '$(MOD_CORE)+= $$(MOD_MODIFY_MESH)' >> $(MAKENAME)
-	@echo  'MOD_MODIFY_MESH= ' \\ >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo  '$(MODULE_LIST)=  ' \\ >> $(MAKENAME)
 	@echo  '$(MOD_MODIFY_MESH)'   >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 

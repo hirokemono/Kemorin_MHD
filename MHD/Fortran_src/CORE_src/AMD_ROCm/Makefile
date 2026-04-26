@@ -9,6 +9,8 @@ LIB_CALYPSO_ROCM_FILE =  liblkemo_ROCm.a
 
 SOURCES = $(shell ls *.f90 *.F90)
 MOD_AMD_ROCM = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST=   'MOD_AMD_ROCM'
+UPPER_MODULES=
 
 #
 #  -------------------------------------------------------------------------
@@ -25,13 +27,13 @@ lib_name:
 libtarget:
 
 lib_archve: libtarget
-	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_AMD_ROCM)' >> $(MAKENAME)
+	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 
 mod_list:
-	@echo  '$(MOD_CORE)+= $$(MOD_AMD_ROCM)' >> $(MAKENAME)
-	@echo  'MOD_AMD_ROCM= ' \\ >> $(MAKENAME)
-	@echo  '$(MOD_AMD_ROCM) '  >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo  '$(MODULE_LIST)=  ' \\ >> $(MAKENAME)
+	@echo  '$(MOD_AMD_ROCM)'      >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
 
