@@ -4,7 +4,10 @@
 
 ITP_PARA_DIR = $$(PARA_SRCDIR)/INTERPOLATE_PARA
 SOURCES = $(shell ls *.f90)
+
 MOD_ITP_PARA = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST=   'MOD_ITP_PARA'
+UPPER_MODULES=
 
 #
 #  -------------------------------------------------------------------------
@@ -16,13 +19,13 @@ dir_list:
 libtarget:
 
 lib_archve: libtarget
-	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_ITP_PARA)' >> $(MAKENAME)
+	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 mod_list:
-	@echo '$(MOD_PARALLEL)+= $$(MOD_ITP_PARA)' >> $(MAKENAME)
-	@echo 'MOD_ITP_PARA=  ' \\ >> $(MAKENAME)
-	@echo '$(MOD_ITP_PARA)'    >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo  '$(MODULE_LIST)=  ' \\ >> $(MAKENAME)
+	@echo  '$(MOD_ITP_PARA)'    >> $(MAKENAME)
+	@echo  '#' >> $(MAKENAME)
 
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(ITP_PARA_DIR)' $(SOURCES)

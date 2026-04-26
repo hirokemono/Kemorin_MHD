@@ -30,16 +30,16 @@ lib_tasks: lib_archve
 
 libtarget:
 	@echo '' >> $(MAKENAME)
-	@echo  '$$(LIB_SR_FILE): $$(MOD_RMS)' >> $(MAKENAME)
+	@echo  '$$(LIB_SR_FILE): $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 lib_archve:
-	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_RMS)' >> $(MAKENAME)
+	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 
 mod_list:
-	@echo '$(MOD_PARALLEL)+= $$(MOD_RMS)' >> $(MAKENAME)
-	@echo 'MOD_RMS=  ' \\ >> $(MAKENAME)
-	@echo '$(MOD_RMS)'    >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo  '$(MODULE_LIST)=  ' \\ >> $(MAKENAME)
+	@echo  '$(MOD_RMS)'    >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
 depends:

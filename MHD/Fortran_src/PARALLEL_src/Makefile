@@ -7,7 +7,8 @@ PARA_SRCDIR =   $$(F_SRCDIR)/PARALLEL_src
 LIB_PARA =        -lkemo_parallel
 LIB_PARA_FILE = libkemo_parallel.a
 
-MOD_PARALLEL = 'MOD_PARALLEL'
+MODULE_LIST=   'MOD_PARALLEL'
+UPPER_MODULES=
 
 SUBDIRS = \
 COMM_src             \
@@ -50,7 +51,7 @@ lib_tasks: libtarget lib_archve
 
 libtarget:
 	@echo '' >> $(MAKENAME)
-	@echo  '$$(LIB_PARA_FILE):  $$(MOD_PARALLEL) ' >> $(MAKENAME)
+	@echo  '$$(LIB_PARA_FILE):  $$('$(MODULE_LIST)')'  >> $(MAKENAME)
 
 lib_archve:
 	@for dir in $(SUBDIRS); do \
@@ -63,13 +64,13 @@ lib_archve:
 	done
 
 mod_list:
-	@echo  '$(MOD_PARALLEL)= ' >> $(MAKENAME)
+	@echo  '$(MODULE_LIST)= ' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
-		MOD_PARALLEL='$(MOD_PARALLEL)' \
+		UPPER_MODULES=$(MODULE_LIST) \
 		mod_list; \
 		) \
 	done

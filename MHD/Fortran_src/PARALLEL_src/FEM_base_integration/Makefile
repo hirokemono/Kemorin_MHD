@@ -4,7 +4,10 @@
 
 FEM_INT_DIR = $$(PARA_SRCDIR)/FEM_base_integration
 SOURCES = $(shell ls *.f90)
+
 MOD_FEM_INT = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST=   'MOD_FEM_INT'
+UPPER_MODULES=
 
 #
 #  -------------------------------------------------------------------------
@@ -16,12 +19,11 @@ dir_list:
 libtarget:
 
 lib_archve: libtarget
-	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_FEM_INT)' >> $(MAKENAME)
-
+	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 mod_list:
-	@echo '$(MOD_PARALLEL)+= $$(MOD_FEM_INT)' >> $(MAKENAME)
-	@echo 'MOD_FEM_INT=  ' \\ >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo  '$(MODULE_LIST)=  ' \\ >> $(MAKENAME)
 	@echo '$(MOD_FEM_INT)'    >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 

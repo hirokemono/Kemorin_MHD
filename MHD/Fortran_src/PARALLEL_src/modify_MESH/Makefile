@@ -9,6 +9,8 @@ LIB_MODIFY_PARA_MESH_FILE = libmodify_mesh.a
 
 SOURCES = $(shell ls *.f90 *.F90)
 MOD_MODIFY_PARA_MESH = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST=   'MOD_MODIFY_PARA_MESH'
+UPPER_MODULES=
 
 #
 #  ------------------------------------------------------------------
@@ -27,19 +29,18 @@ lib_tasks: lib_archve
 
 libtarget:
 	@echo '' >> $(MAKENAME)
-	@echo  '$$(LIB_MODIFY_PARA_MESH_FILE): $$(MOD_MODIFY_PARA_MESH)'  >> $(MAKENAME)
+	@echo  '$$(LIB_MODIFY_PARA_MESH_FILE): $$('$(MODULE_LIST)')'  >> $(MAKENAME)
 
 lib_archve:
-	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' \
-	'$$(MOD_MODIFY_PARA_MESH)' \
+	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$('$(MODULE_LIST)')' >> $(MAKENAME)
 	>> $(MAKENAME)
 
 
 mod_list:
-	@echo '$(MOD_PARALLEL)+= $$(MOD_MODIFY_PARA_MESH)' >> $(MAKENAME)
-	@echo 'MOD_MODIFY_PARA_MESH=  '  \\ >> $(MAKENAME)
-	@echo '$(MOD_MODIFY_PARA_MESH)'     >> $(MAKENAME)
-	@echo   >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo  '$(MODULE_LIST)=  ' \\ >> $(MAKENAME)
+	@echo  '$(MOD_MODIFY_PARA_MESH)'     >> $(MAKENAME)
+	@echo  '#'  >> $(MAKENAME)
 
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(MODIFY_PARA_MESHDIR)' $(SOURCES)

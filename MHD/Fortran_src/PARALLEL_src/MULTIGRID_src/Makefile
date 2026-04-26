@@ -4,7 +4,10 @@
 
 MG_SRCDIR = $$(PARA_SRCDIR)/MULTIGRID_src
 SOURCES = $(shell ls *.f90)
+
 MOD_MULTIGRID = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST=   'MOD_MULTIGRID'
+UPPER_MODULES=
 
 #
 #  -------------------------------------------------------------------------
@@ -16,12 +19,12 @@ dir_list:
 libtarget:
 
 lib_archve: libtarget
-	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_MULTIGRID)' >> $(MAKENAME)
+	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 
 mod_list:
-	@echo  '$(MOD_PARALLEL)+= $$(MOD_MULTIGRID)' >> $(MAKENAME)
-	@echo  'MOD_MULTIGRID=  ' \\ >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo  '$(MODULE_LIST)=  ' \\ >> $(MAKENAME)
 	@echo  '$(MOD_MULTIGRID)'    >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
