@@ -4,7 +4,10 @@
 
 CORRELATE_PLANE_DIR = $$(PLANE_SRCDIR)/correlation
 SOURCES = $(shell ls *.f90)
+
 MOD_CORRELATE_PLANE = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST=   'MOD_CORRELATE_PLANE'
+UPPER_MODULES=
 
 #
 #  -------------------------------------------------------------------------
@@ -21,11 +24,12 @@ lib_tasks: lib_archve
 libtarget:
 
 lib_archve: libtarget
-	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_CORRELATE_PLANE)' >> $(MAKENAME)
+	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 mod_list:
-	@echo  MOD_CORRELATE_PLANE=  \\ >> $(MAKENAME)
-	@echo  $(MOD_CORRELATE_PLANE) >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo  '$(MODULE_LIST)=  ' \\   >> $(MAKENAME)
+	@echo  '$(MOD_CORRELATE_PLANE)' >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
 depends:

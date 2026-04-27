@@ -8,6 +8,8 @@ LIB_CUBMESH = cubmesh
 
 SOURCES = $(shell ls *.f90)
 MOD_CUBMESH = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST=   'MOD_CUBMESH'
+UPPER_MODULES=
 
 #
 #  -------------------------------------------------------------------------
@@ -24,11 +26,12 @@ lib_tasks: lib_archve
 libtarget:
 
 lib_archve: libtarget
-	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_CUBMESH)' >> $(MAKENAME)
+	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 mod_list:
-	@echo  MOD_CUBMESH=  \\ >> $(MAKENAME)
-	@echo  $(MOD_CUBMESH) >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo  '$(MODULE_LIST)=  ' \\ >> $(MAKENAME)
+	@echo  '$(MOD_CUBMESH)'       >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
 depends:

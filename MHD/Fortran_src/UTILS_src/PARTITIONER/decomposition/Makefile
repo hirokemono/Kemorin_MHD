@@ -4,7 +4,10 @@
 
 DECOMP_DIR = $$(PARTITONER_DIR)/decomposition
 SOURCES = $(shell ls *.f90)
+
 MOD_PART_DECOMP = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST=   'MOD_PART_DECOMP'
+UPPER_MODULES=
 
 #
 #  -------------------------------------------------------------------------
@@ -16,7 +19,6 @@ dir_list:
 lib_name:
 
 lib_tasks:
-	@echo '	''$$(RANLIB) $$@' >> $(MAKENAME)
 
 libtarget:
 
@@ -24,8 +26,9 @@ lib_archve: libtarget
 
 
 mod_list:
-	@echo  MOD_PART_DECOMP=  \\ >> $(MAKENAME)
-	@echo  $(MOD_PART_DECOMP) >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo  '$(MODULE_LIST)=  ' \\ >> $(MAKENAME)
+	@echo  '$(MOD_PART_DECOMP)'   >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
 depends:

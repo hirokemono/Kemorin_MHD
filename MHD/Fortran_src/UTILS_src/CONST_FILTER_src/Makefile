@@ -7,6 +7,9 @@ FILTER_SRCDIR = $$(UTILS_SRCDIR)/CONST_FILTER_src
 LIB_GEN_FILTER =       -lcommute_3d
 LIB_GEN_FILTER_FILE = libcommute_3d.a
 
+MODULE_LIST=   'MOD_GEN_FILTER'
+UPPER_MODULES=
+
 SUBDIRS = \
 filter_3d \
 IO
@@ -40,7 +43,7 @@ lib_tasks: libtarget lib_archve
 
 libtarget:
 	@echo '' >> $(MAKENAME)
-	@echo  '$$(LIB_GEN_FILTER_FILE): $$(MOD_GEN_FILTER)' >> $(MAKENAME)
+	@echo  '$$(LIB_GEN_FILTER_FILE): $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 lib_archve: 
 	@for dir in $(SUBDIRS); do \
@@ -54,16 +57,15 @@ lib_archve:
 
 
 mod_list:
-	@echo MOD_GEN_FILTER= \\      >> $(MAKENAME)
-	@echo '$$(MOD_3D_FILTER_MAT)' \\ >> $(MAKENAME)
-	@echo '$$(MOD_GEN_FILTER_IO)'    >> $(MAKENAME)
-	@echo >> $(MAKENAME)
-	
+	@echo '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo $(MODULE_LIST)= \\      >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
+		UPPER_MODULES='$(MODULE_LIST)' \
 		mod_list \
 		) \
 	done

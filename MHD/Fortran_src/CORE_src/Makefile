@@ -90,7 +90,7 @@ lib_archve:
 
 mod_list:
 	@echo  $(MODULE_LIST)= >> $(MAKENAME)
-	@echo   >> $(MAKENAME)
+	@echo  '#'  >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \

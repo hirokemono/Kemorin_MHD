@@ -23,7 +23,6 @@ libtarget:
 lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
-
 mod_list:
 	@echo  '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
 	@echo  '$(MODULE_LIST)=  ' \\ >> $(MAKENAME)

@@ -9,6 +9,8 @@ LIB_DRAW_PG_FILE = libdraw_by_pgplot.a
 
 SOURCES = $(shell ls *.f90)
 MOD_DRAW_PG = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST=   'MOD_DRAW_PG'
+UPPER_MODULES=
 
 #
 #  ------------------------------------------------------------------
@@ -27,17 +29,16 @@ lib_tasks: lib_archve
 
 libtarget:
 	@echo '' >> $(MAKENAME)
-	@echo  '$$(LIB_DRAW_PG_FILE): $$(MOD_DRAW_PG)' >> $(MAKENAME)
+	@echo  '$$(LIB_DRAW_PG_FILE): $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 lib_archve: libtarget
-	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' \
-	'$$(MOD_DRAW_PG)' \
-	>> $(MAKENAME)
+	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 mod_list:
-	@echo  MOD_DRAW_PG=  \\ >> $(MAKENAME)
-	@echo  $(MOD_DRAW_PG) >> $(MAKENAME)
-	@echo   >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo  '$(MODULE_LIST)=  ' \\ >> $(MAKENAME)
+	@echo  '$(MOD_DRAW_PG)'       >> $(MAKENAME)
+	@echo  '#'  >> $(MAKENAME)
 
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(KEMO_PGDIR)' $(SOURCES)

@@ -9,6 +9,8 @@ LIB_CUBED_SPH_FILE = libcubed_sph_kemo.a
 
 SOURCES = $(shell ls *.f90)
 MOD_CUBED_SPH = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST=   'MOD_CUBED_SPH'
+UPPER_MODULES=
 
 #
 #  -------------------------------------------------------------------------
@@ -27,16 +29,15 @@ lib_tasks: libtarget lib_archve
 
 libtarget:
 	@echo '' >> $(MAKENAME)
-	@echo  '$$(LIB_CUBED_SPH_FILE): $$(MOD_CUBED_SPH)' >> $(MAKENAME)
+	@echo  '$$(LIB_CUBED_SPH_FILE): $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 lib_archve:
-	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_CUBED_SPH)' \
-	>> $(MAKENAME)
-
+	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 mod_list:
-	@echo  MOD_CUBED_SPH=  \\ >> $(MAKENAME)
-	@echo  $(MOD_CUBED_SPH)   >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo  '$(MODULE_LIST)=  ' \\ >> $(MAKENAME)
+	@echo  '$(MOD_CUBED_SPH)'     >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
 depends:

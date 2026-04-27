@@ -7,6 +7,9 @@ UTILS_SRCDIR =  $$(F_SRCDIR)/UTILS_src
 LIB_UTILS =       -lkemo_utils
 LIB_UTILS_FILE = libkemo_utils.a
 
+MODULE_LIST=   'MOD_KEMO_UTILS'
+UPPER_MODULES=
+
 SUBDIR_NO_PG = \
 CONST_FILTER_src \
 INTERPOLATE_src  \
@@ -69,7 +72,7 @@ lib_tasks: libtarget lib_archve
 
 libtarget:
 	@echo '' >> $(MAKENAME)
-	@echo  '$$(LIB_UTILS_FILE): $$(MOD_KEMO_UTILS)'>> $(MAKENAME)
+	@echo  '$$(LIB_UTILS_FILE): $$('$(MODULE_LIST)')'>> $(MAKENAME)
 
 lib_archve:
 	@for dir in $(SUBDIR_NO_PG); do \
@@ -82,23 +85,14 @@ lib_archve:
 	done
 
 mod_list:
-	@echo '' >> $(MAKENAME)
-	@echo MOD_KEMO_UTILS=  \\ >> $(MAKENAME)
-	@echo  \
-	'$$(MOD_GEN_FILTER)'   \
-	'$$(MOD_CUBED_SPH)'    \
-	'$$(MOD_ITP_TABLE)'    \
-	'$$(MOD_MERGE)'        \
-	'$$(MOD_PART_KEMO)'    \
-	'$$(MOD_PLANE_MODEL)'  \
-	'$$(MOD_REFINE)'       \
-	'$$(MOD_DRAW_PG)'      >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
+	@echo  $(MODULE_LIST)= >> $(MAKENAME)
+	@echo  '#'  >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
+		UPPER_MODULES='$(MODULE_LIST)' \
 		mod_list; \
 		) \
 	done

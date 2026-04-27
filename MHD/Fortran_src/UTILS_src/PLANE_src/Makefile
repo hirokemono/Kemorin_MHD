@@ -7,6 +7,8 @@ PLANE_SRCDIR = $$(UTILS_SRCDIR)/PLANE_src
 LIB_PLANE_MODEL =        -lplane_model
 LIB_PLANE_MODEL_FILE =  libplane_model.a
 
+MODULE_LIST=   'MOD_PLANE_MODEL'
+UPPER_MODULES=
 
 SUBDIRS =     \
 plane_core    \
@@ -43,7 +45,7 @@ lib_tasks: libtarget lib_archve
 
 libtarget:
 	@echo '' >> $(MAKENAME)
-	@echo  '$$(LIB_PLANE_MODEL_FILE): $$(MOD_PLANE_MODEL)' >> $(MAKENAME);
+	@echo  '$$(LIB_PLANE_MODEL_FILE): $$('$($(MODULE_LIST)')' >> $(MAKENAME);
 
 lib_archve:
 	@for dir in $(SUBDIRS); do \
@@ -56,19 +58,15 @@ lib_archve:
 	done
 
 mod_list:
-	@echo MOD_PLANE_MODEL= \\           >> $(MAKENAME)
-	@echo '$$(MOD_PLANE_COMMON)' \\     >> $(MAKENAME)
-	@echo '$$(MOD_PLANE_IO)' \\         >> $(MAKENAME)
-	@echo '$$(MOD_FFT_PLANE_COMMON)' \\ >> $(MAKENAME)
-	@echo '$$(MOD_CORRELATE_PLANE)'  \\ >> $(MAKENAME)
-	@echo '$$(MOD_CUBMESH)'          \\ >> $(MAKENAME)
+	@echo '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo $(MODULE_LIST)=  >> $(MAKENAME)
 	@echo >> $(MAKENAME)
-	
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
+		UPPER_MODULES='$(MODULE_LIST)' \
 		mod_list \
 		) \
 	done

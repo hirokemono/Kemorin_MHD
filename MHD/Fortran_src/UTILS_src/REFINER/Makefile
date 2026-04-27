@@ -9,6 +9,8 @@ LIB_REFINER_FILE = librefine_kemo.a
 
 SOURCES = $(shell ls *.f90)
 MOD_REFINE = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST=   'MOD_REFINE'
+UPPER_MODULES=
 
 #
 #  -------------------------------------------------------------------------
@@ -26,16 +28,16 @@ lib_tasks: libtarget lib_archve
 	@echo '	''$$(RANLIB) $$@' >> $(MAKENAME)
 
 lib_archve:
-	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(MOD_REFINE)' \
-	>> $(MAKENAME)
+	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 libtarget:
 	@echo '' >> $(MAKENAME)
-	@echo  '$$(LIB_REFINER_FILE): $$(MOD_REFINE)' >> $(MAKENAME)
+	@echo  '$$(LIB_REFINER_FILE): $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 mod_list:
-	@echo  MOD_REFINE=  \\ >> $(MAKENAME)
-	@echo  $(MOD_REFINE) >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo  '$(MODULE_LIST)=  ' \\ >> $(MAKENAME)
+	@echo  '$(MOD_REFINE)'        >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
 depends:

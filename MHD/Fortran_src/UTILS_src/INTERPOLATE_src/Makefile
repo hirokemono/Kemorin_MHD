@@ -9,6 +9,8 @@ LIB_ITP_TABLE_FILE = libgen_itp_table.a
 
 SOURCES = $(shell ls *.f90)
 MOD_ITP_TABLE = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST=   'MOD_ITP_TABLE'
+UPPER_MODULES=
 
 #
 #  -------------------------------------------------------------------------
@@ -29,16 +31,16 @@ lib_tasks: libtarget lib_archve
 
 libtarget:
 	@echo '' >> $(MAKENAME)
-	@echo  '$$(LIB_ITP_TABLE_FILE): $$(MOD_ITP_TABLE)' >> $(MAKENAME)
+	@echo  '$$(LIB_ITP_TABLE_FILE): $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 lib_archve:
-	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' \
-	'$$(MOD_ITP_TABLE)'  >> $(MAKENAME)
+	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 mod_list:
-	@echo MOD_ITP_TABLE=  \\ >> $(MAKENAME)
-	@echo $(MOD_ITP_TABLE) >> $(MAKENAME)
-	@echo >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo  '$(MODULE_LIST)=  ' \\ >> $(MAKENAME)
+	@echo  '$(MOD_ITP_TABLE)'     >> $(MAKENAME)
+	@echo  '#'>> $(MAKENAME)
 
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(ITP_SRCDIR)' $(SOURCES)

@@ -4,7 +4,10 @@
 
 PART_PERIDIR = $$(PARTITONER_DIR)/periodic_model
 SOURCES = $(shell ls *.f90)
+
 MOD_PART_PERI = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST=   'MOD_PART_PERI'
+UPPER_MODULES=
 
 #
 #  -------------------------------------------------------------------------
@@ -24,8 +27,9 @@ lib_archve: libtarget
 
 
 mod_list:
-	@echo  MOD_PART_PERI=  \\ >> $(MAKENAME)
-	@echo  $(MOD_PART_PERI) >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo  '$(MODULE_LIST)=  ' \\ >> $(MAKENAME)
+	@echo  '$(MOD_PART_PERI)'     >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
 depends:
