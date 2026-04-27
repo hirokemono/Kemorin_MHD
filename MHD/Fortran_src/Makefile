@@ -4,8 +4,11 @@
 
 F_SRCDIR =  $$(MHDDIR)/Fortran_src
 
-LIB_KEMO =       -lcalipso_kemo
-LIB_KEMO_FILE = libcalipso_kemo.a
+LIB_CALYPSO =      -lcalipso_kemo
+LIB_CALYPSO_FILE = libcalipso_kemo.a
+
+MODULE_LIST=   'MOD_CALYPSO_F'
+UPPER_MODULES=
 
 SUBDIRS =    \
 \
@@ -38,8 +41,8 @@ dir_list:
 	@echo '#' >> $(MAKENAME)
 
 lib_name:
-	@echo  'LIB_KEMO =      $(LIB_KEMO)'      >> $(MAKENAME)
-	@echo  'LIB_KEMO_FILE = $(LIB_KEMO_FILE)' >> $(MAKENAME)
+	@echo  'LIB_CALYPSO =      $(LIB_CALYPSO)'      >> $(MAKENAME)
+	@echo  'LIB_CALYPSO_FILE = $(LIB_CALYPSO_FILE)' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo 'create library file name list...'
 	@for dir in  $(SUBDIRS) ; do \
@@ -68,8 +71,7 @@ lib_tasks: libtarget lib_archve
 	done
 
 libtarget:
-	@echo '' >> $(MAKENAME)
-	@echo  '$$(LIB_KEMO_FILE): $$(MOD_KEMO_F)'>> $(MAKENAME)
+	@echo  '$$(LIB_CALYPSO_FILE): $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 lib_archve:
 	@for dir in $(SUBDIRS); do \
@@ -83,17 +85,14 @@ lib_archve:
 	done
 
 mod_list:
-	@echo  MOD_KEMO_F= \\ >> $(MAKENAME)
-	@echo  \
-	'$$(MOD_CORE)     $$(MOD_MHD)'        \
-	'$$(MOD_PARALLEL) $$(MOD_SOLVERS)'    \
-	'$$(MOD_VIZ)      $$(MOD_KEMO_UTILS)' >> $(MAKENAME)
-	@echo   >> $(MAKENAME)
+	@echo  $(MODULE_LIST)= >> $(MAKENAME)
+	@echo  '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
+		UPPER_MODULES='$(MODULE_LIST)' \
 		64BIT_INT='$(64BIT_INT)'   \
 		mod_list; \
 		) \

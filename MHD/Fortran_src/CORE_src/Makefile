@@ -89,7 +89,8 @@ lib_archve:
 	done
 
 mod_list:
-	@echo  $(MODULE_LIST)= >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo  '$(MODULE_LIST)='  >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \

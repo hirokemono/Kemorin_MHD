@@ -118,8 +118,8 @@ FEM_UTIL_BINDIR = /Users/matsui/src_kemo/bin/FEM_utils
 #
 # -----------------------------------------------------------
 # -----------------------------------------------------------
-LIB_KEMO =      -lcalipso_kemo
-LIB_KEMO_FILE = libcalipso_kemo.a
+LIB_CALYPSO =      -lcalipso_kemo
+LIB_CALYPSO_FILE = libcalipso_kemo.a
 #
 LIB_MESH =      -lkemo_core
 LIB_MESH_FILE = libkemo_core.a

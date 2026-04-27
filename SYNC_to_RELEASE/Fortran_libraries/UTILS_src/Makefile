@@ -11,7 +11,7 @@ MODULE_LIST=   'MOD_KEMO_UTILS'
 UPPER_MODULES=
 
 SUBDIRS = \
-MESH           \
+MESH      \
 MERGE
 
 
@@ -66,6 +66,7 @@ lib_archve:
 	done
 
 mod_list:
+	@echo '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
 	@echo  $(MODULE_LIST)= >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
