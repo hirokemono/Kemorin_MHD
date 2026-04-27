@@ -120,6 +120,12 @@
 !>      flag parts for ISPACK 0.97
       character(len = kchara), parameter :: ISPACK_names(3)             &
      &                     = (/'ISPACK   ', 'ISPACK1  ', 'ISPACK097'/)
+!>      flag parts for real-complex rocFFT
+      character(len = kchara), parameter :: r2c_names(2)                &
+     &                     = (/'complex', 'r2c    '/)
+!>      flag parts for real-real rocFFT
+      character(len = kchara), parameter :: r2r_names(2)                &
+     &                     = (/'real', 'r2r '/)
 !
 !>      flag parts for once FFT over component
       character(len = kchara), parameter :: at_once_FFT_names(2)        &
@@ -142,14 +148,20 @@
 !>     Character lables for ISPACK 3: 'ISPACK3'
       type(multi_flag_labels), save :: ISPACK3_flags
 !>     Character lables for real-complex rocFFT: 
-!!          'rocFFT', 'rocFFT_complex', 'complex_rocFFT'
+!!           'rocFFT', 'rocFFT_complex', 'rocFFT_r2c',
+!!                     'complex_rocFFT', 'r2c_rocFFT'
       type(multi_flag_labels), save :: rocFFT_r2c_flags
 !>     Character lables for real-complex rocFFT:
-!!          'rocFFT_real', 'real_rocFFT'
+!!          'rocFFT_real', 'rocFFT_r2r', 'real_rocFFT', 'r2r_rocFFT' 
       type(multi_flag_labels), save :: rocFFT_r2r_flags
 !>     Character lables for real only rocFFT: 
-!!          'rocFFT_OpenMP', 'rocFFT_OMP', 'OpenMP_rocFFT', OMP_rocFFT'
+!!          'rocFFT_OpenMP', 'rocFFT_OMP', 'OpenMP_rocFFT', 'OMP_rocFFT'
+!
       type(multi_flag_labels), save :: rocFFT_OMP_flags
+!>     Character lables for real to complex: 'complex', r2c'
+      type(multi_flag_labels), save :: r2c_flags
+!>     Character lables for real to complex: 'real', r2r'
+      type(multi_flag_labels), save :: r2r_flags
 !
 !>     Character lables for at once FFT:  'once'
       type(multi_flag_labels), save :: at_once_FFT_flags
@@ -362,6 +374,51 @@
       character(len = kchara), parameter, private                       &
      &                           :: hd_ISPACK3_O =  'ISPACK3_ONCE'
 !
+!
+!>     Character lables for at once real-complex rocFFT for transform
+!!         'rocFFT', 'rocFFT_complex',  'rocFFT_r2c', 'complex_rocFFT',
+!!         'r2c_rocFFT', 'rocFFT_once', 'rocFFT_at_once', 
+!!         'rocFFT_complex_once',       'rocFFT_complex_at_once',
+!!         'rocFFT_r2c_once',           'rocFFT_r2c_at_once',
+!!         'complex_rocFFT_once',       'complex_rocFFT_at_once',
+!!         'r2c_rocFFT_once',     'r2c_rocFFT_at_once', 'once_rocFFT',
+!!         'once_rocFFT_complex', 'once_rocFFT_r2c',
+!!         'once_complex_rocFFT', 'once_r2c_rocFFT', 'at_once_rocFFT',
+!!         'at_once_rocFFT_complex', 'at_once_rocFFT_r2c',
+!!         'at_once_complex_rocFFT', 'at_once_r2c_rocFFT' 
+      type(multi_flag_labels), save :: at_once_rocFFT_r2c_flags
+!>     Character lables for once real-complex rocFFT over domain
+!!          'rocFFT_domain',         'rocFFT_complex_domain', 
+!!          'rocFFT_r2c_domain',     'complex_rocFFT_domain', 
+!!          'r2c_rocFFT_domain',     'domain_rocFFT', 
+!!          'domain_rocFFT_complex', 'domain_rocFFT_r2c', 
+!!          'domain_complex_rocFFT', 'domain_r2c_rocFFT' 
+      type(multi_flag_labels), save :: domain_rocFFT_r2c_flags
+!>     Character lables for once real-complex rocFFT over component
+!!          'rocFFT_component',         'rocFFT_comps', 
+!!          'rocFFT_complex_component', 'rocFFT_complex_comps',
+!!          'rocFFT_r2c_component',     'rocFFT_r2c_comps', 
+!!          'complex_rocFFT_component', 'complex_rocFFT_comps',
+!!          'r2c_rocFFT_component',     'r2c_rocFFT_comps',
+!!          'component_rocFFT',         'component_rocFFT_complex',
+!!          'component_rocFFT_r2c',     'component_complex_rocFFT',
+!!          'component_r2c_rocFFT',     'comps_rocFFT',
+!!          'comps_rocFFT_complex',     'comps_rocFFT_r2c',
+!!          'comps_complex_rocFFT',     'comps_r2c_rocFFT' 
+      type(multi_flag_labels), save :: comp_rocFFT_r2c_flags
+!>     Character lables for single real-complex rocFFT
+!!          'rocFFT_single',      'rocFFT_sgl', 'rocFFT_complex_single',
+!!          'rocFFT_complex_sgl', 'rocFFT_r2c_single', 'rocFFT_r2c_sgl',
+!!          'complex_rocFFT_single', 'complex_rocFFT_sgl', 
+!!          'r2c_rocFFT_single',     'r2c_rocFFT_sgl', 'single_rocFFT',
+!!          'single_rocFFT_complex', 'single_rocFFT_r2c', 
+!!          'single_complex_rocFFT', 'single_r2c_rocFFT', 'sgl_rocFFT',
+!!          'sgl_rocFFT_complex',    'sgl_rocFFT_r2c', 
+!!          'sgl_complex_rocFFT',    'sgl_r2c_rocFFT' 
+     type(multi_flag_labels), save :: single_rocFFT_r2c_flags
+!
+!
+!
 !!>      integer flag for undefined FFT routine
 !      integer(kind = kint), parameter :: iflag_UNDEFINED_FFT =   -999
 !>      integer flag for fastest FFT search
@@ -460,10 +517,29 @@
       call init_multi_flags_by_labels(ithree, ISPACK_names,             &
      &                                ISPACK0_flags)
       call init_multi_flags_by_one_label(hd_ISPACK3, ISPACK3_flags)
+      call init_multi_flags_by_one_label(hd_rocFFT, rocFFT_r2c_flags)
+!
 !
       call init_multi_flags_by_labels(itwo, OpenMP_names, tmp_flags)
       call init_from_two_kinds_flags(tmp_flags, FFTW_flags,             &
      &                               OMP_FFTW_flags, icou)
+      call dealloc_multi_flags(tmp_flags)
+!
+      call init_multi_flags_by_labels(itwo, OpenMP_names, tmp_flags)
+      call init_from_two_kinds_flags(rocFFT_r2c_flags, tmp_flags,       &
+     &                               rocFFT_OMP_flags, icou)
+      call dealloc_multi_flags(tmp_flags)
+!
+      call init_multi_flags_by_labels(itwo, r2c_names, r2c_flags)
+      call init_from_two_kinds_flags(rocFFT_r2c_flags, r2c_flags,       &
+     &                               tmp_flags, icou)
+      call append_multi_flag_labels(tmp_flags, rocFFT_r2c_flags)
+      call dealloc_multi_flags(tmp_flags)
+!
+      call init_multi_flags_by_one_label(hd_rocFFT, tmp_flags)
+      call init_multi_flags_by_labels(itwo, r2r_names, r2r_flags)
+      call init_from_two_kinds_flags(tmp_flags, r2r_flags,              &
+     &                               rocFFT_r2r_flags, icou)
       call dealloc_multi_flags(tmp_flags)
 !
       call init_multi_flags_by_labels(itwo, at_once_FFT_names,          &
@@ -549,6 +625,39 @@
      &                               comp_ISPACK3_flags, icou)
       call init_from_two_kinds_flags(ISPACK3_flags, single_FFT_flags,   &
      &                               single_ISPACK3_flags, icou)
+!
+!
+      call init_multi_flags_by_one_label(hd_ISPACK3,                    &
+     &                                   at_once_ISPACK3_flags)
+      call init_from_two_kinds_flags(ISPACK3_flags, at_once_FFT_flags,  &
+     &                               tmp_flags, icou)
+      call append_multi_flag_labels(tmp_flags, at_once_ISPACK3_flags)
+      call dealloc_multi_flags(tmp_flags)
+!
+      call init_from_two_kinds_flags(ISPACK3_flags, domain_FFT_flags,   &
+     &                               domain_ISPACK3_flags, icou)
+      call init_from_two_kinds_flags(ISPACK3_flags, comp_FFT_flags,     &
+     &                               comp_ISPACK3_flags, icou)
+      call init_from_two_kinds_flags(ISPACK3_flags, single_FFT_flags,   &
+     &                               single_ISPACK3_flags, icou)
+!
+!
+!
+      at_once_rocFFT_r2c_flags%n_flag = 0
+      call append_multi_flag_labels(rocFFT_r2c_flags,                   &
+     &                              at_once_rocFFT_r2c_flags)
+      call init_from_two_kinds_flags(rocFFT_r2c_flags,                  &
+     &    at_once_FFT_flags, tmp_flags, icou)
+      call append_multi_flag_labels(tmp_flags,                          &
+     &                              at_once_rocFFT_r2c_flags)
+      call dealloc_multi_flags(tmp_flags)
+!
+      call init_from_two_kinds_flags(rocFFT_r2c_flags,                  &
+     &    domain_FFT_flags, domain_rocFFT_r2c_flags, icou)
+      call init_from_two_kinds_flags(rocFFT_r2c_flags, comp_FFT_flags,  &
+     &                               comp_rocFFT_r2c_flags, icou)
+      call init_from_two_kinds_flags(rocFFT_r2c_flags,                  &
+     &    single_FFT_flags, single_rocFFT_r2c_flags, icou)
 !
       end subroutine init_FFT_mode_flags
 
