@@ -47,6 +47,16 @@
       call write_multi_flags(6, title, single_FFTW_flags)
 !
       write(*,*) ''
+      write(title,'(a)') trim('at_once_FFTW_flags')
+      call write_multi_flags(6, title, at_once_OMP_FFTW_flags)
+      write(title,'(a)') trim('domain_FFTW_flags')
+      call write_multi_flags(6, title, domain_OMP_FFTW_flags)
+      write(title,'(a)') trim('comp_FFTW_flags')
+      call write_multi_flags(6, title, comp_OMP_FFTW_flags)
+      write(title,'(a)') trim('single_FFTW_flags')
+      call write_multi_flags(6, title, single_OMP_FFTW_flags)
+!
+      write(*,*) ''
       write(title,'(a)') trim('at_once_ISPACK0_flags')
       call write_multi_flags(6, title, at_once_ISPACK0_flags)
       write(title,'(a)') trim('domain_ISPACK0_flags')

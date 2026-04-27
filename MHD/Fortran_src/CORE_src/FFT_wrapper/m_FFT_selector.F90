@@ -21,7 +21,7 @@
 !!      ISPACK:                  ISPACK Ver.1
 !!      ISPACK3:                 ISPACK Ver.3
 !!      FFTW,     FFTW3:         FFTW3
-!!      OMP_FFTW, OMP_FFTW3:     FFTW3 with OopenMP parallelization
+!!      OMP_FFTW, OMP_FFTW3:     FFTW3 with OpenMP parallelization
 !!      rocFFT, rocFFT_complex:  AMD rocFFT
 !!      rocFFT_real:             AMD rocFFT with real data only
 !!      OpenMP_rocFFT:           AMD rocFFT with OpenMP offloading
@@ -141,6 +141,15 @@
       type(multi_flag_labels), save :: ISPACK0_flags
 !>     Character lables for ISPACK 3: 'ISPACK3'
       type(multi_flag_labels), save :: ISPACK3_flags
+!>     Character lables for real-complex rocFFT: 
+!!          'rocFFT', 'rocFFT_complex', 'complex_rocFFT'
+      type(multi_flag_labels), save :: rocFFT_r2c_flags
+!>     Character lables for real-complex rocFFT:
+!!          'rocFFT_real', 'real_rocFFT'
+      type(multi_flag_labels), save :: rocFFT_r2r_flags
+!>     Character lables for real only rocFFT: 
+!!          'rocFFT_OpenMP', 'rocFFT_OMP', 'OpenMP_rocFFT', OMP_rocFFT'
+      type(multi_flag_labels), save :: rocFFT_OMP_flags
 !
 !>     Character lables for at once FFT:  'once'
       type(multi_flag_labels), save :: at_once_FFT_flags
@@ -190,6 +199,63 @@
 !!        'FFTW_single', 'FFTW_sgl',     'FFTW3_single', 'FFTW3_sgl',
 !!        'single_FFTW', 'single_FFTW3', 'sgl_FFTW',     'sgl_FFTW3' 
       type(multi_flag_labels), save :: single_FFTW_flags
+!
+!
+!>     Character lables for at once FFTW3 with OpenMP for transform
+!!        'OpenMP_FFTW', 'OpenMP_FFTW3', 'OMP_FFTW', 'OMP_FFTW3',
+!!        'FFTW_OpenMP', 'FFTW_OMP', 'FFTW3_OpenMP', 'FFTW3_OMP',
+!!        'OpenMP_FFTW_once', 'OpenMP_FFTW_at_once', 
+!!        'OpenMP_FFTW3_once', 'OpenMP_FFTW3_at_once', 
+!!        'OMP_FFTW_once', 'OMP_FFTW_at_once', 'OMP_FFTW3_once',
+!!        'OMP_FFTW3_at_once', 'FFTW_OpenMP_once',
+!!        'FFTW_OpenMP_at_once', 'FFTW_OMP_once', 'FFTW_OMP_at_once',
+!!        'FFTW3_OpenMP_once', 'FFTW3_OpenMP_at_once', 'FFTW3_OMP_once',
+!!        'FFTW3_OMP_at_once', 'once_OpenMP_FFTW', 'once_OpenMP_FFTW3',
+!!        'once_OMP_FFTW', 'once_OMP_FFTW3', 'once_FFTW_OpenMP',
+!!        'once_FFTW_OMP', 'once_FFTW3_OpenMP', 'once_FFTW3_OMP',
+!!        'at_once_OpenMP_FFTW', 'at_once_OpenMP_FFTW3',
+!!        'at_once_OMP_FFTW', 'at_once_OMP_FFTW3', 
+!!        'at_once_FFTW_OpenMP', 'at_once_FFTW_OMP', 
+!!        'at_once_FFTW3_OpenMP', 'at_once_FFTW3_OMP' 
+      type(multi_flag_labels), save :: at_once_OMP_FFTW_flags
+!>     Character lables for once FFTW3 with OpenMP over domain
+!!        'OpenMP_FFTW_domain', 'OpenMP_FFTW3_domain',
+!!        'OMP_FFTW_domain', 'OMP_FFTW3_domain', 'FFTW_OpenMP_domain',
+!!        'FFTW_OMP_domain', 'FFTW3_OpenMP_domain', 'FFTW3_OMP_domain',
+!!        'domain_OpenMP_FFTW', 'domain_OpenMP_FFTW3',
+!!        'domain_OMP_FFTW', 'domain_OMP_FFTW3', 'domain_FFTW_OpenMP',
+!!        'domain_FFTW_OMP', 'domain_FFTW3_OpenMP', 'domain_FFTW3_OMP'
+      type(multi_flag_labels), save :: domain_OMP_FFTW_flags
+!>     Character lables for once FFTW3 with OpenMP over component
+!!        'OpenMP_FFTW_component', 'OpenMP_FFTW_comps',
+!!        'OpenMP_FFTW3_component', 'OpenMP_FFTW3_comps',
+!!        'OMP_FFTW_component', 'OMP_FFTW_comps', 'OMP_FFTW3_component',
+!!        'OMP_FFTW3_comps', 'FFTW_OpenMP_component',
+!!        'FFTW_OpenMP_comps', 'FFTW_OMP_component', 'FFTW_OMP_comps',
+!!        'FFTW3_OpenMP_component', 'FFTW3_OpenMP_comps',
+!!        'FFTW3_OMP_component', 'FFTW3_OMP_comps',
+!!        'component_OpenMP_FFTW', 'component_OpenMP_FFTW3',
+!!        'component_OMP_FFTW', 'component_OMP_FFTW3',
+!!        'component_FFTW_OpenMP', 'component_FFTW_OMP',
+!!        'component_FFTW3_OpenMP', 'component_FFTW3_OMP',
+!!        'comps_OpenMP_FFTW', 'comps_OpenMP_FFTW3', 'comps_OMP_FFTW',
+!!        'comps_OMP_FFTW3', 'comps_FFTW_OpenMP', 'comps_FFTW_OMP',
+!!        'comps_FFTW3_OpenMP', 'comps_FFTW3_OMP'
+      type(multi_flag_labels), save :: comp_OMP_FFTW_flags
+!>     Character lables for single FFTW3 with OpenMP
+!!        'OpenMP_FFTW_single',  'OpenMP_FFTW_sgl', 
+!!        'OpenMP_FFTW3_single', 'OpenMP_FFTW3_sgl', 'OMP_FFTW_single',
+!!        'OMP_FFTW_sgl', 'OMP_FFTW3_single', 'OMP_FFTW3_sgl',
+!!        'FFTW_OpenMP_single', 'FFTW_OpenMP_sgl', 'FFTW_OMP_single',
+!!        'FFTW_OMP_sgl', 'FFTW3_OpenMP_single', 'FFTW3_OpenMP_sgl',
+!!        'FFTW3_OMP_single', 'FFTW3_OMP_sgl', 'single_OpenMP_FFTW',
+!!        'single_OpenMP_FFTW3', 'single_OMP_FFTW', 'single_OMP_FFTW3',
+!!        'single_FFTW_OpenMP', 'single_FFTW_OMP', 
+!!        'single_FFTW3_OpenMP', 'single_FFTW3_OMP', 'sgl_OpenMP_FFTW',
+!!        'sgl_OpenMP_FFTW3', 'sgl_OMP_FFTW', 'sgl_OMP_FFTW3',
+!!        'sgl_FFTW_OpenMP', 'sgl_FFTW_OMP',
+!!        'sgl_FFTW3_OpenMP', 'sgl_FFTW3_OMP' 
+      type(multi_flag_labels), save :: single_OMP_FFTW_flags
 !
 !
 !>     Character lables for at once ISPACKv0.97 for transform
@@ -305,7 +371,7 @@
       integer(kind = kint), parameter :: iflag_FFTPACK =      50
 !>      integer flag to use FFTW3
       integer(kind = kint), parameter :: iflag_FFTW =         10
-!>      integer flag to use FFTW3 with OopenMP
+!>      integer flag to use FFTW3 with OpenMP
       integer(kind = kint), parameter :: iflag_OMP_FFTW =     40
 !>      integer flag to use ISPACK Ver.0.93
       integer(kind = kint), parameter :: iflag_ISPACK1 =      20
@@ -315,7 +381,7 @@
       integer(kind = kint), parameter :: iflag_rocFFT =       60
 !>      integer flag to use rocFFT only with real value
       integer(kind = kint), parameter :: iflag_real_rocFFT =  70
-!>      integer flag to use rocFFT with OopenMP
+!>      integer flag to use rocFFT with OpenMP
       integer(kind = kint), parameter :: iflag_OMP_rocFFT =   80
 !
 !>      integer flag to use FFTPACK5
@@ -346,9 +412,9 @@
 !>      integer flag to use FFTW3 for each component
       integer(kind = kint), parameter :: iflag_FFTW_DOMAIN =        14
 !
-!>      integer flag to use FFTW3 with OopenMP at once
+!>      integer flag to use FFTW3 with OpenMP at once
       integer(kind = kint), parameter :: iflag_OMP_FFTW_ONCE =      41
-!>      integer flag to use FFTW3 with OopenMP for domain
+!>      integer flag to use FFTW3 with OpenMP for domain
       integer(kind = kint), parameter :: iflag_OMP_FFTW_DOMAIN =    42
 !
 !>      integer flag to use ISPACK Ver.0.93 at once
@@ -439,9 +505,10 @@
      &                               single_FFTW_flags, icou)
 !
 !
-      call init_multi_flags_by_labels(itwo, FFTW_names,                 &
-     &                                at_once_OMP_FFTW_flags)
-      call init_from_two_kinds_flags(FFTW_flags, at_once_OMP_FFTW_flags,     &
+      at_once_OMP_FFTW_flags%n_flag = 0
+      call append_multi_flag_labels(OMP_FFTW_flags,                     &
+     &                              at_once_OMP_FFTW_flags)
+      call init_from_two_kinds_flags(OMP_FFTW_flags, at_once_FFT_flags, &
      &                               tmp_flags, icou)
       call append_multi_flag_labels(tmp_flags, at_once_OMP_FFTW_flags)
       call dealloc_multi_flags(tmp_flags)
