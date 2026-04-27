@@ -8,7 +8,12 @@
 !!
 !!
 !!@verbatim
+!!      subroutine init_multi_flags_by_one_label(name, mul_flags)
+!!        character(len = kchara), intent(in) :: name
+!!        type(multi_flag_labels), intent(inout) :: mul_flags
 !!      subroutine init_multi_flags_by_labels(num, names, mul_flags)
+!!        integer(kind = kint), intent(in) :: num
+!!        character(len = kchara), intent(in) :: names(num)
 !!        type(multi_flag_labels), intent(inout) :: mul_flags
 !!      subroutine init_from_two_kinds_flags                            &
 !!     &         (in_flags1, in_flags2, out_flags, icou)
@@ -44,6 +49,7 @@
       module t_multi_flag_labels
 !
       use m_precision
+      use m_constants
 !
       implicit    none
 !
@@ -58,6 +64,22 @@
 ! -----------------------------------------------------------------------
 !
       contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine init_multi_flags_by_one_label(name, mul_flags)
+!
+      character(len = kchara), intent(in) :: name
+      type(multi_flag_labels), intent(inout) :: mul_flags
+!
+      integer(kind = kint) :: i
+!
+      mul_flags%n_flag = ione
+      call alloc_multi_flags(mul_flags)
+!
+      mul_flags%flags(1) = TRIM(ADJUSTL(name))
+!
+      end subroutine init_multi_flags_by_one_label
 !
 ! -----------------------------------------------------------------------
 !
@@ -160,7 +182,8 @@
       type(multi_flag_labels), intent(inout) :: out_flags
 !
 !
-      out_flags%flags(1:num) = in_flags%flags(1:num) 
+      if(num .le. 0) return
+      out_flags%flags(1:num) = in_flags%flags(1:num)
 !
       end subroutine copy_multi_flag_labels
 !

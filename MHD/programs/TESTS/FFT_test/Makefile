@@ -70,6 +70,9 @@ MOD_FFTPACK_TEST = \
 m_precision.o \
 m_constants.o \
 m_machine_parameter.o \
+m_FFT_selector.o \
+t_multi_flag_labels.o \
+skip_comment_f.o \
 \
 normalize_for_FFTPACK.o \
 multi_pin_FFTPACK_smp.o \

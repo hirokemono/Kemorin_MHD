@@ -7,6 +7,7 @@
       use m_constants
       use m_machine_parameter
       use m_FFT_size
+      use m_FFT_selector
 !
       use t_fft_test_data
       use t_FFTPACK5_wrapper
@@ -22,6 +23,48 @@
       type(fft_test_data) :: ft1
       integer(kind = kint) :: iloop = 0
 !
+      character(len = kchara) :: title
+!
+      call init_FFT_mode_flags()
+!
+      write(title,'(a)') trim('at_once_FFTPACK_flags')
+      call write_multi_flags(6, title, at_once_FFTPACK_flags)
+      write(title,'(a)') trim('domain_FFTPACK_flags')
+      call write_multi_flags(6, title, domain_FFTPACK_flags)
+      write(title,'(a)') trim('comp_FFTPACK_flags')
+      call write_multi_flags(6, title, comp_FFTPACK_flags)
+      write(title,'(a)') trim('single_FFTPACK_flags')
+      call write_multi_flags(6, title, single_FFTPACK_flags)
+!
+      write(*,*) ''
+      write(title,'(a)') trim('at_once_FFTW_flags')
+      call write_multi_flags(6, title, at_once_FFTW_flags)
+      write(title,'(a)') trim('domain_FFTW_flags')
+      call write_multi_flags(6, title, domain_FFTW_flags)
+      write(title,'(a)') trim('comp_FFTW_flags')
+      call write_multi_flags(6, title, comp_FFTW_flags)
+      write(title,'(a)') trim('single_FFTW_flags')
+      call write_multi_flags(6, title, single_FFTW_flags)
+!
+      write(*,*) ''
+      write(title,'(a)') trim('at_once_ISPACK0_flags')
+      call write_multi_flags(6, title, at_once_ISPACK0_flags)
+      write(title,'(a)') trim('domain_ISPACK0_flags')
+      call write_multi_flags(6, title, domain_ISPACK0_flags)
+      write(title,'(a)') trim('comp_ISPACK0_flags')
+      call write_multi_flags(6, title, comp_ISPACK0_flags)
+      write(title,'(a)') trim('single_ISPACK0_flags')
+      call write_multi_flags(6, title, single_ISPACK0_flags)
+!
+      write(*,*) ''
+      write(title,'(a)') trim('at_once_ISPACK3_flags')
+      call write_multi_flags(6, title, at_once_ISPACK3_flags)
+      write(title,'(a)') trim('domain_ISPACK3_flags')
+      call write_multi_flags(6, title, domain_ISPACK3_flags)
+      write(title,'(a)') trim('comp_ISPACK3_flags')
+      call write_multi_flags(6, title, comp_ISPACK3_flags)
+      write(title,'(a)') trim('single_ISPACK3_flags')
+      call write_multi_flags(6, title, single_ISPACK3_flags)
 !
       write(*,'(a)') '-----  Test FFTPACK  -----'
       iflag_debug = 1
