@@ -81,14 +81,6 @@
       call write_multi_flags(6, title, rocFFT_r2c_flags)
 !
       write(*,*) ''
-      write(title,'(a)') trim('rocFFT_r2r_flags')
-      call write_multi_flags(6, title, rocFFT_r2r_flags)
-!
-      write(*,*) ''
-      write(title,'(a)') trim('rocFFT_OMP_flags')
-      call write_multi_flags(6, title, rocFFT_OMP_flags)
-!
-      write(*,*) ''
       write(title,'(a)') trim('at_once_rocFFT_r2c_flags')
       call write_multi_flags(6, title, at_once_rocFFT_r2c_flags)
       write(title,'(a)') trim('domain_rocFFT_r2c_flags')
@@ -97,6 +89,38 @@
       call write_multi_flags(6, title, comp_rocFFT_r2c_flags)
       write(title,'(a)') trim('single_rocFFT_r2c_flags')
       call write_multi_flags(6, title, single_rocFFT_r2c_flags)
+!
+!
+      write(*,*) ''
+      write(title,'(a)') trim('rocFFT_r2r_flags')
+      call write_multi_flags(6, title, rocFFT_r2r_flags)
+!
+      write(*,*) ''
+      write(title,'(a)') trim('at_once_rocFFT_r2r_flags')
+      call write_multi_flags(6, title, at_once_rocFFT_r2r_flags)
+      write(title,'(a)') trim('domain_rocFFT_r2r_flags')
+      call write_multi_flags(6, title, domain_rocFFT_r2r_flags)
+      write(title,'(a)') trim('comp_rocFFT_r2r_flags')
+      call write_multi_flags(6, title, comp_rocFFT_r2r_flags)
+      write(title,'(a)') trim('single_rocFFT_r2r_flags')
+      call write_multi_flags(6, title, single_rocFFT_r2r_flags)
+!
+!
+      write(*,*) ''
+      write(title,'(a)') trim('rocFFT_OMP_flags')
+      call write_multi_flags(6, title, rocFFT_OMP_flags)
+!
+      write(*,*) ''
+      write(title,'(a)') trim('at_once_OMP_rocFFT_flags')
+      call write_multi_flags(6, title, at_once_OMP_rocFFT_flags)
+      write(title,'(a)') trim('domain_OMP_rocFFT_flags')
+      call write_multi_flags(6, title, domain_OMP_rocFFT_flags)
+      write(title,'(a)') trim('comp_OMP_rocFFT_flags')
+      call write_multi_flags(6, title, comp_OMP_rocFFT_flags)
+      write(title,'(a)') trim('single_OMP_rocFFT_flags')
+      call write_multi_flags(6, title, single_OMP_rocFFT_flags)
+!
+!
 !
       write(*,'(a)') '-----  Test FFTPACK  -----'
       iflag_debug = 1
