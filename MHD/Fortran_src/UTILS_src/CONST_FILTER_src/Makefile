@@ -56,7 +56,6 @@ lib_archve:
 mod_list:
 	@echo MOD_GEN_FILTER= \\      >> $(MAKENAME)
 	@echo '$$(MOD_3D_FILTER_MAT)' \\ >> $(MAKENAME)
-	@echo '$$(MOD_Z_COMMUTE)' \\  >> $(MAKENAME)
 	@echo '$$(MOD_GEN_FILTER_IO)'    >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	

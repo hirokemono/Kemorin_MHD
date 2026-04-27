@@ -4,7 +4,10 @@
 
 MHD_SF_BC_DIR = $$(MHD_SRCDIR)/surface_boundary
 SOURCES = $(shell ls *.f90)
+
 MOD_SF_BD = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST=   'MOD_SF_BD'
+UPPER_MODULES=
 
 #
 #  -------------------------------------------------------------------------
@@ -16,13 +19,12 @@ dir_list:
 libtarget:
 
 lib_archve: libtarget
-	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(MOD_SF_BD)' \
-	>> $(MAKENAME)
+	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 mod_list:
-	@echo '$(MOD_MHD)+= $$(MOD_SF_BD)' >> $(MAKENAME)
-	@echo 'MOD_SF_BD=  ' \\ >> $(MAKENAME)
-	@echo '$(MOD_SF_BD)'    >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo  '$(MODULE_LIST)=  ' \\ >> $(MAKENAME)
+	@echo  '$(MOD_SF_BD)'    >> $(MAKENAME)
 	@echo  '#'  >> $(MAKENAME)
 
 depends:

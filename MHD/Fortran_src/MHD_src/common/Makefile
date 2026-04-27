@@ -4,7 +4,10 @@
 
 MHD_COMMON_DIR = $$(MHD_SRCDIR)/common
 SOURCES = $(shell ls *.f90)
+
 MOD_MHD_COMMON = $(addsuffix .o,$(basename $(SOURCES)) )
+MODULE_LIST=   'MOD_MHD_COMMON'
+UPPER_MODULES=
 
 #
 #  -------------------------------------------------------------------------
@@ -16,12 +19,11 @@ dir_list:
 libtarget:
 
 lib_archve: libtarget
-	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(MOD_MHD_COMMON)' \
-	>> $(MAKENAME)
+	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$('$(MODULE_LIST)')' >> $(MAKENAME)
 
 mod_list:
-	@echo '$(MOD_MHD)+= $$(MOD_MHD_COMMON)' >> $(MAKENAME)
-	@echo  'MOD_MHD_COMMON=  ' \\ >> $(MAKENAME)
+	@echo  '$(UPPER_MODULES)+= $$('$(MODULE_LIST)')' >> $(MAKENAME)
+	@echo  '$(MODULE_LIST)=  ' \\ >> $(MAKENAME)
 	@echo  '$(MOD_MHD_COMMON)'    >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
