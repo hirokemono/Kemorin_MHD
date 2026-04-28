@@ -14,7 +14,9 @@
 !
       use calypso_multi_fftpack
 !
+      use m_FFTPACK_labels
       use m_ISPACK_labels
+      use m_FFTW_labels
       use m_rocFFT_labels
 !
       implicit none
@@ -30,34 +32,14 @@
 !
       call init_FFT_mode_flags()
 !
-      write(title,'(a)') trim('at_once_FFTPACK_flags')
-      call write_multi_flags(6, title, at_once_FFTPACK_flags)
-      write(title,'(a)') trim('domain_FFTPACK_flags')
-      call write_multi_flags(6, title, domain_FFTPACK_flags)
-      write(title,'(a)') trim('comp_FFTPACK_flags')
-      call write_multi_flags(6, title, comp_FFTPACK_flags)
-      write(title,'(a)') trim('single_FFTPACK_flags')
-      call write_multi_flags(6, title, single_FFTPACK_flags)
+      call init_FFTPACK_mode_flags()
+      call check_FFTPACK_mode_flags(6)
 !
-      write(*,*) ''
-      write(title,'(a)') trim('at_once_FFTW_flags')
-      call write_multi_flags(6, title, at_once_FFTW_flags)
-      write(title,'(a)') trim('domain_FFTW_flags')
-      call write_multi_flags(6, title, domain_FFTW_flags)
-      write(title,'(a)') trim('comp_FFTW_flags')
-      call write_multi_flags(6, title, comp_FFTW_flags)
-      write(title,'(a)') trim('single_FFTW_flags')
-      call write_multi_flags(6, title, single_FFTW_flags)
+      call init_FFTW_mode_flags()
+      call check_FFTW_mode_flags(6)
 !
-      write(*,*) ''
-      write(title,'(a)') trim('at_once_OMP_FFTW_flags')
-      call write_multi_flags(6, title, at_once_OMP_FFTW_flags)
-      write(title,'(a)') trim('domain_OMP_FFTW_flags')
-      call write_multi_flags(6, title, domain_OMP_FFTW_flags)
-      write(title,'(a)') trim('comp_OMP_FFTW_flags')
-      call write_multi_flags(6, title, comp_OMP_FFTW_flags)
-      write(title,'(a)') trim('single_OMP_FFTW_flags')
-      call write_multi_flags(6, title, single_OMP_FFTW_flags)
+      call init_OMP_FFTW_mode_flags()
+      call check_OMP_FFTW_mode_flags(6)
 !
       call init_ISPACK_mode_flags()
       call check_ISPACK_mode_flags(6)

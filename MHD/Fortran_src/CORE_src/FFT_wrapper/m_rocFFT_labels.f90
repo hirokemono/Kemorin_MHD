@@ -50,6 +50,13 @@
       character(len = kchara), parameter, private                       &
      &               :: OpenMP_names(2) = (/'OpenMP', 'OMP   '/)
 !
+!>      flag parts for real-complex rocFFT
+      character(len = kchara), parameter :: r2c_names(2)                &
+     &                     = (/'complex', 'r2c    '/)
+!>      flag parts for real-real rocFFT
+      character(len = kchara), parameter :: r2r_names(2)                &
+     &                     = (/'real', 'r2r '/)
+!
 !>      Character lables for at once real-complex rocFFT for transform
 !!         'rocFFT', 'rocFFT_complex',  'rocFFT_r2c', 'complex_rocFFT',
 !!         'r2c_rocFFT', 'rocFFT_once', 'rocFFT_at_once', 
@@ -252,36 +259,33 @@
       integer(kind = kint), intent(in) :: id_file
       character(len = kchara) :: title
 !
-      write(id_file,'(a)') ''
-      write(title,'(a)') trim('      at_once_rocFFT_r2c_flags:')
+      write(title,'(4x,a)') 'at_once_rocFFT_r2c_flags:'
       call write_multi_flags(id_file, title, at_once_rocFFT_r2c_flags)
-      write(title,'(a)') trim('      domain_rocFFT_r2c_flags:')
+      write(title,'(4x,a)') 'domain_rocFFT_r2c_flags:'
       call write_multi_flags(id_file, title, domain_rocFFT_r2c_flags)
-      write(title,'(a)') trim('      comp_rocFFT_r2c_flags:')
+      write(title,'(4x,a)') 'comp_rocFFT_r2c_flags:'
       call write_multi_flags(id_file, title, comp_rocFFT_r2c_flags)
-      write(title,'(a)') trim('      single_rocFFT_r2c_flags:')
+      write(title,'(4x,a)') 'single_rocFFT_r2c_flags:'
       call write_multi_flags(id_file, title, single_rocFFT_r2c_flags)
 !
 !
-      write(id_file,'(a)') ''
-      write(title,'(a)') trim('      at_once_rocFFT_r2r_flags:')
+      write(title,'(4x,a)') 'at_once_rocFFT_r2r_flags:'
       call write_multi_flags(id_file, title, at_once_rocFFT_r2r_flags)
-      write(title,'(a)') trim('      domain_rocFFT_r2r_flags:')
+      write(title,'(4x,a)') 'domain_rocFFT_r2r_flags:'
       call write_multi_flags(id_file, title, domain_rocFFT_r2r_flags)
-      write(title,'(a)') trim('      comp_rocFFT_r2r_flags:')
+      write(title,'(4x,a)') 'comp_rocFFT_r2r_flags:'
       call write_multi_flags(id_file, title, comp_rocFFT_r2r_flags)
-      write(title,'(a)') trim('      single_rocFFT_r2r_flags:')
+      write(title,'(4x,a)') 'single_rocFFT_r2r_flags:'
       call write_multi_flags(id_file, title, single_rocFFT_r2r_flags)
 !
 !
-      write(id_file,'(a)') ''
-      write(title,'(a)') trim('      at_once_OMP_rocFFT_flags:')
+      write(title,'(4x,a)') 'at_once_OMP_rocFFT_flags:'
       call write_multi_flags(id_file, title, at_once_OMP_rocFFT_flags)
-      write(title,'(a)') trim('      domain_OMP_rocFFT_flags:')
+      write(title,'(4x,a)') 'domain_OMP_rocFFT_flags:'
       call write_multi_flags(id_file, title, domain_OMP_rocFFT_flags)
-      write(title,'(a)') trim('      comp_OMP_rocFFT_flags:')
+      write(title,'(4x,a)') 'comp_OMP_rocFFT_flags:'
       call write_multi_flags(id_file, title, comp_OMP_rocFFT_flags)
-      write(title,'(a)') trim('      single_OMP_rocFFT_flags:')
+      write(title,'(4x,a)') 'single_OMP_rocFFT_flags:'
       call write_multi_flags(id_file, title, single_OMP_rocFFT_flags)
 !
       end subroutine check_rocFFT_mode_flags

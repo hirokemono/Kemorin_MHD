@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed in Apr., 2026
 !
-!>@brief  Control labels for rocFFT
+!>@brief  Control labels for ISPACK
 !!
 !!@verbatim
 !!      subroutine init_ISPACK_mode_flags()
@@ -34,9 +34,9 @@
 !
       implicit none
 !
-!>      Character flag to use ISPACK
-      character(len = kchara), parameter, private                       &
-     &               :: hd_ISPACK =   'ISPACK'
+!>      flag parts for ISPACK 0.97
+      character(len = kchara), parameter, private :: ISPACK_names(3)    &
+     &                     = (/'ISPACK   ', 'ISPACK1  ', 'ISPACK097'/)
 !>      Character flag to use ISPACK
       character(len = kchara), parameter, private                       &
      &               :: hd_ISPACK3 =  'ISPACK3'
@@ -153,24 +153,22 @@
       integer(kind = kint), intent(in) :: id_file
       character(len = kchara) :: title
 !
-      write(id_file,'(a)') ''
-      write(title,'(a)') trim('at_once_ISPACK0_flags')
+      write(title,'(4x,a)') 'at_once_ISPACK0_flags'
       call write_multi_flags(id_file, title, at_once_ISPACK0_flags)
-      write(title,'(a)') trim('domain_ISPACK0_flags')
+      write(title,'(4x,a)') 'domain_ISPACK0_flags'
       call write_multi_flags(id_file, title, domain_ISPACK0_flags)
-      write(title,'(a)') trim('comp_ISPACK0_flags')
+      write(title,'(4x,a)') 'comp_ISPACK0_flags'
       call write_multi_flags(id_file, title, comp_ISPACK0_flags)
-      write(title,'(a)') trim('single_ISPACK0_flags')
+      write(title,'(4x,a)') 'single_ISPACK0_flags'
       call write_multi_flags(id_file, title, single_ISPACK0_flags)
 !
-      write(id_file,'(a)') ''
-      write(title,'(a)') trim('at_once_ISPACK3_flags')
+      write(title,'(4x,a)') 'at_once_ISPACK3_flags'
       call write_multi_flags(id_file, title, at_once_ISPACK3_flags)
-      write(title,'(a)') trim('domain_ISPACK3_flags')
+      write(title,'(4x,a)') 'domain_ISPACK3_flags'
       call write_multi_flags(id_file, title, domain_ISPACK3_flags)
-      write(title,'(a)') trim('comp_ISPACK3_flags')
+      write(title,'(4x,a)') 'comp_ISPACK3_flags'
       call write_multi_flags(id_file, title, comp_ISPACK3_flags)
-      write(title,'(a)') trim('single_ISPACK3_flags')
+      write(title,'(4x,a)') 'single_ISPACK3_flags'
       call write_multi_flags(id_file, title, single_ISPACK3_flags)
 !
       end subroutine check_ISPACK_mode_flags
