@@ -14,6 +14,9 @@
 !
       use calypso_multi_fftpack
 !
+      use m_ISPACK_labels
+      use m_rocFFT_labels
+!
       implicit none
 !
       character(len = kchara), parameter                                &
@@ -47,79 +50,20 @@
       call write_multi_flags(6, title, single_FFTW_flags)
 !
       write(*,*) ''
-      write(title,'(a)') trim('at_once_FFTW_flags')
+      write(title,'(a)') trim('at_once_OMP_FFTW_flags')
       call write_multi_flags(6, title, at_once_OMP_FFTW_flags)
-      write(title,'(a)') trim('domain_FFTW_flags')
+      write(title,'(a)') trim('domain_OMP_FFTW_flags')
       call write_multi_flags(6, title, domain_OMP_FFTW_flags)
-      write(title,'(a)') trim('comp_FFTW_flags')
+      write(title,'(a)') trim('comp_OMP_FFTW_flags')
       call write_multi_flags(6, title, comp_OMP_FFTW_flags)
-      write(title,'(a)') trim('single_FFTW_flags')
+      write(title,'(a)') trim('single_OMP_FFTW_flags')
       call write_multi_flags(6, title, single_OMP_FFTW_flags)
 !
-      write(*,*) ''
-      write(title,'(a)') trim('at_once_ISPACK0_flags')
-      call write_multi_flags(6, title, at_once_ISPACK0_flags)
-      write(title,'(a)') trim('domain_ISPACK0_flags')
-      call write_multi_flags(6, title, domain_ISPACK0_flags)
-      write(title,'(a)') trim('comp_ISPACK0_flags')
-      call write_multi_flags(6, title, comp_ISPACK0_flags)
-      write(title,'(a)') trim('single_ISPACK0_flags')
-      call write_multi_flags(6, title, single_ISPACK0_flags)
+      call init_ISPACK_mode_flags()
+      call check_ISPACK_mode_flags(6)
 !
-      write(*,*) ''
-      write(title,'(a)') trim('at_once_ISPACK3_flags')
-      call write_multi_flags(6, title, at_once_ISPACK3_flags)
-      write(title,'(a)') trim('domain_ISPACK3_flags')
-      call write_multi_flags(6, title, domain_ISPACK3_flags)
-      write(title,'(a)') trim('comp_ISPACK3_flags')
-      call write_multi_flags(6, title, comp_ISPACK3_flags)
-      write(title,'(a)') trim('single_ISPACK3_flags')
-      call write_multi_flags(6, title, single_ISPACK3_flags)
-!
-      write(*,*) ''
-      write(title,'(a)') trim('rocFFT_r2c_flags')
-      call write_multi_flags(6, title, rocFFT_r2c_flags)
-!
-      write(*,*) ''
-      write(title,'(a)') trim('at_once_rocFFT_r2c_flags')
-      call write_multi_flags(6, title, at_once_rocFFT_r2c_flags)
-      write(title,'(a)') trim('domain_rocFFT_r2c_flags')
-      call write_multi_flags(6, title, domain_rocFFT_r2c_flags)
-      write(title,'(a)') trim('comp_rocFFT_r2c_flags')
-      call write_multi_flags(6, title, comp_rocFFT_r2c_flags)
-      write(title,'(a)') trim('single_rocFFT_r2c_flags')
-      call write_multi_flags(6, title, single_rocFFT_r2c_flags)
-!
-!
-      write(*,*) ''
-      write(title,'(a)') trim('rocFFT_r2r_flags')
-      call write_multi_flags(6, title, rocFFT_r2r_flags)
-!
-      write(*,*) ''
-      write(title,'(a)') trim('at_once_rocFFT_r2r_flags')
-      call write_multi_flags(6, title, at_once_rocFFT_r2r_flags)
-      write(title,'(a)') trim('domain_rocFFT_r2r_flags')
-      call write_multi_flags(6, title, domain_rocFFT_r2r_flags)
-      write(title,'(a)') trim('comp_rocFFT_r2r_flags')
-      call write_multi_flags(6, title, comp_rocFFT_r2r_flags)
-      write(title,'(a)') trim('single_rocFFT_r2r_flags')
-      call write_multi_flags(6, title, single_rocFFT_r2r_flags)
-!
-!
-      write(*,*) ''
-      write(title,'(a)') trim('rocFFT_OMP_flags')
-      call write_multi_flags(6, title, rocFFT_OMP_flags)
-!
-      write(*,*) ''
-      write(title,'(a)') trim('at_once_OMP_rocFFT_flags')
-      call write_multi_flags(6, title, at_once_OMP_rocFFT_flags)
-      write(title,'(a)') trim('domain_OMP_rocFFT_flags')
-      call write_multi_flags(6, title, domain_OMP_rocFFT_flags)
-      write(title,'(a)') trim('comp_OMP_rocFFT_flags')
-      call write_multi_flags(6, title, comp_OMP_rocFFT_flags)
-      write(title,'(a)') trim('single_OMP_rocFFT_flags')
-      call write_multi_flags(6, title, single_OMP_rocFFT_flags)
-!
+      call init_rocFFT_mode_flags()
+      call check_rocFFT_mode_flags(6)
 !
 !
       write(*,'(a)') '-----  Test FFTPACK  -----'

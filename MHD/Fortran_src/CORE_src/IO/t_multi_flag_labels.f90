@@ -24,8 +24,9 @@
 !!        type(multi_flag_labels), intent(in) :: add_flags
 !!        type(multi_flag_labels), intent(inout) :: mul_flags
 !!
-!!      subroutine alloc_multi_flags(mul_flags)
+!!      subroutine alloc_multi_flags(n_items, mul_flags)
 !!      subroutine dealloc_multi_flags(mul_flags)
+!!        integer(kind = kint), intent(in) :: n_items
 !!        type(multi_flag_labels), intent(inout) :: mul_flags
 !!
 !!      subroutine copy_multi_flag_labels(num, in_flags, out_flags)
@@ -72,11 +73,7 @@
       character(len = kchara), intent(in) :: name
       type(multi_flag_labels), intent(inout) :: mul_flags
 !
-      integer(kind = kint) :: i
-!
-      mul_flags%n_flag = ione
-      call alloc_multi_flags(mul_flags)
-!
+      call alloc_multi_flags(ione, mul_flags)
       mul_flags%flags(1) = TRIM(ADJUSTL(name))
 !
       end subroutine init_multi_flags_by_one_label
@@ -91,9 +88,7 @@
 !
       integer(kind = kint) :: i
 !
-      mul_flags%n_flag = num
-      call alloc_multi_flags(mul_flags)
-!
+      call alloc_multi_flags(num, mul_flags)
       do i = 1, num
         mul_flags%flags(i) = TRIM(ADJUSTL(names(i)))
       end do
@@ -110,9 +105,10 @@
       type(multi_flag_labels), intent(inout) :: out_flags
       integer(kind = kint), intent(inout) :: icou
 !
+      integer(kind = kint) :: n_items
 !
-      out_flags%n_flag = 2 * in_flags1%n_flag * in_flags2%n_flag
-      call alloc_multi_flags(out_flags)
+      n_items = 2 * in_flags1%n_flag * in_flags2%n_flag
+      call alloc_multi_flags(n_items, out_flags)
 !
       icou = 0
       call connect_two_mul_flags(in_flags1, in_flags2, out_flags, icou)
@@ -131,18 +127,16 @@
       integer(kind = kint) :: ist, num
 !
 !
-      tmp_flags%n_flag = mul_flags%n_flag
-      call alloc_multi_flags(tmp_flags)
+      call alloc_multi_flags(mul_flags%n_flag, tmp_flags)
       call copy_multi_flag_labels                                       &
      &   (tmp_flags%n_flag, mul_flags, tmp_flags)
       call dealloc_multi_flags(mul_flags)
 !
       ist = tmp_flags%n_flag
       num = add_flags%n_flag
-      mul_flags%n_flag = ist + num
-      call alloc_multi_flags(mul_flags)
-      call copy_multi_flag_labels                                       &
-     &   (tmp_flags%n_flag, tmp_flags, mul_flags)
+      call alloc_multi_flags((ist+num), mul_flags)
+      call copy_multi_flag_labels(tmp_flags%n_flag, tmp_flags,          &
+     &                            mul_flags)
       call dealloc_multi_flags(tmp_flags)
 !
       mul_flags%flags(ist+1:ist+num) = add_flags%flags(1:num) 
@@ -152,12 +146,14 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_multi_flags(mul_flags)
+      subroutine alloc_multi_flags(n_items, mul_flags)
 !
+      integer(kind = kint), intent(in) :: n_items
       type(multi_flag_labels), intent(inout) :: mul_flags
 !
       if(allocated(mul_flags%flags)) deallocate(mul_flags%flags)
 !
+      mul_flags%n_flag = n_items
       allocate(mul_flags%flags(mul_flags%n_flag))
 !
       end subroutine alloc_multi_flags

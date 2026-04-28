@@ -71,6 +71,8 @@ m_precision.o \
 m_constants.o \
 m_machine_parameter.o \
 m_FFT_selector.o \
+m_ISPACK_labels.o \
+m_rocFFT_labels.o \
 t_multi_flag_labels.o \
 skip_comment_f.o \
 \
