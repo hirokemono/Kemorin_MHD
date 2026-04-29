@@ -11,8 +11,6 @@
 !!     &            set_fft_library_ctl(iflag_ctl, FFT_library_ctl)
 !!        integer(kind = kint), intent(in) :: iflag_ctl
 !!        character(len = kchara), intent(in) :: FFT_library_ctl
-!!      subroutine write_elapsed_4_FFT(i_mode, etime_fft)
-!!      character(len = kchara) function chosen_fft_name(i_mode)
 !|
 !!   ------------------------------------------------------------------
 !!      FFT Package lists
@@ -352,118 +350,6 @@
       set_fft_library_ctl = iflag
 !
       end function set_fft_library_ctl
-!
-! ------------------------------------------------------------------
-!
-      subroutine write_elapsed_4_FFT(i_mode, etime_fft)
-!
-      integer(kind = kint), intent(in) :: i_mode
-      real(kind = kreal), intent(in) :: etime_fft
-!
-      if     (i_mode .eq. iflag_FFTPACK_ONCE) then
-        write(*,*) 'elapsed by FFTPACK at once               (',        &
-     &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
-      else if(i_mode .eq. iflag_FFTPACK_SINGLE) then
-        write(*,*) 'elapsed by single FFTPACK                (',        &
-     &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
-      else if(i_mode .eq. iflag_FFTPACK_COMPONENT) then
-        write(*,*) 'elapsed by FFTPACK for all component     (',        &
-     &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
-      else if(i_mode .eq. iflag_FFTPACK_DOMAIN) then
-        write(*,*) 'elapsed by FFTPACK for domain            (',        &
-     &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
-!
-      else if(i_mode .eq. iflag_FFTW_ONCE) then
-        write(*,*) 'elapsed by FFTW3 for at once             (',        &
-     &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
-      else if(i_mode .eq. iflag_FFTW_SINGLE) then
-        write(*,*) 'elapsed by single FFTW3                  (',        &
-     &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
-      else if(i_mode .eq. iflag_FFTW_COMPONENT) then
-        write(*,*) 'elapsed by FFTW3 for all component       (',        &
-     &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
-      else if(i_mode .eq. iflag_FFTW_DOMAIN) then
-        write(*,*) 'elapsed by FFTW3 for domain              (',        &
-     &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
-!
-      else if(i_mode .eq. iflag_OMP_FFTW_ONCE) then
-        write(*,*) 'elapsed by FFTW3 with OpoenMP at once    (',        &
-     &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
-      else if(i_mode .eq. iflag_OMP_FFTW_DOMAIN) then
-        write(*,*) 'elapsed by FFTW3 with OpoenMP for domain (',        &
-     &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
-!
-      else if(i_mode .eq. iflag_ISPACK1_ONCE) then
-        write(*,*) 'elapsed by ISPACK V0.93                  (',        &
-     &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
-      else if(i_mode .eq. iflag_ISPACK1_DOMAIN) then
-        write(*,*) 'elapsed by ISPACK V0.93 for domain       (',        &
-     &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
-!
-      else if(i_mode .eq. iflag_ISPACK3_ONCE) then
-        write(*,*) 'elapsed by ISPACK V3.0.1                 (',        &
-     &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
-      else if(i_mode .eq. iflag_ISPACK3_DOMAIN) then
-        write(*,*) 'elapsed by ISPACK V3.0.1 for domain      (',        &
-     &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
-      else if(i_mode .eq. iflag_ISPACK3_COMPONENT) then
-        write(*,*) 'elapsed by ISPACK V3.0.1 for component   (',        &
-     &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
-      else if(i_mode .eq. iflag_ISPACK3_SINGLE) then
-        write(*,*) 'elapsed by single ISPACK V3.0.1          (',        &
-     &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
-      end if
-!
-      end subroutine write_elapsed_4_FFT
-!
-! ------------------------------------------------------------------
-!
-      character(len = kchara) function chosen_fft_name(i_mode)
-!
-      integer(kind = kint), intent(in) :: i_mode
-!
-      if     (i_mode .eq. iflag_FFTPACK_ONCE) then
-        chosen_fft_name = hd_FFTPACK_O
-      else if(i_mode .eq. iflag_FFTPACK_SINGLE) then
-        chosen_fft_name = hd_FFTPACK
-      else if(i_mode .eq. iflag_FFTPACK_COMPONENT) then
-        chosen_fft_name = hd_FFTPACK_C
-      else if(i_mode .eq. iflag_FFTPACK_DOMAIN) then
-        chosen_fft_name = hd_FFTPACK_D
-!
-      else if(i_mode .eq. iflag_FFTW_SINGLE) then
-        chosen_fft_name = hd_FFTW
-      else if(i_mode .eq. iflag_FFTW_COMPONENT) then
-        chosen_fft_name = hd_FFTW_C
-      else if(i_mode .eq. iflag_FFTW_DOMAIN) then
-        chosen_fft_name = hd_FFTW_D
-      else if(i_mode .eq. iflag_FFTW_ONCE) then
-        chosen_fft_name = hd_FFTW_O
-!
-      else if(i_mode .eq. iflag_OMP_FFTW_ONCE) then
-        chosen_fft_name = hd_OMP_FFTW
-      else if(i_mode .eq. iflag_OMP_FFTW_DOMAIN) then
-        chosen_fft_name = hd_OMP_FFTW_D
-!
-      else if(i_mode .eq. iflag_ISPACK1_ONCE) then
-        chosen_fft_name = hd_ISPACK
-      else if(i_mode .eq. iflag_ISPACK1_DOMAIN) then
-        chosen_fft_name = hd_ISPACK_D
-!
-      else if(i_mode .eq. iflag_ISPACK3_ONCE) then
-        chosen_fft_name = hd_ISPACK3_O
-      else if(i_mode .eq. iflag_ISPACK3_DOMAIN) then
-        chosen_fft_name = hd_ISPACK3_D
-      else if(i_mode .eq. iflag_ISPACK3_COMPONENT) then
-        chosen_fft_name = hd_ISPACK3_C
-      else if(i_mode .eq. iflag_ISPACK3_SINGLE) then
-        chosen_fft_name = hd_ISPACK3
-!
-      else if(i_mode .eq. iflag_FFT_TEST) then
-        chosen_fft_name = hd_FFT_TEST
-      end if
-!
-      end function chosen_fft_name
 !
 ! ------------------------------------------------------------------
 !
