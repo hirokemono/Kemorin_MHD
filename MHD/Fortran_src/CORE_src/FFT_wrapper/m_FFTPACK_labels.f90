@@ -16,8 +16,7 @@
 !!        integer(kind = kint), intent(in) :: id_file
 !!   ------------------------------------------------------------------
 !!    FFT Package lists
-!!      FFTW,     FFTW3:         FFTW3
-!!      OMP_FFTW, OMP_FFTW3:     FFTW3 with OpenMP parallelization
+!|      FFTPACK:                 FFTPACK5.11d
 !!   ------------------------------------------------------------------
 !!    FFT size flags
 !|      once:         Call FFT once for all data transform

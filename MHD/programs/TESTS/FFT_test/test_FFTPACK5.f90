@@ -14,10 +14,7 @@
 !
       use calypso_multi_fftpack
 !
-      use m_FFTPACK_labels
-      use m_ISPACK_labels
-      use m_FFTW_labels
-      use m_rocFFT_labels
+      use m_FFT_labels
 !
       implicit none
 !
@@ -31,21 +28,7 @@
       character(len = kchara) :: title
 !
       call init_FFT_mode_flags()
-!
-      call init_FFTPACK_mode_flags()
-      call check_FFTPACK_mode_flags(6)
-!
-      call init_FFTW_mode_flags()
-      call check_FFTW_mode_flags(6)
-!
-      call init_OMP_FFTW_mode_flags()
-      call check_OMP_FFTW_mode_flags(6)
-!
-      call init_ISPACK_mode_flags()
-      call check_ISPACK_mode_flags(6)
-!
-      call init_rocFFT_mode_flags()
-      call check_rocFFT_mode_flags(6)
+      call check_FFT_mode_flags(6)
 !
 !
       write(*,'(a)') '-----  Test FFTPACK  -----'

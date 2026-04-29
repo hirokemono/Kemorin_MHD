@@ -80,30 +80,6 @@
 !>      Character flag to use ISPACK
       character(len = kchara), parameter :: hd_ISPACK3 =  'ISPACK3'
 !
-!>      Character flag for at once transeform
-      character(len = kchara), parameter, private                       &
-     &                              :: hd_at_once =       'once'
-!>      Character flag for once transform over component
-      character(len = kchara), parameter, private                       &
-     &                              :: hd_once_for_comp = 'component'
-!>      Character flag for once transform over domain
-      character(len = kchara), parameter, private                       &
-     &                              :: hd_once_for_mode = 'domain'
-!>      Character flag single transform
-      character(len = kchara), parameter, private                       &
-     &                              :: hd_single_FFT =    'single'
-!
-!
-!>      flag parts for once FFT over component
-      character(len = kchara), parameter :: at_once_FFT_names(2)        &
-     &                               = (/'once   ', 'at_once'/)
-!>      flag parts for once FFT over component
-      character(len = kchara), parameter :: comps_FFT_names(2)          &
-     &                               = (/'component', 'comps    '/)
-!>      flag parts for single FFT
-      character(len = kchara), parameter :: single_FFT_names(2)         &
-     &                               = (/'single', 'sgl   '/)
-!
 !>     Character lables for at once FFT:  'once'
       type(multi_flag_labels), save :: at_once_FFT_flags
 !>     Character lables for once FFT over domain:  'domain'
@@ -263,26 +239,6 @@
 ! ------------------------------------------------------------------
 !
       contains
-!
-! ------------------------------------------------------------------
-!
-      subroutine init_FFT_mode_flags()
-!
-      type(multi_flag_labels) :: tmp_flags
-      integer(kind = kint) :: icou
-!
-!
-      call init_multi_flags_by_labels(itwo, at_once_FFT_names,          &
-     &                                at_once_FFT_flags)
-      call init_multi_flags_by_one_label(hd_once_for_mode,              &
-     &                                   domain_FFT_flags)
-      call init_multi_flags_by_labels(itwo, comps_FFT_names,            &
-     &                                comp_FFT_flags)
-      call init_multi_flags_by_labels(itwo, single_FFT_names,           &
-     &                                single_FFT_flags)
-!
-!
-      end subroutine init_FFT_mode_flags
 !
 ! ------------------------------------------------------------------
 !
