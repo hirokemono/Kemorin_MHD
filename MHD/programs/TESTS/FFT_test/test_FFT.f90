@@ -7,6 +7,7 @@
       use m_constants
       use m_machine_parameter
       use m_FFT_size
+      use m_FFT_labels
 !
       use t_fft_test_data
       use FFT_test_loop
@@ -16,6 +17,8 @@
       type(working_FFTs) :: WK_FFTS
       type(fft_test_data) :: ft0
       integer(kind = kint) :: iflag_FFT_t
+!
+      call init_FFT_mode_flags()
 !
       iflag_debug = 1
       write(*,'(a)') '-----  Test FFT  -----'

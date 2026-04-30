@@ -84,6 +84,8 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
       integer(kind = kint), intent(inout) :: iflag_FFT_MHD
 !
+      character(len = kchara) :: tmpchara
+!
 !
       if(iflag_FFT_MHD .eq. iflag_SEARCH_FASTEST_FFT) then
         call compare_FFT_4_MHD(sph_rtp, comm_rtp,                       &
@@ -96,8 +98,9 @@
      &    trns_MHD%backward%ncomp, trns_MHD%forward%ncomp, WK_FFTs)
 !
       if(my_rank .ne. 0) return
+      tmpchara = find_FFT_label(iflag_FFT_MHD)
       write(*,'(a,a,a,i3,a)') 'Selected Fourier transform: ',           &
-     &   trim(find_FFT_label(iflag_FFT_MHD)), ' (', iflag_FFT_MHD, ')'
+     &                       trim(tmpchara), ' (', iflag_FFT_MHD, ')'
 !
       end subroutine init_fourier_transform_4_MHD
 !

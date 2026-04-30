@@ -97,6 +97,8 @@
       type(multi_flag_labels) :: rocFFT_base_flags
 !
 !
+      if(allocated(at_once_FFT_flags%flags)) return
+!
       call init_FFT_loop_mode_flags()
 !
       call init_FFTPACK_mode_flags()
@@ -149,6 +151,7 @@
       character(len = kchara) :: tmpchara
 !
       tmpchara = 'NONE'
+      find_FFT_label = tmpchara
       if((iflag_fft/10) .eq. (iflag_FFTPACK/10)) then
         tmpchara = find_FFTPACK_label(iflag_fft)
       else if((iflag_fft/10) .eq. (iflag_ISPACK0/10)) then
@@ -291,6 +294,8 @@
       character(len = kchara), intent(in) :: FFT_library_ctl
       integer(kind = kint) :: iflag
 !
+!
+      call init_FFT_mode_flags()
 !
 #ifdef FFTW3
       iflag = iflag_FFTW_SINGLE

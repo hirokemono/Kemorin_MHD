@@ -87,14 +87,19 @@
       integer(kind = kint) :: ip
 !
 !
+      write(*,*) 'dealloc_comm_table_sph_FFTW', np_smp
       call dealloc_comm_table_sph_FFTW(FFTW_f%comm_sph_FFTW)
 !
       do ip = 1, np_smp
+        write(*,*) 'dfftw_destroy_plan FFTW_f%plan_fwd', ip
         call dfftw_destroy_plan(FFTW_f%plan_fwd(ip))
+        write(*,*) 'dfftw_destroy_plan FFTW_f%plan_bwd', ip
         call dfftw_destroy_plan(FFTW_f%plan_bwd(ip))
+        write(*,*) 'dfftw_cleanup', ip
         call dfftw_cleanup
       end do
 !
+      write(*,*) 'dealloc_fld_FFTW_plan'
       call dealloc_fld_FFTW_plan(FFTW_f)
 !
       end subroutine finalize_sph_field_FFTW

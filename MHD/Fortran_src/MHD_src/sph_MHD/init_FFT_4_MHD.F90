@@ -57,15 +57,15 @@
      &            iflag_ISPACK3_SINGLE,                                 &
      &            iflag_ISPACK3_DOMAIN/)
 #elif FFTW3
-      integer(kind = kint), parameter :: num_test =   13
+      integer(kind = kint), parameter :: num_test =   10
       integer(kind = kint), parameter :: list_test(num_test)            &
      &        = (/iflag_FFTPACK_ONCE,                                   &
      &            iflag_FFTPACK_COMPONENT,                              &
      &            iflag_FFTPACK_DOMAIN,                                 &
      &            iflag_FFTPACK_SINGLE,                                 &
-     &            iflag_FFTW_ONCE,                                      &
-     &            iflag_FFTW_SINGLE,                                    &
-     &            iflag_FFTW_COMPONENT,                                 &
+!     &            iflag_FFTW_ONCE,                                      &
+!     &            iflag_FFTW_SINGLE,                                    &
+!     &            iflag_FFTW_COMPONENT,                                 &
      &            iflag_FFTW_DOMAIN,                                    &
      &            iflag_ISPACK1_ONCE,                                   &
      &            iflag_ISPACK3_ONCE,                                   &
@@ -112,6 +112,8 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
       integer(kind = kint), intent(inout) :: iflag_FFT_MHD
 !
+      character(len = kchara) :: tmpchara
+!
 !
       if(iflag_FFT_MHD .eq. iflag_SEARCH_FASTEST_FFT) then
         call compare_FFT_4_MHD(sph_rtp, comm_rtp,                       &
@@ -124,8 +126,9 @@
      &    trns_MHD%backward%ncomp, trns_MHD%forward%ncomp, WK_FFTs)
 !
       if(my_rank .ne. 0) return
+      tmpchara = find_FFT_label(iflag_FFT_MHD)
       write(*,'(a,a,a,i3,a)') 'Selected Fourier transform: ',           &
-     &   trim(find_FFT_label(iflag_FFT_MHD)), ' (', iflag_FFT_MHD, ')'
+     &                       trim(tmpchara), ' (', iflag_FFT_MHD, ')'
 !
       end subroutine init_fourier_transform_4_MHD
 !
@@ -212,24 +215,37 @@
       real(kind = kreal) :: starttime, endtime
 !
 !
+      write(*,*) 'init_sph_FFT_select'
       if(iflag_debug .gt. 0) write(*,*) 'init_sph_FFT_select'
       call init_sph_FFT_select(my_rank, iflag_FFT, sph_rtp, comm_rtp,   &
      &    trns_MHD%backward%ncomp, trns_MHD%forward%ncomp, WK_FFTs)
+      call calypso_mpi_barrier()
 !
+!
+      write(*,*) 'back_FFT_select_from_recv'
       if(iflag_debug .gt. 0) write(*,*) 'back_FFT_select_from_recv'
       starttime = MPI_WTIME()
       call back_FFT_select_from_recv(sph_rtp, comm_rtp,                 &
      &    trns_MHD%backward%ncomp, n_WR, WR, trns_MHD%backward%fld_rtp, &
      &    WK_FFTs)
+      call calypso_mpi_barrier()
+!
+      write(*,*) 'fwd_FFT_select_to_send'
       call fwd_FFT_select_to_send(sph_rtp, comm_rtp,                    &
      &    trns_MHD%forward%ncomp, n_WS, trns_MHD%forward%fld_rtp, WS,   &
      &    WK_FFTs)
+      call calypso_mpi_barrier()
       endtime = MPI_WTIME() - starttime
 !
       if(iflag_debug .gt. 0) write(*,*) 'finalize_sph_FFT_select'
-      call finalize_sph_FFT_select(sph_rtp, WK_FFTs)
 !
+      write(*,*) my_rank, 'finalize_sph_FFT_select'
+      call finalize_sph_FFT_select(sph_rtp, WK_FFTs)
+      call calypso_mpi_barrier()
+!
+      write(*,*) 'calypso_mpi_allreduce_one_real'
       call calypso_mpi_allreduce_one_real(endtime, etime_fft, MPI_SUM)
+      call calypso_mpi_barrier()
       etime_fft = etime_fft / dble(nprocs)
 !
       end subroutine test_fourier_trans_4_MHD

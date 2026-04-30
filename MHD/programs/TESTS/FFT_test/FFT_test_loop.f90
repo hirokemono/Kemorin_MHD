@@ -11,6 +11,11 @@
 !!        integer(kind = kint), intent(in) :: iflag_FFT
 !!        type(fft_test_data), intent(inout) :: ft
 !!        type(working_FFTs), intent(inout) :: WK_FFT
+!!      subroutine FFT_test_with_phi_in_data(iflag_FFT, n_loop,         &
+!!     &                                     ft, WK_FFT)
+!!        integer(kind = kint), intent(in) :: iflag_FFT, n_loop
+!!        type(fft_test_data), intent(inout) :: ft
+!!        type(working_FFTs), intent(inout) :: WK_FFT
 !!@endverbatim
       module FFT_test_loop
 !
