@@ -70,6 +70,7 @@
      &         (ncomp, sph_rtp, comm_rtp, WK_FFTs, SR_r, iflag_FFT)
 !
       use t_solver_SR
+      use m_FFT_labels
 !
       integer(kind = kint), intent(in) :: ncomp
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -91,7 +92,7 @@
 !
       if(my_rank .gt. 0) return
       write(*,'(a,a,a,i3,a)') 'Selected Fourier transform: ',           &
-     &         trim(chosen_fft_name(iflag_FFT)), ' (', iflag_FFT, ')'
+     &         trim(find_FFT_label(iflag_FFT)), ' (', iflag_FFT, ')'
 !
       end subroutine init_fourier_transform_4_sph
 !
@@ -99,6 +100,8 @@
 !
       subroutine s_select_fourier_transform(ncomp, sph_rtp, comm_rtp,   &
      &          n_WS, n_WR, WS, WR, WK_FFTs)
+!
+      use m_FFT_labels
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp

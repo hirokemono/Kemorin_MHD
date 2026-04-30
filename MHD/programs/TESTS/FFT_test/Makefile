@@ -70,6 +70,19 @@ MOD_FFTPACK_TEST = \
 m_precision.o \
 m_constants.o \
 m_machine_parameter.o \
+m_FFT_selector.o \
+m_FFTPACK_labels.o \
+m_ISPACK1_labels.o \
+m_ISPACK3_labels.o \
+m_FFTW_labels.o \
+m_OMP_FFTW_labels.o \
+m_rocFFT_labels.o \
+m_complex_rocFFT_labels.o \
+m_real_rocFFT_labels.o \
+m_OMP_rocFFT_labels.o \
+m_FFT_labels.o \
+t_multi_flag_labels.o \
+skip_comment_f.o \
 \
 normalize_for_FFTPACK.o \
 multi_pin_FFTPACK_smp.o \

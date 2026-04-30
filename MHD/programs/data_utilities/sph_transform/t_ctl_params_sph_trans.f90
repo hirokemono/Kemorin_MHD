@@ -64,6 +64,7 @@
       use t_work_4_sph_trans
 !
       use m_FFT_selector
+      use m_FFT_labels
       use m_legendre_transform_list
 !
       use set_field_data_w_SGS
@@ -169,6 +170,7 @@
 !
       use m_machine_parameter
       use m_FFT_selector
+      use m_FFT_labels
       use m_legendre_transform_list
 !
       use set_field_data_w_SGS
