@@ -7,11 +7,6 @@
 !>@brief  Selector of Fourier transform
 !!
 !!@verbatim
-!!      integer(kind = kint) function                                   &
-!!     &            set_fft_library_ctl(iflag_ctl, FFT_library_ctl)
-!!        integer(kind = kint), intent(in) :: iflag_ctl
-!!        character(len = kchara), intent(in) :: FFT_library_ctl
-!|
 !!   ------------------------------------------------------------------
 !!      FFT Package lists
 !!
@@ -75,8 +70,6 @@
 !
 !>      Character flag to use ISPACK
       character(len = kchara), parameter :: hd_ISPACK =   'ISPACK'
-!>      Character flag to use ISPACK
-      character(len = kchara), parameter :: hd_ISPACK3 =  'ISPACK3'
 !
 !>     Character lables for at once FFT:  'once'
       type(multi_flag_labels), save :: at_once_FFT_flags
@@ -91,16 +84,16 @@
 !
 !
 !>      Character flag to use single FFTPACK5
-      character(len = kchara), parameter, private                       &
+      character(len = kchara), parameter                                &
      &                            :: hd_FFTPACK_S = 'FFTPACK_SINGLE'
 !>      Character flag to use FFTPACK5 for each component
-      character(len = kchara), parameter, private                       &
+      character(len = kchara), parameter                                &
      &                            :: hd_FFTPACK_C = 'FFTPACK_COMPONENT'
 !>      Character flag to use FFTPACK5 for each domain
-      character(len = kchara), parameter, private                       &
+      character(len = kchara), parameter                                &
      &                            :: hd_FFTPACK_D = 'FFTPACK_DOMAIN'
 !>      Character flag to use FFTPACK5 at once
-      character(len = kchara), parameter, private                       &
+      character(len = kchara), parameter                                &
      &                            :: hd_FFTPACK_O = 'FFTPACK_ONCE'
 !
 !>      Character flag to use FFTW3 for each component
@@ -112,16 +105,16 @@
 !>      Character flag to use single transforms in FFTW3
       character(len = kchara), parameter :: hd_FFTW3_S = 'fftw3_single'
 !>      Character flag to use FFTW3 for all components
-      character(len = kchara), parameter, private                       &
+      character(len = kchara), parameter                                &
      &                               :: hd_FFTW_C =   'FFTW_COMPONENT'
 !>      Character flag to use FFTW3 for all components
-      character(len = kchara), parameter, private                       &
+      character(len = kchara), parameter                                &
      &                               :: hd_FFTW3_C =  'fftw3_component'
 !>      Character flag to use FFTW3 for all components
-      character(len = kchara), parameter, private                       &
+      character(len = kchara), parameter                                &
      &                               :: hd_FFTW_O =   'FFTW_ONCE'
 !>      Character flag to use FFTW3 for all components
-      character(len = kchara), parameter, private                       &
+      character(len = kchara), parameter                                &
      &                               :: hd_FFTW3_O =  'FFTW3_ONCE'
 !
 !>      Character flag to use FFTW3 for each component
@@ -132,23 +125,23 @@
      &                           :: hd_OMP_FFTW3_D = 'OMP_FFTW3_DOMAIN'
 !
 !>      Character flag to use ISPACK for domain
-      character(len = kchara), parameter, private                       &
+      character(len = kchara), parameter                                &
      &                               :: hd_ISPACK_D =  'ISPACK_DOMAIN'
 !>      Character flag to use ISPACK at once
-      character(len = kchara), parameter, private                       &
+      character(len = kchara), parameter                                &
      &                               :: hd_ISPACK_O =  'ISPACK_ONCE'
 !
 !>      Character flag to use ISPACK for domain
-      character(len = kchara), parameter, private                       &
+      character(len = kchara), parameter                                &
      &                           :: hd_ISPACK3_D =  'ISPACK3_DOMAIN'
 !>      Character flag to use ISPACK for component
-      character(len = kchara), parameter, private                       &
+      character(len = kchara), parameter                                &
      &                           :: hd_ISPACK3_C =  'ISPACK3_COMPONENT'
 !>      Character flag to use single ISPACK
-      character(len = kchara), parameter, private                       &
+      character(len = kchara), parameter                                &
      &                           :: hd_ISPACK3_S =  'ISPACK3_SINGLE'
 !>      Character flag to use ISPACK at once
-      character(len = kchara), parameter, private                       &
+      character(len = kchara), parameter                                &
      &                           :: hd_ISPACK3_O =  'ISPACK3_ONCE'
 !
 !
@@ -227,12 +220,12 @@
 !>      integer flag to use test FFT
       integer(kind = kint), parameter :: iflag_FFT_TEST =    99
 !
-      private :: hd_FFTPACK
-      private :: hd_FFTW, hd_FFTW3, hd_FFTW_S, hd_FFTW3_S
-      private :: hd_FFTW_D, hd_FFTW3_D
-      private :: hd_ISPACK, hd_ISPACK3, hd_FFT_TEST
-      private :: hd_OMP_FFTW,  hd_OMP_FFTW_D
-      private :: hd_OMP_FFTW3, hd_OMP_FFTW3_D
+!      private :: hd_FFTPACK
+!      private :: hd_FFTW, hd_FFTW3, hd_FFTW_S, hd_FFTW3_S
+!      private :: hd_FFTW_D, hd_FFTW3_D
+!      private :: hd_ISPACK, hd_ISPACK3, hd_FFT_TEST
+!      private :: hd_OMP_FFTW,  hd_OMP_FFTW_D
+!      private :: hd_OMP_FFTW3, hd_OMP_FFTW3_D
 !
 ! ------------------------------------------------------------------
 !
@@ -268,88 +261,6 @@
      &                               single_TGT_flags, icou)
 !
       end subroutine init_each_FFT_mode_flags
-!
-! ------------------------------------------------------------------
-!
-      integer(kind = kint) function                                     &
-     &            set_fft_library_ctl(iflag_ctl, FFT_library_ctl)
-!
-      use skip_comment_f
-!
-      integer(kind = kint), intent(in) :: iflag_ctl
-      character(len = kchara), intent(in) :: FFT_library_ctl
-      integer(kind = kint) :: iflag
-!
-!
-#ifdef FFTW3
-      iflag = iflag_FFTW_SINGLE
-#else
-      iflag = iflag_FFTPACK_ONCE
-#endif
-      if(iflag_ctl .eq. 0) then
-        set_fft_library_ctl = iflag
-        return
-      end if
-!
-      if(cmp_no_case(FFT_library_ctl, hd_search_fastest_fft)) then
-        iflag = iflag_SEARCH_FASTEST_FFT
-!
-      else if(cmp_no_case(FFT_library_ctl, hd_FFTPACK_O)) then
-        iflag = iflag_FFTPACK_ONCE
-      else if(cmp_no_case(FFT_library_ctl, hd_FFTPACK_C)) then
-        iflag = iflag_FFTPACK_COMPONENT
-      else if(cmp_no_case(FFT_library_ctl, hd_FFTPACK_D)) then
-        iflag = iflag_FFTPACK_DOMAIN
-!
-      else if(cmp_no_case(FFT_library_ctl, hd_ISPACK_O)                 &
-     &   .or. cmp_no_case(FFT_library_ctl, hd_ISPACK)) then
-        iflag = iflag_ISPACK1_ONCE
-      else if(cmp_no_case(FFT_library_ctl, hd_ISPACK_D)) then
-        iflag = iflag_ISPACK1_DOMAIN
-!
-      else if(cmp_no_case(FFT_library_ctl, hd_ISPACK3_O)) then
-        iflag = iflag_ISPACK3_ONCE
-      else if(cmp_no_case(FFT_library_ctl, hd_ISPACK3_D)) then
-        iflag = iflag_ISPACK3_DOMAIN
-      else if(cmp_no_case(FFT_library_ctl, hd_ISPACK3_C)) then
-        iflag = iflag_ISPACK3_COMPONENT
-      else if(cmp_no_case(FFT_library_ctl, hd_ISPACK3_S)                &
-     &   .or. cmp_no_case(FFT_library_ctl, hd_ISPACK3)) then
-        iflag = iflag_ISPACK3_SINGLE
-!
-      else if(cmp_no_case(FFT_library_ctl, hd_FFTW_O)                   &
-     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3_O)) then
-        iflag = iflag_FFTW_ONCE
-      else if(cmp_no_case(FFT_library_ctl, hd_FFTW_S)                   &
-     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3_S)                &
-     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW)                   &
-     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3)) then
-        iflag = iflag_FFTW_SINGLE
-      else if(cmp_no_case(FFT_library_ctl, hd_FFTW_C)                   &
-     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3_C)) then
-        iflag = iflag_FFTW_COMPONENT
-      else if(cmp_no_case(FFT_library_ctl, hd_FFTW_D)                   &
-     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3_D)) then
-        iflag = iflag_FFTW_DOMAIN
-!
-      else if(cmp_no_case(FFT_library_ctl, hd_OMP_FFTW)                 &
-     &     .or. cmp_no_case(FFT_library_ctl, hd_OMP_FFTW3)) then
-        iflag = iflag_OMP_FFTW_ONCE
-!
-      else if(cmp_no_case(FFT_library_ctl, hd_OMP_FFTW_D)               &
-     &     .or. cmp_no_case(FFT_library_ctl, hd_OMP_FFTW3_D)) then
-        iflag = iflag_OMP_FFTW_DOMAIN
-!
-      else if(cmp_no_case(FFT_library_ctl, hd_FFT_TEST)) then
-        iflag = iflag_FFT_TEST
-!
-      else if(cmp_no_case(FFT_library_ctl, hd_FFTPACK_S)                &
-     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTPACK)) then
-        iflag = iflag_FFTPACK_SINGLE
-      end if
-      set_fft_library_ctl = iflag
-!
-      end function set_fft_library_ctl
 !
 ! ------------------------------------------------------------------
 !

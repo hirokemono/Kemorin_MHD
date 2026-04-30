@@ -34,8 +34,7 @@
       implicit none
 !
 !>      Character flag to use ISPACK
-      character(len = kchara), parameter, private                       &
-     &               :: hd_ISPACK3 =  'ISPACK3'
+      character(len = kchara), parameter :: hd_ISPACK3 =  'ISPACK3'
 !
 !>     Character lables for at once ISPACKv3 for transform
 !!        'ISPACK3', 'ISPACK3_once', 'ISPACK3_at_once',
