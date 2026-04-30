@@ -226,58 +226,63 @@
       integer(kind = kint), intent(in) :: i_mode
       real(kind = kreal), intent(in) :: etime_fft
 !
+      character(len = kchara) :: FFT_name, FFT_type, tmpchara
+!
+!
+      tmpchara = find_FFT_label(i_mode)
+!
       if     (i_mode .eq. iflag_FFTPACK_ONCE) then
         write(*,*) 'elapsed by FFTPACK at once               (',        &
-     &            trim(find_FFT_label(i_mode)), '): ', etime_fft
+     &            trim(tmpchara), '): ', etime_fft
       else if(i_mode .eq. iflag_FFTPACK_SINGLE) then
         write(*,*) 'elapsed by single FFTPACK                (',        &
-     &            trim(find_FFT_label(i_mode)), '): ', etime_fft
+     &            trim(tmpchara), '): ', etime_fft
       else if(i_mode .eq. iflag_FFTPACK_COMPONENT) then
         write(*,*) 'elapsed by FFTPACK for all component     (',        &
-     &            trim(find_FFT_label(i_mode)), '): ', etime_fft
+     &            trim(tmpchara), '): ', etime_fft
       else if(i_mode .eq. iflag_FFTPACK_DOMAIN) then
         write(*,*) 'elapsed by FFTPACK for domain            (',        &
-     &            trim(find_FFT_label(i_mode)), '): ', etime_fft
+     &            trim(tmpchara), '): ', etime_fft
 !
       else if(i_mode .eq. iflag_FFTW_ONCE) then
         write(*,*) 'elapsed by FFTW3 for at once             (',        &
-     &            trim(find_FFT_label(i_mode)), '): ', etime_fft
+     &            trim(tmpchara), '): ', etime_fft
       else if(i_mode .eq. iflag_FFTW_SINGLE) then
         write(*,*) 'elapsed by single FFTW3                  (',        &
-     &            trim(find_FFT_label(i_mode)), '): ', etime_fft
+     &            trim(tmpchara), '): ', etime_fft
       else if(i_mode .eq. iflag_FFTW_COMPONENT) then
         write(*,*) 'elapsed by FFTW3 for all component       (',        &
-     &            trim(find_FFT_label(i_mode)), '): ', etime_fft
+     &            trim(tmpchara), '): ', etime_fft
       else if(i_mode .eq. iflag_FFTW_DOMAIN) then
         write(*,*) 'elapsed by FFTW3 for domain              (',        &
-     &            trim(find_FFT_label(i_mode)), '): ', etime_fft
+     &            trim(tmpchara), '): ', etime_fft
 !
       else if(i_mode .eq. iflag_OMP_FFTW_ONCE) then
         write(*,*) 'elapsed by FFTW3 with OpoenMP at once    (',        &
-     &            trim(find_FFT_label(i_mode)), '): ', etime_fft
+     &            trim(tmpchara), '): ', etime_fft
       else if(i_mode .eq. iflag_OMP_FFTW_DOMAIN) then
         write(*,*) 'elapsed by FFTW3 with OpoenMP for domain (',        &
-     &            trim(find_FFT_label(i_mode)), '): ', etime_fft
+     &            trim(tmpchara), '): ', etime_fft
 !
       else if(i_mode .eq. iflag_ISPACK1_ONCE) then
         write(*,*) 'elapsed by ISPACK V0.93                  (',        &
-     &            trim(find_FFT_label(i_mode)), '): ', etime_fft
+     &            trim(tmpchara), '): ', etime_fft
       else if(i_mode .eq. iflag_ISPACK1_DOMAIN) then
         write(*,*) 'elapsed by ISPACK V0.93 for domain       (',        &
-     &            trim(find_FFT_label(i_mode)), '): ', etime_fft
+     &            trim(tmpchara), '): ', etime_fft
 !
       else if(i_mode .eq. iflag_ISPACK3_ONCE) then
         write(*,*) 'elapsed by ISPACK V3.0.1                 (',        &
-     &            trim(find_FFT_label(i_mode)), '): ', etime_fft
+     &            trim(tmpchara), '): ', etime_fft
       else if(i_mode .eq. iflag_ISPACK3_DOMAIN) then
         write(*,*) 'elapsed by ISPACK V3.0.1 for domain      (',        &
-     &            trim(find_FFT_label(i_mode)), '): ', etime_fft
+     &            trim(tmpchara), '): ', etime_fft
       else if(i_mode .eq. iflag_ISPACK3_COMPONENT) then
         write(*,*) 'elapsed by ISPACK V3.0.1 for component   (',        &
-     &            trim(find_FFT_label(i_mode)), '): ', etime_fft
+     &            trim(tmpchara), '): ', etime_fft
       else if(i_mode .eq. iflag_ISPACK3_SINGLE) then
         write(*,*) 'elapsed by single ISPACK V3.0.1          (',        &
-     &            trim(find_FFT_label(i_mode)), '): ', etime_fft
+     &            trim(tmpchara), '): ', etime_fft
       end if
 !
       end subroutine write_elapsed_4_FFT

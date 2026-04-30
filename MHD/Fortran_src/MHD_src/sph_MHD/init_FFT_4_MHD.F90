@@ -57,15 +57,15 @@
      &            iflag_ISPACK3_SINGLE,                                 &
      &            iflag_ISPACK3_DOMAIN/)
 #elif FFTW3
-      integer(kind = kint), parameter :: num_test =   10
+      integer(kind = kint), parameter :: num_test =   13
       integer(kind = kint), parameter :: list_test(num_test)            &
      &        = (/iflag_FFTPACK_ONCE,                                   &
      &            iflag_FFTPACK_COMPONENT,                              &
      &            iflag_FFTPACK_DOMAIN,                                 &
      &            iflag_FFTPACK_SINGLE,                                 &
-!     &            iflag_FFTW_ONCE,                                      &
-!     &            iflag_FFTW_SINGLE,                                    &
-!     &            iflag_FFTW_COMPONENT,                                 &
+     &            iflag_FFTW_ONCE,                                      &
+     &            iflag_FFTW_SINGLE,                                    &
+     &            iflag_FFTW_COMPONENT,                                 &
      &            iflag_FFTW_DOMAIN,                                    &
      &            iflag_ISPACK1_ONCE,                                   &
      &            iflag_ISPACK3_ONCE,                                   &
