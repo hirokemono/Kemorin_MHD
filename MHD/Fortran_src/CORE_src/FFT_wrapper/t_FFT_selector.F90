@@ -300,7 +300,6 @@
      &                     cast_long(Nfft), X, WKS%WK_ISPACK3,          &
      &                     elapsed_fft, elapsed_cpy)
       else if(iflag_FFT .eq. iflag_ISPACK3_SINGLE) then
-        write(*,*) 'calypso_single_pout_FXRTFA'
         call calypso_single_pout_FXRTFA(Nsmp, Nstacksmp, cast_long(M),  &
      &                              cast_long(Nfft), X, WKS%WK_ISPACK3, &
      &                              elapsed_fft, elapsed_cpy)
@@ -313,7 +312,6 @@
      &      WKS%WK_FFTW, elapsed_fft, elapsed_cpy)
 #endif
       else if(iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
-        write(*,*) 'calypso_single_pout_RFFTMF'
         call calypso_single_pout_RFFTMF(Nsmp, Nstacksmp, M, Nfft, X,    &
      &      WKS%WK_FFTPACK, elapsed_fft, elapsed_cpy)
       else
@@ -348,7 +346,6 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      write(*,*) 'backward_FFT_select', iflag_FFT, iflag_FFTW_SINGLE
       if(iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         call FTTRUB_kemo_t(Nsmp, Nstacksmp, M, Nfft, X,                 &
      &       WKS%WK_ISPACK1, elapsed_fft, elapsed_cpy)
@@ -373,7 +370,6 @@
      &                          elapsed_fft, elapsed_cpy)
 #endif
       else if(iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
-        write(*,*) 'calypso_single_pout_RFFTMB'
         call calypso_single_pout_RFFTMB(Nsmp, Nstacksmp, M, Nfft, X,    &
      &      WKS%WK_FFTPACK, elapsed_fft, elapsed_cpy)
       else

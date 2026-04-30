@@ -536,6 +536,8 @@
       subroutine fwd_FFT_select_to_send(sph_rtp, comm_rtp, ncomp_fwd,   &
      &                                  n_WS, v_rtp, WS, WK_FFTs)
 !
+      use calypso_mpi
+!
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
 !
@@ -544,6 +546,9 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
+!
+      if(my_rank .eq. 0) write(*,*) sph_rtp%istep_rtp(3),               &
+     &                  'fwd_FFT_select_to_send', WK_FFTs%iflag_FFT
 !
       if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         call sph_FTTRUF_to_send(sph_rtp, ncomp_fwd,                     &
@@ -646,6 +651,8 @@
       subroutine back_FFT_select_from_recv                              &
      &        (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, v_rtp, WK_FFTs)
 !
+      use calypso_mpi
+!
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
 !
@@ -655,6 +662,9 @@
      &                  :: v_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
+!
+      if(my_rank .eq. 0) write(*,*) sph_rtp%istep_rtp(3),               &
+     &                  'back_FFT_select_from_recv', WK_FFTs%iflag_FFT
 !
       if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         call sph_FTTRUB_from_recv(sph_rtp, comm_rtp, ncomp_bwd,         &
