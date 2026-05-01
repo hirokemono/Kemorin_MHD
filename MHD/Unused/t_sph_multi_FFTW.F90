@@ -145,8 +145,8 @@
       do j = 1, np_smp
         call dfftw_destroy_plan(FFTW_t%plan_fwd(j))
         call dfftw_destroy_plan(FFTW_t%plan_bwd(j))
-        call dfftw_cleanup
       end do
+      call dfftw_cleanup
 !
       call dealloc_FFTW_plan(FFTW_t)
       call dealloc_tmp_ordering_FFTW(FFTW_t)

@@ -338,25 +338,18 @@
 !
 #ifdef FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_ONCE) then
-!
-        write(*,*) 'finalize_sph_field_FFTW'
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
         call finalize_sph_field_FFTW(WK_FFTs%sph_fld_FFTW)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_DOMAIN) then
-!
-        write(*,*) 'finalize_sph_field_FFTW'
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW for domain'
         call finalize_sph_field_FFTW(WK_FFTs%sph_fld_FFTW)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_SINGLE) then
-!
-        write(*,*) 'finalize_sph_single_FFTW'
         if(iflag_debug .gt. 0) write(*,*) 'Finalize single FFTW'
         call finalize_sph_single_FFTW(WK_FFTs%sph_sgl_FFTW)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_COMPONENT) then
-!
-        write(*,*) 'finalize_sph_component_FFTW'
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW for all comps'
         call finalize_sph_component_FFTW(WK_FFTs%sph_comp_FFTW)
+!
 #endif
 !
 #ifdef OMP_FFTW3
