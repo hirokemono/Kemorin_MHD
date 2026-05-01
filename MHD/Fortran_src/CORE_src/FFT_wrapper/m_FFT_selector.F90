@@ -181,13 +181,13 @@
 !
 !
 !>      integer flag to use FFTPACK5
-      integer(kind = kint), parameter :: iflag_FFTPACK_ONCE =        1
+      integer(kind = kint), parameter :: iflag_FFTPACK_ONCE =        51
 !>      integer flag to use FFTPACK5
-      integer(kind = kint), parameter :: iflag_FFTPACK_SINGLE =      2
+      integer(kind = kint), parameter :: iflag_FFTPACK_SINGLE =      52
 !>      integer flag to use FFTPACK5
-      integer(kind = kint), parameter :: iflag_FFTPACK_COMPONENT =   3
+      integer(kind = kint), parameter :: iflag_FFTPACK_COMPONENT =   53
 !>      integer flag to use FFTPACK5
-      integer(kind = kint), parameter :: iflag_FFTPACK_DOMAIN =      4
+      integer(kind = kint), parameter :: iflag_FFTPACK_DOMAIN =      54
 !
 !>      integer flag to use FFTW3
       integer(kind = kint), parameter :: iflag_FFTW_ONCE =          11
