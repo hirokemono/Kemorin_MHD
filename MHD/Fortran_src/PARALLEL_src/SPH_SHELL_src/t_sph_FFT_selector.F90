@@ -548,8 +548,8 @@
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
-      if(my_rank .eq. 0) write(*,*) sph_rtp%istep_rtp(3),               &
-     &                  'fwd_FFT_select_to_send', WK_FFTs%iflag_FFT
+!      if(my_rank .eq. 0) write(*,*) sph_rtp%istep_rtp(3),              &
+!     &                  'fwd_FFT_select_to_send', WK_FFTs%iflag_FFT
 !
       if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         call sph_FTTRUF_to_send(sph_rtp, ncomp_fwd,                     &
@@ -664,8 +664,8 @@
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
-      if(my_rank .eq. 0) write(*,*) sph_rtp%istep_rtp(3),               &
-     &                  'back_FFT_select_from_recv', WK_FFTs%iflag_FFT
+!      if(my_rank .eq. 0) write(*,*) sph_rtp%istep_rtp(3),              &
+!     &                  'back_FFT_select_from_recv', WK_FFTs%iflag_FFT
 !
       if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         call sph_FTTRUB_from_recv(sph_rtp, comm_rtp, ncomp_bwd,         &
