@@ -52,6 +52,8 @@
 !
 #ifdef FFTW3
       use m_FFTW_labels
+#endif
+#ifdef OMP_FFTW3
       use m_OMP_FFTW_labels
 #endif
 #ifdef _AMD_ROCM_
@@ -292,7 +294,6 @@
       integer(kind = kint) function                                     &
      &            set_fft_library_ctl(iflag_ctl, FFT_library_ctl)
 !
-      use m_ISPACK3_labels
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: iflag_ctl
@@ -314,59 +315,8 @@
 !
       if(cmp_no_case(FFT_library_ctl, hd_search_fastest_fft)) then
         iflag = iflag_SEARCH_FASTEST_FFT
-!
-      else if(cmp_no_case(FFT_library_ctl, hd_FFTPACK_O)) then
-        iflag = iflag_FFTPACK_ONCE
-      else if(cmp_no_case(FFT_library_ctl, hd_FFTPACK_C)) then
-        iflag = iflag_FFTPACK_COMPONENT
-      else if(cmp_no_case(FFT_library_ctl, hd_FFTPACK_D)) then
-        iflag = iflag_FFTPACK_DOMAIN
-!
-      else if(cmp_no_case(FFT_library_ctl, hd_ISPACK_O)                 &
-     &   .or. cmp_no_case(FFT_library_ctl, hd_ISPACK)) then
-        iflag = iflag_ISPACK1_ONCE
-      else if(cmp_no_case(FFT_library_ctl, hd_ISPACK_D)) then
-        iflag = iflag_ISPACK1_DOMAIN
-!
-      else if(cmp_no_case(FFT_library_ctl, hd_ISPACK3_O)) then
-        iflag = iflag_ISPACK3_ONCE
-      else if(cmp_no_case(FFT_library_ctl, hd_ISPACK3_D)) then
-        iflag = iflag_ISPACK3_DOMAIN
-      else if(cmp_no_case(FFT_library_ctl, hd_ISPACK3_C)) then
-        iflag = iflag_ISPACK3_COMPONENT
-      else if(cmp_no_case(FFT_library_ctl, hd_ISPACK3_S)                &
-     &   .or. cmp_no_case(FFT_library_ctl, hd_ISPACK3)) then
-        iflag = iflag_ISPACK3_SINGLE
-!
-      else if(cmp_no_case(FFT_library_ctl, hd_FFTW_O)                   &
-     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3_O)) then
-        iflag = iflag_FFTW_ONCE
-      else if(cmp_no_case(FFT_library_ctl, hd_FFTW_S)                   &
-     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3_S)                &
-     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW)                   &
-     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3)) then
-        iflag = iflag_FFTW_SINGLE
-      else if(cmp_no_case(FFT_library_ctl, hd_FFTW_C)                   &
-     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3_C)) then
-        iflag = iflag_FFTW_COMPONENT
-      else if(cmp_no_case(FFT_library_ctl, hd_FFTW_D)                   &
-     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3_D)) then
-        iflag = iflag_FFTW_DOMAIN
-!
-      else if(cmp_no_case(FFT_library_ctl, hd_OMP_FFTW)                 &
-     &     .or. cmp_no_case(FFT_library_ctl, hd_OMP_FFTW3)) then
-        iflag = iflag_OMP_FFTW_ONCE
-!
-      else if(cmp_no_case(FFT_library_ctl, hd_OMP_FFTW_D)               &
-     &     .or. cmp_no_case(FFT_library_ctl, hd_OMP_FFTW3_D)) then
-        iflag = iflag_OMP_FFTW_DOMAIN
-!
-      else if(cmp_no_case(FFT_library_ctl, hd_FFT_TEST)) then
-        iflag = iflag_FFT_TEST
-!
-      else if(cmp_no_case(FFT_library_ctl, hd_FFTPACK_S)                &
-     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTPACK)) then
-        iflag = iflag_FFTPACK_SINGLE
+      else
+        iflag = find_set_FFT_flag(FFT_library_ctl)
       end if
       set_fft_library_ctl = iflag
 !
