@@ -1,4 +1,4 @@
-!>@file   leg_bwd_trans_sym_rocBLAS.f90
+!>@file   leg_bwd_trans_sym_rocBLAS.F90
 !!@brief  module leg_bwd_trans_sym_rocBLAS
 !!
 !!@author H. Matsui
