@@ -149,12 +149,12 @@
      &        WK_leg%id_legendre .eq. iflag_leg_OMP_rocBLAS) then
         call init_leg_sym_matmul_big(sph_rtm, sph_rlm, leg,             &
      &      idx_trns, nvector, nscalar, WK_leg%WK_l_bsm)
-        call calypso_init_ROCmBLAS(rocBLAS_WK%handle)
+        call calypso_init_rocBLAS(rocBLAS_WK%handle)
         if(WK_leg%id_legendre .eq. iflag_leg_rocBLAS) then
           call max_size_rocBLAS_leg_trns                                &
      &         (np_smp, ncomp, nvector, ncomp, nvector,                 &
      &          sph_rtm, sph_rlm, idx_trns, rocBLAS_WK)
-          call alloc_rocblas_dgemm_work(rocBLAS_WK%MaxAbytes,           &
+          call alloc_rocBLAS_dgemm_work(rocBLAS_WK%MaxAbytes,           &
      &        rocBLAS_WK%MaxBbytes, rocBLAS_WK%MaxCbytes,               &
      &        rocBLAS_WK%A_cptr, rocBLAS_WK%B_cptr, rocBLAS_WK%C_cptr)
         end if
@@ -200,9 +200,9 @@
      &        WK_leg%id_legendre .eq. iflag_leg_rocBLAS                 &
      &        WK_leg%id_legendre .eq. iflag_leg_OMP_rocBLAS) then
         call dealloc_leg_sym_matmul_big(WK_leg%WK_l_bsm)
-        call calypso_fin_ROCmBLAS(rocBLAS_WK%handle)
+        call calypso_fin_rocBLAS(rocBLAS_WK%handle)
         if(WK_leg%id_legendre .eq. iflag_leg_rocBLAS) then
-          call dealloc_rocblas_dgemm_work                               &
+          call dealloc_rocBLAS_dgemm_work                               &
      &       (rocBLAS_WK%A_cptr, rocBLAS_WK%B_cptr, rocBLAS_WK%C_cptr)
         end if
 #endif

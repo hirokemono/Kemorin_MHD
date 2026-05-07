@@ -1,5 +1,5 @@
-!>@file   calypso_ROCmBLAS_DGEMM.f90
-!!@brief  module calypso_ROCmBLAS_DGEMM
+!>@file   calypso_rocBLAS_DGEMM.f90
+!!@brief  module calypso_rocBLAS_DGEMM
 !!
 !!@author H. Matsui
 !!@date   Programmed  H. Matsui in Oct., 2009
@@ -16,17 +16,17 @@
 !!        real(kind = kreal), intent(in) :: B(ldb,n)
 !!        real(kind = kreal), intent(inout) :: C(ldc,n)
 !!
-!!      subroutine calypso_init_ROCmBLAS(rocblas_handle)
-!!      subroutine calypso_fin_ROCmBLAS(rocblas_handle)
+!!      subroutine calypso_init_rocBLAS(rocblas_handle)
+!!      subroutine calypso_fin_rocBLAS(rocblas_handle)
 !!        type(c_ptr), intent(inout) :: rocblas_handle
 !!
-!!      subroutine alloc_rocblas_dgemm_work(Nabytes, Nbbytes, Ncbytes,  &
+!!      subroutine alloc_rocBLAS_dgemm_work(Nabytes, Nbbytes, Ncbytes,  &
 !!     &                                    A_cptr, B_cptr, C_cptr)
-!!      subroutine dealloc_rocblas_dgemm_work(A_cptr, B_cptr, C_cptr)
+!!      subroutine dealloc_rocBLAS_dgemm_work(A_cptr, B_cptr, C_cptr)
 !!        integer(c_size_t), intent(in) :: Nabytes, Nbbytes, Ncbytes
 !!        type(c_ptr), intent(inout) :: A_cptr, B_cptr, C_cptr
 !!
-!!      subroutine calypso_OpenMP_ROCmBLAS_dgemm                        &
+!!      subroutine calypso_OpenMP_rocBLAS_dgemm                         &
 !!     &         (rocblas_handle, transa, transb, m, n, k,              &
 !!     &          alpha, A_mat, lda, B_mat, ldb, beta, C_mat, ldc)
 !!        type(c_ptr), intent(in) :: rocblas_handle
@@ -37,8 +37,22 @@
 !!        real(kind = kreal), intent(in), target :: A_mat(lda,k)
 !!        real(kind = kreal), intent(in), target :: B_mat(ldb,n)
 !!        real(kind = kreal), intent(inout), target :: C_mat(ldc,n)
+!!      subroutine calypso_hip_rocBLAS_dgemm(rocblas_handle,            &
+!!     &          Nabytes, Nbbytes, Ncbytes, transa, transb, m, n, k,   &
+!!     &          alpha, A_mat, lda, B_mat, ldb, beta, C_mat, ldc,      &
+!!     &          A_cptr, B_cptr, C_cptr)
+!!        type(c_ptr), intent(in) :: rocblas_handle
+!!        integer(c_int), intent(in) :: transa, transb
+!!        integer(c_size_t), intent(in) :: Nabytes, Nbbytes, Ncbytes
+!!        integer(c_int), intent(in) :: m, n, k
+!!        integer(c_int), intent(in) :: lda, ldb, ldc
+!!        real(c_double), intent(in) :: alpha, beta
+!!        real(kind = kreal), intent(in), target :: A_mat(lda,k)
+!!        real(kind = kreal), intent(in), target :: B_mat(ldb,n)
+!!        real(kind = kreal), intent(inout), target :: C_mat(ldc,n)
+!!        type(c_ptr), intent(inout) :: A_cptr, B_cptr, C_cptr
 !!@endverbatim
-      module calypso_ROCmBLAS_DGEMM
+      module calypso_rocBLAS_DGEMM
 !
       use iso_c_binding
       use m_precision
@@ -82,7 +96,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine calypso_init_ROCmBLAS(rocblas_handle)
+      subroutine calypso_init_rocBLAS(rocblas_handle)
 !
       use hipfort_check
       use hipfort_rocblas
@@ -91,11 +105,11 @@
 !
       call rocblasCheck(rocblas_create_handle(rocblas_handle))
 !
-      end subroutine calypso_init_ROCmBLAS
+      end subroutine calypso_init_rocBLAS
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine calypso_fin_ROCmBLAS(rocblas_handle)
+      subroutine calypso_fin_rocBLAS(rocblas_handle)
 !
       use hipfort_check
       use hipfort_rocblas
@@ -104,11 +118,11 @@
 !
       call rocblasCheck(rocblas_destroy_handle(rocblas_handle))
 !
-      end subroutine calypso_fin_ROCmBLAS
+      end subroutine calypso_fin_rocBLAS
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_rocblas_dgemm_work(Nabytes, Nbbytes, Ncbytes,    &
+      subroutine alloc_rocBLAS_dgemm_work(Nabytes, Nbbytes, Ncbytes,    &
      &                                    A_cptr, B_cptr, C_cptr)
 !
       use hipfort
@@ -123,11 +137,11 @@
       call hipCheck(hipMalloc(B_cptr,Nbbytes))
       call hipCheck(hipMalloc(C_cptr,Ncbytes))
 !
-      end subroutine alloc_rocblas_dgemm_work
+      end subroutine alloc_rocBLAS_dgemm_work
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_rocblas_dgemm_work(A_cptr, B_cptr, C_cptr)
+      subroutine dealloc_rocBLAS_dgemm_work(A_cptr, B_cptr, C_cptr)
 !
       use hipfort
       use hipfort_check
@@ -139,12 +153,12 @@
       call hipCheck(hipFree(B_cptr))
       call hipCheck(hipFree(C_cptr))
 !
-      end subroutine dealloc_rocblas_dgemm_work
+      end subroutine dealloc_rocBLAS_dgemm_work
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine calypso_OpenMP_ROCmBLAS_dgemm                          &
+      subroutine calypso_OpenMP_rocBLAS_dgemm                           &
      &         (rocblas_handle, transa, transb, m, n, k,                &
      &          alpha, A_mat, lda, B_mat, ldb, beta, C_mat, ldc)
 !
@@ -173,11 +187,11 @@
 !$OMP target update from(C_mat)
 !$OMP target exit data map(delete:A_mat,B_mat,C_mat)
 !
-      end subroutine calypso_OpenMP_ROCmBLAS_dgemm
+      end subroutine calypso_OpenMP_rocBLAS_dgemm
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine kemo_rocblas_dgemm(rocblas_handle,                     &
+      subroutine calypso_hip_rocBLAS_dgemm(rocblas_handle,              &
      &          Nabytes, Nbbytes, Ncbytes, transa, transb, m, n, k,     &
      &          alpha, A_mat, lda, B_mat, ldb, beta, C_mat, ldc,        &
      &          A_cptr, B_cptr, C_cptr)
@@ -219,8 +233,8 @@
       call hipCheck(hipMemcpy(c_loc(C_mat(1,1)), C_cptr,                &
      &                        Ncbytes, hipMemcpyDeviceToHost))
 !
-      end subroutine kemo_rocblas_dgemm
+      end subroutine calypso_hip_rocBLAS_dgemm
 !
 !  ---------------------------------------------------------------------
 !
-      end module calypso_ROCmBLAS_DGEMM
+      end module calypso_rocBLAS_DGEMM

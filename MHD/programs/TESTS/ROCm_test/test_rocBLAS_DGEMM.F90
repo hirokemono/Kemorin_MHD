@@ -13,7 +13,7 @@
       use m_precision
       use m_DGEMM_test_size
       use calypso_DGEMM
-      use calypso_ROCmBLAS_DGEMM
+      use calypso_rocBLAS_DGEMM
       use DGEMM_test_openmp
       use DGEMM_test_omp_target
 !
@@ -170,11 +170,11 @@
      &     (m, n, k, A_org, lda, B_org, ldb, C_org, ldc, A, B, C)
 !
         start = OMP_GET_WTIME()
-        call calypso_init_ROCmBLAS(rocblas_handle)
-        call calypso_OpenMP_ROCmBLAS_dgemm                              &
+        call calypso_init_rocBLAS(rocblas_handle)
+        call calypso_OpenMP_rocBLAS_dgemm                               &
      &     (rocblas_handle, transa, transb, m, n, k,                    &
      &      alpha, A, lda, B, ldb, beta, C, ldc)
-        call calypso_fin_ROCmBLAS(rocblas_handle)
+        call calypso_fin_rocBLAS(rocblas_handle)
         elapsed(iloop) = OMP_GET_WTIME() - start
 !
         call check_matmul_error(sum_matmul_error_omp_target(n, ldc,     &
@@ -186,14 +186,14 @@
       end do
 !
 ! ----  hipfort OpenMP kernel exclude initialization --------------
-      call calypso_init_ROCmBLAS(rocblas_handle)
+      call calypso_init_rocBLAS(rocblas_handle)
       do iloop = 1, nloop
         write(*,"(a)",advance="no")  "--- DGEMM with hipfort and OpenMP-"
         call copy_dgemm_matrices_omp_target                             &
      &     (m, n, k, A_org, lda, B_org, ldb, C_org, ldc, A, B, C)
 !
         start = OMP_GET_WTIME()
-        call calypso_OpenMP_ROCmBLAS_dgemm                              &
+        call calypso_OpenMP_rocBLAS_dgemm                               &
      &     (rocblas_handle, transa, transb, m, n, k,                    &
      &      alpha, A, lda, B, ldb, beta, C, ldc)
         elapsed(iloop) = OMP_GET_WTIME() - start
@@ -201,7 +201,7 @@
         call check_matmul_error(sum_matmul_error_omp_target(n, ldc,     &
      &                                                      C_ref, C))
       end do
-      call calypso_fin_ROCmBLAS(rocblas_handle)
+      call calypso_fin_rocBLAS(rocblas_handle)
 !
       do iloop = 1, nloop
         write(*,'(a, i3, a, 1pE16.6e3)')   "  Time of ", iloop,         &
@@ -215,16 +215,16 @@
      &     (m, n, k, A_org, lda, B_org, ldb, C_org, ldc, A, B, C)
 !
         start = OMP_GET_WTIME()
-        call calypso_init_ROCmBLAS(rocblas_handle)
-        call alloc_rocblas_dgemm_work(Nabytes, Nbbytes, Ncbytes,        &
+        call calypso_init_rocBLAS(rocblas_handle)
+        call alloc_rocBLAS_dgemm_work(Nabytes, Nbbytes, Ncbytes,        &
      &                                da, db, dc)
 !
-        call kemo_rocblas_dgemm(rocblas_handle,                         &
+        call calypso_hip_rocBLAS_dgemm(rocblas_handle,                  &
      &      Nabytes, Nbbytes, Ncbytes, transa, transb, m, n, k,         &
      &      alpha, A, lda, B, ldb, beta, C, ldc, da, db, dc)
 !   Finalize
-        call dealloc_rocblas_dgemm_work(da, db, dc)
-        call calypso_fin_ROCmBLAS(rocblas_handle)
+        call dealloc_rocBLAS_dgemm_work(da, db, dc)
+        call calypso_fin_rocBLAS(rocblas_handle)
         elapsed(iloop) = OMP_GET_WTIME() - start
 !
         call check_matmul_error(sum_matmul_error_omp_target(n, ldc,     &
@@ -236,8 +236,8 @@
       end do
 !
 ! ----  hipfort kernel without initialization--------------
-      call calypso_init_ROCmBLAS(rocblas_handle)
-      call alloc_rocblas_dgemm_work(Nabytes, Nbbytes, Ncbytes,          &
+      call calypso_init_rocBLAS(rocblas_handle)
+      call alloc_rocBLAS_dgemm_work(Nabytes, Nbbytes, Ncbytes,          &
      &                              da, db, dc)
       do iloop = 1, nloop
         write(*,"(a)",advance="no")  "--- DGEMM with hipfort mode -- "
@@ -245,7 +245,7 @@
      &     (m, n, k, A_org, lda, B_org, ldb, C_org, ldc, A, B, C)
 !
         start = OMP_GET_WTIME()
-        call kemo_rocblas_dgemm(rocblas_handle,                         &
+        call calypso_hip_rocBLAS_dgemm(rocblas_handle,                  &
      &      Nabytes, Nbbytes, Ncbytes, transa, transb, m, n, k,         &
      &      alpha, A, lda, B, ldb, beta, C, ldc, da, db, dc)
         elapsed(iloop) = OMP_GET_WTIME() - start
@@ -253,8 +253,8 @@
         call check_matmul_error(sum_matmul_error_omp_target(n, ldc,     &
      &                                                      C_ref, C))
       end do
-      call dealloc_rocblas_dgemm_work(da, db, dc)
-      call calypso_fin_ROCmBLAS(rocblas_handle)
+      call dealloc_rocBLAS_dgemm_work(da, db, dc)
+      call calypso_fin_rocBLAS(rocblas_handle)
 !
       do iloop = 1, nloop
         write(*,'(a, i3, a, 1pE16.6e3)')   "  Time of ", iloop,         &

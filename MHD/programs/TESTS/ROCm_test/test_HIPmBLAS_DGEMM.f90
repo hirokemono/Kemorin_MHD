@@ -13,8 +13,8 @@
       use m_precision
       use m_DGEMM_test_size
       use calypso_DGEMM
-      use calypso_ROCmBLAS_DGEMM
-      use calypso_ROCmBLAS_interface
+      use calypso_rocBLAS_DGEMM
+      use calypso_rocBLAS_interface
       use DGEMM_test_openmp
       use DGEMM_test_omp_target
 !
@@ -127,15 +127,15 @@
      &     (m, n, k, A_org, lda, B_org, ldb, C_org, ldc, A, B, C)
 !
         start = OMP_GET_WTIME()
-        call calypso_init_ROCmBLAS(rocblas_handle)
+        call calypso_init_rocBLAS(rocblas_handle)
 !$OMP target enter data map(to:A,B,C)
 !$OMP target data use_device_addr(A,B,C)
-        call omp_dgemm(rocblas_handle, transa, transb, m, n, k, alpha,  &
-            c_loc(A),lda,c_loc(B),ldb,beta,c_loc(C),ldc)
+        call omp_rocBLAS_dgemm(rocblas_handle, transa, transb, m, n, k, &
+     &      alpha, c_loc(A), lda, c_loc(B), ldb, beta, c_loc(C), ldc)
 !$OMP end target data
 !$OMP target update from(C)
 !$OMP target exit data map(delete:A,B,C)
-        call calypso_fin_ROCmBLAS(rocblas_handle)
+        call calypso_fin_rocBLAS(rocblas_handle)
         elapsed(iloop) = OMP_GET_WTIME() - start
 !
         call check_matmul_error(sum_matmul_error_omp_target(n, ldc,     &
@@ -155,12 +155,12 @@
      &     (m, n, k, A_org, lda, B_org, ldb, C_org, ldc, A, B, C)
 !
         start = OMP_GET_WTIME()
-        call calypso_init_ROCmBLAS(rocblas_handle)
+        call calypso_init_rocBLAS(rocblas_handle)
 
-        call omp_dgemm(rocblas_handle, transa, transb, m, n, k, alpha,  &
-                       c_loc(A), lda, c_loc(B), ldb,beta, c_loc(C), ldc)
+        call omp_rocBLAS_dgemm(rocblas_handle, transa, transb, m, n, k, &
+     &      alpha, c_loc(A), lda, c_loc(B), ldb,beta, c_loc(C), ldc)
 !
-        call calypso_fin_ROCmBLAS(rocblas_handle)
+        call calypso_fin_rocBLAS(rocblas_handle)
         elapsed(iloop) = OMP_GET_WTIME() - start
 !
         call check_matmul_error(sum_matmul_error_omp_target(n, ldc,     &
