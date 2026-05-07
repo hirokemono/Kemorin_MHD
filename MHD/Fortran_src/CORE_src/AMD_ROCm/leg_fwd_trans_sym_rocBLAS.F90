@@ -53,9 +53,7 @@
       use t_leg_trans_sym_matmul_big
       use m_elapsed_labels_SPH_TRNS
 !
-#ifdef _AMD_ROCM_
       use t_rocBLAS_legendre_trans
-#endif
 !
       implicit none
 !

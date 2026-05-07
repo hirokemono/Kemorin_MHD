@@ -1,4 +1,4 @@
-!>@file   t_rocBLAS_legendre_trans.f90
+!>@file   t_rocBLAS_legendre_trans.F90
 !!@brief  module t_rocBLAS_legendre_trans
 !!
 !!@author H. Matsui
@@ -50,6 +50,7 @@
         type(c_ptr) :: C_cptr = c_null_ptr
       end type rocBLAS_work
 !
+#ifdef _AMD_ROCM_
 ! ----------------------------------------------------------------------
 !
       contains
@@ -176,5 +177,6 @@
       end subroutine max_size_rocBLAS_leg_trns
 !
 ! ----------------------------------------------------------------------
+#endif
 !
       end module t_rocBLAS_legendre_trans

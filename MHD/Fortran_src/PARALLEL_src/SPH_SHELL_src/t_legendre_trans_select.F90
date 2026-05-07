@@ -59,9 +59,7 @@
       use leg_fwd_trans_on_the_fly
       use t_legendre_work_testlooop
 !
-#ifdef _AMD_ROCM_
       use t_rocBLAS_legendre_trans
-#endif
 !
       use legendre_transform_org
       use legendre_transform_spin

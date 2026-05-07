@@ -76,9 +76,7 @@
       use m_precision
       use m_constants
 !
-#ifdef _AMD_ROCM_
       use t_rocBLAS_legendre_trans
-#endif
 !
       implicit none
 !
