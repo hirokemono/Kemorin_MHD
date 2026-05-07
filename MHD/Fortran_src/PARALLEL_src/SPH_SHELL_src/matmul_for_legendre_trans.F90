@@ -270,7 +270,6 @@
       real(kind = kreal), intent(in) :: S_jk(n_jk,nkr)
 !
       real(kind = kreal), intent(inout) :: V_lk(nl_rtm,nkr)
-      type(rocBLAS_work), intent(inout) :: 
 !
       integer :: n_jk4, nkr4, nl_rtm4
 !

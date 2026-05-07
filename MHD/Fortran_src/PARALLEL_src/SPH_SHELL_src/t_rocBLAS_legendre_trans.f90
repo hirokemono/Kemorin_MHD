@@ -8,26 +8,34 @@
 !!
 !!@verbatim
 !!      subroutine max_size_rocBLAS_leg_trns                            &
-!!     &         (ncomp_fwd, nvect_fwd, ncomp_bwd, nvect_bwd,           &
+!!     &         (np_smp, ncomp_fwd, nvect_fwd, ncomp_bwd, nvect_bwd,   &
 !!     &          sph_rtm, sph_rlm, idx_trns, rocBLAS_WK)
 !!        type(sph_rtm_grid), intent(in) :: sph_rtm
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!        type(index_4_sph_trans), intent(in) :: idx_trns
+!!        integer(kind = kint), intent(in) :: np_smp
 !!        integer(kind = kint), intent(in) :: ncomp_fwd, nvect_fwd
+!!        integer(kind = kint), intent(in) :: ncomp_bwd, nvect_bwd
 !!        type(rocBLAS_work), intent(inout) :: rocBLAS_WK
 !!@endverbatim
 !
       module t_rocBLAS_legendre_trans
 !
+      use ISO_C_BINDING  
+!
       use m_precision
       use m_constants
+!
+      use t_spheric_rtm_data
+      use t_spheric_rlm_data
+      use t_work_4_sph_trans
 !
       implicit none
 !
       type rocBLAS_work
         type(c_ptr) :: rocblas_handle = c_null_ptr
-        integer(c_int) :: transa = rocblas_operation_none
-        integer(c_int) :: transb = rocblas_operation_none
+        integer(c_int) :: transa
+        integer(c_int) :: transb
 
         integer(c_size_t) :: Nabytes
         integer(c_size_t) :: Nbbytes
@@ -49,14 +57,16 @@
 ! ----------------------------------------------------------------------
 !
       subroutine max_size_rocBLAS_leg_trns                              &
-     &         (ncomp_fwd, nvect_fwd, ncomp_bwd, nvect_bwd,             &
+     &         (np_smp, ncomp_fwd, nvect_fwd, ncomp_bwd, nvect_bwd,     &
      &          sph_rtm, sph_rlm, idx_trns, rocBLAS_WK)
 !
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(index_4_sph_trans), intent(in) :: idx_trns
-!
+      integer(kind = kint), intent(in) :: np_smp
       integer(kind = kint), intent(in) :: ncomp_fwd, nvect_fwd
+      integer(kind = kint), intent(in) :: ncomp_bwd, nvect_bwd
+!
       type(rocBLAS_work), intent(inout) :: rocBLAS_WK
 !
       integer(kind = kint) :: ip

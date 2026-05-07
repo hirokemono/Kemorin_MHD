@@ -152,8 +152,8 @@
         call calypso_init_ROCmBLAS(rocBLAS_WK%handle)
         if(WK_leg%id_legendre .eq. iflag_leg_rocBLAS) then
           call max_size_rocBLAS_leg_trns                                &
-     &         (ncomp, nvector, ncomp, nvector, sph_rtm, sph_rlm,       &
-     &          idx_trns, rocBLAS_WK)
+     &         (np_smp, ncomp, nvector, ncomp, nvector,                 &
+     &          sph_rtm, sph_rlm, idx_trns, rocBLAS_WK)
           call alloc_rocblas_dgemm_work(rocBLAS_WK%MaxAbytes,           &
      &        rocBLAS_WK%MaxBbytes, rocBLAS_WK%MaxCbytes,               &
      &        rocBLAS_WK%A_cptr, rocBLAS_WK%B_cptr, rocBLAS_WK%C_cptr)
