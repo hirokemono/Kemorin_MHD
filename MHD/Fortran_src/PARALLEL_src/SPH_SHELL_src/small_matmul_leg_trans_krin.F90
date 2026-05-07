@@ -122,7 +122,7 @@
 #endif
 !
 #ifdef _AMD_ROCM_
-      else if(iflag_matmul .eq. iflag_OMP_offlaoad) then
+      else if(iflag_matmul .eq. iflag_OMP_offload) then
       else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
       else if(iflag_matmul .eq. iflag_rocBLAS) then
 #endif
@@ -168,7 +168,7 @@
 #endif
 !
 #ifdef _AMD_ROCM_
-      else if(iflag_matmul .eq. iflag_OMP_offlaoad) then
+      else if(iflag_matmul .eq. iflag_OMP_offload) then
       else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
       else if(iflag_matmul .eq. iflag_rocBLAS) then
 #endif
@@ -212,7 +212,7 @@
 #endif
 !
 #ifdef _AMD_ROCM_
-      else if(iflag_matmul .eq. iflag_OMP_offlaoad) then
+      else if(iflag_matmul .eq. iflag_OMP_offload) then
       else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
       else if(iflag_matmul .eq. iflag_rocBLAS) then
 #endif
@@ -290,7 +290,7 @@
 #endif
 !
 #ifdef _AMD_ROCM_
-      else if(iflag_matmul .eq. iflag_OMP_offlaoad) then
+      else if(iflag_matmul .eq. iflag_OMP_offload) then
       else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
       else if(iflag_matmul .eq. iflag_rocBLAS) then
 #endif
@@ -336,7 +336,7 @@
 #endif
 !
 #ifdef _AMD_ROCM_
-      else if(iflag_matmul .eq. iflag_OMP_offlaoad) then
+      else if(iflag_matmul .eq. iflag_OMP_offload) then
       else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
       else if(iflag_matmul .eq. iflag_rocBLAS) then
 #endif
@@ -382,7 +382,7 @@
 #endif
 !
 #ifdef _AMD_ROCM_
-      else if(iflag_matmul .eq. iflag_OMP_offlaoad) then
+      else if(iflag_matmul .eq. iflag_OMP_offload) then
       else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
       else if(iflag_matmul .eq. iflag_rocBLAS) then
 #endif

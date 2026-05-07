@@ -1,4 +1,4 @@
-!>@file   t_legendre_trans_select.f90
+!>@file   t_legendre_trans_select.F90
 !!@brief  module t_legendre_trans_select
 !!
 !!@author H. Matsui
@@ -59,10 +59,13 @@
       use leg_fwd_trans_on_the_fly
       use t_legendre_work_testlooop
 !
+#ifdef _AMD_ROCM_
+      use t_rocBLAS_legendre_trans
+#endif
+!
       use legendre_transform_org
       use legendre_transform_spin
       use legendre_trans_sym_matmul
-      use legendre_trans_matmul_big
       use legendre_transform_sym_tomp
       use legendre_transform_testloop
 !
@@ -88,6 +91,11 @@
         type(leg_trns_theta_omp_work) :: WK_l_tsp
 !>        Structure for Legendre trasdorm for on the fly mode
         type(leg_trns_on_the_fly_work) :: WK_l_otf
+!
+#ifdef _AMD_ROCM_
+!>        Structure of work area for rocBLAS
+        type(rocBLAS_work) :: rocBLAS_WK
+#endif
       end type legendre_trns_works
 !
 ! -----------------------------------------------------------------------
@@ -135,6 +143,23 @@
         call init_legendre_sym_mat_otfly(sph_params, sph_rtm,           &
      &      idx_trns, nvector, nscalar, WK_leg%WK_l_otf)
 !
+#ifdef _AMD_ROCM_
+      else if(WK_leg%id_legendre .eq. iflag_leg_OMP_target              &
+     &        WK_leg%id_legendre .eq. iflag_leg_rocBLAS                 &
+     &        WK_leg%id_legendre .eq. iflag_leg_OMP_rocBLAS) then
+        call init_leg_sym_matmul_big(sph_rtm, sph_rlm, leg,             &
+     &      idx_trns, nvector, nscalar, WK_leg%WK_l_bsm)
+        call calypso_init_ROCmBLAS(rocBLAS_WK%handle)
+        if(WK_leg%id_legendre .eq. iflag_leg_rocBLAS) then
+          call max_size_rocBLAS_leg_trns                                &
+     &         (ncomp, nvector, ncomp, nvector, sph_rtm, sph_rlm,       &
+     &          idx_trns, rocBLAS_WK)
+          call alloc_rocblas_dgemm_work(rocBLAS_WK%MaxAbytes,           &
+     &        rocBLAS_WK%MaxBbytes, rocBLAS_WK%MaxCbytes,               &
+     &        rocBLAS_WK%A_cptr, rocBLAS_WK%B_cptr, rocBLAS_WK%C_cptr)
+        end if
+#endif
+!
       else if(WK_leg%id_legendre .eq. iflag_leg_test_loop) then
         call init_legendre_sym_mat_both(sph_params, sph_rtm,            &
      &      idx_trns, nvector, nscalar, WK_leg%WK_l_tst)
@@ -170,6 +195,18 @@
      &   .or. WK_leg%id_legendre .eq. iflag_on_the_fly_dgemm) then
         call dealloc_leg_sym_mat_otfly(WK_leg%WK_l_otf)
 !
+#ifdef _AMD_ROCM_
+      else if(WK_leg%id_legendre .eq. iflag_leg_OMP_target              &
+     &        WK_leg%id_legendre .eq. iflag_leg_rocBLAS                 &
+     &        WK_leg%id_legendre .eq. iflag_leg_OMP_rocBLAS) then
+        call dealloc_leg_sym_matmul_big(WK_leg%WK_l_bsm)
+        call calypso_fin_ROCmBLAS(rocBLAS_WK%handle)
+        if(WK_leg%id_legendre .eq. iflag_leg_rocBLAS) then
+          call dealloc_rocblas_dgemm_work                               &
+     &       (rocBLAS_WK%A_cptr, rocBLAS_WK%B_cptr, rocBLAS_WK%C_cptr)
+        end if
+#endif
+!
       else if(WK_leg%id_legendre .eq. iflag_leg_test_loop) then
         call dealloc_leg_sym_mat_both(WK_leg%WK_l_tst)
 !
@@ -186,7 +223,12 @@
      &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,    &
      &          n_WR, n_WS, WR, WS, WK_leg)
 !
+      use leg_b_trans_sym_matmul_big
       use leg_bwd_trans_on_the_fly
+!
+#ifdef _AMD_ROCM_
+      use leg_fwd_trans_sym_rocBLAS
+#endif
 !
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
@@ -220,6 +262,7 @@
      &     (iflag_DGEMM, ncomp, nvector, nscalar,                       &
      &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,        &
      &      n_WR, n_WS, WR, WS, WK_leg%WK_l_sml)
+!
       else if(WK_leg%id_legendre .eq. iflag_leg_sym_matmul_big) then
         call leg_backward_trans_matmul_big                              &
      &     (iflag_INTRINSIC, ncomp, nvector, nscalar,                   &
@@ -230,6 +273,7 @@
      &     (iflag_DGEMM, ncomp, nvector, nscalar,                       &
      &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,        &
      &      n_WR, n_WS, WR, WS, WK_leg%WK_l_bsm)
+!
       else if(WK_leg%id_legendre .eq. iflag_leg_sym_mat_jt) then
         call leg_backward_trans_smat_jt                                 &
      &     (iflag_INTRINSIC, ncomp, nvector, nscalar,                   &
@@ -267,6 +311,24 @@
      &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,        &
      &      n_WR, n_WS, WR, WS, WK_leg%WK_l_otf)
 !
+#ifdef _AMD_ROCM_
+      else if(WK_leg%id_legendre .eq. iflag_leg_OMP_target) then
+        call leg_backward_trans_rocBLAS                                 &
+     &     (iflag_OMP_offload, ncomp, nvector, nscalar,                 &
+     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,        &
+     &      n_WR, n_WS, WR, WS, WK_leg%WK_l_bsm, WK_leg%rocBLAS_WK)
+      else if(WK_leg%id_legendre .eq. iflag_leg_rocBLAS) then
+        call leg_backward_trans_rocBLAS                                 &
+     &     (iflag_OMP_rocBLAS, ncomp, nvector, nscalar,                 &
+     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,        &
+     &      n_WR, n_WS, WR, WS, WK_leg%WK_l_bsm, WK_leg%rocBLAS_WK)
+      else if(WK_leg%id_legendre .eq. iflag_leg_OMP_rocBLAS) then
+        call leg_backward_trans_rocBLAS                                 &
+     &     (iflag_rocBLAS, ncomp, nvector, nscalar,                     &
+     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,        &
+     &      n_WR, n_WS, WR, WS, WK_leg%WK_l_bsm, WK_leg%rocBLAS_WK)
+#endif
+!
       else
         call leg_backward_trans_sym_org(ncomp, nvector, nscalar,        &
      &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,        &
@@ -281,7 +343,12 @@
      &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,    &
      &          n_WR, n_WS, WR, WS, WK_leg)
 !
+      use leg_f_trans_sym_matmul_big
       use leg_fwd_trans_on_the_fly
+!
+#ifdef _AMD_ROCM_
+      use leg_fwd_trans_sym_rocBLAS
+#endif
 !
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
@@ -365,6 +432,24 @@
      &     (iflag_DGEMM, ncomp, nvector, nscalar,                       &
      &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,        &
      &      n_WR, n_WS, WR, WS, WK_leg%WK_l_otf)
+!
+#ifdef _AMD_ROCM_
+      else if(WK_leg%id_legendre .eq. iflag_leg_OMP_target) then
+        call leg_forward_trans_rocBLAS                                  &
+     &     (iflag_OMP_offload, ncomp, nvector, nscalar,                 &
+     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,        &
+     &      n_WR, n_WS, WR, WS, WK_leg%WK_l_bsm, WK_leg%rocBLAS_WK)
+      else if(WK_leg%id_legendre .eq. iflag_leg_rocBLAS) then
+        call leg_forward_trans_rocBLAS                                  &
+     &     (iflag_OMP_rocBLAS, ncomp, nvector, nscalar,                 &
+     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,        &
+     &      n_WR, n_WS, WR, WS, WK_leg%WK_l_bsm, WK_leg%rocBLAS_WK)
+      else if(WK_leg%id_legendre .eq. iflag_leg_OMP_rocBLAS) then
+        call leg_forward_trans_rocBLAS                                  &
+     &     (iflag_rocBLAS, ncomp, nvector, nscalar,                     &
+     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,        &
+     &      n_WR, n_WS, WR, WS, WK_leg%WK_l_bsm, WK_leg%rocBLAS_WK)
+#endif
 !
       else
         call leg_forward_trans_sym_org(ncomp, nvector, nscalar,         &

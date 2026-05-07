@@ -78,12 +78,9 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter :: iflag_INTRINSIC =    1
-      integer(kind = kint), parameter :: iflag_DGEMM =        2
-      integer(kind = kint), parameter :: iflag_MATPROD =      3
-      integer(kind = kint), parameter :: iflag_OMP_offlaoad = 4
-      integer(kind = kint), parameter :: iflag_OMP_rocBLAS =  5
-      integer(kind = kint), parameter :: iflag_rocBLAS =      6
+      integer(kind = kint), parameter :: iflag_INTRINSIC =   1
+      integer(kind = kint), parameter :: iflag_DGEMM =       2
+      integer(kind = kint), parameter :: iflag_MATPROD =     3
 !
       private :: add_matmat_leg_trans
 !
@@ -116,23 +113,6 @@
         nl_rtm4 = int(nl_rtm)
         call DGEMM('N', 'N', nkr4, n_jk4, nl_rtm4, one,                 &
      &             V_kl, nkr4, P_lj, nl_rtm4, zero, S_kj, nkr4)
-#endif
-!
-#ifdef _AMD_ROCM_
-      else if(iflag_matmul .eq. iflag_OMP_offlaoad) then
-        call calypso_omp_offload_matprod(nkr, n_jk, nl_rtm, one,        &
-     &                                   V_kl, P_lj, zero, S_kj)
-      else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
-        call calypso_omp_rocblas_dgemm                                  &
-     &     (rocBLAS_WK%handle, rocBLAS_WK%transa, rocBLAS_WK%transb,    &
-     &      nkr4, n_jk4, nl_rtm4, one, V_kl, nkr4, P_lj, nl_rtm4,       &
-     &      zero, S_kj, nkr4)
-      else if(iflag_matmul .eq. iflag_rocBLAS) then
-        call calypso_rocblas_dgemm(rocBLAS_WK%handle,                   &
-     &      rocBLAS_WK%Nabytes, rocBLAS_WK%Nbbytes, rocBLAS_WK%Ncbytes, &
-     &      rocBLAS_WK%transa, rocBLAS_WK%transb, nkr4, n_jk4, nl_rtm4, &
-     &      one, V_kl, nkr4, P_lj, nl_rtm4, zero, S_kj, nkr4,           &
-     &      rocBLAS_WK%A_cptr, rocBLAS_WK%B_cptr, rocBLAS_WK%C_cptr)
 #endif
       else
         call matmat_leg_trans(nkr, n_jk, nl_rtm, V_kl, P_lj, S_kj)
@@ -169,23 +149,6 @@
         call DGEMM('N', 'N', nl_rtm4, nkr4, n_jk4, one,                 &
      &             P_lj, nl_rtm4, S_jk, n_jk4, zero, V_lk, nl_rtm4)
 #endif
-!
-#ifdef _AMD_ROCM_
-      else if(iflag_matmul .eq. iflag_OMP_offlaoad) then
-        call calypso_omp_offload_matprod(nl_rtm, nkr, n_jk, one,        &
-     &                                   P_lj, S_jk, zero, V_lk)
-      else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
-        call calypso_omp_rocblas_dgemm                                  &
-     &     (rocBLAS_WK%handle, rocBLAS_WK%transa, rocBLAS_WK%transb,    &
-     &      nl_rtm4, nkr4, n_jk4, one, P_lj, nl_rtm4, S_jk, n_jk4,      &
-     &      zero, V_lk, nl_rtm4)
-      else if(iflag_matmul .eq. iflag_rocBLAS) then
-        call calypso_rocblas_dgemm(rocBLAS_WK%handle,                   &
-     &      rocBLAS_WK%Nabytes, rocBLAS_WK%Nbbytes, rocBLAS_WK%Ncbytes, &
-     &      rocBLAS_WK%transa, rocBLAS_WK%transb, nl_rtm4, nkr4, n_jk4, &
-     &      one, P_lj, nl_rtm4, S_jk, n_jk4, zero, V_lk, nl_rtm4,       &
-     &      rocBLAS_WK%A_cptr, rocBLAS_WK%B_cptr, rocBLAS_WK%C_cptr)
-#endif
       else
         call matmat_leg_trans(nl_rtm, nkr, n_jk, P_lj, S_jk, V_lk)
       end if
@@ -217,23 +180,6 @@
         nl_rtm4 = int(nl_rtm)
         call DGEMM('N', 'N', n_jk4, nkr4, nl_rtm4, one,                 &
      &             P_jl, n_jk4, V_lk, nl_rtm4, zero, S_jk, n_jk4)
-#endif
-!
-#ifdef _AMD_ROCM_
-      else if(iflag_matmul .eq. iflag_OMP_offlaoad) then
-        call calypso_omp_offload_matprod(n_jk, nkr, nl_rtm, one,        &
-     &                                   V_lk, P_jl, zero, S_jk)
-      else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
-        call calypso_omp_rocblas_dgemm                                  &
-     &     (rocBLAS_WK%handle, rocBLAS_WK%transa, rocBLAS_WK%transb,    &
-     &      n_jk4, nkr4, nl_rtm4, one, P_jl, n_jk4, V_lk, nl_rtm4,      &
-     &      zero, S_jk, n_jk4)
-      else if(iflag_matmul .eq. iflag_rocBLAS) then
-        call calypso_rocblas_dgemm(rocBLAS_WK%handle,                   &
-     &      rocBLAS_WK%Nabytes, rocBLAS_WK%Nbbytes, rocBLAS_WK%Ncbytes, &
-     &      rocBLAS_WK%transa, rocBLAS_WK%transb, n_jk4, nkr4, nl_rtm4, &
-     &      one, P_jl, n_jk4, V_lk, nl_rtm4, zero, S_jk, n_jk4,         &
-     &      rocBLAS_WK%A_cptr, rocBLAS_WK%B_cptr, rocBLAS_WK%C_cptr)
 #endif
       else
         call matmat_leg_trans(n_jk, nkr, nl_rtm, V_lk, P_jl, S_jk)
@@ -270,23 +216,6 @@
         call DGEMM('N', 'N', nkr4, nl_rtm4, n_jk4, one,                 &
      &             S_kj, nkr4, P_jl, n_jk4, zero, V_kl, nkr4)
 #endif
-!
-#ifdef _AMD_ROCM_
-      else if(iflag_matmul .eq. iflag_OMP_offlaoad) then
-        call calypso_omp_offload_matprod(kr, nl_rtm, n_jk, one,         &
-     &                                   S_kj, P_jl, zero, V_kl)
-      else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
-        call calypso_omp_rocblas_dgemm                                  &
-     &     (rocBLAS_WK%handle, rocBLAS_WK%transa, rocBLAS_WK%transb,    &
-     &      nkr4, nl_rtm4, n_jk4, one, S_kj, nkr4, P_jl, n_jk4,         &
-     &      zero, V_kl, nkr4)
-      else if(iflag_matmul .eq. iflag_rocBLAS) then
-        call calypso_rocblas_dgemm(rocBLAS_WK%handle,                   &
-     &      rocBLAS_WK%Nabytes, rocBLAS_WK%Nbbytes, rocBLAS_WK%Ncbytes, &
-     &      rocBLAS_WK%transa, rocBLAS_WK%transb, nkr4, nl_rtm4, n_jk4, &
-     &      one, S_kj, nkr4, P_jl, n_jk4, zero, V_kl, nkr4,             &
-     &      rocBLAS_WK%A_cptr, rocBLAS_WK%B_cptr, rocBLAS_WK%C_cptr)
-#endif
       else
         call matmat_leg_trans(nkr, nl_rtm, n_jk, S_kj, P_jl, V_kl)
       end if
@@ -322,23 +251,6 @@
         call DGEMM('N', 'N', nkr4, n_jk4, nl_rtm4, one,                 &
      &             V_kl, nkr4, P_lj, nl_rtm4, coef, S_kj, nkr4)
 #endif
-!
-#ifdef _AMD_ROCM_
-      else if(iflag_matmul .eq. iflag_OMP_offlaoad) then
-        call calypso_omp_offload_matprod(nkr, n_jk, nl_rtm, one,        &
-     &                                   V_kl, P_lj, coef, S_kj)
-      else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
-        call calypso_omp_rocblas_dgemm                                  &
-     &     (rocBLAS_WK%handle, rocBLAS_WK%transa, rocBLAS_WK%transb,    &
-     &      nkr4, n_jk4, nl_rtm4, one, V_kl, nkr4, P_lj, nl_rtm4,       &
-     &      coef, S_kj, nkr4)
-      else if(iflag_matmul .eq. iflag_rocBLAS) then
-        call calypso_rocblas_dgemm(rocBLAS_WK%handle,                   &
-     &      rocBLAS_WK%Nabytes, rocBLAS_WK%Nbbytes, rocBLAS_WK%Ncbytes, &
-     &      rocBLAS_WK%transa, rocBLAS_WK%transb, nkr4, n_jk4, nl_rtm4, &
-     &      one, V_kl, nkr4, P_lj, nl_rtm4, coef, S_kj, nkr4,           &
-     &      rocBLAS_WK%A_cptr, rocBLAS_WK%B_cptr, rocBLAS_WK%C_cptr)
-#endif
       else
         call add_matmat_leg_trans(nkr, n_jk, nl_rtm, one,               &
      &                            V_kl, P_lj, coef, S_kj)
@@ -358,6 +270,7 @@
       real(kind = kreal), intent(in) :: S_jk(n_jk,nkr)
 !
       real(kind = kreal), intent(inout) :: V_lk(nl_rtm,nkr)
+      type(rocBLAS_work), intent(inout) :: 
 !
       integer :: n_jk4, nkr4, nl_rtm4
 !
@@ -375,23 +288,6 @@
         n_jk4 =   int(n_jk)
         call DGEMM('N', 'N', nl_rtm4, nkr4, n_jk4, one,                 &
      &             P_lj, nl_rtm4, S_jk, n_jk4, coef, V_lk, nl_rtm4)
-#endif
-!
-#ifdef _AMD_ROCM_
-      else if(iflag_matmul .eq. iflag_OMP_offlaoad) then
-        call calypso_omp_offload_matprod(nl_rtm, nkr, n_jk, one,        &
-     &                            P_lj, S_jk, coef, V_lk)
-      else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
-        call calypso_omp_rocblas_dgemm                                  &
-     &     (rocBLAS_WK%handle, rocBLAS_WK%transa, rocBLAS_WK%transb,    &
-     &      nl_rtm4, nkr4, n_jk4, one, P_lj, nl_rtm4, S_jk, n_jk4,      &
-     &      coef, V_lk, nl_rtm4)
-      else if(iflag_matmul .eq. iflag_rocBLAS) then
-        call calypso_rocblas_dgemm(rocBLAS_WK%handle,                   &
-     &      rocBLAS_WK%Nabytes, rocBLAS_WK%Nbbytes, rocBLAS_WK%Ncbytes, &
-     &      rocBLAS_WK%transa, rocBLAS_WK%transb, nl_rtm4, nkr4, n_jk4, &
-     &      one, P_lj, nl_rtm4, S_jk, n_jk4, coef, V_lk, nl_rtm4,       &
-     &      rocBLAS_WK%A_cptr, rocBLAS_WK%B_cptr, rocBLAS_WK%C_cptr)
 #endif
       else
         call add_matmat_leg_trans(nl_rtm, nkr, n_jk, one,               &

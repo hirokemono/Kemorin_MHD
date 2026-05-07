@@ -1,5 +1,5 @@
-!>@file   leg_f_trans_sym_matmul_big.f90
-!!@brief  module leg_f_trans_sym_matmul_big
+!>@file   leg_fwd_trans_sym_rocBLAS.f90
+!!@brief  module leg_fwd_trans_sym_rocBLAS
 !!
 !!@author H. Matsui
 !!@date Programmed in Aug., 2007
@@ -9,16 +9,23 @@
 !!       (using matrix products version with big array)
 !!
 !!@verbatim
-!!      subroutine leg_forward_trans_matmul_big                         &
+!!      subroutine leg_forward_trans_rocBLAS                            &
 !!     &         (iflag_matmul, ncomp, nvector, nscalar,                &
 !!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns,       &
 !!     &          asin_theta_1d_rtm, g_sph_rlm, weight_rtm,             &
-!!     &          n_WR, n_WS, WR, WS, WK_l_bsm)
+!!     &          n_WR, n_WS, WR, WS, WK_l_bsm, rocBLAS_WK)
+!!        integer(kind = kint), intent(in) :: iflag_matmul
 !!        type(sph_rtm_grid), intent(in) :: sph_rtm
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!        type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
+!!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(index_4_sph_trans), intent(in) :: idx_trns
+!!        integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+!!        integer(kind = kint), intent(in) :: n_WR, n_WS
+!!        real (kind=kreal), intent(inout):: WR(n_WR)
+!!        real (kind=kreal), intent(inout):: WS(n_WS)
 !!        type(leg_trns_bsym_mul_work), intent(inout) :: WK_l_bsm
+!!        type(rocBLAS_work), intent(inout) :: rocBLAS_WK
 !!
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
@@ -29,7 +36,7 @@
 !!@param   nscalar  Number of scalar (including tensor components)
 !!                  for spherical transform
 !
-      module leg_f_trans_sym_matmul_big
+      module leg_fwd_trans_sym_rocBLAS
 !
       use m_precision
       use m_constants
@@ -46,7 +53,9 @@
       use t_leg_trans_sym_matmul_big
       use m_elapsed_labels_SPH_TRNS
 !
-      use matmul_for_legendre_trans
+#ifdef _AMD_ROCM_
+      use t_rocBLAS_legendre_trans
+#endif
 !
       implicit none
 !
@@ -60,13 +69,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine leg_forward_trans_matmul_big                           &
+      subroutine leg_forward_trans_rocBLAS                              &
      &         (iflag_matmul, ncomp, nvector, nscalar,                  &
      &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,    &
-     &          n_WR, n_WS, WR, WS, WK_l_bsm)
+     &          n_WR, n_WS, WR, WS, WK_l_bsm, rocBLAS_WK)
 !
       use set_vr_rtm_leg_matmul_big
       use cal_sp_rlm_sym_matmul_big
+      use rocBLAS_for_legendre_trans
 !
       integer(kind = kint), intent(in) :: iflag_matmul
       type(sph_rtm_grid), intent(in) :: sph_rtm
@@ -74,12 +84,13 @@
       type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
       type(legendre_4_sph_trans), intent(in) :: leg
       type(index_4_sph_trans), intent(in) :: idx_trns
-      type(leg_trns_bsym_mul_work), intent(inout) :: WK_l_bsm
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
       real (kind=kreal), intent(inout):: WR(n_WR)
       real (kind=kreal), intent(inout):: WS(n_WS)
+      type(leg_trns_bsym_mul_work), intent(inout) :: WK_l_bsm
+      type(rocBLAS_work), intent(inout) :: rocBLAS_WK
 !
       integer(kind = kint) :: ip, mp_rlm, nle_rtm, nlo_rtm
       integer(kind = kint) :: kst(np_smp),  nkr(np_smp)
@@ -90,17 +101,12 @@
 !
       if(ncomp .le. 0) return
 !$omp parallel workshare
-      WK_l_bsm%time_omp(1:np_smp,1:3) = 0.0d0
-!$omp end parallel workshare
-!
-!$omp parallel workshare
       WS(1:ncomp*comm_rlm%ntot_item_sr) = 0.0d0
 !$omp end parallel workshare
 !
       nle_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
       nlo_rtm = sph_rtm%nidx_rtm(2) / 2
-!$omp parallel do private(ip,mp_rlm,st_elapsed)                         &
-!$omp& reduction(+:elaps)
+!
       do ip = 1, np_smp
         kst(ip) = sph_rlm%istack_rlm_kr_smp(ip-1)
         nkr(ip) = sph_rlm%istack_rlm_kr_smp(ip)                         &
@@ -116,7 +122,8 @@
           n_jk_o(ip) = idx_trns%lstack_rlm(mp_rlm)                      &
      &                - idx_trns%lstack_even_rlm(mp_rlm)
 !
-          WK_l_bsm%time_omp(ip,0) = MPI_WTIME()
+          if(iflag_SDT_time)                                            &
+     &        call start_elapsed_time(ist_elapsed_SDT+13)
           call set_vr_rtm_vec_sym_matmul_big                            &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
      &        sph_rlm%nidx_rlm, leg%asin_t_rtm, leg%weight_rtm,         &
@@ -130,29 +137,33 @@
      &        mp_rlm, nle_rtm, nlo_rtm,                                 &
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WR, WR,      &
      &        WK_l_bsm%symp_r(1,ip), WK_l_bsm%asmp_r(1,ip))
-          WK_l_bsm%time_omp(ip,1) = WK_l_bsm%time_omp(ip,1)             &
-     &                    + MPI_WTIME() - WK_l_bsm%time_omp(ip,0)
+          if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+13)
 !
 !  even l-m
-          WK_l_bsm%time_omp(ip,0) = MPI_WTIME()
-          call matmul_fwd_leg_trans(iflag_matmul, nkrs(ip), n_jk_e(ip), &
-     &        WK_l_bsm%nth_sym, WK_l_bsm%symp_r(1,ip),                  &
-     &        WK_l_bsm%Ps_tj(1,jst(ip)+1), WK_l_bsm%pol_e(1,ip))
-          call matmul_fwd_leg_trans(iflag_matmul, nkrt(ip), n_jk_e(ip), &
-     &        WK_l_bsm%nth_sym, WK_l_bsm%asmp_p(1,ip),                  &
-     &        WK_l_bsm%dPsdt_tj(1,jst(ip)+1), WK_l_bsm%tor_e(1,ip))
+          if(iflag_SDT_time)                                            &
+     &        call start_elapsed_time(ist_elapsed_SDT+15)
+          call ROCm_matmul_fwd_leg_trans(iflag_matmul, nkrs(ip),        &
+     &        n_jk_e(ip), WK_l_bsm%nth_sym, WK_l_bsm%symp_r(1,ip),      &
+     &        WK_l_bsm%Ps_tj(1,jst(ip)+1), WK_l_bsm%pol_e(1,ip),        &
+     &        rocBLAS_WK)
+          call ROCm_matmul_fwd_leg_trans(iflag_matmul, nkrt(ip),        &
+     &        n_jk_e(ip), WK_l_bsm%nth_sym, WK_l_bsm%asmp_p(1,ip),      &
+     &        WK_l_bsm%dPsdt_tj(1,jst(ip)+1), WK_l_bsm%tor_e(1,ip),     &
+     &        rocBLAS_WK)
 !
 !  odd l-m
-          call matmul_fwd_leg_trans(iflag_matmul, nkrs(ip), n_jk_o(ip), &
-     &        WK_l_bsm%nth_sym, WK_l_bsm%asmp_r(1,ip),                  &
-     &        WK_l_bsm%Ps_tj(1,jst_h(ip)), WK_l_bsm%pol_o(1,ip))
-          call matmul_fwd_leg_trans(iflag_matmul, nkrt(ip), n_jk_o(ip), &
-     &        WK_l_bsm%nth_sym, WK_l_bsm%symp_p(1,ip),                  &
-     &        WK_l_bsm%dPsdt_tj(1,jst_h(ip)), WK_l_bsm%tor_o(1,ip))
-          WK_l_bsm%time_omp(ip,2) = WK_l_bsm%time_omp(ip,2)             &
-     &                    + MPI_WTIME() - WK_l_bsm%time_omp(ip,0)
+          call ROCm_matmul_fwd_leg_trans(iflag_matmul, nkrs(ip),        &
+     &        n_jk_o(ip), WK_l_bsm%nth_sym, WK_l_bsm%asmp_r(1,ip),      &
+     &        WK_l_bsm%Ps_tj(1,jst_h(ip)), WK_l_bsm%pol_o(1,ip),        &
+     &        rocBLAS_WK)
+          call ROCm_matmul_fwd_leg_trans(iflag_matmul, nkrt(ip),        &
+     &        n_jk_o(ip), WK_l_bsm%nth_sym, WK_l_bsm%symp_p(1,ip),      &
+     &        WK_l_bsm%dPsdt_tj(1,jst_h(ip)), WK_l_bsm%tor_o(1,ip),     &
+     &        rocBLAS_WK)
+          if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+15)
 !
-          WK_l_bsm%time_omp(ip,0) = MPI_WTIME()
+          if(iflag_SDT_time)                                            &
+     &        call start_elapsed_time(ist_elapsed_SDT+17)
           call cal_sp_rlm_vec_sym_matmul_big                            &
      &       (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,                       &
      &        sph_rlm%istep_rlm, sph_rlm%idx_gl_1d_rlm_j,               &
@@ -166,31 +177,13 @@
      &        kst(ip), nkr(ip), jst(ip), n_jk_o(ip), n_jk_e(ip),        &
      &        WK_l_bsm%pol_e(1,ip), WK_l_bsm%pol_o(1,ip),               &
      &        ncomp, nvector, nscalar, comm_rlm%irev_sr, n_WS, WS)
-          WK_l_bsm%time_omp(ip,3) = WK_l_bsm%time_omp(ip,3)             &
-     &                    + MPI_WTIME() - WK_l_bsm%time_omp(ip,0)
+          if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+17)
 !
         end do
       end do
-!$omp end parallel do
 !
-      if(iflag_SDT_time) then
-        do ip = 2, np_smp
-          WK_l_bsm%time_omp(1,1:3)                                      &
-     &          = WK_l_bsm%time_omp(ip,1:3) + WK_l_bsm%time_omp(ip,1:3)
-        end do
-        elps1%elapsed(ist_elapsed_SDT+13)                               &
-     &          = elps1%elapsed(ist_elapsed_SDT+13)                     &
-     &           + WK_l_bsm%time_omp(1,1) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_SDT+15)                               &
-     &          = elps1%elapsed(ist_elapsed_SDT+15)                     &
-     &           + WK_l_bsm%time_omp(1,2) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_SDT+17)                               &
-     &          = elps1%elapsed(ist_elapsed_SDT+17)                     &
-     &           + WK_l_bsm%time_omp(1,3) / dble(np_smp)
-      end if
-!
-      end subroutine leg_forward_trans_matmul_big
+      end subroutine leg_forward_trans_rocBLAS
 !
 ! -----------------------------------------------------------------------
 !
-      end module leg_f_trans_sym_matmul_big
+      end module leg_fwd_trans_sym_rocBLAS
