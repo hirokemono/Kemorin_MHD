@@ -73,6 +73,8 @@
 !
       module rocBLAS_for_legendre_trans
 !
+      use hipfort_rocblas
+!
       use m_precision
       use m_constants
 !

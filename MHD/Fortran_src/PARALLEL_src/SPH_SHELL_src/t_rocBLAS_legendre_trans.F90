@@ -33,7 +33,7 @@
       implicit none
 !
       type rocBLAS_work
-        type(c_ptr) :: rocblas_handle = c_null_ptr
+        type(c_ptr) :: handle = c_null_ptr
         integer(c_int) :: transa
         integer(c_int) :: transb
 
