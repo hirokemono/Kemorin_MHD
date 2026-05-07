@@ -92,8 +92,21 @@
 !@n     with symmetry and  self matrix product
       character(len = kchara), parameter                                &
      &           :: leg_sym_matprod_big = 'Symmetric_matproduct_big'
+!>      Character flag to perform Legendre transform
+!@n     with OpenMP offload loop
+      character(len = kchara), parameter                                &
+     &           :: leg_sym_OMP_target =  'Symmetric_OpenMP_target'
+!>      Character flag to perform Legendre transform
+!@n     with rocBLAS routines
+      character(len = kchara), parameter                                &
+     &           :: leg_sym_rocBLAS =     'Symmetric_rocBLAS'
+!>      Character flag to perform Legendre transform
+!@n     with rocBLAS and OpenMP directives
+      character(len = kchara), parameter                                &
+     &           :: leg_sym_OMP_rocBLAS = 'Symmetric_OpenMP_rocBLAS'
 !
-!>      Chalacter flag to perform Legendre transform 
+!
+!>      Chalacter flag to perform Legendre transform
 !@n     with symmetry and mutmul function
       character(len = kchara), parameter                                &
      &           :: leg_sym_mat_jt =     'Pjt_matmul_theta_OMP'
@@ -150,24 +163,35 @@
 !>      integer flag to perform Legendre transform 
 !@n     with symmetry and dgemm in BLAS
       integer(kind = kint), parameter :: iflag_leg_sym_dgemm =    13
-!>      integer flag to perform Legendre transform 
+!
+!>      integer flag to perform Legendre transform
 !@n     with symmetry and mutmul function
-      integer(kind = kint), parameter :: iflag_leg_sym_matmul_big =  4
-!>      integer flag to perform Legendre transform 
+      integer(kind = kint), parameter :: iflag_leg_sym_matmul_big = 4
+!>      integer flag to perform Legendre transform
 !@n     with symmetry and dgemm in BLAS
       integer(kind = kint), parameter :: iflag_leg_sym_dgemm_big = 14
-!>      integer flag to perform Legendre transform 
+!>      integer flag to perform Legendre transform
+!@n     with OpenMP offload loop
+      integer(kind = kint), parameter :: iflag_leg_OMP_target =    24
+!>      integer flag to perform Legendre transform
+!@n     with rocBLAS routines
+      integer(kind = kint), parameter :: iflag_leg_rocBLAS =       34
+!>      integer flag to perform Legendre transform
+!@n     with rocBLAS and OpenMP directives
+      integer(kind = kint), parameter :: iflag_leg_OMP_rocBLAS =   44
+!
+!>      integer flag to perform Legendre transform
 !@n     with symmetry and  self matrix product
-      integer(kind = kint), parameter :: iflag_leg_sym_mat_jt = 5
-!>      integer flag to perform Legendre transform 
+      integer(kind = kint), parameter :: iflag_leg_sym_mat_jt =     5
+!>      integer flag to perform Legendre transform
 !@n     with symmetry and  self matrix product
-      integer(kind = kint), parameter :: iflag_leg_sym_dgemm_jt = 15
-!>      integer flag to perform Legendre transform 
+      integer(kind = kint), parameter :: iflag_leg_sym_dgemm_jt =  15
+!>      integer flag to perform Legendre transform
 !@n     with symmetry and  self matrix product
-      integer(kind = kint), parameter :: iflag_leg_sym_mat_tj = 6
-!>      integer flag to perform Legendre transform 
+      integer(kind = kint), parameter :: iflag_leg_sym_mat_tj =     6
+!>      integer flag to perform Legendre transform
 !@n     with symmetry and  self matrix product
-      integer(kind = kint), parameter :: iflag_leg_sym_dgemm_tj = 16
+      integer(kind = kint), parameter :: iflag_leg_sym_dgemm_tj =  16
 !
 !>      integer flag to perform Legendre transform 
 !@n     with symmetry and on-the-fly Legendre polynomial
@@ -225,6 +249,13 @@
       else if(cmp_no_case(tranx_loop_ctl, leg_sym_dgemm_big)) then
         iflag = iflag_leg_sym_dgemm_big
 !
+      else if(cmp_no_case(tranx_loop_ctl, leg_sym_OMP_target)) then
+        iflag = iflag_leg_OMP_target
+      else if(cmp_no_case(tranx_loop_ctl, leg_sym_rocBLAS)) then
+        iflag = iflag_leg_rocBLAS
+      else if(cmp_no_case(tranx_loop_ctl, leg_sym_OMP_rocBLAS)) then
+        iflag = iflag_leg_OMP_rocBLAS
+!
       else if(cmp_no_case(tranx_loop_ctl, leg_sym_mat_jt)) then
         iflag = iflag_leg_sym_mat_jt
       else if(cmp_no_case(tranx_loop_ctl, leg_sym_dgemm_jt)) then
@@ -268,6 +299,12 @@
         tmpchara = leg_sym_matmul_big
       else if(i_mode .eq. iflag_leg_sym_dgemm_big) then
         tmpchara = leg_sym_dgemm_big
+      else if(i_mode .eq. iflag_leg_OMP_target) then
+        tmpchara = leg_sym_OMP_target
+      else if(i_mode .eq. iflag_leg_rocBLAS) then
+        tmpchara = leg_sym_rocBLAS
+      else if(i_mode .eq. iflag_leg_OMP_rocBLAS) then
+        tmpchara = leg_sym_OMP_rocBLAS
 !
       else if(i_mode .eq. iflag_leg_sym_mat_jt) then
         tmpchara = leg_sym_mat_jt
@@ -322,6 +359,15 @@
       else if(i_mode .eq. iflag_leg_sym_dgemm_big) then
           write(*,'(i3,a)', advance='NO') i_mode,                       &
      &          ': elapsed by big BLAS with radial SMP        '
+      else if(i_mode .eq. iflag_leg_OMP_target) then
+          write(*,'(i3,a)', advance='NO') i_mode,                       &
+     &          ': elapsed by OpenMP offload with radial outermost'
+      else if(i_mode .eq. iflag_leg_rocBLAS) then
+          write(*,'(i3,a)', advance='NO') i_mode,                       &
+     &          ': elapsed by rocBLAS with radial outermost       '
+      else if(i_mode .eq. iflag_leg_OMP_rocBLAS) then
+          write(*,'(i3,a)', advance='NO') i_mode,                       &
+     &          ': elapsed by OpenMP rocBLAS with radial outermost'
 !
       else if(i_mode .eq. iflag_leg_sym_mat_jt) then
           write(*,'(i3,a)', advance='NO') i_mode,                       &

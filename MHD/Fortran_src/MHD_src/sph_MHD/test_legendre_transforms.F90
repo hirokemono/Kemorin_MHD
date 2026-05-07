@@ -74,6 +74,11 @@
      &            iflag_leg_sym_dgemm_jt,                               &
      &            iflag_leg_sym_dgemm_tj,                               &
 #endif
+#ifdef _AMD_ROCM_
+     &            iflag_leg_OMP_target,                                 &
+     &            iflag_leg_rocBLAS,                                    &
+     &            iflag_leg_OMP_rocBLAS,                                &
+#endif
      &            iflag_on_the_fly_matprod/)
 !
       private :: num_test, list_test
