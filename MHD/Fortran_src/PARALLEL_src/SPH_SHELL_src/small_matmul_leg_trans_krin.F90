@@ -66,10 +66,6 @@
       use m_constants
       use matmul_for_legendre_trans
 !
-#ifdef _AMD_ROCM_
-      use rocBLAS_for_legendre_trans
-#endif
-!
       implicit none
 !
 ! -----------------------------------------------------------------------
@@ -125,11 +121,6 @@
      &      V_kt, nkr4, P_tj, 8, one, S_kj, nkr4)
 #endif
 !
-#ifdef _AMD_ROCM_
-      else if(iflag_matmul .eq. iflag_OMP_offload) then
-      else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
-      else if(iflag_matmul .eq. iflag_rocBLAS) then
-#endif
       else
         do jj = 1, n_jk
           do kk = 1, nkr
@@ -171,11 +162,6 @@
      &      V_kt, nkr4, P_tj, 4, one, S_kj, nkr4)
 #endif
 !
-#ifdef _AMD_ROCM_
-      else if(iflag_matmul .eq. iflag_OMP_offload) then
-      else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
-      else if(iflag_matmul .eq. iflag_rocBLAS) then
-#endif
       else
         do jj = 1, n_jk
           do kk = 1, nkr
@@ -215,11 +201,6 @@
      &      V_kt, nkr4, P_tj, 2, one, S_kj, nkr4)
 #endif
 !
-#ifdef _AMD_ROCM_
-      else if(iflag_matmul .eq. iflag_OMP_offload) then
-      else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
-      else if(iflag_matmul .eq. iflag_rocBLAS) then
-#endif
       else
         do jj = 1, n_jk
           do kk = 1, nkr
@@ -293,11 +274,6 @@
      &      S_kj, nkr4, P_jt, n_jk4, zero, V_kt, nkr4)
 #endif
 !
-#ifdef _AMD_ROCM_
-      else if(iflag_matmul .eq. iflag_OMP_offload) then
-      else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
-      else if(iflag_matmul .eq. iflag_rocBLAS) then
-#endif
       else
         V_kt(1:nkr,1:8) = 0.0d0
         do jj = 1, n_jk
@@ -339,11 +315,6 @@
      &      S_kj, nkr4, P_jt, n_jk4, zero, V_kt, nkr4)
 #endif
 !
-#ifdef _AMD_ROCM_
-      else if(iflag_matmul .eq. iflag_OMP_offload) then
-      else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
-      else if(iflag_matmul .eq. iflag_rocBLAS) then
-#endif
       else
         V_kt(1:nkr,1:4) = 0.0d0
         do jj = 1, n_jk
@@ -385,11 +356,6 @@
      &      S_kj, nkr4, P_jt, n_jk4, zero, V_kt, nkr4)
 #endif
 !
-#ifdef _AMD_ROCM_
-      else if(iflag_matmul .eq. iflag_OMP_offload) then
-      else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
-      else if(iflag_matmul .eq. iflag_rocBLAS) then
-#endif
       else
         V_kt(1:nkr,1:2) = 0.0d0
         do jj = 1, n_jk
