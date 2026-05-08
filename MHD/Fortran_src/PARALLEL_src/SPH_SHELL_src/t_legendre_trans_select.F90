@@ -231,7 +231,7 @@
       use leg_bwd_trans_on_the_fly
 !
 #ifdef _AMD_ROCM_
-      use leg_fwd_trans_sym_rocBLAS
+      use leg_bwd_trans_sym_rocBLAS
 #endif
 !
       type(sph_rtm_grid), intent(in) :: sph_rtm
