@@ -69,6 +69,10 @@
 !
       use matmul_for_legendre_trans
 !
+#ifdef _AMD_ROCM_
+      use rocBLAS_for_legendre_trans
+#endif
+!
       implicit none
 !
 !>      Work structures for various Legendre trasform

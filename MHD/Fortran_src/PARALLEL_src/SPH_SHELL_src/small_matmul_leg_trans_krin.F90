@@ -66,6 +66,10 @@
       use m_constants
       use matmul_for_legendre_trans
 !
+#ifdef _AMD_ROCM_
+      use rocBLAS_for_legendre_trans
+#endif
+!
       implicit none
 !
 ! -----------------------------------------------------------------------
