@@ -62,6 +62,8 @@
      &         (np_smp, ncomp_fwd, nvect_fwd, ncomp_bwd, nvect_bwd,     &
      &          sph_rtm, sph_rlm, idx_trns, rocBLAS_WK)
 !
+      use hipfort_rocblas
+!
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(index_4_sph_trans), intent(in) :: idx_trns
