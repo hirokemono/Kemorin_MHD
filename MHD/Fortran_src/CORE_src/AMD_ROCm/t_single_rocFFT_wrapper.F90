@@ -1,4 +1,4 @@
-!>@file   t_single_rocFFT_wrapper.f90
+!>@file   t_single_rocFFT_wrapper.F90
 !!@brief  module t_single_rocFFT_wrapper
 !!
 !!@author H. Matsui
@@ -79,8 +79,14 @@
       contains
 !
 ! ------------------------------------------------------------------
+#ifdef _AMD_ROCM_
+! ------------------------------------------------------------------
 !
       subroutine calypso_sgl_rocFFT_init(Nfft, WK_fft)
+!
+      use hipfort
+      use hipfort_check
+      use hipfort_rocfft
 !
       use calypso_single_rocFFT
 !
@@ -89,7 +95,9 @@
 !
 !
       call calypso_sgl_rocFFT_set_size(Nfft, WK_fft)
+!
       call calypso_sgl_rocFFT_alloc(WK_fft)
+      call hipCheck(hipMalloc(WK_fft%data_ptr, WK_fft%Nbytes))
 !
 !   Initialize Forward transform
       call calypso_sgl_fwd_rocFFT_init(Nfft, WK_fft%rocFFT_fwd_plan)
@@ -116,6 +124,7 @@
       end subroutine calypso_sgl_rocFFT_fin
 !
 ! ------------------------------------------------------------------
+#endif
 ! ------------------------------------------------------------------
 !
       subroutine calypso_sgl_rocFFT_set_size(Nfft, WK_fft)
@@ -135,14 +144,7 @@
 !
       subroutine calypso_sgl_rocFFT_alloc(WK_fft)
 !
-      use hipfort
-      use hipfort_check
-      use hipfort_rocfft
-!
       type(single_rocFFT_work), intent(inout), target :: WK_fft
-!
-!   Initialize Forward transform
-      call hipCheck(hipMalloc(WK_fft%data_ptr, WK_fft%Nbytes))
 !
       allocate(WK_fft%X_rocFFT(WK_fft%Nfft_r))
       allocate(WK_fft%C_rocFFT(WK_fft%Nfft_c))

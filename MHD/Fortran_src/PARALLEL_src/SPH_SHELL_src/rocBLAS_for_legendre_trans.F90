@@ -73,7 +73,9 @@
 !
       module rocBLAS_for_legendre_trans
 !
+#ifdef _AMD_ROCM_
       use hipfort_rocblas
+#endif
 !
       use m_precision
       use m_constants
@@ -119,8 +121,6 @@
       rocBLAS_WK%Nabytes = kreal * nkr *    nl_rtm
       rocBLAS_WK%Nbbytes = kreal * nl_rtm * n_jk
       rocBLAS_WK%Ncbytes = kreal * nkr *    n_jk
-      rocBLAS_WK%transa = rocblas_operation_none
-      rocBLAS_WK%transb = rocblas_operation_none
 !
       if(iflag_matmul .eq. iflag_INTRINSIC) then
         S_kj = matmul(V_kl,P_lj)
@@ -143,7 +143,7 @@
 #endif
       else
         call matmul_fwd_leg_trans(iflag_matmul, nkr, n_jk, nl_rtm,      &
-     &                            V_kl, P_lj, S_kj, rocBLAS_WK)
+     &                            V_kl, P_lj, S_kj)
       end if
 !
       end subroutine ROCm_matmul_fwd_leg_trans
@@ -177,8 +177,6 @@
       rocBLAS_WK%Nabytes = kreal * nl_rtm * n_jk
       rocBLAS_WK%Nbbytes = kreal * n_jk *   nkr
       rocBLAS_WK%Ncbytes = kreal * nl_rtm * nkr
-      rocBLAS_WK%transa = rocblas_operation_none
-      rocBLAS_WK%transb = rocblas_operation_none
 !
       if(n_jk .eq. 0) then
 !$omp parallel workshare
@@ -203,7 +201,7 @@
 #endif
       else
         call matmul_bwd_leg_trans(iflag_matmul, nl_rtm, nkr, n_jk,      &
-     &                            P_lj, S_jk, V_lk, rocBLAS_WK)
+     &                            P_lj, S_jk, V_lk)
       end if
 !
       end subroutine ROCm_matmul_bwd_leg_trans
@@ -238,8 +236,6 @@
       rocBLAS_WK%Nabytes = kreal * n_jk *   nl_rtm
       rocBLAS_WK%Nbbytes = kreal * nl_rtm * nkr
       rocBLAS_WK%Ncbytes = kreal * n_jk *   nkr
-      rocBLAS_WK%transa = rocblas_operation_none
-      rocBLAS_WK%transb = rocblas_operation_none
 !
       if(iflag_matmul .eq. iflag_INTRINSIC) then
         S_jk = matmul(P_jl,V_lk)
@@ -262,7 +258,7 @@
 #endif
       else
         call matmul_fwd_leg_trans_Pjl(iflag_matmul, n_jk, nkr, nl_rtm,  &
-     &                                P_jl, V_lk, S_jk, rocBLAS_WK)
+     &                                P_jl, V_lk, S_jk)
       end if
 !
       end subroutine ROCm_DGEMM_fwd_leg_trans_Pjl
@@ -296,8 +292,6 @@
       rocBLAS_WK%Nabytes = kreal * nkr *  n_jk
       rocBLAS_WK%Nbbytes = kreal * n_jk * nl_rtm
       rocBLAS_WK%Ncbytes = kreal * nkr *  nl_rtm
-      rocBLAS_WK%transa = rocblas_operation_none
-      rocBLAS_WK%transb = rocblas_operation_none
 !
       if(n_jk .eq. 0) then
 !$omp parallel workshare
@@ -322,7 +316,7 @@
 #endif
       else
         call matmul_bwd_leg_trans_Pjl(iflag_matmul, nkr, nl_rtm, n_jk,  &
-     &                                S_kj, P_jl, V_kl, rocBLAS_WK)
+     &                                S_kj, P_jl, V_kl)
       end if
 !
       end subroutine ROCm_DGEMM_bwd_leg_trans_Pjl
@@ -358,8 +352,6 @@
       rocBLAS_WK%Nabytes = kreal * nkr *    nl_rtm
       rocBLAS_WK%Nbbytes = kreal * nl_rtm * n_jk
       rocBLAS_WK%Ncbytes = kreal * nkr *    n_jk
-      rocBLAS_WK%transa = rocblas_operation_none
-      rocBLAS_WK%transb = rocblas_operation_none
 !
       if(iflag_matmul .eq. iflag_INTRINSIC) then
         S_kj(1:nkr,1:n_jk) = coef * S_kj(1:nkr,1:n_jk)                  &
@@ -418,8 +410,6 @@
       rocBLAS_WK%Nabytes = kreal * nl_rtm * n_jk
       rocBLAS_WK%Nbbytes = kreal * n_jk *   nkr
       rocBLAS_WK%Ncbytes = kreal * nl_rtm * nkr
-      rocBLAS_WK%transa = rocblas_operation_none
-      rocBLAS_WK%transb = rocblas_operation_none
 !
       if(n_jk .eq. 0) then
 !$omp parallel workshare

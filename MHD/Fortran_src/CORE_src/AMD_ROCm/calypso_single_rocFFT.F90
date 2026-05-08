@@ -1,4 +1,4 @@
-!>@file   calypso_single_rocFFT.f90
+!>@file   calypso_single_rocFFT.F90
 !!@brief  module calypso_single_rocFFT
 !!
 !!@author H. Matsui
@@ -98,6 +98,8 @@
 !
       contains
 !
+! ------------------------------------------------------------------
+#ifdef _AMD_ROCM_
 ! ------------------------------------------------------------------
 !
       subroutine calypso_sgl_fwd_rocFFT_init(Nfft, rocFFT_fwd_plan)
@@ -251,6 +253,8 @@
 !
       end subroutine calypso_sgl_bwd_rocFFT_r2r
 !
+! ------------------------------------------------------------------
+#endif
 ! ------------------------------------------------------------------
 !
       end module calypso_single_rocFFT

@@ -36,9 +36,8 @@ FFT_wrapper          \
 SPH_SPECTR_src       \
 modify_MESH
 
-ifdef ROCM_CFLAGS
-  SUBDIRS += AMD_ROCm
-endif
+SUBDIRS += AMD_ROCm
+
 #
 #
 #  -------------------------------------------------------------------------

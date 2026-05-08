@@ -1,4 +1,4 @@
-!>@file   calypso_rocBLAS_DGEMM.f90
+!>@file   calypso_rocBLAS_DGEMM.F90
 !!@brief  module calypso_rocBLAS_DGEMM
 !!
 !!@author H. Matsui
@@ -94,6 +94,7 @@
       end subroutine calypso_OpenMP_target_DGEMM
 !
 !  ---------------------------------------------------------------------
+#ifdef _AMD_ROCM_
 !  ---------------------------------------------------------------------
 !
       subroutine calypso_init_rocBLAS(rocblas_handle)
@@ -196,8 +197,6 @@
      &          alpha, A_mat, lda, B_mat, ldb, beta, C_mat, ldc,        &
      &          A_cptr, B_cptr, C_cptr)
 !
-      use iso_c_binding
-!
       use hipfort
       use hipfort_check
       use hipfort_rocblas
@@ -235,6 +234,8 @@
 !
       end subroutine calypso_hip_rocBLAS_dgemm
 !
+!  ---------------------------------------------------------------------
+#endif
 !  ---------------------------------------------------------------------
 !
       end module calypso_rocBLAS_DGEMM

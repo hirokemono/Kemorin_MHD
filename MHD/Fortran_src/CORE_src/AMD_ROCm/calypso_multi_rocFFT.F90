@@ -1,4 +1,4 @@
-!>@file   calypso_multi_rocFFT.f90
+!>@file   calypso_multi_rocFFT.F90
 !!@brief  module calypso_multi_rocFFT
 !!
 !!@author H. Matsui
@@ -85,9 +85,11 @@
 !
       use iso_c_binding
 !
+#ifdef _AMD_ROCM_
       use hipfort
       use hipfort_check
       use hipfort_rocfft
+#endif
 !
       implicit none
 !
@@ -95,6 +97,8 @@
 !
       contains
 !
+! ------------------------------------------------------------------
+#ifdef _AMD_ROCM_
 ! ------------------------------------------------------------------
 !
       subroutine calypso_forward_rocFFT_r2c(fwd_plan, fwd_wk_info,      &
@@ -251,6 +255,8 @@
 !
       end subroutine calypso_bwd_OpenMP_rocFFT
 !
+! ------------------------------------------------------------------
+#endif
 ! ------------------------------------------------------------------
 !
       end module calypso_multi_rocFFT

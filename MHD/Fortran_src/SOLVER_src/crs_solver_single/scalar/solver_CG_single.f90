@@ -26,7 +26,7 @@
       real(kind=kreal), allocatable, private :: SCALE(:)
 !
       integer(kind=kint), parameter, private :: nWK_CG =  4
-      integer(kind = kint), private :: ntotWK_CG = nWK_CG + 3
+!      integer(kind = kint), private :: ntotWK_CG = nWK_CG + 3
       real(kind = kreal), allocatable :: W(:,:)
       private :: W
 !

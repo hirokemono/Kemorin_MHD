@@ -50,11 +50,12 @@
         type(c_ptr) :: C_cptr = c_null_ptr
       end type rocBLAS_work
 !
-#ifdef _AMD_ROCM_
 ! ----------------------------------------------------------------------
 !
       contains
 !
+! ----------------------------------------------------------------------
+#ifdef _AMD_ROCM_
 ! ----------------------------------------------------------------------
 !
       subroutine max_size_rocBLAS_leg_trns                              &
@@ -75,6 +76,9 @@
       integer(kind = kint) :: nkr, nkrs,  nkrt
       integer(kind = kint) :: n_jk_e, n_jk_o
 !
+!
+      rocBLAS_WK%transa = rocblas_operation_none
+      rocBLAS_WK%transb = rocblas_operation_none
 !
       rocBLAS_WK%MaxAbytes = 0
       rocBLAS_WK%MaxBbytes = 0

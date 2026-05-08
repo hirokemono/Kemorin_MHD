@@ -1,4 +1,4 @@
-!>@file   t_multi_rocFFT_wrapper.f90
+!>@file   t_multi_rocFFT_wrapper.F90
 !!@brief  module t_multi_rocFFT_wrapper
 !!
 !!@author H. Matsui
@@ -128,7 +128,8 @@
       end subroutine calypso_rocFFT_set_size
 !
 ! ------------------------------------------------------------------
-! ------------------------------------------------------------------
+#ifdef _AMD_ROCM_
+! ----------------------------------------------------------------------
 !
       subroutine calypso_rocFFT_alloc(fwd, bwd, WK_fft)
 !
@@ -288,6 +289,8 @@
 !
       end subroutine calypso_rocFFT_fin
 !
+! ------------------------------------------------------------------
+#endif
 ! ------------------------------------------------------------------
 !
       end module t_multi_rocFFT_wrapper

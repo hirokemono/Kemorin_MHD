@@ -127,10 +127,6 @@
 !
       subroutine calypso_pin_bwd_rocFFT_init(Nfft_r, bwd)
 !
-      use hipfort
-      use hipfort_check
-      use hipfort_rocfft
-!
       integer(c_size_t), intent(in) :: Nfft_r
       type(calypso_rocFFT_params), intent(inout), target :: bwd
 !
