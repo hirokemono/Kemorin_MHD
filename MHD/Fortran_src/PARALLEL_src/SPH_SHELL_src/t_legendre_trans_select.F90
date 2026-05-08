@@ -70,6 +70,7 @@
       use matmul_for_legendre_trans
 !
 #ifdef _AMD_ROCM_
+      use calypso_rocBLAS_DGEMM
       use rocBLAS_for_legendre_trans
 #endif
 !
