@@ -150,58 +150,58 @@
 !!>      integer undefined flag for Legendre transform
 !      integer(kind = kint), parameter :: iflag_leg_undefined =  -999
 !>      integer flag to run elpse time check for legendre transform
-      integer(kind = kint), parameter :: iflag_leg_compare =      -1
+      integer(kind = kint), parameter :: iflag_leg_compare =       -1
 !
 !>      integer flag to perform Legendre transform with symmetry
-      integer(kind = kint), parameter :: iflag_leg_symmetry =      1
+      integer(kind = kint), parameter :: iflag_leg_symmetry =       1
 !>      integer flag to perform Legendre transform 
 !@n     with symmetry and inneromst Legendre polynomial loop
-      integer(kind = kint), parameter :: iflag_leg_sym_spin_loop = 2
+      integer(kind = kint), parameter :: iflag_leg_sym_spin_loop =  2
 !>      integer flag to perform Legendre transform 
 !@n     with symmetry and mutmul function
-      integer(kind = kint), parameter :: iflag_leg_sym_matmul =    3
+      integer(kind = kint), parameter :: iflag_leg_sym_matmul =    13
 !>      integer flag to perform Legendre transform 
 !@n     with symmetry and dgemm in BLAS
-      integer(kind = kint), parameter :: iflag_leg_sym_dgemm =    13
+      integer(kind = kint), parameter :: iflag_leg_sym_dgemm =     23
 !
 !>      integer flag to perform Legendre transform
 !@n     with symmetry and mutmul function
-      integer(kind = kint), parameter :: iflag_leg_sym_matmul_big = 4
+      integer(kind = kint), parameter :: iflag_leg_sym_matmul_big = 14
 !>      integer flag to perform Legendre transform
 !@n     with symmetry and dgemm in BLAS
-      integer(kind = kint), parameter :: iflag_leg_sym_dgemm_big = 14
+      integer(kind = kint), parameter :: iflag_leg_sym_dgemm_big =  24
 !>      integer flag to perform Legendre transform
 !@n     with OpenMP offload loop
-      integer(kind = kint), parameter :: iflag_leg_OMP_target =    44
+      integer(kind = kint), parameter :: iflag_leg_OMP_target =     44
 !>      integer flag to perform Legendre transform
 !@n     with rocBLAS routines
-      integer(kind = kint), parameter :: iflag_leg_rocBLAS =       54
+      integer(kind = kint), parameter :: iflag_leg_rocBLAS =        54
 !>      integer flag to perform Legendre transform
 !@n     with rocBLAS and OpenMP directives
-      integer(kind = kint), parameter :: iflag_leg_OMP_rocBLAS =   64
+      integer(kind = kint), parameter :: iflag_leg_OMP_rocBLAS =    64
 !
 !>      integer flag to perform Legendre transform
 !@n     with symmetry and  self matrix product
-      integer(kind = kint), parameter :: iflag_leg_sym_mat_jt =     5
+      integer(kind = kint), parameter :: iflag_leg_sym_mat_jt =     15
 !>      integer flag to perform Legendre transform
 !@n     with symmetry and  self matrix product
-      integer(kind = kint), parameter :: iflag_leg_sym_dgemm_jt =  15
+      integer(kind = kint), parameter :: iflag_leg_sym_dgemm_jt =   25
 !>      integer flag to perform Legendre transform
 !@n     with symmetry and  self matrix product
-      integer(kind = kint), parameter :: iflag_leg_sym_mat_tj =     6
+      integer(kind = kint), parameter :: iflag_leg_sym_mat_tj =     16
 !>      integer flag to perform Legendre transform
 !@n     with symmetry and  self matrix product
-      integer(kind = kint), parameter :: iflag_leg_sym_dgemm_tj =  16
+      integer(kind = kint), parameter :: iflag_leg_sym_dgemm_tj =   26
 !
 !>      integer flag to perform Legendre transform 
 !@n     with symmetry and on-the-fly Legendre polynomial
-      integer(kind = kint), parameter :: iflag_on_the_fly_matmul = 7
+      integer(kind = kint), parameter :: iflag_on_the_fly_matmul =  17
 !>      integer flag to perform Legendre transform 
 !@n     with symmetry and on-the-fly Legendre polynomial
-      integer(kind = kint), parameter :: iflag_on_the_fly_dgemm = 17
+      integer(kind = kint), parameter :: iflag_on_the_fly_dgemm =   27
 !>      integer flag to perform Legendre transform 
 !@n     with symmetry and on-the-fly Legendre polynomial
-      integer(kind = kint), parameter :: iflag_on_the_fly_matprod = 8
+      integer(kind = kint), parameter :: iflag_on_the_fly_matprod = 37
 !
 !>      integer flag to perform Legendre transform 
 !@n     with testing loop
