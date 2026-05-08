@@ -110,6 +110,7 @@
       use set_address_sph_trans_snap
       use address_sph_trans_SGS_snap
       use init_sphrical_transform_MHD
+      use init_legendre_transform_MHD
       use init_sph_trans_SGS_model
       use check_sph_mhd_openmp_size
 !
@@ -171,7 +172,7 @@
       call init_work_4_coriolis                                         &
      &   (SPH_model%sph_MHD_bc, SPH_MHD%sph, trans_p, WK)
 !
-      call sel_sph_transform_MHD                                        &
+      call init_leg_trans_sph_MHD                                       &
      &   (SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
