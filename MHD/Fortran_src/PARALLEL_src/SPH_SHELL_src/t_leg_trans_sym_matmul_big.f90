@@ -182,7 +182,7 @@
       end type leg_trns_bsym_mul_work
 !
       private :: const_symmetric_legendre_lj
-      private :: alloc_leg_sym_matmul_big, alloc_leg_sym_matmul_big2
+      private :: alloc_leg_sym_matmul_big, alloc_leg_sym_rocblas
 !
 ! -----------------------------------------------------------------------
 !
