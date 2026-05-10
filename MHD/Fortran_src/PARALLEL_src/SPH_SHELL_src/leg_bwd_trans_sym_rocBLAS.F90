@@ -128,20 +128,20 @@
 !   even l-m
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+11)
         call ROCm_matmul_bwd_leg_trans                                  &
-     &     (iflag_matmul, nl_rtm, nkrs, n_jk_e,                         &
+     &     (iflag_INTRINSIC, nl_rtm, nkrs, n_jk_e,                         &
      &      WK_l_bsm%Ps_tj(1,jst+1), WK_l_bsm%pol_e(1,1),               &
      &      WK_l_bsm%symp_r(1,1), rocBLAS_WK)
         call ROCm_matmul_bwd_leg_trans                                  &
-     &     (iflag_matmul, nl_rtm, nkrt, n_jk_e,                         &
+     &     (iflag_INTRINSIC, nl_rtm, nkrt, n_jk_e,                         &
      &      WK_l_bsm%dPsdt_tj(1,jst+1), WK_l_bsm%tor_e(1,1),            &
      &      WK_l_bsm%asmp_p(1,1), rocBLAS_WK)
 !   odd l-m
         call ROCm_matmul_bwd_leg_trans                                  &
-     &     (iflag_matmul, nl_rtm, nkrs, n_jk_o,                         &
+     &     (iflag_INTRINSIC, nl_rtm, nkrs, n_jk_o,                         &
      &      WK_l_bsm%Ps_tj(1,jst_h), WK_l_bsm%pol_o(1,1),               &
      &      WK_l_bsm%asmp_r(1,1), rocBLAS_WK)
         call ROCm_matmul_bwd_leg_trans                                  &
-     &     (iflag_matmul, nl_rtm, nkrt, n_jk_o,                         &
+     &     (iflag_INTRINSIC, nl_rtm, nkrt, n_jk_o,                         &
      &      WK_l_bsm%dPsdt_tj(1,jst_h), WK_l_bsm%tor_o(1,1),            &
      &      WK_l_bsm%symp_p(1,1), rocBLAS_WK)
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+11)
@@ -161,6 +161,7 @@
      &      ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+12)
       end do
+      write(*,*) 'leg_backward_trans_rocBLAS end'
 !
       end subroutine leg_backward_trans_rocBLAS
 !
