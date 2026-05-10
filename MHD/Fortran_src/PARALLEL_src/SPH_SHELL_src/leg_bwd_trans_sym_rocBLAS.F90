@@ -39,7 +39,6 @@
 !
       use m_precision
       use m_constants
-      use m_machine_parameter
 !
       use m_work_time
       use calypso_mpi
@@ -87,12 +86,11 @@
       type(leg_trns_bsym_mul_work), intent(inout) :: WK_l_bsm
       type(rocBLAS_work), intent(inout) :: rocBLAS_WK
 !
-      integer(kind = kint) :: ip
       integer(kind = kint) :: nl_rtm, mp_rlm
-      integer(kind = kint) :: kst(np_smp),  nkr(np_smp)
-      integer(kind = kint) :: nkrs(np_smp),  nkrt(np_smp)
-      integer(kind = kint) :: jst(np_smp), jst_h(np_smp)
-      integer(kind = kint) :: n_jk_e(np_smp), n_jk_o(np_smp)
+      integer(kind = kint) :: nkr
+      integer(kind = kint) :: nkrs,  nkrt
+      integer(kind = kint) :: jst, jst_h
+      integer(kind = kint) :: n_jk_e, n_jk_o
 !
 !
       if(ncomp .le. 0) return
@@ -101,75 +99,67 @@
 !$omp end parallel workshare
 !
       nl_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
-      do ip = 1, np_smp
-        kst(ip) = sph_rlm%istack_rlm_kr_smp(ip-1)
-        nkr(ip) = sph_rlm%istack_rlm_kr_smp(ip)                         &
-     &           - sph_rlm%istack_rlm_kr_smp(ip-1)
-        nkrs(ip) = ncomp*nkr(ip)
-        nkrt(ip) = 2*nvector*nkr(ip)
+      nkr =  sph_rlm%nidx_rlm(1)
+      nkrs = ncomp*nkr
+      nkrt = 2*nvector*nkr
+      do mp_rlm = 1, sph_rtm%nidx_rtm(3)
+        jst = idx_trns%lstack_rlm(mp_rlm-1)
+        jst_h = idx_trns%lstack_even_rlm(mp_rlm) + 1
+        n_jk_e = idx_trns%lstack_even_rlm(mp_rlm)                       &
+     &          - idx_trns%lstack_rlm(mp_rlm-1)
+        n_jk_o = idx_trns%lstack_rlm(mp_rlm)                            &
+     &          - idx_trns%lstack_even_rlm(mp_rlm)
 !
-        do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-          jst(ip) = idx_trns%lstack_rlm(mp_rlm-1)
-          jst_h(ip) = idx_trns%lstack_even_rlm(mp_rlm) + 1
-          n_jk_e(ip) = idx_trns%lstack_even_rlm(mp_rlm)                 &
-     &                - idx_trns%lstack_rlm(mp_rlm-1)
-          n_jk_o(ip) = idx_trns%lstack_rlm(mp_rlm)                      &
-     &                - idx_trns%lstack_even_rlm(mp_rlm)
-!
-          if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+9)
-          call set_sp_rlm_vec_sym_matmul_big                            &
-     &      (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%istep_rlm,     &
-     &       sph_rlm%idx_gl_1d_rlm_j, sph_rlm%ar_1d_rlm, leg%g_sph_rlm, &
-     &       kst(ip), nkr(ip), jst(ip), n_jk_e(ip), n_jk_o(ip),         &
-     &       ncomp, nvector, comm_rlm%irev_sr, n_WR, WR,                &
-     &       WK_l_bsm%pol_e(1,ip), WK_l_bsm%tor_e(1,ip),                &
-     &       WK_l_bsm%pol_o(1,ip), WK_l_bsm%tor_o(1,ip) )
-          call set_sp_rlm_scl_sym_matmul_big                            &
-     &       (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%istep_rlm,    &
-     &        kst(ip), nkr(ip), jst(ip), n_jk_e(ip), n_jk_o(ip),        &
-     &        ncomp, nvector, nscalar, comm_rlm%irev_sr, n_WR, WR,      &
-     &        WK_l_bsm%pol_e(1,ip), WK_l_bsm%pol_o(1,ip) )
-          if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+9)
+        if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+9)
+        call set_sp_rlm_vec_sym_matmul_big                              &
+     &     (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%istep_rlm,      &
+     &      sph_rlm%idx_gl_1d_rlm_j, sph_rlm%ar_1d_rlm, leg%g_sph_rlm,  &
+     &      izero, nkr, jst, n_jk_e, n_jk_o,                            &
+     &      ncomp, nvector, comm_rlm%irev_sr, n_WR, WR,                 &
+     &      WK_l_bsm%pol_e(1,1), WK_l_bsm%tor_e(1,1),                   &
+     &      WK_l_bsm%pol_o(1,1), WK_l_bsm%tor_o(1,1))
+        call set_sp_rlm_scl_sym_matmul_big                              &
+     &     (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%istep_rlm,      &
+     &      izero, nkr, jst, n_jk_e, n_jk_o,                            &
+     &      ncomp, nvector, nscalar, comm_rlm%irev_sr, n_WR, WR,        &
+     &      WK_l_bsm%pol_e(1,1), WK_l_bsm%pol_o(1,1))
+        if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+9)
 !
 !   even l-m
-          if(iflag_SDT_time)                                            &
-     &        call start_elapsed_time(ist_elapsed_SDT+11)
-          call ROCm_matmul_bwd_leg_trans                                &
-     &       (iflag_matmul, nl_rtm, nkrs(ip), n_jk_e(ip),               &
-     &        WK_l_bsm%Ps_tj(1,jst(ip)+1), WK_l_bsm%pol_e(1,ip),        &
-     &        WK_l_bsm%symp_r(1,ip), rocBLAS_WK)
-          call ROCm_matmul_bwd_leg_trans                                &
-     &       (iflag_matmul, nl_rtm, nkrt(ip), n_jk_e(ip),               &
-     &        WK_l_bsm%dPsdt_tj(1,jst(ip)+1), WK_l_bsm%tor_e(1,ip),     &
-     &        WK_l_bsm%asmp_p(1,ip), rocBLAS_WK)
+        if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+11)
+        call ROCm_matmul_bwd_leg_trans                                  &
+     &     (iflag_matmul, nl_rtm, nkrs, n_jk_e,                         &
+     &      WK_l_bsm%Ps_tj(1,jst+1), WK_l_bsm%pol_e(1,1),               &
+     &      WK_l_bsm%symp_r(1,1), rocBLAS_WK)
+        call ROCm_matmul_bwd_leg_trans                                  &
+     &     (iflag_matmul, nl_rtm, nkrt, n_jk_e,                         &
+     &      WK_l_bsm%dPsdt_tj(1,jst+1), WK_l_bsm%tor_e(1,1),            &
+     &      WK_l_bsm%asmp_p(1,1), rocBLAS_WK)
 !   odd l-m
-          call ROCm_matmul_bwd_leg_trans                                &
-     &       (iflag_matmul, nl_rtm, nkrs(ip), n_jk_o(ip),               &
-     &        WK_l_bsm%Ps_tj(1,jst_h(ip)), WK_l_bsm%pol_o(1,ip),        &
-     &        WK_l_bsm%asmp_r(1,ip), rocBLAS_WK)
-          call ROCm_matmul_bwd_leg_trans                                &
-     &       (iflag_matmul, nl_rtm, nkrt(ip), n_jk_o(ip),               &
-     &        WK_l_bsm%dPsdt_tj(1,jst_h(ip)), WK_l_bsm%tor_o(1,ip),     &
-     &        WK_l_bsm%symp_p(1,ip), rocBLAS_WK)
-          if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+11)
+        call ROCm_matmul_bwd_leg_trans                                  &
+     &     (iflag_matmul, nl_rtm, nkrs, n_jk_o,                         &
+     &      WK_l_bsm%Ps_tj(1,jst_h), WK_l_bsm%pol_o(1,1),               &
+     &      WK_l_bsm%asmp_r(1,1), rocBLAS_WK)
+        call ROCm_matmul_bwd_leg_trans                                  &
+     &     (iflag_matmul, nl_rtm, nkrt, n_jk_o,                         &
+     &      WK_l_bsm%dPsdt_tj(1,jst_h), WK_l_bsm%tor_o(1,1),            &
+     &      WK_l_bsm%symp_p(1,1), rocBLAS_WK)
+        if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+11)
 !
-          if(iflag_SDT_time)                                            &
-     &        call start_elapsed_time(ist_elapsed_SDT+12)
-          call cal_vr_rtm_vec_sym_matmul_big                            &
-     &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
-     &        sph_rlm%nidx_rlm, leg%asin_t_rtm, kst(ip), nkr(ip),       &
-     &        mp_rlm, idx_trns%mn_rlm(mp_rlm), nl_rtm,                  &
-     &        WK_l_bsm%symp_r(1,ip), WK_l_bsm%asmp_p(1,ip),             &
-     &        WK_l_bsm%asmp_r(1,ip), WK_l_bsm%symp_p(1,ip),             &
-     &        ncomp, nvector, comm_rtm%irev_sr, n_WS, WS)
-          call cal_vr_rtm_scl_sym_matmul_big                            &
-     &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
-     &        sph_rlm%nidx_rlm, kst(ip), nkr(ip), mp_rlm, nl_rtm,       &
-     &        WK_l_bsm%symp_r(1,ip), WK_l_bsm%asmp_r(1,ip),             &
-     &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
-          if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+12)
-!
-        end do
+        if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+12)
+        call cal_vr_rtm_vec_sym_matmul_big                              &
+     &     (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,      &
+     &      sph_rlm%nidx_rlm, leg%asin_t_rtm, izero, nkr,               &
+     &      mp_rlm, idx_trns%mn_rlm(mp_rlm), nl_rtm,                    &
+     &      WK_l_bsm%symp_r(1,1), WK_l_bsm%asmp_p(1,1),                 &
+     &      WK_l_bsm%asmp_r(1,1), WK_l_bsm%symp_p(1,1),                 &
+     &      ncomp, nvector, comm_rtm%irev_sr, n_WS, WS)
+        call cal_vr_rtm_scl_sym_matmul_big                              &
+     &     (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,      &
+     &      sph_rlm%nidx_rlm, izero, nkr, mp_rlm, nl_rtm,               &
+     &      WK_l_bsm%symp_r(1,1), WK_l_bsm%asmp_r(1,1),                 &
+     &      ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
+        if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+12)
       end do
 !
       end subroutine leg_backward_trans_rocBLAS

@@ -126,7 +126,7 @@
      &      idx_trns, nvector, nscalar, WK_leg%WK_l_sml)
       else if(WK_leg%id_legendre .eq. iflag_leg_sym_matmul_big          &
      &   .or. WK_leg%id_legendre .eq. iflag_leg_sym_dgemm_big) then
-        call init_leg_sym_matmul_big(sph_rtm, sph_rlm, leg,             &
+        call init_leg_sym_matmul_big(np_smp, sph_rtm, sph_rlm, leg,     &
      &      idx_trns, nvector, nscalar, WK_leg%WK_l_bsm)
       else if(WK_leg%id_legendre .eq. iflag_leg_sym_spin_loop) then
         call init_legendre_symmetry                                     &
@@ -150,13 +150,13 @@
       else if(WK_leg%id_legendre .eq. iflag_leg_OMP_target              &
      &   .or. WK_leg%id_legendre .eq. iflag_leg_rocBLAS                 &
      &   .or. WK_leg%id_legendre .eq. iflag_leg_OMP_rocBLAS) then
-        call init_leg_sym_matmul_big(sph_rtm, sph_rlm, leg,             &
+        call init_leg_sym_rocblas(sph_rtm, sph_rlm, leg,                &
      &      idx_trns, nvector, nscalar, WK_leg%WK_l_bsm)
         call calypso_init_rocBLAS(WK_leg%rocBLAS_WK%handle)
         if(WK_leg%id_legendre .eq. iflag_leg_rocBLAS) then
           call max_size_rocBLAS_leg_trns                                &
-     &         (np_smp, ncomp, nvector, ncomp, nvector,                 &
-     &          sph_rtm, sph_rlm, idx_trns, WK_leg%rocBLAS_WK)
+     &       (ncomp, nvector, ncomp, nvector,                           &
+     &        sph_rtm, sph_rlm, idx_trns, WK_leg%rocBLAS_WK)
           call alloc_rocBLAS_dgemm_work(WK_leg%rocBLAS_WK%MaxAbytes,    &
      &        WK_leg%rocBLAS_WK%MaxBbytes, WK_leg%rocBLAS_WK%MaxCbytes, &
      &        WK_leg%rocBLAS_WK%A_cptr, WK_leg%rocBLAS_WK%B_cptr,       &
