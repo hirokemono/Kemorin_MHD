@@ -74,6 +74,7 @@
       integer(kind = kint) :: nl_rtm, mp_rlm
       integer(kind = kint) :: nkr, nkrs, nkrt
       integer(kind = kint) :: n_jk_e, n_jk_o, n_jk
+      integer(kind = kint) :: ncomp_max, nvect_max
 !
 !
       ncomp_max = max(ncomp_fwd, ncomp_bwd)
