@@ -98,10 +98,18 @@
 !
         rocBLAS_WK%MaxAbytes                                            &
      &         = max(rocBLAS_WK%MaxAbytes, (nkr * nl_rtm))
+        rocBLAS_WK%MaxAbytes                                            &
+     &         = max(rocBLAS_WK%MaxAbytes, (nl_rtm * n_jk))
+!
         rocBLAS_WK%MaxBbytes                                            &
      &         = max(rocBLAS_WK%MaxBbytes, (nl_rtm * n_jk))
+        rocBLAS_WK%MaxBbytes                                            &
+     &         = max(rocBLAS_WK%MaxBbytes, (n_jk * nkr))
+!
         rocBLAS_WK%MaxCbytes                                            &
      &         = max(rocBLAS_WK%MaxCbytes, (nkr * n_jk))
+        rocBLAS_WK%MaxCbytes                                            &
+     &         = max(rocBLAS_WK%MaxCbytes, (nl_rtm * nkr))
       end do
 !
       rocBLAS_WK%MaxAbytes = kreal * rocBLAS_WK%MaxAbytes
