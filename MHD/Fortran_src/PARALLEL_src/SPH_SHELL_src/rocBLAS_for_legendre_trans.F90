@@ -359,7 +359,7 @@
 !
 !
       if(n_jk*nkr .eq. 0) return
-      coef_c =   real(coef,kind=coef_c)
+      coef_c =   real(coef,kind=KIND(coef_c))
       nkr_c =    int(nkr,   kind=KIND(nkr_c))
       n_jk_c =   int(n_jk,  kind=KIND(n_jk_c))
       nl_rtm_c = int(nl_rtm,kind=KIND(nl_rtm_c))
@@ -421,7 +421,7 @@
 !
 !
       if(nkr .eq. 0) return
-      coef_c =   real(coef,kind=coef_c)
+      coef_c =   real(coef,kind=KIND(coef_c))
       nl_rtm_c = int(nl_rtm,kind=KIND(nl_rtm_c))
       nkr_c =    int(nkr,   kind=KIND(nkr_c))
       n_jk_c =   int(n_jk,  kind=KIND(n_jk_c))
