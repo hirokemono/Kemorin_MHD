@@ -111,13 +111,14 @@
       real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
       type(rocBLAS_work), intent(inout) :: rocBLAS_WK
 !
-      integer :: n_jk4, nkr4, nl_rtm4
+      integer(c_int) :: n_jk_c, nkr_c, nl_rtm_c
+      real(c_double), parameter :: one_c = 1.0d0, zero_c = 0.0d0
 !
 !
       if(n_jk*nkr .eq. 0) return
-      nkr4 =    int(nkr)
-      n_jk4 =   int(n_jk)
-      nl_rtm4 = int(nl_rtm)
+      nkr_c =    int(nkr,   kind=KIND(nkr_c))
+      n_jk_c =   int(n_jk,  kind=KIND(n_jk_c))
+      nl_rtm_c = int(nl_rtm,kind=KIND(nl_rtm_c))
       rocBLAS_WK%Nabytes = kreal * nkr *    nl_rtm
       rocBLAS_WK%Nbbytes = kreal * nl_rtm * n_jk
       rocBLAS_WK%Ncbytes = kreal * nkr *    n_jk
@@ -127,19 +128,19 @@
 !
 #ifdef _AMD_ROCM_
       else if(iflag_matmul .eq. iflag_OMP_offload) then
-        call calypso_OpenMP_target_DGEMM(nkr4, n_jk4, nl_rtm4,          &
-     &      one, V_kl, nkr4, P_lj, nl_rtm4, zero, S_kj, nkr4)
+        call calypso_OpenMP_target_DGEMM(nkr_c, n_jk_c, nl_rtm_c,       &
+     &      one_c, V_kl, nkr_c, P_lj, nl_rtm_c, zero_c, S_kj, nkr_c)
       else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
-        write(*,*) 'calypso_OpenMP_rocBLAS_dgemm forward'
         call calypso_OpenMP_rocBLAS_dgemm                               &
      &     (rocBLAS_WK%handle, rocBLAS_WK%transa, rocBLAS_WK%transb,    &
-     &      nkr4, n_jk4, nl_rtm4, one, V_kl, nkr4, P_lj, nl_rtm4,       &
-     &      zero, S_kj, nkr4)
+     &      nkr_c, n_jk_c, nl_rtm_c, one_c,                             &
+     &      V_kl, nkr_c, P_lj, nl_rtm_c, zero_c, S_kj, nkr_c)
       else if(iflag_matmul .eq. iflag_rocBLAS) then
         call calypso_hip_rocBLAS_dgemm(rocBLAS_WK%handle,               &
      &      rocBLAS_WK%Nabytes, rocBLAS_WK%Nbbytes, rocBLAS_WK%Ncbytes, &
-     &      rocBLAS_WK%transa, rocBLAS_WK%transb, nkr4, n_jk4, nl_rtm4, &
-     &      one, V_kl, nkr4, P_lj, nl_rtm4, zero, S_kj, nkr4,           &
+     &      rocBLAS_WK%transa, rocBLAS_WK%transb,                       &
+     &      nkr_c, n_jk_c, nl_rtm_c, one_c,                             &
+     &      V_kl, nkr_c, P_lj, nl_rtm_c, zero_c, S_kj, nkr_c,           &
      &      rocBLAS_WK%A_cptr, rocBLAS_WK%B_cptr, rocBLAS_WK%C_cptr)
 #endif
       else
@@ -168,13 +169,14 @@
       real(kind = kreal), intent(inout) :: V_lk(nl_rtm,nkr)
       type(rocBLAS_work), intent(inout) :: rocBLAS_WK
 !
-      integer :: n_jk4, nkr4, nl_rtm4
+      integer(c_int) :: n_jk_c, nkr_c, nl_rtm_c
+      real(c_double), parameter :: one_c = 1.0d0, zero_c = 0.0d0
 !
 !
       if(nkr .eq. 0) return
-      nl_rtm4 = int(nl_rtm)
-      nkr4 =    int(nkr)
-      n_jk4 =   int(n_jk)
+      nl_rtm_c = int(nl_rtm,kind=KIND(nl_rtm_c))
+      nkr_c =    int(nkr,   kind=KIND(nkr_c))
+      n_jk_c =   int(n_jk,  kind=KIND(n_jk_c))
       rocBLAS_WK%Nabytes = kreal * nl_rtm * n_jk
       rocBLAS_WK%Nbbytes = kreal * n_jk *   nkr
       rocBLAS_WK%Ncbytes = kreal * nl_rtm * nkr
@@ -186,19 +188,20 @@
 !
 #ifdef _AMD_ROCM_
       else if(iflag_matmul .eq. iflag_OMP_offload) then
-        call calypso_OpenMP_target_DGEMM(nl_rtm4, nkr4, n_jk4,          &
-     &      one, P_lj, nl_rtm4, S_jk, n_jk4, zero, V_lk, nl_rtm4)
+        call calypso_OpenMP_target_DGEMM                                &
+     &     (nl_rtm_c, nkr_c, n_jk_c, one_c,                             &
+     &      P_lj, nl_rtm_c, S_jk, n_jk_c, zero_c, V_lk, nl_rtm_c)
       else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
-        write(*,*) 'calypso_OpenMP_rocBLAS_dgemm backward'
         call calypso_OpenMP_rocBLAS_dgemm                               &
      &     (rocBLAS_WK%handle, rocBLAS_WK%transa, rocBLAS_WK%transb,    &
-     &      nl_rtm4, nkr4, n_jk4, one, P_lj, nl_rtm4, S_jk, n_jk4,      &
-     &      zero, V_lk, nl_rtm4)
+     &      nl_rtm_c, nkr_c, n_jk_c, one_c,                             &
+     &      P_lj, nl_rtm_c, S_jk, n_jk_c, zero_c, V_lk, nl_rtm_c)
       else if(iflag_matmul .eq. iflag_rocBLAS) then
         call calypso_hip_rocBLAS_dgemm(rocBLAS_WK%handle,               &
      &      rocBLAS_WK%Nabytes, rocBLAS_WK%Nbbytes, rocBLAS_WK%Ncbytes, &
-     &      rocBLAS_WK%transa, rocBLAS_WK%transb, nl_rtm4, nkr4, n_jk4, &
-     &      one, P_lj, nl_rtm4, S_jk, n_jk4, zero, V_lk, nl_rtm4,       &
+     &      rocBLAS_WK%transa, rocBLAS_WK%transb,                       &
+     &      nl_rtm_c, nkr_c, n_jk_c, one_c,                             &
+     &      P_lj, nl_rtm_c, S_jk, n_jk_c, zero_c, V_lk, nl_rtm_c,       &
      &      rocBLAS_WK%A_cptr, rocBLAS_WK%B_cptr, rocBLAS_WK%C_cptr)
 #endif
       else
@@ -228,13 +231,14 @@
       real(kind = kreal), intent(inout) :: S_jk(n_jk,nkr)
       type(rocBLAS_work), intent(inout) :: rocBLAS_WK
 !
-      integer :: n_jk4, nkr4, nl_rtm4
+      integer(c_int) :: n_jk_c, nkr_c, nl_rtm_c
+      real(c_double), parameter :: one_c = 1.0d0, zero_c = 0.0d0
 !
 !
       if(n_jk*nkr .eq. 0) return
-      nkr4 =    int(nkr)
-      n_jk4 =   int(n_jk)
-      nl_rtm4 = int(nl_rtm)
+      nkr_c =    int(nkr,   kind=KIND(nkr_c))
+      n_jk_c =   int(n_jk,  kind=KIND(n_jk_c))
+      nl_rtm_c = int(nl_rtm,kind=KIND(nl_rtm_c))
       rocBLAS_WK%Nabytes = kreal * n_jk *   nl_rtm
       rocBLAS_WK%Nbbytes = kreal * nl_rtm * nkr
       rocBLAS_WK%Ncbytes = kreal * n_jk *   nkr
@@ -244,18 +248,20 @@
 !
 #ifdef _AMD_ROCM_
       else if(iflag_matmul .eq. iflag_OMP_offload) then
-        call calypso_OpenMP_target_DGEMM(n_jk4, nkr4, nl_rtm4,          &
-     &      one, P_jl, n_jk4, V_lk, nl_rtm4, zero, S_jk, n_jk4)
+        call calypso_OpenMP_target_DGEMM                                &
+     &     (n_jk_c, nkr_c, nl_rtm_c, one_c,                             &
+     &      P_jl, n_jk_c, V_lk, nl_rtm_c, zero_c, S_jk, n_jk_c)
       else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
         call calypso_OpenMP_rocBLAS_dgemm                               &
      &     (rocBLAS_WK%handle, rocBLAS_WK%transa, rocBLAS_WK%transb,    &
-     &      n_jk4, nkr4, nl_rtm4, one, P_jl, n_jk4, V_lk, nl_rtm4,      &
-     &      zero, S_jk, n_jk4)
+     &      n_jk_c, nkr_c, nl_rtm_c, one_c,                             &
+     &      P_jl, n_jk_c, V_lk, nl_rtm_c, zero_c, S_jk, n_jk_c)
       else if(iflag_matmul .eq. iflag_rocBLAS) then
         call calypso_hip_rocBLAS_dgemm(rocBLAS_WK%handle,               &
      &      rocBLAS_WK%Nabytes, rocBLAS_WK%Nbbytes, rocBLAS_WK%Ncbytes, &
-     &      rocBLAS_WK%transa, rocBLAS_WK%transb, n_jk4, nkr4, nl_rtm4, &
-     &      one, P_jl, n_jk4, V_lk, nl_rtm4, zero, S_jk, n_jk4,         &
+     &      rocBLAS_WK%transa, rocBLAS_WK%transb,                       &
+     &      n_jk_c, nkr_c, nl_rtm_c, one_c,                             &
+     &      P_jl, n_jk_c, V_lk, nl_rtm_c, zero_c, S_jk, n_jk_c,         &
      &      rocBLAS_WK%A_cptr, rocBLAS_WK%B_cptr, rocBLAS_WK%C_cptr)
 #endif
       else
@@ -284,13 +290,14 @@
       real(kind = kreal), intent(inout) :: V_kl(nkr,nl_rtm)
       type(rocBLAS_work), intent(inout) :: rocBLAS_WK
 !
-      integer :: n_jk4, nkr4, nl_rtm4
+      integer(c_int) :: n_jk_c, nkr_c, nl_rtm_c
+      real(c_double), parameter :: one_c = 1.0d0, zero_c = 0.0d0
 !
 !
       if(nkr .eq. 0) return
-      nl_rtm4 = int(nl_rtm)
-      nkr4 =    int(nkr)
-      n_jk4 =   int(n_jk)
+      nl_rtm_c = int(nl_rtm,kind=KIND(nl_rtm_c))
+      nkr_c =    int(nkr,   kind=KIND(nkr_c))
+      n_jk_c =   int(n_jk,  kind=KIND(n_jk_c))
       rocBLAS_WK%Nabytes = kreal * nkr *  n_jk
       rocBLAS_WK%Nbbytes = kreal * n_jk * nl_rtm
       rocBLAS_WK%Ncbytes = kreal * nkr *  nl_rtm
@@ -302,18 +309,20 @@
 !
 #ifdef _AMD_ROCM_
       else if(iflag_matmul .eq. iflag_OMP_offload) then
-        call calypso_OpenMP_target_DGEMM(nkr4, nl_rtm4, n_jk4,          &
-     &      one, S_kj, nkr4, P_jl, n_jk4, zero, V_kl, nkr4)
+        call calypso_OpenMP_target_DGEMM                                &
+     &     (nkr_c, nl_rtm_c, n_jk_c, one_c,                             &
+     &      S_kj, nkr_c, P_jl, n_jk_c, zero_c, V_kl, nkr_c)
       else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
         call calypso_OpenMP_rocBLAS_dgemm                               &
      &     (rocBLAS_WK%handle, rocBLAS_WK%transa, rocBLAS_WK%transb,    &
-     &      nkr4, nl_rtm4, n_jk4, one, S_kj, nkr4, P_jl, n_jk4,         &
-     &      zero, V_kl, nkr4)
+     &      nkr_c, nl_rtm_c, n_jk_c, one_c,                             &
+     &      S_kj, nkr_c, P_jl, n_jk_c, zero_c, V_kl, nkr_c)
       else if(iflag_matmul .eq. iflag_rocBLAS) then
         call calypso_hip_rocBLAS_dgemm(rocBLAS_WK%handle,               &
      &      rocBLAS_WK%Nabytes, rocBLAS_WK%Nbbytes, rocBLAS_WK%Ncbytes, &
-     &      rocBLAS_WK%transa, rocBLAS_WK%transb, nkr4, nl_rtm4, n_jk4, &
-     &      one, S_kj, nkr4, P_jl, n_jk4, zero, V_kl, nkr4,             &
+     &      rocBLAS_WK%transa, rocBLAS_WK%transb,                       &
+     &      nkr_c, nl_rtm_c, n_jk_c, one_c,                             &
+     &      S_kj, nkr_c, P_jl, n_jk_c, zero_c, V_kl, nkr_c,             &
      &      rocBLAS_WK%A_cptr, rocBLAS_WK%B_cptr, rocBLAS_WK%C_cptr)
 #endif
       else
@@ -344,13 +353,16 @@
       real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
       type(rocBLAS_work), intent(inout) :: rocBLAS_WK
 !
-      integer :: n_jk4, nkr4, nl_rtm4
+      integer(c_int) :: n_jk_c, nkr_c, nl_rtm_c
+      real(c_double), parameter :: one_c = 1.0d0
+      real(c_double) :: coef_c
 !
 !
       if(n_jk*nkr .eq. 0) return
-      nkr4 =    int(nkr)
-      n_jk4 =   int(n_jk)
-      nl_rtm4 = int(nl_rtm)
+      coef_c =   real(coef,kind=coef_c)
+      nkr_c =    int(nkr,   kind=KIND(nkr_c))
+      n_jk_c =   int(n_jk,  kind=KIND(n_jk_c))
+      nl_rtm_c = int(nl_rtm,kind=KIND(nl_rtm_c))
       rocBLAS_WK%Nabytes = kreal * nkr *    nl_rtm
       rocBLAS_WK%Nbbytes = kreal * nl_rtm * n_jk
       rocBLAS_WK%Ncbytes = kreal * nkr *    n_jk
@@ -361,18 +373,19 @@
 !
 #ifdef _AMD_ROCM_
       else if(iflag_matmul .eq. iflag_OMP_offload) then
-        call calypso_OpenMP_target_DGEMM(nkr4, n_jk4, nl_rtm4,          &
-     &      one, V_kl, nkr4, P_lj, nl_rtm4, coef, S_kj, nkr4)
+        call calypso_OpenMP_target_DGEMM(nkr_c, n_jk_c, nl_rtm_c,       &
+     &      one_c, V_kl, nkr_c, P_lj, nl_rtm_c, coef_c, S_kj, nkr_c)
       else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
         call calypso_OpenMP_rocBLAS_dgemm                               &
      &     (rocBLAS_WK%handle, rocBLAS_WK%transa, rocBLAS_WK%transb,    &
-     &      nkr4, n_jk4, nl_rtm4, one, V_kl, nkr4, P_lj, nl_rtm4,       &
-     &      coef, S_kj, nkr4)
+     &      nkr_c, n_jk_c, nl_rtm_c, one_c,                             &
+     &      V_kl, nkr_c, P_lj, nl_rtm_c, coef_c, S_kj, nkr_c)
       else if(iflag_matmul .eq. iflag_rocBLAS) then
         call calypso_hip_rocBLAS_dgemm(rocBLAS_WK%handle,               &
      &      rocBLAS_WK%Nabytes, rocBLAS_WK%Nbbytes, rocBLAS_WK%Ncbytes, &
-     &      rocBLAS_WK%transa, rocBLAS_WK%transb, nkr4, n_jk4, nl_rtm4, &
-     &      one, V_kl, nkr4, P_lj, nl_rtm4, coef, S_kj, nkr4,           &
+     &      rocBLAS_WK%transa, rocBLAS_WK%transb,                       &
+     &      nkr_c, n_jk_c, nl_rtm_c, one_c,                             &
+     &      V_kl, nkr_c, P_lj, nl_rtm_c, coef_c, S_kj, nkr_c,           &
      &      rocBLAS_WK%A_cptr, rocBLAS_WK%B_cptr, rocBLAS_WK%C_cptr)
 #endif
       else
@@ -402,13 +415,16 @@
       real(kind = kreal), intent(inout) :: V_lk(nl_rtm,nkr)
       type(rocBLAS_work), intent(inout) :: rocBLAS_WK
 !
-      integer :: n_jk4, nkr4, nl_rtm4
+      integer(c_int) :: n_jk_c, nkr_c, nl_rtm_c
+      real(c_double), parameter :: one_c = 1.0d0
+      real(c_double) :: coef_c
 !
 !
       if(nkr .eq. 0) return
-      nl_rtm4 = int(nl_rtm)
-      nkr4 =    int(nkr)
-      n_jk4 =   int(n_jk)
+      coef_c =   real(coef,kind=coef_c)
+      nl_rtm_c = int(nl_rtm,kind=KIND(nl_rtm_c))
+      nkr_c =    int(nkr,   kind=KIND(nkr_c))
+      n_jk_c =   int(n_jk,  kind=KIND(n_jk_c))
       rocBLAS_WK%Nabytes = kreal * nl_rtm * n_jk
       rocBLAS_WK%Nbbytes = kreal * n_jk *   nkr
       rocBLAS_WK%Ncbytes = kreal * nl_rtm * nkr
@@ -420,18 +436,20 @@
 !
 #ifdef _AMD_ROCM_
       else if(iflag_matmul .eq. iflag_OMP_offload) then
-        call calypso_OpenMP_target_DGEMM(nl_rtm4, nkr4, n_jk4,          &
-     &      one, P_lj, nl_rtm4, S_jk, n_jk4, coef, V_lk, nl_rtm4)
+        call calypso_OpenMP_target_DGEMM                                &
+     &     (nl_rtm_c, nkr_c, n_jk_c, one_c,                             &
+     &      P_lj, nl_rtm_c, S_jk, n_jk_c, coef_c, V_lk, nl_rtm_c)
       else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
         call calypso_OpenMP_rocBLAS_dgemm                               &
      &     (rocBLAS_WK%handle, rocBLAS_WK%transa, rocBLAS_WK%transb,    &
-     &      nl_rtm4, nkr4, n_jk4, one, P_lj, nl_rtm4, S_jk, n_jk4,      &
-     &      coef, V_lk, nl_rtm4)
+     &      nl_rtm_c, nkr_c, n_jk_c, one_c,                             &
+     &      P_lj, nl_rtm_c, S_jk, n_jk_c, coef_c, V_lk, nl_rtm_c)
       else if(iflag_matmul .eq. iflag_rocBLAS) then
         call calypso_hip_rocBLAS_dgemm(rocBLAS_WK%handle,               &
      &      rocBLAS_WK%Nabytes, rocBLAS_WK%Nbbytes, rocBLAS_WK%Ncbytes, &
-     &      rocBLAS_WK%transa, rocBLAS_WK%transb, nl_rtm4, nkr4, n_jk4, &
-     &      one, P_lj, nl_rtm4, S_jk, n_jk4, coef, V_lk, nl_rtm4,       &
+     &      rocBLAS_WK%transa, rocBLAS_WK%transb,                       &
+     &      nl_rtm_c, nkr_c, n_jk_c, one_c,                             &
+     &      P_lj, nl_rtm_c, S_jk, n_jk_c, coef_c, V_lk, nl_rtm_c,       &
      &      rocBLAS_WK%A_cptr, rocBLAS_WK%B_cptr, rocBLAS_WK%C_cptr)
 #endif
       else

@@ -9,8 +9,8 @@
 !!@verbatim
 !!      subroutine calypso_OpenMP_target_DGEMM                          &
 !!     &         (m, n, k, alpha, A, lda, B, ldb, beta, C, ldc)
-!!        integer(kind = kint), intent(in) :: m, n, k
-!!        integer(kind = kint), intent(in) :: lda, ldb, ldc
+!!        integer(c_int), intent(in) :: m, n, k
+!!        integer(c_int), intent(in) :: lda, ldb, ldc
 !!        real(kind = kreal), intent(in) :: alpha, beta
 !!        real(kind = kreal), intent(in) :: A(lda,k)
 !!        real(kind = kreal), intent(in) :: B(ldb,n)
@@ -68,8 +68,8 @@
       subroutine calypso_OpenMP_target_DGEMM                            &
      &         (m, n, k, alpha, A, lda, B, ldb, beta, C, ldc)
 !
-      integer(kind = kint), intent(in) :: m, n, k
-      integer(kind = kint), intent(in) :: lda, ldb, ldc
+      integer(c_int), intent(in) :: m, n, k
+      integer(c_int), intent(in) :: lda, ldb, ldc
       real(kind = kreal), intent(in) :: alpha, beta
       real(kind = kreal), intent(in) :: A(lda,k)
       real(kind = kreal), intent(in) :: B(ldb,n)
@@ -215,10 +215,13 @@
       type(c_ptr), intent(inout) :: A_cptr, B_cptr, C_cptr
 !
 !Transfer from host to device
+      write(*,*) 'hipMemcpy A_cptr', Nabytes
       call hipCheck(hipMemcpy(A_cptr, c_loc(A_mat(1,1)),                &
      &              Nabytes, hipMemcpyHostToDevice))
+      write(*,*) 'hipMemcpy B_cptr', Nbbytes
       call hipCheck(hipMemcpy(B_cptr, c_loc(B_mat(1,1)),                &
      &              Nbbytes, hipMemcpyHostToDevice))
+      write(*,*) 'hipMemcpy C_cptr', Ncbytes
       call hipCheck(hipMemcpy(C_cptr, c_loc(C_mat(1,1)),                &
      &              Ncbytes, hipMemcpyHostToDevice))
 !
