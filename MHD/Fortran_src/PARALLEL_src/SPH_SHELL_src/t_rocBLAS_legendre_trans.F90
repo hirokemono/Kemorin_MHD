@@ -72,104 +72,43 @@
       type(rocBLAS_work), intent(inout) :: rocBLAS_WK
 !
       integer(kind = kint) :: nl_rtm, mp_rlm
-      integer(kind = kint) :: nkr, nkrs,  nkrt
-      integer(kind = kint) :: n_jk_e, n_jk_o
+      integer(kind = kint) :: nkr, nkrs, nkrt
+      integer(kind = kint) :: n_jk_e, n_jk_o, n_jk
 !
 !
-      rocBLAS_WK%transa = rocblas_operation_none
-      rocBLAS_WK%transb = rocblas_operation_none
+      ncomp_max = max(ncomp_fwd, ncomp_bwd)
+      nvect_max = max(nvect_fwd, nvect_bwd)
+!
+!  Forward transform
+      nl_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
+      nkrs =   ncomp_max * sph_rlm%nidx_rlm(1)
+      nkrt = 2*nvect_max * sph_rlm%nidx_rlm(1)
+      nkr = max(nkrs, nkrt)
 !
       rocBLAS_WK%MaxAbytes = 0
       rocBLAS_WK%MaxBbytes = 0
       rocBLAS_WK%MaxCbytes = 0
+      do mp_rlm = 1, sph_rtm%nidx_rtm(3)
+        n_jk_e = idx_trns%lstack_even_rlm(mp_rlm)                       &
+     &          - idx_trns%lstack_rlm(mp_rlm-1)
+        n_jk_o = idx_trns%lstack_rlm(mp_rlm)                            &
+     &          - idx_trns%lstack_even_rlm(mp_rlm)
+        n_jk = max(n_jk_e, n_jk_o)
 !
-!  Forward transform
-      nl_rtm = (sph_rtm%nidx_rtm(2) + 1)/2
-        nkr =  sph_rlm%nidx_rlm(1)
-        nkrs = ncomp_fwd*nkr
-        nkrt = 2*nvect_fwd*nkr
-!
-        do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-          n_jk_e = idx_trns%lstack_even_rlm(mp_rlm)                     &
-     &            - idx_trns%lstack_rlm(mp_rlm-1)
-          n_jk_o = idx_trns%lstack_rlm(mp_rlm)                          &
-     &            - idx_trns%lstack_even_rlm(mp_rlm)
-!
-!  even l-m
-          rocBLAS_WK%MaxAbytes                                          &
-     &         = max(rocBLAS_WK%MaxAbytes, (nkrs * nl_rtm))
-          rocBLAS_WK%MaxBbytes                                          &
-     &         = max(rocBLAS_WK%MaxBbytes, (nl_rtm * n_jk_e))
-          rocBLAS_WK%MaxCbytes                                          &
-     &         = max(rocBLAS_WK%MaxCbytes, (nkrs * n_jk_e))
-!
-          rocBLAS_WK%MaxAbytes                                          &
-     &         = max(rocBLAS_WK%MaxAbytes, (nkrt * nl_rtm))
-          rocBLAS_WK%MaxBbytes                                          &
-     &         = max(rocBLAS_WK%MaxBbytes, (nl_rtm * n_jk_e))
-          rocBLAS_WK%MaxCbytes                                          &
-     &         = max(rocBLAS_WK%MaxCbytes, (nkrt * n_jk_e))
-!
-!  odd l-m
-          rocBLAS_WK%MaxAbytes                                          &
-     &         = max(rocBLAS_WK%MaxAbytes, (nkrs * nl_rtm))
-          rocBLAS_WK%MaxBbytes                                          &
-     &         = max(rocBLAS_WK%MaxBbytes, (nl_rtm * n_jk_o))
-          rocBLAS_WK%MaxCbytes                                          &
-     &         = max(rocBLAS_WK%MaxCbytes, (nkrs * n_jk_o))
-!
-          rocBLAS_WK%MaxAbytes                                          &
-     &         = max(rocBLAS_WK%MaxAbytes, (nkrt * nl_rtm))
-          rocBLAS_WK%MaxBbytes                                          &
-     &         = max(rocBLAS_WK%MaxBbytes, (nl_rtm * n_jk_o))
-          rocBLAS_WK%MaxCbytes                                          &
-     &         = max(rocBLAS_WK%MaxCbytes, (nkrt * n_jk_o))
-        end do
-
-!  Backward transform
-        nkr =  sph_rlm%nidx_rlm(1)
-        nkrs = ncomp_bwd*nkr
-        nkrt = 2*nvect_bwd*nkr
-!
-        do mp_rlm = 1, sph_rtm%nidx_rtm(3)
-          n_jk_e = idx_trns%lstack_even_rlm(mp_rlm)                     &
-     &                - idx_trns%lstack_rlm(mp_rlm-1)
-          n_jk_o = idx_trns%lstack_rlm(mp_rlm)                          &
-     &                - idx_trns%lstack_even_rlm(mp_rlm)
-!
-!   even l-m
-          rocBLAS_WK%MaxAbytes                                          &
-     &         = max(rocBLAS_WK%MaxAbytes, (nl_rtm * n_jk_e))
-          rocBLAS_WK%MaxBbytes                                          &
-     &         = max(rocBLAS_WK%MaxBbytes, (n_jk_e * nkrs))
-          rocBLAS_WK%MaxCbytes                                          &
-     &         = max(rocBLAS_WK%MaxCbytes, (nl_rtm * nkrs))
-!
-          rocBLAS_WK%MaxAbytes                                          &
-     &         = max(rocBLAS_WK%MaxAbytes, (nl_rtm * n_jk_e))
-          rocBLAS_WK%MaxBbytes                                          &
-     &         = max(rocBLAS_WK%MaxBbytes, (n_jk_e * nkrt))
-          rocBLAS_WK%MaxCbytes                                          &
-     &         = max(rocBLAS_WK%MaxCbytes, (nl_rtm * nkrt))
-!   odd l-m
-          rocBLAS_WK%MaxAbytes                                          &
-     &         = max(rocBLAS_WK%MaxAbytes, (nl_rtm * n_jk_o))
-          rocBLAS_WK%MaxBbytes                                          &
-     &         = max(rocBLAS_WK%MaxBbytes, (n_jk_o * nkrs))
-          rocBLAS_WK%MaxCbytes                                          &
-     &         = max(rocBLAS_WK%MaxCbytes, (nl_rtm * nkrs))
-!
-          rocBLAS_WK%MaxAbytes                                          &
-     &         = max(rocBLAS_WK%MaxAbytes, (nl_rtm * n_jk_o))
-          rocBLAS_WK%MaxBbytes                                          &
-     &         = max(rocBLAS_WK%MaxBbytes, (n_jk_o * nkrt))
-          rocBLAS_WK%MaxCbytes                                          &
-     &         = max(rocBLAS_WK%MaxCbytes, (nl_rtm * nkrt))
-        end do
+        rocBLAS_WK%MaxAbytes                                            &
+     &         = max(rocBLAS_WK%MaxAbytes, (nkr * nl_rtm))
+        rocBLAS_WK%MaxBbytes                                            &
+     &         = max(rocBLAS_WK%MaxBbytes, (nl_rtm * n_jk))
+        rocBLAS_WK%MaxCbytes                                            &
+     &         = max(rocBLAS_WK%MaxCbytes, (nkr * n_jk))
+      end do
 !
       rocBLAS_WK%MaxAbytes = kreal * rocBLAS_WK%MaxAbytes
       rocBLAS_WK%MaxBbytes = kreal * rocBLAS_WK%MaxBbytes
       rocBLAS_WK%MaxCbytes = kreal * rocBLAS_WK%MaxCbytes
+!
+      rocBLAS_WK%transa = rocblas_operation_none
+      rocBLAS_WK%transb = rocblas_operation_none
 !
       end subroutine max_size_rocBLAS_leg_trns
 !
