@@ -122,12 +122,6 @@
       rocBLAS_WK%Nabytes = kreal * nkr *    nl_rtm
       rocBLAS_WK%Nbbytes = kreal * nl_rtm * n_jk
       rocBLAS_WK%Ncbytes = kreal * nkr *    n_jk
-      write(*,*) 'rocBLAS_WK%Nabytes',   &
-     &          rocBLAS_WK%Nabytes, rocBLAS_WK%MaxAbytes
-      write(*,*) 'rocBLAS_WK%Nbbytes',    &
-     &          rocBLAS_WK%Nbbytes, rocBLAS_WK%MaxBbytes
-      write(*,*) 'rocBLAS_WK%Ncbytes',    &
-     &          rocBLAS_WK%Ncbytes, rocBLAS_WK%MaxCbytes
 !
       if(iflag_matmul .eq. iflag_INTRINSIC) then
         S_kj = matmul(V_kl,P_lj)
@@ -186,12 +180,6 @@
       rocBLAS_WK%Nabytes = kreal * nl_rtm * n_jk
       rocBLAS_WK%Nbbytes = kreal * n_jk *   nkr
       rocBLAS_WK%Ncbytes = kreal * nl_rtm * nkr
-      write(*,*) 'rocBLAS_WK%Nabytes',   &
-     &          rocBLAS_WK%Nabytes, rocBLAS_WK%MaxAbytes
-      write(*,*) 'rocBLAS_WK%Nbbytes',    &
-     &          rocBLAS_WK%Nbbytes, rocBLAS_WK%MaxBbytes
-      write(*,*) 'rocBLAS_WK%Ncbytes',    &
-     &          rocBLAS_WK%Ncbytes, rocBLAS_WK%MaxCbytes
 !
       if(n_jk .eq. 0) then
 !$omp parallel workshare
