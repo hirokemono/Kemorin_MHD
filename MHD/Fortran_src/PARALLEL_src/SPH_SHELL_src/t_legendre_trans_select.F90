@@ -147,8 +147,10 @@
      &      idx_trns, nvector, nscalar, WK_leg%WK_l_otf)
 !
 #ifdef _AMD_ROCM_
-      else if(WK_leg%id_legendre .eq. iflag_leg_OMP_target              &
-     &   .or. WK_leg%id_legendre .eq. iflag_leg_rocBLAS                 &
+      else if(WK_leg%id_legendre .eq. iflag_leg_OMP_target) then
+        call init_leg_sym_rocblas(sph_rtm, sph_rlm, leg,                &
+     &      idx_trns, nvector, nscalar, WK_leg%WK_l_bsm)
+      else if(WK_leg%id_legendre .eq. iflag_leg_rocBLAS                 &
      &   .or. WK_leg%id_legendre .eq. iflag_leg_OMP_rocBLAS) then
         call init_leg_sym_rocblas(sph_rtm, sph_rlm, leg,                &
      &      idx_trns, nvector, nscalar, WK_leg%WK_l_bsm)
@@ -200,8 +202,9 @@
         call dealloc_leg_sym_mat_otfly(WK_leg%WK_l_otf)
 !
 #ifdef _AMD_ROCM_
-      else if(WK_leg%id_legendre .eq. iflag_leg_OMP_target              &
-     &   .or. WK_leg%id_legendre .eq. iflag_leg_rocBLAS                 &
+      else if(WK_leg%id_legendre .eq. iflag_leg_OMP_target) then
+        call dealloc_leg_sym_matmul_big(WK_leg%WK_l_bsm)
+      else if(WK_leg%id_legendre .eq. iflag_leg_rocBLAS                 &
      &   .or. WK_leg%id_legendre .eq. iflag_leg_OMP_rocBLAS) then
         call dealloc_leg_sym_matmul_big(WK_leg%WK_l_bsm)
         call calypso_fin_rocBLAS(WK_leg%rocBLAS_WK%handle)

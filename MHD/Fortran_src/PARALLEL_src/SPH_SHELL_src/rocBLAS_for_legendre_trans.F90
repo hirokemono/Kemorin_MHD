@@ -127,10 +127,10 @@
 !
 #ifdef _AMD_ROCM_
       else if(iflag_matmul .eq. iflag_OMP_offload) then
-        write(*,*) 'calypso_OpenMP_target_DGEMM forward'
         call calypso_OpenMP_target_DGEMM(nkr4, n_jk4, nl_rtm4,          &
      &      one, V_kl, nkr4, P_lj, nl_rtm4, zero, S_kj, nkr4)
       else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
+        write(*,*) 'calypso_OpenMP_rocBLAS_dgemm forward'
         call calypso_OpenMP_rocBLAS_dgemm                               &
      &     (rocBLAS_WK%handle, rocBLAS_WK%transa, rocBLAS_WK%transb,    &
      &      nkr4, n_jk4, nl_rtm4, one, V_kl, nkr4, P_lj, nl_rtm4,       &
@@ -186,10 +186,10 @@
 !
 #ifdef _AMD_ROCM_
       else if(iflag_matmul .eq. iflag_OMP_offload) then
-        write(*,*) 'calypso_OpenMP_target_DGEMM backward'
         call calypso_OpenMP_target_DGEMM(nl_rtm4, nkr4, n_jk4,          &
      &      one, P_lj, nl_rtm4, S_jk, n_jk4, zero, V_lk, nl_rtm4)
       else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
+        write(*,*) 'calypso_OpenMP_rocBLAS_dgemm backward'
         call calypso_OpenMP_rocBLAS_dgemm                               &
      &     (rocBLAS_WK%handle, rocBLAS_WK%transa, rocBLAS_WK%transb,    &
      &      nl_rtm4, nkr4, n_jk4, one, P_lj, nl_rtm4, S_jk, n_jk4,      &
