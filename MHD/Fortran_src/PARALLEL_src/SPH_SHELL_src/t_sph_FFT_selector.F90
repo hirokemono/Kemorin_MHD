@@ -267,6 +267,22 @@
         end if
 #endif
 !
+#ifdef _AMD_ROCM_
+      else if(WK_FFTs%iflag_FFT .eq. (iflag_OMP_rocFFT+iflag_once_fft)  &
+     &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_real_rocFFT+iflag_once_fft) &
+     &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
+     &      ) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(id_rank .eq. 0) write(*,*) 'Use prt rocFFT'
+          call init_prt_FFTW_smp(sph_rtp, comm_rtp,                     &
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
+        else
+          if(id_rank .eq. 0) write(*,*) 'Use rtp rocFFT'
+          call init_rtp_FFTW_smp(sph_rtp, comm_rtp,                     &
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
+        end if
+#endif
+!
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
         if(id_rank .eq. 0) write(*,*) 'Use single FFTPACK'
         call init_sph_single_FFTPACK5(sph_rtp, WK_FFTs%sph_sgl_FFTPACK)
@@ -373,6 +389,15 @@
           call finalize_sph_domain_OMP_FFTW                             &
      &       (WK_FFTs%sph_domain_OMP_FFTW)
         end if
+#endif
+!
+#ifdef _AMD_ROCM_
+      else if(WK_FFTs%iflag_FFT .eq. (iflag_OMP_rocFFT+iflag_once_fft)  &
+     &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_real_rocFFT+iflag_once_fft) &
+     &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
+     &      ) then
+        if(iflag_debug .gt. 0) write(*,*) 'Finalize rocFFT'
+        call finalize_sph_field_FFTW(WK_FFTs%sph_fld_FFTW)
 #endif
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
@@ -488,6 +513,22 @@
      &                    'Use OpenMP FFTW for domain'
           call verify_sph_domain_OMP_FFTW                               &
      &       (sph_rtp, comm_rtp, WK_FFTs%sph_domain_OMP_FFTW)
+        end if
+#endif
+!
+#ifdef _AMD_ROCM_
+      else if(WK_FFTs%iflag_FFT .eq. (iflag_OMP_rocFFT+iflag_once_fft)  &
+     &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_real_rocFFT+iflag_once_fft) &
+     &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
+     &      ) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(iflag_debug .gt. 0) write(*,*) 'Use prt rocFFT'
+          call verify_prt_FFTW_smp(sph_rtp, comm_rtp,                   &
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
+        else
+          if(iflag_debug .gt. 0) write(*,*) 'Use rtp rocFFT'
+          call verify_rtp_FFTW_smp(sph_rtp, comm_rtp,                   &
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
         end if
 #endif
 !
@@ -615,6 +656,20 @@
         end if
 #endif
 !
+#ifdef _AMD_ROCM_
+      else if(WK_FFTs%iflag_FFT .eq. (iflag_OMP_rocFFT+iflag_once_fft)  &
+     &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_real_rocFFT+iflag_once_fft) &
+     &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
+     &      ) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_fwd_FFTW_smp_to_send(sph_rtp, comm_rtp,              &
+     &        ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_fld_FFTW)
+        else
+          call rtp_fwd_FFTW_smp_to_send(sph_rtp, ncomp_fwd, n_WS,       &
+     &        v_rtp(1,1), WS(1), WK_FFTs%sph_fld_FFTW)
+        end if
+#endif
+!
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
         call sph_single_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd,    &
      &      n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_sgl_FFTPACK)
@@ -730,6 +785,20 @@
           call sph_domain_back_OFFTW_from_recv                          &
      &       (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),    &
      &        WK_FFTs%sph_domain_OMP_FFTW)
+        end if
+#endif
+!
+#ifdef _AMD_ROCM_
+      else if(WK_FFTs%iflag_FFT .eq. (iflag_OMP_rocFFT+iflag_once_fft)  &
+     &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_real_rocFFT+iflag_once_fft) &
+     &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
+     &      ) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_back_FFTW_smp_from_recv(sph_rtp, comm_rtp,           &
+     &        ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)
+        else
+          call rtp_back_FFTW_smp_from_recv(sph_rtp, comm_rtp,           &
+     &        ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)
         end if
 #endif
 !
