@@ -11,6 +11,9 @@
 !!   wrapper subroutine for initierize FFT by FFTW
 !!      subroutine init_prt_complex_rocFFT                              &
 !!     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, rocFFT_f)
+!!      subroutine finalize_prt_complex_rocFFT(rocFFT_f)
+!!      subroutine verify_prt_complex_rocFFT                            &
+!!     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, rocFFT_f)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
 !!        integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
@@ -63,6 +66,8 @@
 !
 !>      Structure to use rocFFT
       type work_for_field_rocFFT
+!>        Flag and lengh
+        integer(kind = kint) :: iflag_rocFFT_len = -1
 !>        Structure of paramters for forward transform
         type(calypso_rocFFT_params) :: rocFFT_fwd
 !>        Structure of paramters for backward transform
@@ -114,8 +119,49 @@
      &   (sph_rtp%nnod_rtp, sph_rtp%istep_rtp, nnod_rt,                 &
      &    comm_rtp%ntot_item_sr, comm_rtp%irev_sr, Nfft_c4, aNfft_d,    &
      &    rocFFT_f%comm_sph_rocFFT)
+      rocFFT_f%iflag_rocFFT_len = nnod_rt * sph_rtp%nidx_rtp(3)        &
+     &                           *  max(ncomp_bwd,ncomp_fwd)
 !
       end subroutine init_prt_complex_rocFFT
+!
+! ------------------------------------------------------------------
+!
+      subroutine finalize_prt_complex_rocFFT(rocFFT_f)
+!
+      type(work_for_field_rocFFT), intent(inout) :: rocFFT_f
+!
+!
+      call dealloc_comm_table_sph_FFTW(rocFFT_f%comm_sph_rocFFT)
+      call calypso_rocFFT_fin(rocFFT_f%rocFFT_fwd, rocFFT_f%rocFFT_bwd, &
+     &                        rocFFT_f%WK_rocFFT)
+      rocFFT_f%iflag_rocFFT_len = -1
+!
+      end subroutine finalize_prt_complex_rocFFT
+!
+! ------------------------------------------------------------------
+!
+      subroutine verify_prt_complex_rocFFT                              &
+     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, rocFFT_f)
+!
+      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) :: Nfft
+!
+      type(work_for_field_rocFFT), intent(inout) :: rocFFT_f
+!
+!
+      if(rocFFT_f%iflag_rocFFT_len .lt. 0) then
+        call init_prt_complex_rocFFT(sph_rtp, comm_rtp,                 &
+     &                               ncomp_bwd, ncomp_fwd, rocFFT_f)
+        return
+      end if
+!
+      if(WK%iflag_fft_mul_len .ne. Nfft*Nstacksmp(Nsmp)) then
+        call finalize_prt_complex_rocFFT(rocFFT_f)
+        call init_prt_complex_rocFFT(sph_rtp, comm_rtp,                 &
+     &                               ncomp_bwd, ncomp_fwd, rocFFT_f)
+      end if
+!
+      end subroutine verify_prt_complex_rocFFT
 !
 ! ------------------------------------------------------------------
 !
