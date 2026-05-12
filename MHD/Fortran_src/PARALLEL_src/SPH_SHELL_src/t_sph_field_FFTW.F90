@@ -41,7 +41,7 @@
 !
       implicit none
 !
-!>      Structure to use SNGLE FFTW
+!>      Structure to use FFTW
       type work_for_field_FFTW
 !>        plan ID for backward transform
         integer(kind = fftw_plan), allocatable :: plan_bwd(:)

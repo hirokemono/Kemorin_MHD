@@ -85,7 +85,7 @@
 !
       implicit none
 !
-!>      Structure to use SNGLE FFTW
+!>      Structure to use FFTW with OpenMP
       type work_for_OpenMP_FFTW
 !>        plan ID for backward transform
         integer(kind = fftw_plan) :: plan_bwd

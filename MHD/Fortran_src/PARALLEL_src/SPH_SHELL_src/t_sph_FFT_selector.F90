@@ -118,6 +118,9 @@
       use t_sph_OMP_FFTW
       use t_sph_field_OMP_FFTW
 #endif
+#ifdef _AMD_ROCM_
+      use t_sph_field_rocFFT
+#endif
 !
       implicit none
 !
@@ -160,11 +163,17 @@
 !>        Structure to use FFTW for each component
         type(work_for_comp_FFTW) :: sph_comp_FFTW
 #endif
+!
 #ifdef OMP_FFTW3
 !>        Structure to use FFTW with OpenMP
         type(work_for_domain_OMP_FFTW) :: sph_domain_OMP_FFTW
 !>        Structure to use FFTW with OpenMP
         type(work_for_OpenMP_FFTW) :: sph_OMP_FFTW
+#endif
+!
+#ifdef OMP_FFTW3
+!>        Structure to use rocFFT
+        type(work_for_OpenMP_FFTW) :: sph_rocFFT
 #endif
 !
       end type work_for_FFTs
@@ -276,6 +285,8 @@
           if(id_rank .eq. 0) write(*,*) 'Use prt rocFFT'
           call init_prt_FFTW_smp(sph_rtp, comm_rtp,                     &
      &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
+          call init_prt_complex_rocFFT(sph_rtp, comm_rtp,               &
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT)
         else
           if(id_rank .eq. 0) write(*,*) 'Use rtp rocFFT'
           call init_rtp_FFTW_smp(sph_rtp, comm_rtp,                     &

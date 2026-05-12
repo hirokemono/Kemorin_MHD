@@ -80,7 +80,7 @@
 !
       implicit none
 !
-!>      Structure to use SNGLE FFTW
+!>      Structure to use FFT test
       type work_for_test_FFT
 !>        plan ID for backward transform
         integer(kind = fftw_plan), allocatable :: plan_bwd(:)
