@@ -143,8 +143,9 @@
       subroutine verify_prt_complex_rocFFT                              &
      &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, rocFFT_f)
 !
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint), intent(in) :: Nfft
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_comm_tbl), intent(in)  :: comm_rtp
+      integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !
       type(work_for_field_rocFFT), intent(inout) :: rocFFT_f
 !
