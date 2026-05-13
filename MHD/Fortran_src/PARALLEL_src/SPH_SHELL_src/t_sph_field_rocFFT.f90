@@ -119,7 +119,7 @@
      &   (sph_rtp%nnod_rtp, sph_rtp%istep_rtp, nnod_rt,                 &
      &    comm_rtp%ntot_item_sr, comm_rtp%irev_sr, Nfft_c4, aNfft_d,    &
      &    rocFFT_f%comm_sph_rocFFT)
-      rocFFT_f%iflag_rocFFT_len = nnod_rt * sph_rtp%nidx_rtp(3)        &
+      rocFFT_f%iflag_rocFFT_len = nnod_rt * sph_rtp%nidx_rtp(3)         &
      &                           *  max(ncomp_bwd,ncomp_fwd)
 !
       end subroutine init_prt_complex_rocFFT
@@ -149,6 +149,8 @@
 !
       type(work_for_field_rocFFT), intent(inout) :: rocFFT_f
 !
+      integer(kind = kint) :: num
+!
 !
       if(rocFFT_f%iflag_rocFFT_len .lt. 0) then
         call init_prt_complex_rocFFT(sph_rtp, comm_rtp,                 &
@@ -156,7 +158,8 @@
         return
       end if
 !
-      if(WK%iflag_fft_mul_len .ne. Nfft*Nstacksmp(Nsmp)) then
+      num = nnod_rt * sph_rtp%nidx_rtp(3) * max(ncomp_bwd,ncomp_fwd)
+      if(rocFFT_f%iflag_rocFFT_len .ne. num) then
         call finalize_prt_complex_rocFFT(rocFFT_f)
         call init_prt_complex_rocFFT(sph_rtp, comm_rtp,                 &
      &                               ncomp_bwd, ncomp_fwd, rocFFT_f)
