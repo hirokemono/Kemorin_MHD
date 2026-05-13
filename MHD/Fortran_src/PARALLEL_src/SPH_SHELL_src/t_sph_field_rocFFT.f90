@@ -149,7 +149,7 @@
 !
       type(work_for_field_rocFFT), intent(inout) :: rocFFT_f
 !
-      integer(kind = kint) :: num
+      integer(kind = kint) :: num, nnod_rt
 !
 !
       if(rocFFT_f%iflag_rocFFT_len .lt. 0) then
@@ -158,6 +158,7 @@
         return
       end if
 !
+      nnod_rt = sph_rtp%nidx_rtp(1) * sph_rtp%nidx_rtp(2)
       num = nnod_rt * sph_rtp%nidx_rtp(3) * max(ncomp_bwd,ncomp_fwd)
       if(rocFFT_f%iflag_rocFFT_len .ne. num) then
         call finalize_prt_complex_rocFFT(rocFFT_f)
