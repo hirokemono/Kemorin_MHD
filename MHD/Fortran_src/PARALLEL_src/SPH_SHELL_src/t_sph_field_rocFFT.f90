@@ -285,7 +285,8 @@
       call pin_FFTW_fields_from_recv                                    &
      &   (sph_rtp%nnod_rtp, sph_rtp%istep_rtp,                          &
      &    sph_rtp%istack_rtp_rt_smp(np_smp), comm_rtp%irev_sr,          &
-     &    ncomp_bwd, n_WR, WR, WK_rocFFT%Nfft_c, WK_rocFFT%C_rocFFT(1))
+     &    ncomp_bwd, n_WR, WR, int(WK_rocFFT%Nfft_c),                   &
+     &    WK_rocFFT%C_rocFFT(1))
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
