@@ -676,8 +676,10 @@
      &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
      &      ) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
-          call prt_fwd_FFTW_smp_to_send(sph_rtp, comm_rtp,              &
-     &        ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_fld_FFTW)
+          call prt_fwd_complex_rocFFT_to_send                           &
+     &       (sph_rtp, WK_FFTs%sph_rocFFT%comm_sph_rocFFT,              &
+     &        WK_FFTs%sph_rocFFT%rocFFT_fwd, ncomp_fwd, n_WS,           &
+     &        v_rtp(1,1), WS(1), WK_FFTs%sph_rocFFT%WK_rocFFT)
         else
           call rtp_fwd_FFTW_smp_to_send(sph_rtp, ncomp_fwd, n_WS,       &
      &        v_rtp(1,1), WS(1), WK_FFTs%sph_fld_FFTW)

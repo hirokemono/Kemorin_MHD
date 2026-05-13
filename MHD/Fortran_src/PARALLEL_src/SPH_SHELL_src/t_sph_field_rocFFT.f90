@@ -88,6 +88,7 @@
      &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, rocFFT_f)
 !
       use set_comm_table_prt_FFTW
+      use multi_pin_complex_rocFFT
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -167,6 +168,61 @@
       end if
 !
       end subroutine verify_prt_complex_rocFFT
+!
+! ------------------------------------------------------------------
+!
+      subroutine prt_fwd_complex_rocFFT_to_send                         &
+     &         (sph_rtp, comm_sph_rocFFT, rocFFT_fwd,                   &
+     &          ncomp_fwd, n_WS, X_rtp, WS, WK_rocFFT)
+!
+      use m_elapsed_labels_SPH_TRNS
+      use set_comm_table_prt_FFTW
+      use copy_rtp_data_to_FFTPACK
+      use calypso_multi_rocFFT
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+!      type(sph_comm_tbl), intent(in)  :: comm_rtp
+      type(comm_tbl_from_FFTW), intent(in) :: comm_sph_rocFFT
+      type(calypso_rocFFT_params), intent(in), target :: rocFFT_fwd
+!
+      integer(kind = kint), intent(in) :: ncomp_fwd
+      real(kind = kreal), intent(in)                                    &
+     &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_fwd)
+!
+      integer(kind = kint), intent(in) :: n_WS
+      real(kind = kreal), intent(inout):: WS(n_WS)
+      type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
+!
+!
+      write(*,*) 'prt_fwd_complex_rocFFT_to_send'
+!
+      if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
+      call copy_prt_fld_to_rocFFT_real                                  &
+     &   (rocFFT_fwd%Ncomp, rocFFT_fwd%Nfft, X_rtp(1,1),                &
+     &    WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT)
+      if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
+!
+      if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
+      call calypso_forward_rocFFT_r2c(rocFFT_fwd%rocFFT_plan,           &
+     &    rocFFT_fwd%rocFFT_wk_info, rocFFT_fwd%Ncomp,                  &
+     &    WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT,                         &
+     &    WK_rocFFT%Nfft_c, WK_rocFFT%C_rocFFT,                         &
+     &    rocFFT_fwd%Nbytes, WK_rocFFT%data_ptr)
+      if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
+!
+      if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
+!      call pin_FFTW_fields_to_send                                     &
+!     &   (sph_rtp%nnod_rtp, comm_rtp%irev_sr,                          &
+!     &    sph_rtp%istack_rtp_rt_smp(np_smp), ncomp_fwd,                &
+!     &    WK_rocFFT%Nfft_c, WK_rocFFT%aNfft, WK_rocFFT%C_rocFFT(1),    &
+!     &     n_WS, WS)
+      call pin_FFTW_all_field_to_send                                   &
+     &  (sph_rtp%istack_rtp_rt_smp(np_smp), ncomp_fwd,                  &
+     &   int(WK_rocFFT%Nfft_c), WK_rocFFT%C_rocFFT(1), comm_sph_rocFFT, &
+     &    n_WS, WS)
+      if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
+!
+      end subroutine prt_fwd_complex_rocFFT_to_send
 !
 ! ------------------------------------------------------------------
 !
