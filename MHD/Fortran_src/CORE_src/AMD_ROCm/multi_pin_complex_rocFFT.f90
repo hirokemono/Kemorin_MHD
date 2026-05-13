@@ -97,11 +97,11 @@
 !
 !   Initialize Forward transform
       call calypso_pin_fwd_rocFFT_init(WK_fft%Nfft_r, fwd)
-      call calypso_fwd_rocFFT_init(fwd)
+      if(Ncomp_fwd .gt. 0) call calypso_fwd_rocFFT_init(fwd)
 !
 !   Initialize Backword transform
       call calypso_pin_bwd_rocFFT_init(WK_fft%Nfft_r, bwd)
-      call calypso_bwd_rocFFT_init(bwd)
+      if(Ncomp_bwd .gt. 0) call calypso_bwd_rocFFT_init(bwd)
 !
       end subroutine calypso_pin_rocFFT_init
 !
@@ -158,8 +158,9 @@
       real(kind = kreal) :: start
 !
 !
+      if(fwd%Ncomp .le. 0) return
       start = OMP_GET_WTIME()
-      call copy_prt_fld_to_rocFFT_real(fwd%Ncomp, fwd%Nfft, X(1,1),     &
+      call copy_pin_fld_to_rocFFT_real(fwd%Ncomp, fwd%Nfft, X(1,1),     &
      &                               WK_fft%Nfft_r, WK_fft%X_rocFFT(1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
@@ -194,9 +195,9 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
-      integer(c_size_t) :: nd, i, j
 !
 !
+      if(bwd%Ncomp .le. 0) return
       start = OMP_GET_WTIME()
       call norm_prt_to_bwd_OMP_FFTW(int(bwd%Ncomp), int(bwd%Nfft),      &
      &    X(1,1), int(WK_fft%Nfft_c), WK_fft%C_rocFFT(1))
@@ -211,14 +212,8 @@
       elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
-!$omp parallel do private(nd,i,j)
-      do nd = 1, bwd%Ncomp
-        do i = 1, bwd%Nfft
-          j = i + (nd-1) * WK_fft%Nfft_r
-          X(i,nd) = WK_fft%X_rocFFT(j)
-        end do
-      end do
-!$omp end parallel do
+      call copy_pin_fld_from_rocFFT_real(bwd%Ncomp, WK_fft%Nfft_r,      &
+     &    WK_fft%X_rocFFT(1), bwd%Nfft, X(1,1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       end subroutine multi_pin_bwd_rocFFT_c2r
@@ -226,7 +221,7 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine copy_prt_fld_to_rocFFT_real(Ncomp, Nfft, X,            &
+      subroutine copy_pin_fld_to_rocFFT_real(Ncomp, Nfft, X,            &
      &                                       Nfft_r, X_rocFFT)
 !
       integer(c_size_t), intent(in) :: Ncomp
@@ -249,7 +244,31 @@
         end do
 !$omp end parallel do
 !
-      end subroutine copy_prt_fld_to_rocFFT_real
+      end subroutine copy_pin_fld_to_rocFFT_real
+!
+! ------------------------------------------------------------------
+!
+      subroutine copy_pin_fld_from_rocFFT_real(Ncomp, Nfft_r,           &
+     &                                         X_rocFFT, Nfft, X)
+!
+      integer(c_size_t), intent(in) :: Ncomp
+      integer(c_size_t), intent(in) :: Nfft_r, Nfft
+      real(kind = kreal), intent(in) :: X_rocFFT(Nfft_r,Ncomp)
+!
+      real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
+!
+      integer(c_size_t) :: nd, i
+!
+!
+!$omp parallel do private(nd,i)
+      do nd = 1, Ncomp
+        do i = 1, Nfft
+          X(i,nd) = X_rocFFT(i,nd)
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine copy_pin_fld_from_rocFFT_real
 !
 ! ------------------------------------------------------------------
 !

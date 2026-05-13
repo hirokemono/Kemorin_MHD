@@ -157,6 +157,7 @@
       integer(kind = kint) :: i, ist
 !
 !
+      if(fwd%Ncomp .le. 0) return
         start = OMP_GET_WTIME()
 !$omp parallel do private(i,ist)
         do i = 1, fwd%Nfft
@@ -208,6 +209,7 @@
       integer(kind = kint) :: i, ist
 !
 !
+      if(bwd%Ncomp .le. 0) return
       start = OMP_GET_WTIME()
       call norm_rtp_to_bwd_OMP_FFTW(int(bwd%Ncomp), int(bwd%Nfft),      &
      &    X(1,1), int(WK_fft%NFFT_c), WK_fft%C_rocFFT(1))

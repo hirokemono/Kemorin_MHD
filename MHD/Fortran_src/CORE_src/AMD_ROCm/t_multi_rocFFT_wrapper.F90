@@ -100,6 +100,10 @@
 !
       integer(c_size_t), parameter, private :: ione_c =  ione
 !
+#ifdef _AMD_ROCM_
+      private :: calypso_each_rocFFT_fin
+#endif
+!
 ! ------------------------------------------------------------------
 !
       contains
@@ -260,34 +264,38 @@
 !
       subroutine calypso_rocFFT_fin(fwd, bwd, WK_fft)
 !
-      use hipfort
-      use hipfort_check
-      use hipfort_rocfft
-!
       type(calypso_rocFFT_params), intent(inout), target :: fwd
       type(calypso_rocFFT_params), intent(inout), target :: bwd
       type(calypso_rocFFT_work), intent(inout), target :: WK_fft
 !
-      call rocfftCheck                                                  &
-     &   (rocfft_execution_info_destroy(fwd%rocFFT_wk_info))
-      call rocfftCheck                                                  &
-     &   (rocfft_execution_info_destroy(bwd%rocFFT_wk_info))
-      if(fwd%rocFFT_wk_buf_size > 0) then
-        call hipCheck(hipFree(fwd%rocFFT_wk_buffer))
-      end if
-      if(bwd%rocFFT_wk_buf_size > 0) then
-        call hipCheck(hipFree(bwd%rocFFT_wk_buffer))
-      end if
-      call rocfftCheck                                                  &
-     &   (rocfft_plan_description_destroy(bwd%rocFFT_description))
-      call rocfftCheck                                                  &
-     &   (rocfft_plan_description_destroy(fwd%rocFFT_description))
-      call rocfftCheck(rocfft_plan_destroy(bwd%rocFFT_plan))
-      call rocfftCheck(rocfft_plan_destroy(fwd%rocFFT_plan))
+      if(fwd%Ncomp .gt. 0) call calypso_each_rocFFT_fin(fwd)
+      if(bwd%Ncomp .gt. 0) call calypso_each_rocFFT_fin(bwd)
+!
       call hipCheck(hipFree(WK_fft%data_ptr))
       deallocate(WK_fft%C_rocFFT, WK_fft%X_rocFFT)
 !
       end subroutine calypso_rocFFT_fin
+!
+! ------------------------------------------------------------------
+!
+      subroutine calypso_each_rocFFT_fin(trns)
+!
+      use hipfort
+      use hipfort_check
+      use hipfort_rocfft
+!
+      type(calypso_rocFFT_params), intent(inout), target :: trns
+!
+      call rocfftCheck                                                  &
+     &   (rocfft_execution_info_destroy(trns%rocFFT_wk_info))
+      if(trns%rocFFT_wk_buf_size > 0) then
+        call hipCheck(hipFree(trns%rocFFT_wk_buffer))
+      end if
+      call rocfftCheck                                                  &
+     &   (rocfft_plan_description_destroy(trns%rocFFT_description))
+      call rocfftCheck(rocfft_plan_destroy(trns%rocFFT_plan))
+!
+      end subroutine calypso_each_rocFFT_fin
 !
 ! ------------------------------------------------------------------
 #endif

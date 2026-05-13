@@ -676,7 +676,7 @@
      &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
      &      ) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
-          call prt_fwd_complex_rocFFT_to_send                           &
+          call prt_fwd_cplx_rocFFT_to_send                              &
      &       (sph_rtp, WK_FFTs%sph_rocFFT%comm_sph_rocFFT,              &
      &        WK_FFTs%sph_rocFFT%rocFFT_fwd, ncomp_fwd, n_WS,           &
      &        v_rtp(1,1), WS(1), WK_FFTs%sph_rocFFT%WK_rocFFT)
@@ -812,6 +812,9 @@
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           call prt_back_FFTW_smp_from_recv(sph_rtp, comm_rtp,           &
      &        ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)
+!          call prt_bwd_cplx_rocFFT_from_recv(sph_rtp, comm_rtp,        &
+!     &        WK_FFTs%sph_rocFFT%rocFFT_bwd, ncomp_bwd, n_WR, WR(1),   &
+!     &        v_rtp(1,1), WK_FFTs%sph_rocFFT%WK_rocFFT)
         else
           call rtp_back_FFTW_smp_from_recv(sph_rtp, comm_rtp,           &
      &        ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)
