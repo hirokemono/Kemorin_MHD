@@ -408,6 +408,7 @@
      &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
      &      ) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize rocFFT'
+        call finalize_prt_complex_rocFFT(WK_FFTs%sph_rocFFT)
         call finalize_sph_field_FFTW(WK_FFTs%sph_fld_FFTW)
 #endif
 !
@@ -536,6 +537,8 @@
           if(iflag_debug .gt. 0) write(*,*) 'Use prt rocFFT'
           call verify_prt_FFTW_smp(sph_rtp, comm_rtp,                   &
      &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
+          call verify_prt_complex_rocFFT(sph_rtp, comm_rtp,             &
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT)
         else
           if(iflag_debug .gt. 0) write(*,*) 'Use rtp rocFFT'
           call verify_rtp_FFTW_smp(sph_rtp, comm_rtp,                   &
