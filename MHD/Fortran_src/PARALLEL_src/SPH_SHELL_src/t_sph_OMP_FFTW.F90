@@ -142,7 +142,7 @@
      &   (sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp,               &
      &    ncomp_bwd, ncomp_fwd, OFFTW)
 !
-      call chack_init_OMP_FFTW()
+      call check_init_OMP_FFTW()
 !
       call dfftw_plan_many_dft_r2c(OFFTW%plan_fwd, IONE_4,              &
      &    int(OFFTW%Nfft_r), OFFTW%howmany_fwd,                         &
@@ -176,7 +176,7 @@
       call dfftw_destroy_plan(OFFTW%plan_fwd)
       call dfftw_destroy_plan(OFFTW%plan_bwd)
       call dfftw_cleanup
-      call chack_clean_OMP_FFTW()
+      call check_clean_OMP_FFTW()
 !
       call dealloc_OMP_FFTW_plan(OFFTW)
 !

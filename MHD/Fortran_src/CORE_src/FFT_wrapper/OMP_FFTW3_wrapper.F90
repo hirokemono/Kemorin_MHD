@@ -135,7 +135,7 @@
       Nfft4 = int(Nfft,KIND(Nfft4))
       howmany = int(Ncomp, KIND(howmany))
 !
-      call chack_init_OMP_FFTW()
+      call check_init_OMP_FFTW()
 !
       call dfftw_plan_many_dft_r2c                                      &
      &   (plan_forward, IONE_4, Nfft4, howmany,                         &
@@ -161,7 +161,7 @@
       call dfftw_destroy_plan(plan_forward)
       call dfftw_destroy_plan(plan_backward)
       call dfftw_cleanup
-      call chack_clean_OMP_FFTW()
+      call check_clean_OMP_FFTW()
 !
       end subroutine destroy_OMP_FFTW
 !

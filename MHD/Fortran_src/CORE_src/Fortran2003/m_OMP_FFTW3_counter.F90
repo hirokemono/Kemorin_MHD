@@ -7,8 +7,8 @@
 !>@brief  Fourier transform using FFTW Ver.3 woth OpenMP
 !!
 !!@verbatim
-!!      subroutine chack_init_OMP_FFTW()
-!!      subroutine chack_clean_OMP_FFTW()
+!!      subroutine check_init_OMP_FFTW()
+!!      subroutine check_clean_OMP_FFTW()
 !!@endverbatim
 !!
 !!@n @param icount_OMP_FFTW  Reference counter for OpenMP FFTW
@@ -33,7 +33,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine chack_init_OMP_FFTW()
+      subroutine check_init_OMP_FFTW()
 !
       integer, external :: omp_get_max_threads
       integer(C_int) :: iout
@@ -49,11 +49,11 @@
       end if
       icount_OMP_FFTW = icount_OMP_FFTW + 1
 !
-      end subroutine chack_init_OMP_FFTW
+      end subroutine check_init_OMP_FFTW
 !
 ! ------------------------------------------------------------------
 !
-      subroutine chack_clean_OMP_FFTW()
+      subroutine check_clean_OMP_FFTW()
 !
 !
       icount_OMP_FFTW = icount_OMP_FFTW - 1
@@ -63,7 +63,7 @@
       call fftw_cleanup_threads()
 #endif
 !
-      end subroutine chack_clean_OMP_FFTW
+      end subroutine check_clean_OMP_FFTW
 !
 ! ------------------------------------------------------------------
 !

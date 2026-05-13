@@ -137,7 +137,7 @@
 !
       howmany = int(sph_rtp%istack_rtp_rt_smp(np_smp))
 !
-      call chack_init_OMP_FFTW()
+      call check_init_OMP_FFTW()
 !
       call dfftw_plan_many_dft_r2c                                      &
      &   (OFFTW_d%plan_fwd, IONE_4, int(OFFTW_d%Nfft_r), howmany,       &
@@ -171,7 +171,7 @@
       call dfftw_destroy_plan(OFFTW_d%plan_fwd)
       call dfftw_destroy_plan(OFFTW_d%plan_bwd)
       call dfftw_cleanup
-      call chack_clean_OMP_FFTW()
+      call check_clean_OMP_FFTW()
 !
       call dealloc_domain_OMP_FFTW_plan(OFFTW_d)
 !
