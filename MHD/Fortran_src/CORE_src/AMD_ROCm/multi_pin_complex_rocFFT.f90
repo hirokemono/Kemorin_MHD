@@ -231,7 +231,7 @@
 !
       integer(c_size_t), intent(in) :: Ncomp
       integer(c_size_t), intent(in) :: Nfft, Nfft_r
-      real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
+      real(kind = kreal), intent(in) :: X(Nfft,Ncomp)
 !
       real(kind = kreal), intent(inout) :: X_rocFFT(Nfft_r,Ncomp)
 !
