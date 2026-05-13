@@ -179,6 +179,7 @@
       use set_comm_table_prt_FFTW
       use copy_rtp_data_to_FFTPACK
       use calypso_multi_rocFFT
+      use multi_pin_complex_rocFFT
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
 !      type(sph_comm_tbl), intent(in)  :: comm_rtp
