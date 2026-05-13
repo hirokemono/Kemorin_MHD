@@ -264,6 +264,10 @@
 !
       subroutine calypso_rocFFT_fin(fwd, bwd, WK_fft)
 !
+      use hipfort
+      use hipfort_check
+      use hipfort_rocfft
+!
       type(calypso_rocFFT_params), intent(inout), target :: fwd
       type(calypso_rocFFT_params), intent(inout), target :: bwd
       type(calypso_rocFFT_work), intent(inout), target :: WK_fft
