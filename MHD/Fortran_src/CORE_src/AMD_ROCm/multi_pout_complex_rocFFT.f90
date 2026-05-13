@@ -159,20 +159,8 @@
 !
       if(fwd%Ncomp .le. 0) return
         start = OMP_GET_WTIME()
-!$omp parallel do private(i,ist)
-        do i = 1, fwd%Nfft
-          ist = (i-1) * fwd%Ncomp
-          WK_fft%X_rocFFT(ist+1:ist+fwd%Ncomp) = X(1:fwd%Ncomp,i)
-        end do
-!$omp end parallel do
-        if(fwd%Nfft .lt. WK_fft%Nfft_r) then
-!$omp parallel do private(i,ist)
-          do i = fwd%Nfft+1, WK_fft%Nfft_r
-            ist = (i-1) * fwd%Ncomp
-            WK_fft%X_rocFFT(ist+1:ist+fwd%Ncomp) = 0.0d0
-          end do
-!$omp end parallel do
-        end if
+        call copy_pout_fld_to_rocFFT_real(fwd%Ncomp, fwd%Nfft, X(1,1),  &
+     &      WK_fft%Nfft_r, WK_fft%X_rocFFT(1))
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
@@ -233,6 +221,36 @@
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       end subroutine multi_pout_bwd_rocFFT_c2r
+!
+! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
+      subroutine copy_pout_fld_to_rocFFT_real(Ncomp, Nfft, X,           &
+     &                                        Nfft_r, X_rocFFT)
+!
+      integer(c_size_t), intent(in) :: Ncomp
+      integer(c_size_t), intent(in) :: Nfft, Nfft_r
+      real(kind = kreal), intent(in) :: X(Ncomp,Nfft)
+!
+      real(kind = kreal), intent(inout) :: X_rocFFT(Ncomp,Nfft_r)
+!
+      integer(c_size_t) :: i
+!
+!
+!$omp parallel do private(i)
+        do i = 1, Nfft
+          X_rocFFT(1:Ncomp,i) = X(1:Ncomp,i)
+        end do
+!$omp end parallel do
+        if(Nfft .lt. Nfft_r) then
+!$omp parallel do private(i)
+          do i = Nfft+1, Nfft_r
+            X_rocFFT(1:Ncomp,i) = 0.0d0
+          end do
+!$omp end parallel do
+        end if
+!
+      end subroutine copy_pout_fld_to_rocFFT_real
 !
 ! ------------------------------------------------------------------
 !

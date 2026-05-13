@@ -234,8 +234,9 @@
 !
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
-      call copy_rtp_field_to_OMP_FFTW                                   &
-     &   (sph_rtp%nnod_rtp, ncomp_fwd, X_rtp(1,1), OFFTW%X(1))
+      call copy_rtp_field_to_OMP_FFTW(ncomp_fwd,                        &
+     &    sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3),       &
+     &    X_rtp(1,1), sph_rtp%nidx_rtp(3), OFFTW%X(1))
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
@@ -284,8 +285,9 @@
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
-      call copy_rtp_field_from_OMP_FFTW                                 &
-     &   (sph_rtp%nnod_rtp, ncomp_bwd, OFFTW%X(1), X_rtp(1,1))
+      call copy_rtp_field_from_OMP_FFTW(ncomp_bwd,                      &
+     &    sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3),       &
+     &    OFFTW%X(1), sph_rtp%nidx_rtp(3), X_rtp(1,1))
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
 !
       end subroutine rtp_back_OMP_FFTW_from_recv

@@ -33,12 +33,23 @@
 !!     &                             :: C_fft(ncomp_bwd,nnod_rt,Nfft_c)
 !!
 !!      subroutine copy_rtp_field_from_OMP_FFTW                         &
-!!     &         (nnod_rtp, ncomp_bwd, X_FFT, X_rtp)
+!!     &         (ncomp_bwd, nnod_rt, Nfft_r, X_FFT, mphi, X_rtp)
+!!        integer(kind = kint), intent(in) :: ncomp_bwd
+!!        integer(kind = kint), intent(in) :: (nnod_rt, mphi
+!!        integer(kind = kint), intent(in) :: Nfft_r
+!!        real(kind = kreal), intent(in)                                &
+!!     &                   :: X_FFT(ncomp_bwd, nnod_rt, Nfft_r)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                   :: X_rtp(nnod_rt, mphi, ncomp_bwd)
 !!      subroutine copy_rtp_field_to_OMP_FFTW                           &
-!!     &         (nnod_rtp, ncomp_fwd, X_rtp, X_FFT)
-!!        integer(kind = kint), intent(in) :: nnod_rtp, ncomp_bwd
-!!        real(kind = kreal), intent(in) :: X_FFT(ncomp_bwd, nnod_rtp)
-!!        real(kind = kreal), intent(inout) :: X_rtp(nnod_rtp, ncomp_bwd)
+!!     &         (ncomp_fwd, nnod_rt, mphi, X_rtp, Nfft_r, X_FFT)
+!!        integer(kind = kint), intent(in) :: ncomp_fwd
+!!        integer(kind = kint), intent(in) :: nnod_rt, mphi
+!!        integer(kind = kint), intent(in) :: Nfft_r
+!!        real(kind = kreal), intent(in)                                &
+!!     &                   :: X_rtp(nnod_rt, mphi, ncomp_fwd)
+!!      real(kind = kreal), intent(inout)                               &
+!!     &                   :: X_FFT(ncomp_fwd, nnod_rt, Nfft_r)
 !!@endverbatim
 !!
       module set_comm_table_rtp_OMP_FFTW
@@ -224,18 +235,24 @@
 ! ------------------------------------------------------------------
 !
       subroutine copy_rtp_field_from_OMP_FFTW                           &
-     &         (nnod_rtp, ncomp_bwd, X_FFT, X_rtp)
+     &         (ncomp_bwd, nnod_rt, Nfft_r, X_FFT, mphi, X_rtp)
 !
-      integer(kind = kint), intent(in) :: nnod_rtp, ncomp_bwd
-      real(kind = kreal), intent(in) :: X_FFT(ncomp_bwd, nnod_rtp)
+      integer(kind = kint), intent(in) :: ncomp_bwd
+      integer(kind = kint), intent(in) :: (nnod_rt, mphi
+      integer(kind = kint), intent(in) :: Nfft_r
+      real(kind = kreal), intent(in)                                    &
+     &                   :: X_FFT(ncomp_bwd, nnod_rt, Nfft_r)
 !
-      real(kind = kreal), intent(inout)  :: X_rtp(nnod_rtp, ncomp_bwd)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: X_rtp(nnod_rt, mphi, ncomp_bwd)
 !
-      integer(kind = kint) :: nd
+      integer(kind = kint) :: m, nd
 !
-!$omp parallel do private(nd)
-      do nd = 1, ncomp_bwd
-        X_rtp(1:nnod_rtp,nd) = X_FFT(nd,1:nnod_rtp)
+!$omp parallel do private(m,nd)
+      do m = 1, mphi
+        do nd = 1, ncomp_bwd
+          X_rtp(1:nnod_rt,m,nd) = X_FFT(nd,1:nnod_rt,m)
+        end do
       end do
 !$omp end parallel do
 !
@@ -244,18 +261,34 @@
 ! ------------------------------------------------------------------
 !
       subroutine copy_rtp_field_to_OMP_FFTW                             &
-     &         (nnod_rtp, ncomp_fwd, X_rtp, X_FFT)
+     &         (ncomp_fwd, nnod_rt, mphi, X_rtp, Nfft_r, X_FFT)
 !
-      integer(kind = kint), intent(in) :: nnod_rtp, ncomp_fwd
-      real(kind = kreal), intent(in)  :: X_rtp(nnod_rtp, ncomp_fwd)
+      integer(kind = kint), intent(in) :: ncomp_fwd
+      integer(kind = kint), intent(in) :: nnod_rt, mphi
+      integer(kind = kint), intent(in) :: Nfft_r
+      real(kind = kreal), intent(in)                                    &
+     &                   :: X_rtp(nnod_rt, mphi, ncomp_fwd)
 !
-      real(kind = kreal), intent(inout) :: X_FFT(ncomp_fwd, nnod_rtp)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: X_FFT(ncomp_fwd, nnod_rt, Nfft_r)
 !
-      integer(kind = kint) :: inod
+      integer(kind = kint) :: m, kl
 !
-!$omp parallel do private(inod)
-      do inod = 1, nnod_rtp
-        X_FFT(1:ncomp_fwd,inod) = X_rtp(inod,1:ncomp_fwd)
+!
+!$omp parallel do private(m,kl)
+      do m = 1, mphi
+        do kl = 1, nnod_rt
+          X_FFT(1:ncomp_fwd,kl,m) = X_rtp(ki,m,1:ncomp_fwd)
+        end do
+      end do
+!$omp end parallel do
+!
+      if(mphi .ge. Nfft_r) return
+!$omp parallel do private(m,kl)
+      do m = mphi+1, Nfft_r
+        do kl = 1, nnod_rt
+          X_FFT(1:ncomp_fwd,kl,m) = 0.0d0
+        end do
       end do
 !$omp end parallel do
 !
