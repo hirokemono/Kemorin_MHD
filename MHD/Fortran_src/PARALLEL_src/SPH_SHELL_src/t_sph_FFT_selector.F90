@@ -171,7 +171,7 @@
         type(work_for_OpenMP_FFTW) :: sph_OMP_FFTW
 #endif
 !
-#ifdef OMP_FFTW3
+#ifdef _AMD_ROCM_
 !>        Structure to use rocFFT
         type(work_for_field_rocFFT) :: sph_rocFFT
 #endif
