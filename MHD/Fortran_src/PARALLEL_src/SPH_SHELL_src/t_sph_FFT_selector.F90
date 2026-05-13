@@ -173,7 +173,7 @@
 !
 #ifdef OMP_FFTW3
 !>        Structure to use rocFFT
-        type(work_for_OpenMP_FFTW) :: sph_rocFFT
+        type(work_for_field_rocFFT) :: sph_rocFFT
 #endif
 !
       end type work_for_FFTs
