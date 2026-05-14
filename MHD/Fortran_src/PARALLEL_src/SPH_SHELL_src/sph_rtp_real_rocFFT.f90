@@ -90,6 +90,7 @@
       use calypso_multi_rocFFT
       use multi_pin_complex_rocFFT
       use comm_table_pout_real_rocFFT
+      use set_comm_table_rtp_OMP_FFTW
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(comm_tbl_from_FFTW), intent(in) :: comm_sph_rocFFT
@@ -137,6 +138,7 @@
       use calypso_multi_rocFFT
       use multi_pin_complex_rocFFT
       use comm_table_pout_real_rocFFT
+      use set_comm_table_rtp_OMP_FFTW
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp

@@ -122,9 +122,9 @@
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
       call pin_real_rocFFT_all_to_send                                  &
-     &  (sph_rtp%istack_rtp_rt_smp(np_smp), ncomp_fwd,                  &
-     &   int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1), comm_sph_rocFFT, &
-     &    n_WS, WS)
+     &   (sph_rtp%istack_rtp_rt_smp(np_smp), ncomp_fwd,                 &
+     &    int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1),                 &
+     &    comm_sph_rocFFT, n_WS, WS)
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
 !
       end subroutine prt_fwd_real_rocFFT_to_send

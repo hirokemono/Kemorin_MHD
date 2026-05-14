@@ -68,15 +68,15 @@
 !
       type(comm_tbl_from_FFTW), intent(inout) :: comm_sph_FFTW
 !
-      integer(kind = kint) ::  m, j, j0_rtp, ist_c
+      integer(kind = kint) ::  m, j, j0_rtp
       integer(kind = kint) ::  ic_rtp, is_rtp, ic_send, is_send
 !      integer(kind = kint) ::  i
 !
 !
 !$omp  parallel do                                                      &
-!$omp& private(j,m,j0_rtp,ist_c,ic_rtp,is_rtp,ic_send,is_send)
+!$omp& private(j,m,j0_rtp,ic_rtp,is_rtp,ic_send,is_send)
       do j = 1, nnod_rt
-        ist_c = 1 + Nfft_r * (j-1)
+!        ist_c = 1 + Nfft_r * (j-1)
         j0_rtp = 1 + (j-1) * istep_rtp(1)
         ic_send = irev_sr_rtp(j0_rtp)
         if(ic_send .le. ntot_sr_rtp) then
