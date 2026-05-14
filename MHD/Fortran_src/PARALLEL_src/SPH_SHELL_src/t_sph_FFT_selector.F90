@@ -287,8 +287,6 @@
      &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT)
         else
           if(id_rank .eq. 0) write(*,*) 'Use rtp rocFFT'
-          call init_rtp_FFTW_smp(sph_rtp, comm_rtp,                     &
-     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
           call init_rtp_complex_rocFFT(sph_rtp, comm_rtp,               &
      &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT)
         end if
@@ -687,8 +685,6 @@
      &       (sph_rtp, WK_FFTs%sph_rocFFT%comm_sph_rocFFT,              &
      &        WK_FFTs%sph_rocFFT%rocFFT_fwd, ncomp_fwd, n_WS,           &
      &        v_rtp(1,1), WS(1), WK_FFTs%sph_rocFFT%WK_rocFFT)
-!          call rtp_fwd_FFTW_smp_to_send(sph_rtp, ncomp_fwd, n_WS,      &
-!     &        v_rtp(1,1), WS(1), WK_FFTs%sph_fld_FFTW)
         end if
 #endif
 !
@@ -825,8 +821,6 @@
           call rtp_bwd_cplx_rocFFT_from_recv(sph_rtp, comm_rtp,         &
      &        WK_FFTs%sph_rocFFT%rocFFT_bwd, ncomp_bwd, n_WR, WR(1),    &
      &        v_rtp(1,1), WK_FFTs%sph_rocFFT%WK_rocFFT)
-!          call rtp_back_FFTW_smp_from_recv(sph_rtp, comm_rtp,          &
-!     &        ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)
         end if
 #endif
 !
