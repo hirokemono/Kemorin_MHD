@@ -593,6 +593,7 @@
      &                                  n_WS, v_rtp, WS, WK_FFTs)
 !
       use calypso_mpi
+      use sph_rtp_complex_rocFFT
       use sph_prt_complex_rocFFT
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -682,8 +683,12 @@
      &        WK_FFTs%sph_rocFFT%rocFFT_fwd, ncomp_fwd, n_WS,           &
      &        v_rtp(1,1), WS(1), WK_FFTs%sph_rocFFT%WK_rocFFT)
         else
-          call rtp_fwd_FFTW_smp_to_send(sph_rtp, ncomp_fwd, n_WS,       &
-     &        v_rtp(1,1), WS(1), WK_FFTs%sph_fld_FFTW)
+          call rtp_fwd_cplx_rocFFT_to_send                              &
+     &       (sph_rtp, WK_FFTs%sph_rocFFT%comm_sph_rocFFT,              &
+     &        WK_FFTs%sph_rocFFT%rocFFT_fwd, ncomp_fwd, n_WS,           &
+     &        v_rtp(1,1), WS(1), WK_FFTs%sph_rocFFT%WK_rocFFT)
+!          call rtp_fwd_FFTW_smp_to_send(sph_rtp, ncomp_fwd, n_WS,      &
+!     &        v_rtp(1,1), WS(1), WK_FFTs%sph_fld_FFTW)
         end if
 #endif
 !
@@ -725,6 +730,7 @@
      &        (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, v_rtp, WK_FFTs)
 !
       use calypso_mpi
+      use sph_rtp_complex_rocFFT
       use sph_prt_complex_rocFFT
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -812,14 +818,15 @@
      &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
      &      ) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
-          call prt_back_FFTW_smp_from_recv(sph_rtp, comm_rtp,           &
-     &        ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)
           call prt_bwd_cplx_rocFFT_from_recv(sph_rtp, comm_rtp,         &
      &        WK_FFTs%sph_rocFFT%rocFFT_bwd, ncomp_bwd, n_WR, WR(1),    &
      &        v_rtp(1,1), WK_FFTs%sph_rocFFT%WK_rocFFT)
         else
-          call rtp_back_FFTW_smp_from_recv(sph_rtp, comm_rtp,           &
-     &        ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)
+          call rtp_bwd_cplx_rocFFT_from_recv(sph_rtp, comm_rtp,         &
+     &        WK_FFTs%sph_rocFFT%rocFFT_bwd, ncomp_bwd, n_WR, WR(1),    &
+     &        v_rtp(1,1), WK_FFTs%sph_rocFFT%WK_rocFFT)
+!          call rtp_back_FFTW_smp_from_recv(sph_rtp, comm_rtp,          &
+!     &        ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)
         end if
 #endif
 !

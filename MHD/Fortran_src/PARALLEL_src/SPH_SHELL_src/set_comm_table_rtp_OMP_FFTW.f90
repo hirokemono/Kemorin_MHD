@@ -238,7 +238,7 @@
      &         (ncomp_bwd, nnod_rt, Nfft_r, X_FFT, mphi, X_rtp)
 !
       integer(kind = kint), intent(in) :: ncomp_bwd
-      integer(kind = kint), intent(in) :: (nnod_rt, mphi
+      integer(kind = kint), intent(in) :: nnod_rt, mphi
       integer(kind = kint), intent(in) :: Nfft_r
       real(kind = kreal), intent(in)                                    &
      &                   :: X_FFT(ncomp_bwd, nnod_rt, Nfft_r)
@@ -278,7 +278,7 @@
 !$omp parallel do private(m,kl)
       do m = 1, mphi
         do kl = 1, nnod_rt
-          X_FFT(1:ncomp_fwd,kl,m) = X_rtp(ki,m,1:ncomp_fwd)
+          X_FFT(1:ncomp_fwd,kl,m) = X_rtp(kl,m,1:ncomp_fwd)
         end do
       end do
 !$omp end parallel do

@@ -137,7 +137,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine prt_bwd_cplx_rocFFT_from_recv(sph_rtp, comm_rtp,       &
-     &         rocFFT_bwd, ncomp_bwd, n_WR, WR, X_rtp, WK_rocFFT)
+     &          rocFFT_bwd, ncomp_bwd, n_WR, WR, X_rtp, WK_rocFFT)
 !
       use m_elapsed_labels_SPH_TRNS
       use calypso_multi_rocFFT

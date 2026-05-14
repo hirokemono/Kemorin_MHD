@@ -108,9 +108,9 @@
       if(rocFFT_fwd%Ncomp .le. 0) return
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
-      call copy_rtp_field_to_OMP_FFTW(rocFFT_fwd%Ncomp,                 &
+      call copy_rtp_field_to_OMP_FFTW(int(rocFFT_fwd%Ncomp),            &
      &    sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3),       &
-     &    X_rtp(1,1), WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT(1))
+     &    X_rtp(1,1), int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1))
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)

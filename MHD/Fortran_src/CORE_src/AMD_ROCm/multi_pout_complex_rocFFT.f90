@@ -154,7 +154,6 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
-      integer(kind = kint) :: i, ist
 !
 !
       if(fwd%Ncomp .le. 0) return
@@ -194,7 +193,7 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
-      integer(kind = kint) :: i, ist
+      integer(c_size_t) :: i, ist
 !
 !
       if(bwd%Ncomp .le. 0) return
