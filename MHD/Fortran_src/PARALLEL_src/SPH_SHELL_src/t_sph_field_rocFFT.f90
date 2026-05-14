@@ -142,7 +142,7 @@
      &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, rocFFT_f)
 !
       use set_comm_table_prt_FFTW
-      use multi_pin_complex_rocFFT
+      use multi_pout_complex_rocFFT
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
