@@ -117,7 +117,7 @@
         ic_send = irev_sr_rtp(ic_rtp)
         if(ic_send .le. comm_sph_FFT%ntot_item) then
           comm_sph_FFT%kl_fftw(ic_send) = j
-          comm_sph_FFT%m_fftw(ic_send) =  2
+          comm_sph_FFT%m_fftw(ic_send) =  Nfft_c
           comm_sph_FFT%cnrm_sr_rtp(ic_send) = aNfft * ru
         end if
       end do
