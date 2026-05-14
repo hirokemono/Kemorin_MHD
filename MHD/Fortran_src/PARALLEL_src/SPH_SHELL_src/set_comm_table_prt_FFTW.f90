@@ -107,7 +107,7 @@
         ic_send = irev_sr_rtp(ic_rtp)
         if(ic_send .le. ntot_sr_rtp) then
           comm_sph_FFTW%kl_fftw(ic_send) = j
-          comm_sph_FFTW%m_fftw(ic_send) =  m
+          comm_sph_FFTW%m_fftw(ic_send) =  Nfft_c
           comm_sph_FFTW%cnrm_sr_rtp(ic_send) = aNfft * ru
         end if
 !        WS(ic_send) = aNfft * real(C_fft(ist_c))

@@ -141,7 +141,7 @@
       subroutine init_rtp_complex_rocFFT                                &
      &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, rocFFT_f)
 !
-      use set_comm_table_prt_FFTW
+      use set_comm_table_rtp_OMP_FFTW
       use multi_pout_complex_rocFFT
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
