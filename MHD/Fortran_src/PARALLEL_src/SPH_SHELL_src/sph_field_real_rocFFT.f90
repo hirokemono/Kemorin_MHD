@@ -85,7 +85,7 @@
       type(work_for_field_rocFFT), intent(inout) :: rocFFT_f
 !
       integer(kind = kint) :: howmany_bwd, howmany_fwd, nnod_rt
-      integer(kind = kint) :: Nfft_c4
+      integer(kind = kint) :: Nfft_r4
       real(kind = kreal) :: aNfft_d
 !
 !
@@ -102,11 +102,11 @@
       call alloc_comm_table_sph_FFTW                                    &
      &   (comm_rtp%ntot_item_sr, rocFFT_f%comm_sph_rocFFT)
 !
-      Nfft_c4 = int(rocFFT_f%WK_rocFFT%Nfft_c,kind=KIND(Nfft_c4))
+      Nfft_r4 = int(rocFFT_f%WK_rocFFT%Nfft_r,kind=KIND(Nfft_r4))
       aNfft_d = real(rocFFT_f%WK_rocFFT%aNfft,kind=KIND(aNfft_d))
       call set_comm_item_pin_real_rocFFT                                &
      &   (sph_rtp%nnod_rtp, sph_rtp%istep_rtp, nnod_rt,                 &
-     &    comm_rtp%ntot_item_sr, comm_rtp%irev_sr, Nfft_c4, aNfft_d,    &
+     &    comm_rtp%ntot_item_sr, comm_rtp%irev_sr, Nfft_r4, aNfft_d,    &
      &    rocFFT_f%comm_sph_rocFFT)
       rocFFT_f%iflag_fwd_rocFFT = nnod_rt * sph_rtp%nidx_rtp(3)         &
      &                           * ncomp_fwd
@@ -130,7 +130,7 @@
       type(work_for_field_rocFFT), intent(inout) :: rocFFT_f
 !
       integer(kind = kint) :: howmany_bwd, howmany_fwd, nnod_rt
-      integer(kind = kint) :: Nfft_c4
+      integer(kind = kint) :: Nfft_r4
       real(kind = kreal) :: aNfft_d
 !
 !
@@ -147,10 +147,10 @@
       call alloc_comm_table_sph_FFTW                                    &
      &   (comm_rtp%ntot_item_sr, rocFFT_f%comm_sph_rocFFT)
 !
-      Nfft_c4 = int(rocFFT_f%WK_rocFFT%Nfft_c,kind=KIND(Nfft_c4))
+      Nfft_r4 = int(rocFFT_f%WK_rocFFT%Nfft_r,kind=KIND(Nfft_r4))
       aNfft_d = real(rocFFT_f%WK_rocFFT%aNfft,kind=KIND(aNfft_d))
       call set_comm_item_pout_real_rocFFT(sph_rtp%nnod_rtp, nnod_rt,    &
-     &    comm_rtp%irev_sr, Nfft_c4, aNfft_d, rocFFT_f%comm_sph_rocFFT)
+     &    comm_rtp%irev_sr, Nfft_r4, aNfft_d, rocFFT_f%comm_sph_rocFFT)
       rocFFT_f%iflag_fwd_rocFFT = nnod_rt * sph_rtp%nidx_rtp(3)         &
      &                           * ncomp_fwd
       rocFFT_f%iflag_bwd_rocFFT = nnod_rt * sph_rtp%nidx_rtp(3)         &
