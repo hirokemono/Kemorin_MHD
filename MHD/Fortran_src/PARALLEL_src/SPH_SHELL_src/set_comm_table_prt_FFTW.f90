@@ -258,7 +258,7 @@
           end do
           ic_rtp = j0_rtp + istep_rtp(3)
           ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
-          C_fft(m,j,nd) = cmplx(WR(ic_recv), zero, kind(0d0))
+          C_fft(Nfft_c,j,nd) = cmplx(WR(ic_recv), zero, kind(0d0))
         end do
       end do
 !$omp end parallel do
