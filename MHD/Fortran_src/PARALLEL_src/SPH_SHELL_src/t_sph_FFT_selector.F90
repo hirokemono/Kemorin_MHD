@@ -187,6 +187,8 @@
       subroutine init_sph_FFT_select(id_rank, iflag_FFT_in,             &
      &         sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
 !
+      use sph_field_real_rocFFT
+!
       integer, intent(in) :: id_rank
       integer(kind = kint) :: iflag_FFT_in
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
@@ -277,16 +279,27 @@
 #endif
 !
 #ifdef _AMD_ROCM_
+      else if(WK_FFTs%iflag_FFT .eq. (iflag_real_rocFFT+iflag_once_fft) &
+     &      ) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(id_rank .eq. 0) write(*,*) 'Use prt real rocFFT'
+          call init_prt_real_rocFFT(sph_rtp, comm_rtp,                  &
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT)
+        else
+          if(id_rank .eq. 0) write(*,*) 'Use rtp real rocFFT'
+          call init_rtp_real_rocFFT(sph_rtp, comm_rtp,                  &
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT)
+        end if
+!
       else if(WK_FFTs%iflag_FFT .eq. (iflag_OMP_rocFFT+iflag_once_fft)  &
-     &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_real_rocFFT+iflag_once_fft) &
      &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
      &      ) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
-          if(id_rank .eq. 0) write(*,*) 'Use prt rocFFT'
+          if(id_rank .eq. 0) write(*,*) 'Use prt complex rocFFT'
           call init_prt_complex_rocFFT(sph_rtp, comm_rtp,               &
      &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT)
         else
-          if(id_rank .eq. 0) write(*,*) 'Use rtp rocFFT'
+          if(id_rank .eq. 0) write(*,*) 'Use rtp complex rocFFT'
           call init_rtp_complex_rocFFT(sph_rtp, comm_rtp,               &
      &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT)
         end if
@@ -406,8 +419,7 @@
      &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
      &      ) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize rocFFT'
-        call finalize_sph_complex_rocFFT(WK_FFTs%sph_rocFFT)
-        call finalize_sph_field_FFTW(WK_FFTs%sph_fld_FFTW)
+        call finalize_sph_rocFFT(WK_FFTs%sph_rocFFT)
 #endif
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
@@ -437,6 +449,8 @@
 !
       subroutine verify_sph_FFT_select                                  &
      &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
+!
+      use sph_field_real_rocFFT
 !
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -527,20 +541,29 @@
 #endif
 !
 #ifdef _AMD_ROCM_
+      else if(WK_FFTs%iflag_FFT .eq. (iflag_real_rocFFT+iflag_once_fft) &
+     &      ) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(iflag_debug .gt. 0) write(*,*) 'Use prt real rocFFT'
+          call verify_prt_real_rocFFT(sph_rtp, comm_rtp,                &
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT)
+        else
+          if(iflag_debug .gt. 0) write(*,*) 'Use rtp real rocFFT'
+          call verify_rtp_real_rocFFT(sph_rtp, comm_rtp,                &
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT)
+        end if
       else if(WK_FFTs%iflag_FFT .eq. (iflag_OMP_rocFFT+iflag_once_fft)  &
      &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_real_rocFFT+iflag_once_fft) &
      &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
      &      ) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
-          if(iflag_debug .gt. 0) write(*,*) 'Use prt rocFFT'
+          if(iflag_debug .gt. 0) write(*,*) 'Use prt complex rocFFT'
           call verify_prt_complex_rocFFT(sph_rtp, comm_rtp,             &
      &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT)
         else
-          if(iflag_debug .gt. 0) write(*,*) 'Use rtp rocFFT'
+          if(iflag_debug .gt. 0) write(*,*) 'Use rtp complex rocFFT'
           call verify_rtp_complex_rocFFT(sph_rtp, comm_rtp,             &
      &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT)
-          call verify_rtp_FFTW_smp(sph_rtp, comm_rtp,                   &
-     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
         end if
 #endif
 !
@@ -593,6 +616,8 @@
       use calypso_mpi
       use sph_rtp_complex_rocFFT
       use sph_prt_complex_rocFFT
+      use sph_rtp_real_rocFFT
+      use sph_prt_real_rocFFT
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
@@ -671,8 +696,20 @@
 #endif
 !
 #ifdef _AMD_ROCM_
+      else if(WK_FFTs%iflag_FFT .eq. (iflag_real_rocFFT+iflag_once_fft) &
+     &      ) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_fwd_real_rocFFT_to_send                              &
+     &       (sph_rtp, WK_FFTs%sph_rocFFT%comm_sph_rocFFT,              &
+     &        WK_FFTs%sph_rocFFT%rocFFT_fwd, ncomp_fwd, n_WS,           &
+     &        v_rtp(1,1), WS(1), WK_FFTs%sph_rocFFT%WK_rocFFT)
+        else
+          call rtp_fwd_real_rocFFT_to_send                              &
+     &       (sph_rtp, WK_FFTs%sph_rocFFT%comm_sph_rocFFT,              &
+     &        WK_FFTs%sph_rocFFT%rocFFT_fwd, ncomp_fwd, n_WS,           &
+     &        v_rtp(1,1), WS(1), WK_FFTs%sph_rocFFT%WK_rocFFT)
+        end if
       else if(WK_FFTs%iflag_FFT .eq. (iflag_OMP_rocFFT+iflag_once_fft)  &
-     &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_real_rocFFT+iflag_once_fft) &
      &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
      &      ) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
@@ -728,6 +765,8 @@
       use calypso_mpi
       use sph_rtp_complex_rocFFT
       use sph_prt_complex_rocFFT
+      use sph_rtp_real_rocFFT
+      use sph_prt_real_rocFFT
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -809,8 +848,18 @@
 #endif
 !
 #ifdef _AMD_ROCM_
+      else if(WK_FFTs%iflag_FFT .eq. (iflag_real_rocFFT+iflag_once_fft) &
+     &      ) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_bwd_real_rocFFT_from_recv(sph_rtp, comm_rtp,         &
+     &        WK_FFTs%sph_rocFFT%rocFFT_bwd, ncomp_bwd, n_WR, WR(1),    &
+     &        v_rtp(1,1), WK_FFTs%sph_rocFFT%WK_rocFFT)
+        else
+          call rtp_bwd_real_rocFFT_from_recv(sph_rtp, comm_rtp,         &
+     &        WK_FFTs%sph_rocFFT%rocFFT_bwd, ncomp_bwd, n_WR, WR(1),    &
+     &        v_rtp(1,1), WK_FFTs%sph_rocFFT%WK_rocFFT)
+        end if
       else if(WK_FFTs%iflag_FFT .eq. (iflag_OMP_rocFFT+iflag_once_fft)  &
-     &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_real_rocFFT+iflag_once_fft) &
      &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
      &      ) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then

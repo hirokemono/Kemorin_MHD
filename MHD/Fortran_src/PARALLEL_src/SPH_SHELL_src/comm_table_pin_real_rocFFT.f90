@@ -35,7 +35,7 @@
 !!        integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
 !!        real(kind=kreal), intent(in):: WR(n_WR)
 !!        real(kind = kreal), intent(inout)                             &
-!!     &              :: X_fft(Nfft_r,nnod_rt,ncomp_fwd)
+!!     &              :: X_fft(Nfft_r,nnod_rt,ncomp_bwd)
 !!@endverbatim
 !!
       module comm_table_pin_real_rocFFT
@@ -170,7 +170,7 @@
       real(kind=kreal), intent(in):: WR(n_WR)
 !
       real(kind = kreal), intent(inout)                                 &
-     &              :: X_fft(Nfft_r,nnod_rt,ncomp_fwd)
+     &              :: X_fft(Nfft_r,nnod_rt,ncomp_bwd)
 !
       integer(kind = kint) :: nd, j, j0_rtp, m
       integer(kind = kint) :: ic_rtp, is_rtp, ic_recv, is_recv
@@ -182,7 +182,7 @@
         j0_rtp = 1 + (j-1) * istep_rtp(1)
         do nd = 1, ncomp_bwd
           ic_recv = nd + (irev_sr_rtp(j0_rtp) - 1) * ncomp_bwd
-          X_fft(1,j,nd) = cmplx(WR(ic_recv), zero, kind(0d0))
+          X_fft(1,j,nd) = WR(ic_recv)
           do m = 2, Nfft_r/2-1
             ic_rtp = j0_rtp + (2*m-2) * istep_rtp(3)
             is_rtp = j0_rtp + (2*m-1) * istep_rtp(3)
@@ -193,7 +193,7 @@
           end do
           ic_rtp = j0_rtp + istep_rtp(3)
           ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
-          X_fft(Nfft_r-1,j,nd) = cmplx(WR(ic_recv), zero, kind(0d0))
+          X_fft(Nfft_r-1,j,nd) = WR(ic_recv)
         end do
       end do
 !$omp end parallel do
