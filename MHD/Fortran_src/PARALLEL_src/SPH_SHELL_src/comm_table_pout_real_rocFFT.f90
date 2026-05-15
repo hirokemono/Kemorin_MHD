@@ -166,8 +166,7 @@
 !$omp parallel do private(j,ic_recv)
       do j = 1, nnod_rt
         ic_recv = (irev_sr_rtp(j) - 1) * ncomp_bwd
-        X_fft(1:ncomp_bwd,j,1)                                          &
-     &     = cmplx(WR(ic_recv+1:ic_recv+ncomp_bwd), zero, kind(0d0))
+        X_fft(1:ncomp_bwd,j,1) = WR(ic_recv+1:ic_recv+ncomp_bwd)
       end do
 !$omp end parallel do
 !
@@ -190,8 +189,7 @@
       do j = 1, nnod_rt
         ic_rtp = j + nnod_rt
         ic_recv = (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
-        X_fft(1:ncomp_bwd,j,Nfft_r-1)                                   &
-     &     = cmplx(WR(ic_recv+1:ic_recv+ncomp_bwd), zero, kind(0d0))
+        X_fft(1:ncomp_bwd,j,Nfft_r-1) = WR(ic_recv+1:ic_recv+ncomp_bwd)
       end do
 !$omp end parallel do
 !

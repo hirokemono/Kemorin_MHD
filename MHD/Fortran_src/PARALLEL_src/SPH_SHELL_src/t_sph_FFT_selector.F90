@@ -553,7 +553,6 @@
      &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT)
         end if
       else if(WK_FFTs%iflag_FFT .eq. (iflag_OMP_rocFFT+iflag_once_fft)  &
-     &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_real_rocFFT+iflag_once_fft) &
      &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
      &      ) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
