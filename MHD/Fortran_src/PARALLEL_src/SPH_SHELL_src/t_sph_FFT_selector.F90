@@ -780,6 +780,8 @@
       use sph_prt_complex_rocFFT
       use sph_rtp_real_rocFFT
       use sph_prt_real_rocFFT
+      use sph_rtp_OpenMP_rocFFT
+      use sph_prt_OpenMP_rocFFT
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
