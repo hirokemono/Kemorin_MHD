@@ -153,11 +153,12 @@
       else if(iflag_FFT_MHD .eq. iflag_ISPACK3_COMPONENT) then
         iflag_res = iflag_ISPACK3_SINGLE
 !
-      else if(iflag_FFT .eq. iflag_rocFFT                               &
+      else if(iflag_FFT .eq. iflag_FFTW                                 &
+     &   .or. iflag_FFT .eq. iflag_rocFFT                               &
      &   .or. iflag_FFT .eq. iflag_real_rocFFT                          &
      &   .or. iflag_FFT .eq. iflag_OMP_rocFFT) then
         if(iflag_size .eq. iflag_once_fft)                              &
-     &               iflag_res = iflag_FFTW_DOMAIN
+     &               iflag_res = iflag_ISPACK3_DOMAIN
       end if
       set_FFT_mode_4_snapshot = iflag_res
 !
