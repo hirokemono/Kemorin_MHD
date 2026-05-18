@@ -280,6 +280,7 @@
 !
 #ifdef _AMD_ROCM_
       else if(WK_FFTs%iflag_FFT .eq. (iflag_real_rocFFT+iflag_once_fft) &
+     &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_OMP_rocFFT+iflag_once_fft)  &
      &      ) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           if(id_rank .eq. 0) write(*,*) 'Use prt real rocFFT'
@@ -291,8 +292,7 @@
      &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT)
         end if
 !
-      else if(WK_FFTs%iflag_FFT .eq. (iflag_OMP_rocFFT+iflag_once_fft)  &
-     &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
+      else if(WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
      &      ) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           if(id_rank .eq. 0) write(*,*) 'Use prt complex rocFFT'
@@ -542,6 +542,7 @@
 !
 #ifdef _AMD_ROCM_
       else if(WK_FFTs%iflag_FFT .eq. (iflag_real_rocFFT+iflag_once_fft) &
+     &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_OMP_rocFFT+iflag_once_fft)  &
      &      ) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           if(iflag_debug .gt. 0) write(*,*) 'Use prt real rocFFT'
@@ -552,8 +553,7 @@
           call verify_rtp_real_rocFFT(sph_rtp, comm_rtp,                &
      &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT)
         end if
-      else if(WK_FFTs%iflag_FFT .eq. (iflag_OMP_rocFFT+iflag_once_fft)  &
-     &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
+      else if(WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
      &      ) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           if(iflag_debug .gt. 0) write(*,*) 'Use prt complex rocFFT'
