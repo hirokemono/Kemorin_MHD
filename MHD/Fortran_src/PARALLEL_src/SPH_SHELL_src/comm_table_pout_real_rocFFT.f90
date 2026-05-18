@@ -23,7 +23,7 @@
 !!     &                   :: C_fft(0:1,ncomp_fwd,nnod_rt,Nfft_r/2)
 !!        type(comm_tbl_from_FFTW), intent(in) :: comm_sph_FFTW
 !!        integer(kind = kint), intent(in) :: n_WS
-!!        real (kind=kreal), intent(inout):: WS(n_WS)
+!!        real(kind = kreal), intent(inout) :: WS(n_WS)
 !!      subroutine pout_real_rocFFT_all_from_recv                       &
 !!     &         (nnod_rt, nnod_rtp, ncomp_bwd,                         &
 !!     &          n_WR, irev_sr_rtp, WR, Nfft_r, C_fft)
@@ -123,16 +123,16 @@
       type(comm_tbl_from_FFTW), intent(in) :: comm_sph_FFTW
       integer(kind = kint), intent(in) :: n_WS
 !
-      real (kind=kreal), intent(inout):: WS(n_WS)
+      real(kind = kreal), intent(inout) :: WS(n_WS)
 !
       integer(kind = kint) :: kl, m, j, inum, ic_send
 !
 !
 !$omp parallel do private(inum,kl,m,j,ic_send)
       do inum = 1, comm_sph_FFTW%ntot_item
-        kl =     comm_sph_FFTW%kl_fftw(inum)
-        m =  abs(comm_sph_FFTW%m_fftw(inum))
-        j = (ione - sign(ione,m)) / 2
+        kl =         comm_sph_FFTW%kl_fftw(inum)
+        m =      abs(comm_sph_FFTW%m_fftw(inum))
+        j = -(sign(1,comm_sph_FFTW%m_fftw(inum)) - 1) / 2
 !
         ic_send = (inum-1) * ncomp_fwd
         WS(ic_send+1:ic_send+ncomp_fwd)                                 &
