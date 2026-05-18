@@ -130,8 +130,8 @@
 !
 !$omp parallel do private(inum,kl,m,j,ic_send)
       do inum = 1, comm_sph_FFTW%ntot_item
-        kl = comm_sph_FFTW%kl_fftw(inum)
-        m =  comm_sph_FFTW%m_fftw(inum)
+        kl =     comm_sph_FFTW%kl_fftw(inum)
+        m =  abs(comm_sph_FFTW%m_fftw(inum))
         j = (ione - sign(ione,m)) / 2
 !
         ic_send = (inum-1) * ncomp_fwd
