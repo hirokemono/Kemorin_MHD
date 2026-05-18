@@ -202,6 +202,8 @@
       integer(kind = kint) :: ip, ist, ist_r, ist_c
 !
 !
+      if(ncomp_fwd .le. 0) return
+!
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
       call pout_FFT_from_rtp_field                                      &
      &   (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                           &
@@ -255,6 +257,8 @@
 !
       integer(kind = kint) :: ip, ist, ist_r, ist_c
 !
+!
+      if(ncomp_bwd .le. 0) return
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
       call pout_FFTW_smp_fields_from_recv                               &

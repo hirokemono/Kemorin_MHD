@@ -233,6 +233,8 @@
       type(work_for_OpenMP_FFTW), intent(inout) :: OFFTW
 !
 !
+      if(ncomp_fwd .le. 0) return
+!
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
       call copy_rtp_field_to_OMP_FFTW(ncomp_fwd,                        &
      &    sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3),       &
@@ -271,6 +273,8 @@
      &        :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
       type(work_for_OpenMP_FFTW), intent(inout) :: OFFTW
 !
+!
+      if(ncomp_bwd .le. 0) return
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
       call pout_OMP_FFTW_fields_from_recv                               &

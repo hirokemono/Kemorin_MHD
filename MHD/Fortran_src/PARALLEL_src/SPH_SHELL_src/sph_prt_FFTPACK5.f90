@@ -176,6 +176,8 @@
       integer(kind = kint) :: ierr
 !
 !
+      if(ncomp_fwd .le. 0) return
+!
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
       nsize = ncomp_fwd * sph_rtp%nnod_rtp
       call copy_nod_scalar_smp(nsize, X_rtp(1,1), fftpack_t%X(1))
@@ -228,6 +230,8 @@
       integer(kind = kint) :: num, nsize, ip, ist_fft
       integer(kind = kint) :: ierr
 !
+!
+      if(ncomp_bwd .le. 0) return
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
       call copy_prt_FFTPACK_from_recv                                   &

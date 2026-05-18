@@ -151,7 +151,7 @@
       else if(iflag_FFT_MHD .eq. iflag_FFTPACK_COMPONENT) then
         iflag_res = iflag_FFTPACK_SINGLE
       else if(iflag_FFT_MHD .eq. iflag_ISPACK3_COMPONENT) then
-        iflag_res = iflag_ISPACK3_ONCE
+        iflag_res = iflag_ISPACK3_SINGLE
 !
       else if(iflag_FFT .eq. iflag_rocFFT                               &
      &   .or. iflag_FFT .eq. iflag_real_rocFFT                          &

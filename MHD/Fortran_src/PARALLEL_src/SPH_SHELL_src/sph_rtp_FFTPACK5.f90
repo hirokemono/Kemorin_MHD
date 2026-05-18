@@ -173,6 +173,8 @@
       integer(kind = kint) :: ierr
 !
 !
+      if(ncomp_fwd .le. 0) return
+!
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
       call pout_FFT_from_rtp_field                                      &
      &  (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp, &
@@ -228,6 +230,8 @@
       integer(kind = kint) :: ip, ntot, nsize, ist_fft
       integer(kind = kint) :: ierr
 !
+!
+      if(ncomp_bwd .le. 0) return
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
       call copy_FFTPACK_field_from_recv                                 &

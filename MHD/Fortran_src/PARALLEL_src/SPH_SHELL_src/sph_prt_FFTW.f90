@@ -204,6 +204,8 @@
       integer(kind = kint) :: ip
 !
 !
+      if(ncomp_fwd .le. 0) return
+!
       ntot = sph_rtp%nnod_rtp * ncomp_fwd
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
       call copy_nod_scalar_smp(ntot, X_rtp(1,1), FFTW_f%X(1))
@@ -257,6 +259,8 @@
       integer(kind = kint) :: ist_r, ist_c, ntot
       integer(kind = kint) :: ip
 !
+!
+      if(ncomp_bwd .le. 0) return
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
       call pin_FFTW_fields_from_recv                                    &

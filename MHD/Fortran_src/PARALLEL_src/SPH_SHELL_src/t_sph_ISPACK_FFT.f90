@@ -229,6 +229,8 @@
       integer(kind = kint) :: ip, num, ntot, ist_fft
 !
 !
+      if(ncomp_fwd .le. 0) return
+!
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
       if(sph_rtp%istep_rtp(3) .eq. 1) then
         call copy_ISPACK_from_prt_field(sph_rtp%nnod_rtp,               &
@@ -287,6 +289,8 @@
 !
       integer(kind = kint) :: ip, num, ntot, ist_fft
 !
+!
+      if(ncomp_bwd .le. 0) return
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
       call copy_ISPACK_field_from_recv                                  &
