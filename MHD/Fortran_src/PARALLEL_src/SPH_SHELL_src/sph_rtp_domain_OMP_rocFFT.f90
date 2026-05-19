@@ -119,7 +119,7 @@
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
         call calypso_fwd_OpenMP_rocFFT(rocFFT_fwd%rocFFT_plan,          &
      &      rocFFT_fwd%rocFFT_wk_info, rocFFT_fwd%Ncomp,                &
-     &      WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT)
+     &      WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT(1))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
 !   normalization

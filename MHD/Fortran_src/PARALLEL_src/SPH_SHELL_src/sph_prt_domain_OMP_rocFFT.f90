@@ -119,8 +119,7 @@
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
         call calypso_fwd_OpenMP_rocFFT(rocFFT_fwd%rocFFT_plan,          &
      &      rocFFT_fwd%rocFFT_wk_info, rocFFT_fwd%Ncomp,                &
-     &      WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT,                       &
-     &      rocFFT_fwd%Nbytes, WK_rocFFT%data_ptr)
+     &      WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT(1))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
@@ -170,8 +169,7 @@
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
         call calypso_bwd_OpenMP_rocFFT(rocFFT_bwd%rocFFT_plan,          &
      &      rocFFT_bwd%rocFFT_wk_info, rocFFT_bwd%Ncomp,                &
-     &      WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT(1),                    &
-     &      rocFFT_bwd%Nbytes, WK_rocFFT%data_ptr)
+     &      WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT(1))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)

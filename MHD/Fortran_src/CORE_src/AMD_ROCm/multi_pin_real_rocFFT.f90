@@ -200,7 +200,7 @@
         start = OMP_GET_WTIME()
         call calypso_fwd_OpenMP_rocFFT                                  &
      &     (fwd%rocFFT_plan, fwd%rocFFT_wk_info,                        &
-     &      fwd%Ncomp, WK_fft%Nfft_r, WK_fft%X_rocFFT)
+     &      fwd%Ncomp, WK_fft%Nfft_r, WK_fft%X_rocFFT(1))
         elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
