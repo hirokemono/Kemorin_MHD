@@ -791,8 +791,12 @@
         end if
 !
       else if(WK_FFTs%iflag_FFT                                         &
-     &                  .eq. (iflag_real_rocFFT+iflag_domain_once)      &
-     &  .or.  WK_FFTs%iflag_FFT                                         &
+     &                 .eq. (iflag_real_rocFFT+iflag_domain_once)) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+        else
+        end if
+!
+      else if(WK_FFTs%iflag_FFT                                         &
      &                  .eq. (iflag_OMP_rocFFT+iflag_domain_once)) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
         else
@@ -975,9 +979,13 @@
         end if
 !
       else if(WK_FFTs%iflag_FFT                                         &
-     &                  .eq. (iflag_real_rocFFT+iflag_domain_once)      &
-     &  .or.  WK_FFTs%iflag_FFT                                         &
-     &                  .eq. (iflag_OMP_rocFFT+iflag_domain_once)) then
+     &                 .eq. (iflag_real_rocFFT+iflag_domain_once)) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+        else
+        end if
+!
+      else if(WK_FFTs%iflag_FFT                                         &
+     &                 .eq. (iflag_OMP_rocFFT+iflag_domain_once)) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
         else
         end if
