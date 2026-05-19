@@ -222,8 +222,9 @@
       call rocblasCheck(rocblas_dgemm(rocblas_handle, transa, transb,   &
      &    m, n, k, alpha, c_loc(A_mat), lda, c_loc(B_mat), ldb,         &
      &    beta, c_loc(C_mat), ldc))
-!$OMP end target data
+      call hipCheck(hipDeviceSynchronize())
 !$OMP target update from(C_mat)
+!$OMP end target data
 !$OMP target exit data map(delete:A_mat,B_mat,C_mat)
 !
       end subroutine calypso_OpenMP_rocBLAS_dgemm

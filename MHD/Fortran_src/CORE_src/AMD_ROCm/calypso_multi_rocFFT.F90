@@ -225,8 +225,8 @@
       call rocfftCheck(rocfft_execute(fwd_plan,                         &
      &    c_loc(X_rocFFT(1)), c_null_ptr, fwd_wk_info))
       call hipCheck(hipDeviceSynchronize())
-!$OMP end target data
 !$OMP target update from(X_rocFFT)
+!$OMP end target data
 !$OMP target exit data map(delete:X_rocFFT)
 !
       end subroutine calypso_fwd_OpenMP_rocFFT
@@ -249,8 +249,8 @@
       call rocfftCheck(rocfft_execute(bwd_plan, c_loc(X_rocFFT(1)),     &
      &                                c_null_ptr, bwd_wk_info))
       call hipCheck(hipDeviceSynchronize())
-!$OMP end target data
 !$OMP target update from(X_rocFFT)
+!$OMP end target data
 !$OMP target exit data map(delete:X_rocFFT)
 !
       end subroutine calypso_bwd_OpenMP_rocFFT
