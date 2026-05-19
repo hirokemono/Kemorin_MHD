@@ -108,7 +108,7 @@
       integer(kind = kint) :: nd
 !
 !
-      do nd = 1, ncomp_bwd
+      do nd = 1, ncomp_fwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
         call copy_pin_fld_to_rocFFT_real                                &
      &     (rocFFT_fwd%Ncomp, rocFFT_fwd%Nfft, X_rtp(1,nd),             &

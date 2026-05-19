@@ -108,7 +108,7 @@
       integer(kind = kint) :: nd
 !
 !
-      do nd = 1, ncomp_bwd
+      do nd = 1, ncomp_fwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
         call copy_rtp_field_to_OMP_FFTW(ione,                           &
      &      sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3),     &
@@ -129,7 +129,7 @@
      &     (nd, sph_rtp%istack_rtp_rt_smp(np_smp),                      &
      &      int(WK_rocFFT%Nfft_c), ncomp_fwd, WK_rocFFT%C_rocFFT(1),    &
      &      comm_sph_rocFFT, n_WS, WS(1))
-        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)\
+        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
       end do
 !
       end subroutine rtp_dmn_fwd_c_rocFFT_from_recv

@@ -670,6 +670,8 @@
       use sph_prt_real_rocFFT
       use sph_rtp_OpenMP_rocFFT
       use sph_prt_OpenMP_rocFFT
+      use sph_rtp_domain_cplx_rocFFT
+      use sph_prt_domain_cplx_rocFFT
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
@@ -787,6 +789,28 @@
      &        WK_FFTs%sph_rocFFT%rocFFT_fwd, ncomp_fwd, n_WS,           &
      &        v_rtp(1,1), WS(1), WK_FFTs%sph_rocFFT%WK_rocFFT)
         end if
+!
+      else if(WK_FFTs%iflag_FFT                                         &
+     &                  .eq. (iflag_real_rocFFT+iflag_domain_once)      &
+     &  .or.  WK_FFTs%iflag_FFT                                         &
+     &                  .eq. (iflag_OMP_rocFFT+iflag_domain_once)) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+        else
+        end if
+!
+      else if(WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_domain_once)   &
+     &      ) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_dmn_bwd_c_rocFFT_from_recv                           &
+     &       (sph_rtp, WK_FFTs%sph_rocFFT%comm_sph_rocFFT,              &
+     &        WK_FFTs%sph_rocFFT%rocFFT_fwd, ncomp_fwd, n_WS,           &
+     &        v_rtp(1,1), WS(1), WK_FFTs%sph_rocFFT%WK_rocFFT)
+        else
+          call rtp_dmn_fwd_c_rocFFT_from_recv                           &
+     &       (sph_rtp, WK_FFTs%sph_rocFFT%comm_sph_rocFFT,              &
+     &        WK_FFTs%sph_rocFFT%rocFFT_fwd, ncomp_fwd, n_WS,           &
+     &        v_rtp(1,1), WS(1), WK_FFTs%sph_rocFFT%WK_rocFFT)
+        end if
 #endif
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
@@ -833,6 +857,8 @@
       use sph_prt_real_rocFFT
       use sph_rtp_OpenMP_rocFFT
       use sph_prt_OpenMP_rocFFT
+      use sph_rtp_domain_cplx_rocFFT
+      use sph_prt_domain_cplx_rocFFT
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -944,6 +970,26 @@
      &        v_rtp(1,1), WK_FFTs%sph_rocFFT%WK_rocFFT)
         else
           call rtp_bwd_cplx_rocFFT_from_recv(sph_rtp, comm_rtp,         &
+     &        WK_FFTs%sph_rocFFT%rocFFT_bwd, ncomp_bwd, n_WR, WR(1),    &
+     &        v_rtp(1,1), WK_FFTs%sph_rocFFT%WK_rocFFT)
+        end if
+!
+      else if(WK_FFTs%iflag_FFT                                         &
+     &                  .eq. (iflag_real_rocFFT+iflag_domain_once)      &
+     &  .or.  WK_FFTs%iflag_FFT                                         &
+     &                  .eq. (iflag_OMP_rocFFT+iflag_domain_once)) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+        else
+        end if
+!
+      else if(WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_domain_once)   &
+     &      ) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_dmn_bwd_c_rocFFT_from_recv(sph_rtp, comm_rtp,        &
+     &        WK_FFTs%sph_rocFFT%rocFFT_bwd, ncomp_bwd, n_WR, WR(1),    &
+     &        v_rtp(1,1), WK_FFTs%sph_rocFFT%WK_rocFFT)
+        else
+          call rtp_dmn_bwd_c_rocFFT_from_recv(sph_rtp, comm_rtp,        &
      &        WK_FFTs%sph_rocFFT%rocFFT_bwd, ncomp_bwd, n_WR, WR(1),    &
      &        v_rtp(1,1), WK_FFTs%sph_rocFFT%WK_rocFFT)
         end if
