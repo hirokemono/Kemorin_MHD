@@ -158,7 +158,7 @@
      &   .or. iflag_FFT .eq. iflag_real_rocFFT                          &
      &   .or. iflag_FFT .eq. iflag_OMP_rocFFT) then
         if(iflag_size .eq. iflag_once_fft)                              &
-     &               iflag_res = iflag_ISPACK3
+     &               iflag_res = iflag_FFT + iflag_domain_once
       end if
       set_FFT_mode_4_snapshot = iflag_res
 !
