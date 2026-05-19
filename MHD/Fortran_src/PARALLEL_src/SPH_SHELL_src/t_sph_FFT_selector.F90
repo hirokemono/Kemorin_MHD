@@ -825,7 +825,7 @@
       else if(WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_domain_once)   &
      &      ) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
-          call prt_dmn_bwd_c_rocFFT_from_recv                           &
+          call prt_dmn_fwd_c_rocFFT_from_recv                           &
      &       (sph_rtp, WK_FFTs%sph_rocFFT%comm_sph_rocFFT,              &
      &        WK_FFTs%sph_rocFFT%rocFFT_fwd, ncomp_fwd, n_WS,           &
      &        v_rtp(1,1), WS(1), WK_FFTs%sph_rocFFT%WK_rocFFT)
