@@ -17,16 +17,25 @@
 !!
 !!      subroutine pout_real_rocFFT_all_to_send(nnod_rt, Nfft_r,        &
 !!     &          ncomp_fwd, C_fft, comm_sph_FFTW, n_WS, WS)
-!!        integer(kind = kint), intent(in) :: nnod_rt, Nfft_r
-!!        integer(kind = kint), intent(in) :: ncomp_fwd
 !!        real(kind = kreal), intent(in)                                &
 !!     &                   :: C_fft(0:1,ncomp_fwd,nnod_rt,Nfft_r/2)
+!!      subroutine pout_real_rocFFT_dmn_to_send(nd, nnod_rt, Nfft_r,    &
+!!     &          ncomp_fwd, C_fft, comm_sph_FFTW, n_WS, WS)
+!!        integer(kind = kint), intent(in) :: nd
+!!        integer(kind = kint), intent(in) :: nnod_rt, Nfft_r
+!!        integer(kind = kint), intent(in) :: ncomp_fwd
+!!        real(kind = kreal), intent(in) :: C_fft(0:1,nnod_rt,Nfft_r/2)
 !!        type(comm_tbl_from_FFTW), intent(in) :: comm_sph_FFTW
 !!        integer(kind = kint), intent(in) :: n_WS
 !!        real(kind = kreal), intent(inout) :: WS(n_WS)
 !!      subroutine pout_real_rocFFT_all_from_recv                       &
 !!     &         (nnod_rt, nnod_rtp, ncomp_bwd,                         &
 !!     &          n_WR, irev_sr_rtp, WR, Nfft_r, C_fft)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                     :: C_fft(0:1,ncomp_bwd,nnod_rt,Nfft_r/2)
+!!      subroutine pout_real_rocFFT_dmn_from_recv(nd, nnod_rt, nnod_rtp,&
+!!     &          ncomp_bwd, n_WR, irev_sr_rtp, WR, Nfft_r, C_fft)
+!!        integer(kind = kint), intent(in) :: nd
 !!        integer(kind = kint), intent(in) :: Nfft_r, nnod_rt
 !!        integer(kind = kint), intent(in) :: nnod_rtp
 !!        integer(kind = kint), intent(in) :: ncomp_bwd
@@ -34,7 +43,7 @@
 !!        integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
 !!        real(kind = kreal), intent(in):: WR(n_WR)
 !!        real(kind = kreal), intent(inout)                             &
-!!     &                     :: C_fft(0:1,ncomp_bwd,nnod_rt,Nfft_r/2)
+!!     &                   :: C_fft(0:1,nnod_rt,Nfft_r/2)
 !!@endverbatim
 !!
       module comm_table_pout_real_rocFFT
@@ -145,6 +154,39 @@
 !
 ! ------------------------------------------------------------------
 !
+      subroutine pout_real_rocFFT_dmn_to_send(nd, nnod_rt, Nfft_r,      &
+     &          ncomp_fwd, C_fft, comm_sph_FFTW, n_WS, WS)
+!
+      integer(kind = kint), intent(in) :: nd
+      integer(kind = kint), intent(in) :: nnod_rt, Nfft_r
+      integer(kind = kint), intent(in) :: ncomp_fwd
+!
+      real(kind = kreal), intent(in) :: C_fft(0:1,nnod_rt,Nfft_r/2)
+      type(comm_tbl_from_FFTW), intent(in) :: comm_sph_FFTW
+      integer(kind = kint), intent(in) :: n_WS
+!
+      real(kind = kreal), intent(inout) :: WS(n_WS)
+!
+      integer(kind = kint) :: kl, m, j, inum, ic_send
+!
+!
+!$omp parallel do private(inum,kl,m,j,ic_send)
+      do inum = 1, comm_sph_FFTW%ntot_item
+        kl =         comm_sph_FFTW%kl_fftw(inum)
+        m =      abs(comm_sph_FFTW%m_fftw(inum))
+        j = -(sign(1,comm_sph_FFTW%m_fftw(inum)) - 1) / 2
+!
+        ic_send = nd + (inum-1) * ncomp_fwd
+        WS(ic_send) = real(comm_sph_FFTW%cnrm_sr_rtp(inum))             &
+     &               * C_fft(j,kl,m)
+      end do
+!$end parallel do
+!
+      end subroutine pout_real_rocFFT_dmn_to_send
+!
+! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
       subroutine pout_real_rocFFT_all_from_recv                         &
      &         (nnod_rt, nnod_rtp, ncomp_bwd,                           &
      &          n_WR, irev_sr_rtp, WR, Nfft_r, C_fft)
@@ -198,6 +240,60 @@
 !$omp end parallel do
 !
       end subroutine pout_real_rocFFT_all_from_recv
+!
+! ------------------------------------------------------------------
+!
+      subroutine pout_real_rocFFT_dmn_from_recv(nd, nnod_rt, nnod_rtp,  &
+     &          ncomp_bwd, n_WR, irev_sr_rtp, WR, Nfft_r, C_fft)
+!
+      integer(kind = kint), intent(in) :: nd
+      integer(kind = kint), intent(in) :: Nfft_r, nnod_rt
+!
+      integer(kind = kint), intent(in) :: nnod_rtp
+      integer(kind = kint), intent(in) :: ncomp_bwd
+      integer(kind = kint), intent(in) :: n_WR
+      integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
+      real(kind = kreal), intent(in):: WR(n_WR)
+!
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: C_fft(0:1,nnod_rt,Nfft_r/2)
+!
+      integer(kind = kint) :: m, j, ic_rtp, is_rtp, ic_recv, is_recv
+!
+!
+!   normalization
+!$omp parallel do private(j,ic_recv)
+      do j = 1, nnod_rt
+        ic_recv = nd + (irev_sr_rtp(j) - 1) * ncomp_bwd
+        C_fft(0,j,1) = WR(ic_recv)
+        C_fft(1,j,1) = zero
+      end do
+!$omp end parallel do
+!
+!$omp parallel do private(m,j,ic_rtp,is_rtp,ic_recv,is_recv)
+      do m = 2, Nfft_r/2-1
+        do j = 1, nnod_rt
+          ic_rtp = j + (2*m-2) * nnod_rt
+          is_rtp = j + (2*m-1) * nnod_rt
+          ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
+          is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
+          C_fft(0,j,m) =  half * WR(ic_recv)
+          C_fft(1,j,m) = -half * WR(is_recv)
+        end do
+      end do
+!$omp end parallel do
+!
+      m = Nfft_r/2
+!$omp parallel do private(j,ic_rtp,ic_recv)
+      do j = 1, nnod_rt
+        ic_rtp = j + nnod_rt
+        ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
+        C_fft(0,j,m) = WR(ic_recv)
+        C_fft(1,j,m) = zero
+      end do
+!$omp end parallel do
+!
+      end subroutine pout_real_rocFFT_dmn_from_recv
 !
 ! ------------------------------------------------------------------
 !
