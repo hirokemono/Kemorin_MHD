@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine prt_dmn_fwd_real_rocFFT_fm_recv                      &
+!!      subroutine prt_dmn_fwd_real_rocFFT_to_send                      &
 !!     &         (sph_rtp, comm_sph_rocFFT, rocFFT_fwd, ncomp_fwd,      &
 !!     &          n_WS, X_rtp, WS, WK_rocFFT)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -84,7 +84,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine prt_dmn_fwd_real_rocFFT_fm_recv                        &
+      subroutine prt_dmn_fwd_real_rocFFT_to_send                        &
      &         (sph_rtp, comm_sph_rocFFT, rocFFT_fwd, ncomp_fwd,        &
      &          n_WS, X_rtp, WS, WK_rocFFT)
 !
@@ -131,7 +131,7 @@
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
       end do
 !
-      end subroutine prt_dmn_fwd_real_rocFFT_fm_recv
+      end subroutine prt_dmn_fwd_real_rocFFT_to_send
 !
 ! ------------------------------------------------------------------
 !
