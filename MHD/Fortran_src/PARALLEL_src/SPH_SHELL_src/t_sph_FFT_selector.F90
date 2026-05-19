@@ -303,6 +303,32 @@
           call init_rtp_complex_rocFFT(sph_rtp, comm_rtp,               &
      &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT)
         end if
+!
+      else if(WK_FFTs%iflag_FFT                                         &
+     &                  .eq. (iflag_real_rocFFT+iflag_domain_once)      &
+     &  .or.  WK_FFTs%iflag_FFT                                         &
+     &                  .eq. (iflag_OMP_rocFFT+iflag_domain_once)) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(id_rank .eq. 0) write(*,*) 'Use prt real rocFFT'
+          call init_prt_real_rocFFT(sph_rtp, comm_rtp, ione, ione,      &
+     &                              WK_FFTs%sph_rocFFT)
+        else
+          if(id_rank .eq. 0) write(*,*) 'Use rtp real rocFFT'
+          call init_rtp_real_rocFFT(sph_rtp, comm_rtp, ione, ione,      &
+     &                              WK_FFTs%sph_rocFFT)
+        end if
+!
+      else if(WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_domain_once)   &
+     &      ) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(id_rank .eq. 0) write(*,*) 'Use prt complex rocFFT'
+          call init_prt_complex_rocFFT(sph_rtp, comm_rtp, ione, ione,   &
+     &                                 WK_FFTs%sph_rocFFT)
+        else
+          if(id_rank .eq. 0) write(*,*) 'Use rtp complex rocFFT'
+          call init_rtp_complex_rocFFT(sph_rtp, comm_rtp, ione, ione,   &
+     &                                 WK_FFTs%sph_rocFFT)
+        end if
 #endif
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
@@ -414,10 +440,9 @@
 #endif
 !
 #ifdef _AMD_ROCM_
-      else if(WK_FFTs%iflag_FFT .eq. (iflag_OMP_rocFFT+iflag_once_fft)  &
-     &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_real_rocFFT+iflag_once_fft) &
-     &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
-     &      ) then
+      else if((WK_FFTs%iflag_FFT/10 .eq. iflag_OMP_rocFFT)              &
+     &  .or.  (WK_FFTs%iflag_FFT/10 .eq. iflag_real_rocFFT)             &
+     &  .or.  (WK_FFTs%iflag_FFT/10 .eq. iflag_rocFFT)) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize rocFFT'
         call finalize_sph_rocFFT(WK_FFTs%sph_rocFFT)
 #endif
@@ -563,6 +588,32 @@
           if(iflag_debug .gt. 0) write(*,*) 'Use rtp complex rocFFT'
           call verify_rtp_complex_rocFFT(sph_rtp, comm_rtp,             &
      &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT)
+        end if
+!
+      else if(WK_FFTs%iflag_FFT                                         &
+     &                  .eq. (iflag_real_rocFFT+iflag_domain_once)      &
+     &  .or.  WK_FFTs%iflag_FFT                                         &
+     &                  .eq. (iflag_OMP_rocFFT+iflag_domain_once)) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(id_rank .eq. 0) write(*,*) 'Use prt real rocFFT'
+          call verify_prt_real_rocFFT(sph_rtp, comm_rtp, ione, ione,    &
+     &                              WK_FFTs%sph_rocFFT)
+        else
+          if(id_rank .eq. 0) write(*,*) 'Use rtp real rocFFT'
+          call verify_rtp_real_rocFFT(sph_rtp, comm_rtp, ione, ione,    &
+     &                              WK_FFTs%sph_rocFFT)
+        end if
+!
+      else if(WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_domain_once)   &
+     &      ) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(id_rank .eq. 0) write(*,*) 'Use prt complex rocFFT'
+          call verify_prt_complex_rocFFT(sph_rtp, comm_rtp, ione, ione, &
+     &                                 WK_FFTs%sph_rocFFT)
+        else
+          if(id_rank .eq. 0) write(*,*) 'Use rtp complex rocFFT'
+          call verify_rtp_complex_rocFFT(sph_rtp, comm_rtp, ione, ione, &
+     &                                 WK_FFTs%sph_rocFFT)
         end if
 #endif
 !

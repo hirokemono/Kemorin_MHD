@@ -133,8 +133,8 @@
 !$OMP target data use_device_addr(A,B,C)
         call omp_rocBLAS_dgemm(rocblas_handle, transa, transb, m, n, k, &
      &      alpha, c_loc(A), lda, c_loc(B), ldb, beta, c_loc(C), ldc)
-!$OMP end target data
 !$OMP target update from(C)
+!$OMP end target data
 !$OMP target exit data map(delete:A,B,C)
         call calypso_fin_rocBLAS(rocblas_handle)
         elapsed(iloop) = OMP_GET_WTIME() - start
