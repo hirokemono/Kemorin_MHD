@@ -128,8 +128,8 @@
 !
 #ifdef _AMD_ROCM_
       else if(iflag_matmul .eq. iflag_OMP_offload) then
-        call calypso_OpenMP_target_DGEMM(nkr_c, n_jk_c, nl_rtm_c,       &
-     &      one_c, V_kl, nkr_c, P_lj, nl_rtm_c, zero_c, S_kj, nkr_c)
+        call matmat_OMP_target_leg_trans(nkr, n_jk, nl_rtm,             &
+     &                                   V_kl, P_lj, S_kj)
       else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
         call calypso_OpenMP_rocBLAS_dgemm                               &
      &     (rocBLAS_WK%handle, rocBLAS_WK%transa, rocBLAS_WK%transb,    &
@@ -188,9 +188,8 @@
 !
 #ifdef _AMD_ROCM_
       else if(iflag_matmul .eq. iflag_OMP_offload) then
-        call calypso_OpenMP_target_DGEMM                                &
-     &     (nl_rtm_c, nkr_c, n_jk_c, one_c,                             &
-     &      P_lj, nl_rtm_c, S_jk, n_jk_c, zero_c, V_lk, nl_rtm_c)
+        call matmat_OMP_target_leg_trans(nl_rtm, nkr, n_jk,             &
+     &                                   P_lj, S_jk, V_lk)
       else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
         call calypso_OpenMP_rocBLAS_dgemm                               &
      &     (rocBLAS_WK%handle, rocBLAS_WK%transa, rocBLAS_WK%transb,    &
@@ -248,9 +247,8 @@
 !
 #ifdef _AMD_ROCM_
       else if(iflag_matmul .eq. iflag_OMP_offload) then
-        call calypso_OpenMP_target_DGEMM                                &
-     &     (n_jk_c, nkr_c, nl_rtm_c, one_c,                             &
-     &      P_jl, n_jk_c, V_lk, nl_rtm_c, zero_c, S_jk, n_jk_c)
+        call matmat_OMP_target_leg_trans(n_jk, nkr, nl_rtm,             &
+     &                                   P_jl, V_lk, S_jk)
       else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
         call calypso_OpenMP_rocBLAS_dgemm                               &
      &     (rocBLAS_WK%handle, rocBLAS_WK%transa, rocBLAS_WK%transb,    &
@@ -309,9 +307,8 @@
 !
 #ifdef _AMD_ROCM_
       else if(iflag_matmul .eq. iflag_OMP_offload) then
-        call calypso_OpenMP_target_DGEMM                                &
-     &     (nkr_c, nl_rtm_c, n_jk_c, one_c,                             &
-     &      S_kj, nkr_c, P_jl, n_jk_c, zero_c, V_kl, nkr_c)
+        call matmat_OMP_target_leg_trans(nkr, nl_rtm, n_jk,             &
+     &                                   S_kj, P_jl, V_kl)
       else if(iflag_matmul .eq. iflag_OMP_rocBLAS) then
         call calypso_OpenMP_rocBLAS_dgemm                               &
      &     (rocBLAS_WK%handle, rocBLAS_WK%transa, rocBLAS_WK%transb,    &

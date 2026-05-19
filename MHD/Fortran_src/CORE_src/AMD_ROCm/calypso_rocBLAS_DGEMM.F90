@@ -7,6 +7,12 @@
 !>@brief Array and loop sizes for DGEMM tests
 !!
 !!@verbatim
+!!      subroutine matmat_OMP_target_leg_trans(np1, np2, nab,           &
+!!     &                                       Amat, Bmat, Prod)
+!!        integer(kind = kint), intent(in) :: nab, np2, np1
+!!        real(kind = kreal), intent(in) :: Amat(np1,nab)
+!!        real(kind = kreal), intent(in) :: Bmat(nab,np2)
+!!        real(kind = kreal), intent(inout) :: Prod(np1,np2)
 !!      subroutine calypso_OpenMP_target_DGEMM                          &
 !!     &         (m, n, k, alpha, A, lda, B, ldb, beta, C, ldc)
 !!        integer(c_int), intent(in) :: m, n, k
@@ -65,6 +71,36 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine matmat_OMP_target_leg_trans(np1, np2, nab,             &
+     &                                       Amat, Bmat, Prod)
+!
+      integer(kind = kint), intent(in) :: nab, np2, np1
+      real(kind = kreal), intent(in) :: Amat(np1,nab)
+      real(kind = kreal), intent(in) :: Bmat(nab,np2)
+!
+      real(kind = kreal), intent(inout) :: Prod(np1,np2)
+!
+      integer(kind = kint) :: jj, kk, ll
+      real(kind = kreal) :: s
+!
+!
+!$omp  target teams distribute                                          &
+!$omp& parallel do collapse(2) private(kk,ll,jj,s)
+      do kk = 1, np2
+        do ll = 1, np1
+          s = 0.0d0
+          do jj = 1, nab
+            s = s + Amat(ll,jj) * Bmat(jj,kk)
+          end do
+          Prod(ll,kk) = s
+        end do
+      end do
+!$omp end target teams distribute parallel do
+!
+      end subroutine matmat_OMP_target_leg_trans
+!
+!  ---------------------------------------------------------------------
+!
       subroutine calypso_OpenMP_target_DGEMM                            &
      &         (m, n, k, alpha, A, lda, B, ldb, beta, C, ldc)
 !
@@ -77,16 +113,18 @@
       real(kind = kreal), intent(inout) :: C(ldc,n)
 !
       integer(kind = kint) :: i, j, ij
+      real(kind = kreal) :: D
 !
 !
-!$OMP target teams distribute parallel do collapse(2)
+!$OMP  target teams distribute                                          &
+!$omp& parallel do collapse(2) private(i,j,ij,D)
       do j = 1, n
         do i = 1, m
-          C(i,j) = beta * C(i,j)
-!
+          D = 0.0d0
           do ij = 1, k
-            C(i,j) = C(i,j) + alpha * A(i,ij) * B(ij,j)
+            D = D + A(i,ij) * B(ij,j)
           end do
+          C(i,j) = beta * C(i,j) + alpha * D
         end do
       end do
 !$OMP end target teams distribute parallel do
