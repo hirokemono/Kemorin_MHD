@@ -189,6 +189,7 @@
       integer(kind = kint) :: ierr
 !
 !
+      flag_FFT = .TRUE.
       if(ncomp_fwd .le. 0) return
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
@@ -216,8 +217,6 @@
      &   (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, ncomp_fwd,                &
      &    fftpack_t%X(1), fftpack_t%comm_sph_FFTPACK, n_WS, WS)
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
-!
-      flag_FFT = .TRUE.
 !
       end subroutine prt_RFFTMF_to_send
 !
@@ -247,6 +246,7 @@
       integer(kind = kint) :: ierr
 !
 !
+      flag_FFT = .TRUE.
       if(ncomp_bwd .le. 0) return
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
@@ -275,8 +275,6 @@
       nsize = ncomp_bwd * sph_rtp%nnod_rtp
       call copy_nod_scalar_smp(nsize, fftpack_t%X(1), X_rtp(1,1))
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
-!
-      flag_FFT = .TRUE.
 !
       end subroutine prt_RFFTMB_from_recv
 !

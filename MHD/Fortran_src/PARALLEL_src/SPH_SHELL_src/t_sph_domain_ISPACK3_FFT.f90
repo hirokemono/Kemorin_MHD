@@ -24,8 +24,8 @@
 !! wrapper subroutine for initierize FFT for ISPACK
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sph_domain_FXRTFA_to_send                            &
-!!     &         (sph_rtp, ncomp_fwd, n_WS, X_rtp, WS, ispack3_d)
+!!      subroutine sph_domain_FXRTFA_to_send(sph_rtp, ncomp_fwd,        &
+!!     &          n_WS, X_rtp, WS, ispack3_d, flag_FFT)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        integer(kind = kint_gl), intent(in) :: ncomp_fwd
 !!        real(kind = kreal), intent(in)                                &
@@ -33,6 +33,7 @@
 !!        integer(kind = kint), intent(in) :: n_WS
 !!        real (kind=kreal), intent(inout):: WS(n_WS)
 !!        type(work_for_domain_ispack3), intent(inout) :: ispack3_d
+!!        logical, intent(inout) :: flag_FFT
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by ISPACK
@@ -47,7 +48,7 @@
 !! ------------------------------------------------------------------
 !!
 !!      subroutine sph_domain_FXRTBA_from_recv(sph_rtp, comm_rtp,       &
-!!     &          ncomp_bwd, n_WR, WR, X_rtp, ispack3_d)
+!!     &          ncomp_bwd, n_WR, WR, X_rtp, ispack3_d, flag_FFT)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
 !!        integer(kind = kint_gl), intent(in) :: ncomp_bwd
@@ -56,6 +57,7 @@
 !!        real(kind = kreal), intent(inout)                             &
 !!       &     :: X_rtp(irt_rtp_smp_stack(np_smp),nphi_rtp,ncomp_bwd)
 !!        type(work_for_domain_ispack3), intent(inout) :: ispack3_d
+!!        logical, intent(inout) :: flag_FFT
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by ISPACK
@@ -215,8 +217,8 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine sph_domain_FXRTFA_to_send                              &
-     &         (sph_rtp, ncomp_fwd, n_WS, X_rtp, WS, ispack3_d)
+      subroutine sph_domain_FXRTFA_to_send(sph_rtp, ncomp_fwd,          &
+     &          n_WS, X_rtp, WS, ispack3_d, flag_FFT)
 !
       use transfer_to_long_integers
       use set_comm_table_rtp_ISPACK
@@ -233,10 +235,12 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
       type(work_for_domain_ispack3), intent(inout) :: ispack3_d
+      logical, intent(inout) :: flag_FFT
 !
       integer(kind = kint) :: ip, nd, num, ist_fft
 !
 !
+      flag_FFT = .TRUE.
       do nd = 1, ncomp_fwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
         if(sph_rtp%istep_rtp(3) .eq. 1) then
@@ -276,7 +280,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine sph_domain_FXRTBA_from_recv(sph_rtp, comm_rtp,         &
-     &          ncomp_bwd, n_WR, WR, X_rtp, ispack3_d)
+     &          ncomp_bwd, n_WR, WR, X_rtp, ispack3_d, flag_FFT)
 !
       use transfer_to_long_integers
       use set_comm_table_rtp_ISPACK
@@ -294,10 +298,12 @@
      &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
 !
       type(work_for_domain_ispack3), intent(inout) :: ispack3_d
+      logical, intent(inout) :: flag_FFT
 !
       integer(kind = kint) :: ip, nd, num, ist_fft
 !
 !
+      flag_FFT = .TRUE.
       do nd = 1, ncomp_bwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
         call copy_ISPACK_comp_from_recv                                 &

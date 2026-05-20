@@ -200,12 +200,13 @@
       if(iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         call sph_FTTRUF_to_send(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,     &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, fld_rtp, WS(1), WK_FFTs%sph_ispack)
+     &      comm_rtp%irev_sr, fld_rtp, WS(1), WK_FFTs%sph_ispack,       &
+     &      flag_FFT)
       else if(iflag_FFT .eq. iflag_ISPACK3_ONCE) then
-        call sph_FXRTFA_to_send                                         &
-     &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                          &
-     &     sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                  &
-     &     comm_rtp%irev_sr, fld_rtp, WS(1), WK_FFTs%sph_ISPACK3)
+        call sph_FXRTFA_to_send(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,     &
+     &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
+     &      comm_rtp%irev_sr, fld_rtp, WS(1), WK_FFTs%sph_ISPACK3,      &
+     &      flag_FFT)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
         call swap_phi_order_to_trans(ncomp_fwd,                         &
@@ -220,14 +221,14 @@
       else if(iflag_FFT .eq. iflag_FFTW_DOMAIN) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           call prt_field_fwd_FFTW_to_send(sph_rtp, ncomp_fwd, n_WS,     &
-     &        fld_rtp, WS(1), WK_FFTs%sph_fld_FFTW)
+     &        fld_rtp, WS(1), WK_FFTs%sph_fld_FFTW, flag_FFT)
         else
-          call rtp_field_fwd_FFTW_to_send(sph_rtp, comm_rtp,            &
-     &        ncomp_fwd, n_WS, fld_rtp, WS(1), WK_FFTs%sph_fld_FFTW)
+          call rtp_field_fwd_FFTW_to_send(sph_rtp, comm_rtp, ncomp_fwd, &
+     &        n_WS, fld_rtp, WS(1), WK_FFTs%sph_fld_FFTW, flag_FFT)
         end if
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
-        call sph_single_fwd_FFTW_to_send(sph_rtp, comm_rtp,             &
-     &      ncomp_fwd, n_WS, fld_rtp, WS(1), WK_FFTs%sph_sgl_FFTW)
+        call sph_single_fwd_FFTW_to_send(sph_rtp, comm_rtp, ncomp_fwd,  &
+     &      n_WS, fld_rtp, WS(1), WK_FFTs%sph_sgl_FFTW, flag_FFT)
 #endif
       else
         if(sph_rtp%istep_rtp(3) .eq. 1) then
@@ -269,12 +270,13 @@
         call sph_FTTRUB_from_recv                                       &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
-     &      comm_rtp%irev_sr, WR(1), fld_rtp, WK_FFTs%sph_ispack)
+     &      comm_rtp%irev_sr, WR(1), fld_rtp, WK_FFTs%sph_ispack,       &
+     &      flag_FFT)
       else if(iflag_FFT .eq. iflag_ISPACK3_ONCE) then
-        call sph_FXRTBA_from_recv                                       &
-     &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                          &
-     &     sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                  &
-     &     comm_rtp%irev_sr, WR(1), fld_rtp, WK_FFTs%sph_ispack3)
+        call sph_FXRTBA_from_recv(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,   &
+     &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
+     &      comm_rtp%irev_sr, WR(1), fld_rtp, WK_FFTs%sph_ispack3,      &
+     &      flag_FFT)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
         call MHD_multi_back_FFTW_from_recv(ncomp_bwd, sph_rtp%nnod_rtp, &
@@ -285,15 +287,18 @@
      &      MHD_mul_FFTW%v_tmp, fld_rtp)
       else if(iflag_FFT .eq. iflag_FFTW_DOMAIN) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
-          call prt_field_back_FFTW_from_recv(sph_rtp, comm_rtp,         &
-     &        ncomp_bwd, n_WR, WR(1), fld_rtp, WK_FFTs%sph_fld_FFTW)
+          call prt_field_back_FFTW_from_recv                            &
+     &       (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), fld_rtp,       &
+     &        WK_FFTs%sph_fld_FFTW, flag_FFT)
         else
-          call rtp_field_back_FFTW_from_recv(sph_rtp, comm_rtp,         &
-     &        ncomp_bwd, n_WR, WR(1), fld_rtp, WK_FFTs%sph_fld_FFTW)
+          call rtp_field_back_FFTW_from_recv                            &
+     &       (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), fld_rtp,       &
+     &        WK_FFTs%sph_fld_FFTW, flag_FFT)
         end if
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
-        call sph_single_back_FFTW_from_recv(sph_rtp, comm_rtp,          &
-     &      ncomp_bwd, n_WR, WR(1), fld_rtp, WK_FFTs%sph_sgl_FFTW)
+        call sph_single_back_FFTW_from_recv                             &
+     &     (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), fld_rtp,         &
+     &      WK_FFTs%sph_sgl_FFTW, flag_FFT)
 #endif
       else
         if(sph_rtp%istep_rtp(3) .eq. 1) then

@@ -112,6 +112,7 @@
       integer(kind = kint) :: nd
 !
 !
+      flag_FFT = .TRUE.
       do nd = 1, ncomp_fwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
         call copy_rtp_field_to_OMP_FFTW(ione,                           &
@@ -135,8 +136,6 @@
      &      comm_sph_rocFFT, n_WS, WS(1))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
       end do
-!
-      flag_FFT = .TRUE.
 !
       end subroutine rtp_dmn_fwd_cplx_rocFFT_to_send
 !
@@ -167,6 +166,7 @@
       integer(kind = kint) :: nd
 !
 !
+      flag_FFT = .TRUE.
       do nd = 1, ncomp_bwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
         call set_OMP_FFTW_comp_from_recv                                &
@@ -190,8 +190,6 @@
      &      sph_rtp%nidx_rtp(3), X_rtp(1,nd))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
       end do
-!
-      flag_FFT = .TRUE.
 !
       end subroutine rtp_dmn_bwd_c_rocFFT_from_recv
 !

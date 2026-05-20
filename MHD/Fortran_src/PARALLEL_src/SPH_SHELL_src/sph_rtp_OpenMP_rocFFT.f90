@@ -8,8 +8,9 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine rtp_fwd_OMP_rocFFT_to_send(sph_rtp, comm_sph_rocFFT, &
-!!     &          rocFFT_fwd, ncomp_fwd, n_WS, X_rtp, WS, WK_rocFFT)
+!!      subroutine rtp_fwd_OMP_rocFFT_to_send                           &
+!!     &         (sph_rtp, comm_sph_rocFFT, rocFFT_fwd, ncomp_fwd,      &
+!!     &          n_WS, X_rtp, WS, WK_rocFFT, flag_FFT)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!!        type(sph_comm_tbl), intent(in)  :: comm_rtp
 !!        type(comm_tbl_from_FFTW), intent(in) :: comm_sph_rocFFT
@@ -18,8 +19,10 @@
 !!        real(kind = kreal), intent(in)                                &
 !!     &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_fwd)
 !!        type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
-!!      subroutine rtp_bwd_OMP_rocFFT_from_recv(sph_rtp, comm_rtp,      &
-!!     &          rocFFT_bwd, ncomp_bwd, n_WR, WR, X_rtp, WK_rocFFT)
+!!        logical, intent(inout) :: flag_FFT
+!!      subroutine rtp_bwd_OMP_rocFFT_from_recv                         &
+!!     &         (sph_rtp, comm_rtp, rocFFT_bwd, ncomp_bwd,             &
+!!     &          n_WR, WR, X_rtp, WK_rocFFT, flag_FFT)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
 !!        type(calypso_rocFFT_params), intent(in), target :: rocFFT_bwd
@@ -29,6 +32,7 @@
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
 !!        type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
+!!        logical, intent(inout) :: flag_FFT
 !! ------------------------------------------------------------------
 !!
 !!   a_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\frac{2\pi j k}{Nfft})
@@ -83,8 +87,9 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine rtp_fwd_OMP_rocFFT_to_send(sph_rtp, comm_sph_rocFFT,   &
-     &          rocFFT_fwd, ncomp_fwd, n_WS, X_rtp, WS, WK_rocFFT)
+      subroutine rtp_fwd_OMP_rocFFT_to_send                             &
+     &         (sph_rtp, comm_sph_rocFFT, rocFFT_fwd, ncomp_fwd,        &
+     &          n_WS, X_rtp, WS, WK_rocFFT, flag_FFT)
 !
       use m_elapsed_labels_SPH_TRNS
       use calypso_multi_rocFFT
@@ -103,8 +108,10 @@
       integer(kind = kint), intent(in) :: n_WS
       real(kind = kreal), intent(inout):: WS(n_WS)
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
+      logical, intent(inout) :: flag_FFT
 !
 !
+      flag_FFT = .TRUE.
       if(rocFFT_fwd%Ncomp .le. 0) return
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
@@ -130,8 +137,9 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine rtp_bwd_OMP_rocFFT_from_recv(sph_rtp, comm_rtp,        &
-     &          rocFFT_bwd, ncomp_bwd, n_WR, WR, X_rtp, WK_rocFFT)
+      subroutine rtp_bwd_OMP_rocFFT_from_recv                           &
+     &         (sph_rtp, comm_rtp, rocFFT_bwd, ncomp_bwd,               &
+     &          n_WR, WR, X_rtp, WK_rocFFT, flag_FFT)
 !
       use m_elapsed_labels_SPH_TRNS
       use calypso_multi_rocFFT
@@ -150,8 +158,10 @@
       real(kind = kreal), intent(inout)                                 &
      &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
+      logical, intent(inout) :: flag_FFT
 !
 !
+      flag_FFT = .TRUE.
       if(rocFFT_bwd%Ncomp .le. 0) return
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)

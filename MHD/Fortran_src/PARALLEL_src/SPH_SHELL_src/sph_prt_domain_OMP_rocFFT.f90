@@ -113,6 +113,7 @@
       integer(kind = kint) :: nd
 !
 !
+      flag_FFT = .TRUE.
       do nd = 1, ncomp_fwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
         call copy_pin_fld_to_rocFFT_real                                &
@@ -134,15 +135,13 @@
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
       end do
 !
-      flag_FFT = .TRUE.
-!
       end subroutine prt_dmn_fwd_OMP_rocFFT_to_send
 !
 ! ------------------------------------------------------------------
 !
       subroutine prt_dmn_bwd_OMP_rocFFT_fm_recv                         &
      &         (sph_rtp, comm_rtp, rocFFT_bwd, ncomp_bwd,               &
-     &          n_WR, WR, X_rtp, WK_rocFFT, flag_FFT, flag_FFT)
+     &          n_WR, WR, X_rtp, WK_rocFFT, flag_FFT)
 !
       use m_elapsed_labels_SPH_TRNS
       use calypso_multi_rocFFT
@@ -165,6 +164,7 @@
       integer(kind = kint) :: nd
 !
 !
+      flag_FFT = .TRUE.
       do nd = 1, ncomp_bwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
         call pin_real_rocFFT_dmn_from_recv                              &
@@ -186,8 +186,6 @@
      &      rocFFT_bwd%Nfft, X_rtp(1,nd))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
       end do
-!
-      flag_FFT = .TRUE.
 !
       end subroutine prt_dmn_bwd_OMP_rocFFT_fm_recv
 !

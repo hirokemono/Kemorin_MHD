@@ -237,6 +237,7 @@
       integer(kind = kint) :: ic_rtp, is_rtp, ic_send, is_send
 !
 !
+      flag_FFT = .TRUE.
       if(iflag_FFT_time) then
 !$omp parallel workshare
         FFT_t%t_omp(1:np_smp,0:3) = 0
@@ -341,6 +342,7 @@
       integer(kind = kint) :: ic_rtp, is_rtp, ic_recv, is_recv
 !
 !
+      flag_FFT = .TRUE.
 !      if(iflag_FFT_time) then
 !!$omp parallel workshare
 !        FFT_t%t_omp(1:np_smp,0:3) = 0
@@ -415,8 +417,6 @@
 !     &        = elps1%elapsed(ist_elapsed_FFT+3)                       &
 !     &         + FFT_t%t_omp(1,3) / dble(np_smp)
 !      end if
-!
-      flag_FFT = .TRUE.
 !
       end subroutine sph_test_back_FFT_from_recv
 !

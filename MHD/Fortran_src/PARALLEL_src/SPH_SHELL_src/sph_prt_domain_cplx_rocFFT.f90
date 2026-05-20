@@ -112,6 +112,7 @@
       integer(kind = kint) :: nd
 !
 !
+      flag_FFT = .TRUE.
       do nd = 1, ncomp_fwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
         call copy_pin_fld_to_rocFFT_real                                &
@@ -139,7 +140,6 @@
      &      comm_sph_rocFFT, n_WS, WS)
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
       end do
-      flag_FFT = .TRUE.
 !
       end subroutine prt_dmn_fwd_cplx_rocFFT_to_send
 !
@@ -170,6 +170,7 @@
       integer(kind = kint) :: nd
 !
 !
+      flag_FFT = .TRUE.
       do nd = 1, ncomp_bwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
         call copy_FFTW_comp_from_recv                                   &
@@ -193,7 +194,6 @@
      &      rocFFT_bwd%Nfft, X_rtp(1,nd))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
       end do
-      flag_FFT = .TRUE.
 !
       end subroutine prt_dmn_bwd_c_rocFFT_from_recv
 !

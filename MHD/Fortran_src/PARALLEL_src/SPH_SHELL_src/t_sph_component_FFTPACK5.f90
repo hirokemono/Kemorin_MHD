@@ -223,6 +223,7 @@
       integer(kind = kint) :: j, ip, nsize, ist, ied, ierr
 !
 !
+      flag_FFT = .TRUE.
       if(iflag_FFT_time)  elps_smp(1:3) = 0.0d0
 !
 !$omp parallel do private(ip,j,ist,ied,nsize,start)                     &
@@ -264,7 +265,6 @@
         elps1%elapsed(ist+4:ist+6) = elps1%elapsed(ist+4:ist+6)         &
      &                              + elps_smp(1:3) / dble(np_smp)
       end if
-      flag_FFT = .TRUE.
 !
       end subroutine sph_comp_RFFTMF_to_send
 !
@@ -293,6 +293,7 @@
       integer(kind = kint) ::  j, ip, inum, nsize, ist, ied, ierr
 !
 !
+      flag_FFT = .TRUE.
       if(iflag_FFT_time)  elps_smp(1:3) = 0.0d0
 !
 !$omp parallel do private(ip,j,ist,ied,inum,nsize,start)                &
@@ -335,7 +336,6 @@
         elps1%elapsed(ist+1:ist+3) = elps1%elapsed(ist+1:ist+3)         &
      &                              + elps_smp(1:3) / dble(np_smp)
       end if
-      flag_FFT = .TRUE.
 !
       end subroutine sph_comp_RFFTMB_from_recv
 !

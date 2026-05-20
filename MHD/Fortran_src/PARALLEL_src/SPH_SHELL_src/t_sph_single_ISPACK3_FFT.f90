@@ -22,10 +22,16 @@
 !! ------------------------------------------------------------------
 !!
 !!      subroutine sph_single_FXRTFA_to_send(sph_rtp, comm_rtp,         &
-!!     &          ncomp_fwd, n_WS, X_rtp, WS, ispack3_s)
+!!     &          ncomp_fwd, n_WS, X_rtp, WS, ispack3_s, flag_FFT)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
+!!        integer(kind = kint), intent(in) :: ncomp_fwd
+!!        real(kind = kreal), intent(in)                                &
+!!     &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_fwd)
+!!        integer(kind = kint), intent(in) :: n_WS
+!!        real (kind=kreal), intent(inout):: WS(n_WS)
 !!        type(work_for_single_ispack3), intent(inout) :: ispack3_s
+!!        logical, intent(inout) :: flag_FFT
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by ISPACK
@@ -40,10 +46,16 @@
 !! ------------------------------------------------------------------
 !!
 !!      subroutine sph_single_FXRTBA_from_recv(sph_rtp, comm_rtp,       &
-!!     &          ncomp_bwd, n_WR, WR, X_rtp, ispack3_s)
+!!     &          ncomp_bwd, n_WR, WR, X_rtp, ispack3_s, flag_FFT)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
+!!        integer(kind = kint), intent(in) :: ncomp_bwd
+!!        integer(kind = kint), intent(in) :: n_WR
+!!        real (kind=kreal), intent(inout):: WR(n_WR)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
 !!        type(work_for_single_ispack3), intent(inout) :: ispack3_s
+!!        logical, intent(inout) :: flag_FFT
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by ISPACK
@@ -173,7 +185,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine sph_single_FXRTFA_to_send(sph_rtp, comm_rtp,           &
-     &          ncomp_fwd, n_WS, X_rtp, WS, ispack3_s)
+     &          ncomp_fwd, n_WS, X_rtp, WS, ispack3_s, flag_FFT)
 !
       use transfer_to_long_integers
       use copy_single_FFT_and_rtp
@@ -190,11 +202,13 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
       type(work_for_single_ispack3), intent(inout) :: ispack3_s
+      logical, intent(inout) :: flag_FFT
 !
       integer(kind = kint) :: j, nd
       integer(kind = kint) :: ip, ist, ied
 !
 !
+      flag_FFT = .TRUE.
       if(iflag_FFT_time) then
 !$omp parallel workshare
         ispack3_s%t_omp(1:np_smp,0:3) = 0
@@ -248,7 +262,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine sph_single_FXRTBA_from_recv(sph_rtp, comm_rtp,         &
-     &          ncomp_bwd, n_WR, WR, X_rtp, ispack3_s)
+     &          ncomp_bwd, n_WR, WR, X_rtp, ispack3_s, flag_FFT)
 !
       use transfer_to_long_integers
       use copy_single_FFT_and_rtp
@@ -265,10 +279,12 @@
      &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
 !
       type(work_for_single_ispack3), intent(inout) :: ispack3_s
+      logical, intent(inout) :: flag_FFT
 !
       integer(kind = kint) ::  j, ip, ist, ied, nd
 !
 !
+      flag_FFT = .TRUE.
       if(iflag_FFT_time) then
 !$omp parallel workshare
         ispack3_s%t_omp(1:np_smp,0:3) = 0

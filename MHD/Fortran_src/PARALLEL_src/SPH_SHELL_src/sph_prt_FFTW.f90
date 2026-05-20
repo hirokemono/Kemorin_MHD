@@ -23,10 +23,17 @@
 !!   wrapper subroutine for initierize FFT by FFTW
 !! ------------------------------------------------------------------
 !!
-!!      subroutine prt_fwd_FFTW_smp_to_send                             &
-!!     &         (sph_rtp, comm_rtp, ncomp_fwd, n_WS, X_rtp, WS, FFTW_f)
+!!      subroutine prt_fwd_FFTW_smp_to_send(sph_rtp, comm_rtp,          &
+!!     &          ncomp_fwd, n_WS, X_rtp, WS, FFTW_f, flag_FFT)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
+!!        integer(kind = kint), intent(in) :: ncomp_fwd
+!!        real(kind = kreal), intent(in)                                &
+!!     &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_fwd)
+!!        integer(kind = kint), intent(in) :: n_WS
+!!        real (kind=kreal), intent(inout):: WS(n_WS)
+!!        type(work_for_field_FFTW), intent(inout) :: FFTW_f
+!!        logical, intent(inout) :: flag_FFT
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by FFTW3
@@ -40,10 +47,17 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine prt_back_FFTW_smp_from_recv                          &
-!!     &         (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, X_rtp, FFTW_f)
+!!      subroutine prt_back_FFTW_smp_from_recv(sph_rtp, comm_rtp,       &
+!!     &          ncomp_bwd, n_WR, WR, X_rtp, FFTW_f, flag_FFT)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
+!!        integer(kind = kint), intent(in) :: ncomp_bwd
+!!        integer(kind = kint), intent(in) :: n_WR
+!!        real (kind=kreal), intent(in):: WR(n_WR)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
+!!        type(work_for_field_FFTW), intent(inout) :: FFTW_f
+!!        logical, intent(inout) :: flag_FFT
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by FFTW3
@@ -182,8 +196,8 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine prt_fwd_FFTW_smp_to_send                               &
-     &         (sph_rtp, comm_rtp, ncomp_fwd, n_WS, X_rtp, WS, FFTW_f)
+      subroutine prt_fwd_FFTW_smp_to_send(sph_rtp, comm_rtp,            &
+     &          ncomp_fwd, n_WS, X_rtp, WS, FFTW_f, flag_FFT)
 !
       use copy_field_smp
       use set_comm_table_prt_FFTW
@@ -199,11 +213,13 @@
       integer(kind = kint), intent(in) :: n_WS
       real (kind=kreal), intent(inout):: WS(n_WS)
       type(work_for_field_FFTW), intent(inout) :: FFTW_f
+      logical, intent(inout) :: flag_FFT
 !
       integer(kind = kint) :: ist_r, ist_c, ntot
       integer(kind = kint) :: ip
 !
 !
+      flag_FFT = .TRUE.
       if(ncomp_fwd .le. 0) return
 !
       ntot = sph_rtp%nnod_rtp * ncomp_fwd
@@ -238,8 +254,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine prt_back_FFTW_smp_from_recv                            &
-     &         (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, X_rtp, FFTW_f)
+      subroutine prt_back_FFTW_smp_from_recv(sph_rtp, comm_rtp,         &
+     &          ncomp_bwd, n_WR, WR, X_rtp, FFTW_f, flag_FFT)
 !
       use copy_field_smp
       use set_comm_table_prt_FFTW
@@ -255,11 +271,13 @@
       real(kind = kreal), intent(inout)                                 &
      &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
       type(work_for_field_FFTW), intent(inout) :: FFTW_f
+      logical, intent(inout) :: flag_FFT
 !
       integer(kind = kint) :: ist_r, ist_c, ntot
       integer(kind = kint) :: ip
 !
 !
+      flag_FFT = .TRUE.
       if(ncomp_bwd .le. 0) return
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)

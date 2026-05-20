@@ -20,9 +20,16 @@
 !! ------------------------------------------------------------------
 !!
 !!      subroutine sph_comp_fwd_FFTW_to_send(sph_rtp, comm_rtp,         &
-!!     &          ncomp_fwd, n_WS, X_rtp, WS, FFTW_c)
+!!     &          ncomp_fwd, n_WS, X_rtp, WS, FFTW_c, flag_FFT)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
+!!        integer(kind = kint), intent(in) :: ncomp_fwd
+!!        real(kind = kreal), intent(in)                                &
+!!     &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_fwd)
+!!        integer(kind = kint), intent(in) :: n_WS
+!!        real (kind=kreal), intent(inout):: WS(n_WS)
+!!        type(work_for_comp_FFTW), intent(inout) :: FFTW_c
+!!        logical, intent(inout) :: flag_FFT
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by FFTW3
@@ -37,9 +44,16 @@
 !! ------------------------------------------------------------------
 !!
 !!      subroutine sph_comp_back_FFTW_from_recv(sph_rtp, comm_rtp,      &
-!!     &          ncomp_bwd, n_WR, WR, X_rtp, FFTW_c)
+!!     &          ncomp_bwd, n_WR, WR, X_rtp, FFTW_c, flag_FFT)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
+!!        integer(kind = kint), intent(in) :: ncomp_bwd
+!!        integer(kind = kint), intent(in) :: n_WR
+!!        real (kind=kreal), intent(inout):: WR(n_WR)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
+!!        type(work_for_comp_FFTW), intent(inout) :: FFTW_c
+!!        logical, intent(inout) :: flag_FFT
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by FFTW3
@@ -206,7 +220,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine sph_comp_fwd_FFTW_to_send(sph_rtp, comm_rtp,           &
-     &          ncomp_fwd, n_WS, X_rtp, WS, FFTW_c)
+     &          ncomp_fwd, n_WS, X_rtp, WS, FFTW_c, flag_FFT)
 !
       use copy_single_FFT_and_rtp
 !
@@ -220,10 +234,12 @@
       integer(kind = kint), intent(in) :: n_WS
       real (kind=kreal), intent(inout):: WS(n_WS)
       type(work_for_comp_FFTW), intent(inout) :: FFTW_c
+      logical, intent(inout) :: flag_FFT
 !
       integer(kind = kint) ::  j, ip, ist, ied
 !
 !
+      flag_FFT = .TRUE.
       if(iflag_FFT_time) then
 !$omp parallel workshare
         FFTW_c%t_omp(1:np_smp,0:3) = 0
@@ -271,7 +287,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine sph_comp_back_FFTW_from_recv(sph_rtp, comm_rtp,        &
-     &          ncomp_bwd, n_WR, WR, X_rtp, FFTW_c)
+     &          ncomp_bwd, n_WR, WR, X_rtp, FFTW_c, flag_FFT)
 !
       use copy_single_FFT_and_rtp
 !
@@ -285,10 +301,12 @@
       real(kind = kreal), intent(inout)                                 &
      &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
       type(work_for_comp_FFTW), intent(inout) :: FFTW_c
+      logical, intent(inout) :: flag_FFT
 !
       integer(kind = kint) :: j, ip, ist, ied
 !
 !
+      flag_FFT = .TRUE.
       if(iflag_FFT_time) then
 !$omp parallel workshare
         FFTW_c%t_omp(1:np_smp,0:3) = 0

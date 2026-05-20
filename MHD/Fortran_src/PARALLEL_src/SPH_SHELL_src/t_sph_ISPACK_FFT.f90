@@ -22,9 +22,16 @@
 !! wrapper subroutine for initierize FFT for ISPACK
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sph_FTTRUF_to_send                                   &
-!!     &         (sph_rtp, ncomp_fwd, n_WS, X_rtp, WS, ispack_t)
+!!      subroutine sph_FTTRUF_to_send(sph_rtp, ncomp_fwd, n_WS, X_rtp,  &
+!!     &                              WS, ispack_t, flag_FFT)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        integer(kind = kint), intent(in) :: ncomp_fwd
+!!        real(kind = kreal), intent(in)                                &
+!!     &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_fwd)
+!!        integer(kind = kint), intent(in) :: n_WS
+!!        real (kind=kreal), intent(inout):: WS(n_WS)
+!!        type(work_for_ispack), intent(inout) :: ispack_t
+!!        logical, intent(inout) :: flag_FFT
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by ISPACK
@@ -39,9 +46,16 @@
 !! ------------------------------------------------------------------
 !!
 !!      subroutine sph_FTTRUB_from_recv(sph_rtp, comm_rtp,              &
-!!     &          ncomp_bwd, n_WR, WR, X_rtp, ispack_t)
+!!     &          ncomp_bwd, n_WR, WR, X_rtp, ispack_t, flag_FFT)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
+!!        integer(kind = kint), intent(in) :: ncomp_bwd
+!!        integer(kind = kint), intent(in) :: n_WR
+!!        real (kind=kreal), intent(inout):: WR(n_WR)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
+!!        type(work_for_ispack), intent(inout) :: ispack_t
+!!        logical, intent(inout) :: flag_FFT
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by ISPACK
@@ -208,8 +222,8 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine sph_FTTRUF_to_send                                     &
-     &         (sph_rtp, ncomp_fwd, n_WS, X_rtp, WS, ispack_t)
+      subroutine sph_FTTRUF_to_send(sph_rtp, ncomp_fwd, n_WS, X_rtp,    &
+     &                              WS, ispack_t, flag_FFT)
 !
       use ispack_0931
       use set_comm_table_rtp_ISPACK
@@ -225,10 +239,12 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
       type(work_for_ispack), intent(inout) :: ispack_t
+      logical, intent(inout) :: flag_FFT
 !
       integer(kind = kint) :: ip, num, ntot, ist_fft
 !
 !
+      flag_FFT = .TRUE.
       if(ncomp_fwd .le. 0) return
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
@@ -268,7 +284,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine sph_FTTRUB_from_recv(sph_rtp, comm_rtp,                &
-     &          ncomp_bwd, n_WR, WR, X_rtp, ispack_t)
+     &          ncomp_bwd, n_WR, WR, X_rtp, ispack_t, flag_FFT)
 !
       use ispack_0931
       use set_comm_table_rtp_ISPACK
@@ -286,10 +302,12 @@
      &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
 !
       type(work_for_ispack), intent(inout) :: ispack_t
+      logical, intent(inout) :: flag_FFT
 !
       integer(kind = kint) :: ip, num, ntot, ist_fft
 !
 !
+      flag_FFT = .TRUE.
       if(ncomp_bwd .le. 0) return
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
