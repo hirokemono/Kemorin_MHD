@@ -21,9 +21,20 @@
 !!   wrapper subroutine for initierize FFT by FFTW
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sph_test_fwd_FFT_to_send(nnod_rtp, nidx_rtp,      &
-!!     &          irt_rtp_smp_stack, ncomp_fwd, n_WS, irev_sr_rtp,   &
-!!     &          X_rtp, WS, FFT_t)
+!!      subroutine sph_test_fwd_FFT_to_send(nnod_rtp, nidx_rtp,         &
+!!     &          irt_rtp_smp_stack, ncomp_fwd, n_WS, irev_sr_rtp,      &
+!!     &          X_rtp, WS, FFT_t, flag_FFT)
+!!        integer(kind = kint), intent(in):: nnod_rtp
+!!        integer(kind = kint), intent(in):: nidx_rtp(3)
+!!        integer(kind = kint), intent(in):: irt_rtp_smp_stack(0:np_smp)
+!!        integer(kind = kint), intent(in):: ncomp_fwd
+!!        real(kind = kreal), intent(in)                                &
+!!     &     :: X_rtp(irt_rtp_smp_stack(np_smp),nidx_rtp(3),ncomp_fwd)
+!!        integer(kind = kint), intent(in) :: n_WS
+!!        integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
+!!        real (kind=kreal), intent(inout):: WS(n_WS)
+!!        type(work_for_test_FFT), intent(inout) :: FFT_t
+!!        logical, intent(inout) :: flag_FFT
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by FFTW3
@@ -39,7 +50,18 @@
 !!
 !!      subroutine sph_test_back_FFT_from_recv(nnod_rtp, nidx_rtp,      &
 !!     &          irt_rtp_smp_stack, ncomp_bwd, n_WR, irev_sr_rtp, WR,  &
-!!     &          X_rtp, FFT_t)
+!!     &          X_rtp, FFT_t, flag_FFT)
+!!        integer(kind = kint), intent(in):: nnod_rtp
+!!        integer(kind = kint), intent(in):: nidx_rtp(3)
+!!        integer(kind = kint), intent(in):: irt_rtp_smp_stack(0:np_smp)
+!!        integer(kind = kint), intent(in):: ncomp_bwd
+!!        integer(kind = kint), intent(in):: n_WR
+!!        integer(kind = kint), intent(in):: irev_sr_rtp(nnod_rtp)
+!!        real (kind=kreal), intent(inout):: WR(n_WR)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &     :: X_rtp(irt_rtp_smp_stack(np_smp),nidx_rtp(3),ncomp_bwd)
+!!        type(work_for_test_FFT), intent(inout) :: FFT_t
+!!        logical, intent(inout) :: flag_FFT
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by FFTW3
@@ -195,7 +217,7 @@
 !
       subroutine sph_test_fwd_FFT_to_send(nnod_rtp, nidx_rtp,           &
      &          irt_rtp_smp_stack, ncomp_fwd, n_WS, irev_sr_rtp,        &
-     &          X_rtp, WS, FFT_t)
+     &          X_rtp, WS, FFT_t, flag_FFT)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
@@ -209,6 +231,7 @@
       integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
       real (kind=kreal), intent(inout):: WS(n_WS)
       type(work_for_test_FFT), intent(inout) :: FFT_t
+      logical, intent(inout) :: flag_FFT
 !
       integer(kind = kint) ::  m, j, ip, ist, ied, nd
       integer(kind = kint) :: ic_rtp, is_rtp, ic_send, is_send
@@ -290,13 +313,15 @@
 !     &         + FFT_t%t_omp(1,3) / dble(np_smp)
 !      end if
 !
+      flag_FFT = .TRUE.
+!
       end subroutine sph_test_fwd_FFT_to_send
 !
 ! ------------------------------------------------------------------
 !
       subroutine sph_test_back_FFT_from_recv(nnod_rtp, nidx_rtp,        &
      &          irt_rtp_smp_stack, ncomp_bwd, n_WR, irev_sr_rtp, WR,    &
-     &          X_rtp, FFT_t)
+     &          X_rtp, FFT_t, flag_FFT)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
@@ -310,6 +335,7 @@
       real(kind = kreal), intent(inout)                                 &
      &     :: X_rtp(irt_rtp_smp_stack(np_smp),nidx_rtp(3),ncomp_bwd)
       type(work_for_test_FFT), intent(inout) :: FFT_t
+      logical, intent(inout) :: flag_FFT
 !
       integer(kind = kint) :: m, j, ip, ist, ied, nd
       integer(kind = kint) :: ic_rtp, is_rtp, ic_recv, is_recv
@@ -389,6 +415,8 @@
 !     &        = elps1%elapsed(ist_elapsed_FFT+3)                       &
 !     &         + FFT_t%t_omp(1,3) / dble(np_smp)
 !      end if
+!
+      flag_FFT = .TRUE.
 !
       end subroutine sph_test_back_FFT_from_recv
 !

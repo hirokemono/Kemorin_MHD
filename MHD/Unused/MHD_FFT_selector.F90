@@ -192,6 +192,10 @@
       type(work_for_FFTs), intent(inout) :: WK_FFTs
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !
+      logical :: flag_FFT
+!
+      flag_fft = .FALSE.
+!
 !
       if(iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         call sph_FTTRUF_to_send(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,     &
@@ -228,10 +232,10 @@
       else
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           call prt_RFFTMF_to_send(sph_rtp, ncomp_fwd, n_WS, v_rtp(1,1), &
-     &                            WS(1), WK_FFTs%sph_FFTPACK)
+     &                            WS(1), WK_FFTs%sph_FFTPACK, flag_FFT)
         else
           call rtp_RFFTMF_to_send(sph_rtp, ncomp_fwd, n_WS, v_rtp(1,1), &
-     &                            WS(1), WK_FFTs%sph_FFTPACK)
+     &                            WS(1), WK_FFTs%sph_FFTPACK, flag_FFT)
         end if
       end if
 !
@@ -255,6 +259,10 @@
      &                 :: fld_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
       type(work_for_FFTs), intent(inout) :: WK_FFTs
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
+!
+      logical :: flag_FFT
+!
+      flag_fft = .FALSE.
 !
 !
       if(iflag_FFT .eq. iflag_ISPACK1_ONCE) then
@@ -290,10 +298,10 @@
       else
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           call prt_RFFTMB_from_recv(sph_rtp, comm_rtp, ncomp_bwd, n_WR, &
-     &         WR, v_rtp(1,1), WK_FFTs%sph_FFTPACK)
+     &         WR, v_rtp(1,1), WK_FFTs%sph_FFTPACK, flag_FFT)
         else
           call rtp_RFFTMB_from_recv(sph_rtp, comm_rtp, ncomp_bwd, n_WR, &
-     &        WR, v_rtp(1,1), WK_FFTs%sph_FFTPACK)
+     &        WR, v_rtp(1,1), WK_FFTs%sph_FFTPACK, flag_FFT)
         end if
       end if
 !

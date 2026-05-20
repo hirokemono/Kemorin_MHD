@@ -20,9 +20,16 @@
 !! ------------------------------------------------------------------
 !!
 !!      subroutine sph_comp_RFFTMF_to_send(sph_rtp, comm_rtp,           &
-!!     &          ncomp_fwd, n_WS, X_rtp, WS, fftpack_t)
+!!     &          ncomp_fwd, n_WS, X_rtp, WS, fftpack_t, flag_FFT)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
+!!        integer(kind = kint), intent(in) :: ncomp_fwd
+!!        real(kind = kreal), intent(in)                                &
+!!     &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_fwd)
+!!        integer(kind = kint), intent(in) :: n_WS
+!!        real (kind=kreal), intent(inout):: WS(n_WS)
+!!        type(work_for_comp_fftpack), intent(inout) :: fftpack_t
+!!        logical, intent(inout) :: flag_FFT
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by FFTPACK5
@@ -40,9 +47,16 @@
 !! ------------------------------------------------------------------
 !!
 !!      subroutine sph_comp_RFFTMB_from_recv(sph_rtp, comm_rtp,         &
-!!     &          ncomp_bwd, n_WR, WR, X_rtp, fftpack_t)
+!!     &          ncomp_bwd, n_WR, WR, X_rtp, fftpack_t, flag_FFT)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
+!!        integer(kind = kint), intent(in) :: ncomp_bwd
+!!        integer(kind = kint), intent(in) :: n_WR
+!!        real (kind=kreal), intent(inout):: WR(n_WR)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                    :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
+!!        type(work_for_comp_fftpack), intent(inout) :: fftpack_t
+!!        logical, intent(inout) :: flag_FFT
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by FFTPACK5
@@ -187,7 +201,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine sph_comp_RFFTMF_to_send(sph_rtp, comm_rtp,             &
-     &          ncomp_fwd, n_WS, X_rtp, WS, fftpack_t)
+     &          ncomp_fwd, n_WS, X_rtp, WS, fftpack_t, flag_FFT)
 !
       use copy_single_FFT_and_rtp
 !
@@ -202,6 +216,7 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
       type(work_for_comp_fftpack), intent(inout) :: fftpack_t
+      logical, intent(inout) :: flag_FFT
 !
       real(kind = kreal) :: start = 0.0d0
       real(kind = kreal) :: elps_smp(3)
@@ -249,13 +264,14 @@
         elps1%elapsed(ist+4:ist+6) = elps1%elapsed(ist+4:ist+6)         &
      &                              + elps_smp(1:3) / dble(np_smp)
       end if
+      flag_FFT = .TRUE.
 !
       end subroutine sph_comp_RFFTMF_to_send
 !
 ! ------------------------------------------------------------------
 !
       subroutine sph_comp_RFFTMB_from_recv(sph_rtp, comm_rtp,           &
-     &          ncomp_bwd, n_WR, WR, X_rtp, fftpack_t)
+     &          ncomp_bwd, n_WR, WR, X_rtp, fftpack_t, flag_FFT)
 !
       use copy_single_FFT_and_rtp
 !
@@ -270,6 +286,7 @@
      &                    :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
 !
       type(work_for_comp_fftpack), intent(inout) :: fftpack_t
+      logical, intent(inout) :: flag_FFT
 !
       real(kind = kreal) :: start = 0.0d0
       real(kind = kreal) :: elps_smp(3)
@@ -318,6 +335,7 @@
         elps1%elapsed(ist+1:ist+3) = elps1%elapsed(ist+1:ist+3)         &
      &                              + elps_smp(1:3) / dble(np_smp)
       end if
+      flag_FFT = .TRUE.
 !
       end subroutine sph_comp_RFFTMB_from_recv
 !
