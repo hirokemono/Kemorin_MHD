@@ -9,12 +9,14 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine finalize_sph_field_FFTW(FFTW_f)
+!!      subroutine finalize_sph_field_FFTW(FFTW_f, flag_fft)
 !!      subroutine alloc_whole_FFTW_plan(Nfft, irt_rtp_smp_stack,       &
 !!     &          ncomp_bwd, ncomp_fwd, FFTW_f)
 !!      subroutine alloc_fld_FFTW_plan(Nfft, irt_rtp_smp_stack, FFTW_f)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
+!!        type(work_for_field_FFTW), intent(inout) :: FFTW_f
+!!        logical, intent(inout) :: flag_fft
 !!
 !!   wrapper subroutine for initierize FFT by FFTW
 !! ------------------------------------------------------------------
@@ -80,9 +82,10 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_field_FFTW(FFTW_f)
+      subroutine finalize_sph_field_FFTW(FFTW_f, flag_fft)
 !
       type(work_for_field_FFTW), intent(inout) :: FFTW_f
+      logical, intent(inout) :: flag_fft
 !
       integer(kind = kint) :: ip
 !
@@ -96,6 +99,7 @@
 !
       call dealloc_fld_FFTW_plan(FFTW_f)
       call dfftw_cleanup
+      flag_fft = .TRUE.
 !
       end subroutine finalize_sph_field_FFTW
 !

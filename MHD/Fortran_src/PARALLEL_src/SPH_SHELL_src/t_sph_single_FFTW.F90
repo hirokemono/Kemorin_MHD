@@ -9,10 +9,12 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine init_sph_single_FFTW(sph_rtp, FFTW_t)
-!!      subroutine finalize_sph_single_FFTW(FFTW_t)
-!!      subroutine verify_sph_single_FFTW(sph_rtp, FFTW_t)
+!!      subroutine init_sph_single_FFTW(sph_rtp, FFTW_t, flag_fft)
+!!      subroutine finalize_sph_single_FFTW(FFTW_t, flag_fft)
+!!      subroutine verify_sph_single_FFTW(sph_rtp, FFTW_t, flag_fft)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(work_for_sgl_FFTW), intent(inout) :: FFTW_t
+!!        logical, intent(inout) :: flag_fft
 !!
 !!      subroutine alloc_tmp_ordering_FFTW(sph_rtp, FFTW_t)
 !!      subroutine dealloc_tmp_ordering_FFTW(FFTW_t)
@@ -133,11 +135,12 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_single_FFTW(sph_rtp, FFTW_t)
+      subroutine init_sph_single_FFTW(sph_rtp, FFTW_t, flag_fft)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
 !
       type(work_for_sgl_FFTW), intent(inout) :: FFTW_t
+      logical, intent(inout) :: flag_fft
 !
       integer(kind = kint) :: ip
       integer(kind = 4) :: Nfft4
@@ -153,14 +156,16 @@
      &      FFTW_t%C(1,ip), FFTW_t%X(1,ip) , FFTW_KEMO_EST)
       end do
       FFTW_t%aNfft = one / dble(sph_rtp%nidx_rtp(3))
+      flag_fft = .TRUE.
 !
       end subroutine init_sph_single_FFTW
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_single_FFTW(FFTW_t)
+      subroutine finalize_sph_single_FFTW(FFTW_t, flag_fft)
 !
       type(work_for_sgl_FFTW), intent(inout) :: FFTW_t
+      logical, intent(inout) :: flag_fft
 !
       integer(kind = kint) :: j
 !
@@ -171,27 +176,30 @@
 !
       call dealloc_FFTW_plan(FFTW_t)
       call dfftw_cleanup
+      flag_fft = .TRUE.
 !
       end subroutine finalize_sph_single_FFTW
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_sph_single_FFTW(sph_rtp, FFTW_t)
+      subroutine verify_sph_single_FFTW(sph_rtp, FFTW_t, flag_fft)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
 !
       type(work_for_sgl_FFTW), intent(inout) :: FFTW_t
+      logical, intent(inout) :: flag_fft
 !
 !
       if(allocated(FFTW_t%X) .eqv. .false.) then
-        call init_sph_single_FFTW(sph_rtp, FFTW_t)
+        call init_sph_single_FFTW(sph_rtp, FFTW_t, flag_fft)
         return
       end if
 !
       if(size(FFTW_t%X) .ne. sph_rtp%nidx_rtp(3)*np_smp) then
-        call finalize_sph_single_FFTW(FFTW_t)
-        call init_sph_single_FFTW(sph_rtp, FFTW_t)
+        call finalize_sph_single_FFTW(FFTW_t, flag_fft)
+        call init_sph_single_FFTW(sph_rtp, FFTW_t, flag_fft)
       end if
+      flag_fft = .TRUE.
 !
       end subroutine verify_sph_single_FFTW
 !

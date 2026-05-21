@@ -9,12 +9,15 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine init_sph_domain_OMP_FFTW(sph_rtp, comm_rtp, OFFTW_d)
-!!      subroutine finalize_sph_domain_OMP_FFTW(OFFTW_d)
-!!      subroutine verify_sph_domain_OMP_FFTW                           &
-!!     &         (sph_rtp, comm_rtp, OFFTW_d)
+!!      subroutine init_sph_domain_OMP_FFTW(sph_rtp, comm_rtp,          &
+!!     &                                    OFFTW_d, flag_fft)
+!!      subroutine finalize_sph_domain_OMP_FFTW(OFFTW_d, flag_fft)
+!!      subroutine verify_sph_domain_OMP_FFTW(sph_rtp, comm_rtp,        &
+!!     &                                      OFFTW_d, flag_fft)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
+!!        type(work_for_domain_OMP_FFTW), intent(inout) :: OFFTW_d
+!!        logical, intent(inout) :: flag_fft
 !!
 !!   wrapper subroutine for initierize FFT by FFTW
 !! ------------------------------------------------------------------
@@ -130,7 +133,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_domain_OMP_FFTW(sph_rtp, comm_rtp, OFFTW_d)
+      subroutine init_sph_domain_OMP_FFTW(sph_rtp, comm_rtp,            &
+     &                                    OFFTW_d, flag_fft)
 !
       use set_comm_table_rtp_OMP_FFTW
 !
@@ -138,6 +142,7 @@
       type(sph_comm_tbl), intent(in)  :: comm_rtp
 !
       type(work_for_domain_OMP_FFTW), intent(inout) :: OFFTW_d
+      logical, intent(inout) :: flag_fft
 !
       integer(kind = 4) :: howmany
 !
@@ -171,14 +176,16 @@
      &   (sph_rtp%nnod_rtp, sph_rtp%istack_rtp_rt_smp(np_smp),          &
      &    comm_rtp%irev_sr, OFFTW_d%Nfft_c, OFFTW_d%aNfft,              &
      &    OFFTW_d%comm_FFTW)
+      flag_fft = .TRUE.
 !
       end subroutine init_sph_domain_OMP_FFTW
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_domain_OMP_FFTW(OFFTW_d)
+      subroutine finalize_sph_domain_OMP_FFTW(OFFTW_d, flag_fft)
 !
       type(work_for_domain_OMP_FFTW), intent(inout) :: OFFTW_d
+      logical, intent(inout) :: flag_fft
 !
 !
       call dealloc_comm_table_sph_FFTW(OFFTW_d%comm_FFTW)
@@ -188,29 +195,34 @@
       call check_clean_OMP_FFTW()
 !
       call dealloc_domain_OMP_FFTW_plan(OFFTW_d)
+      flag_fft = .TRUE.
 !
       end subroutine finalize_sph_domain_OMP_FFTW
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_sph_domain_OMP_FFTW                             &
-     &         (sph_rtp, comm_rtp, OFFTW_d)
+      subroutine verify_sph_domain_OMP_FFTW(sph_rtp, comm_rtp,          &
+     &                                      OFFTW_d, flag_fft)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
 !
       type(work_for_domain_OMP_FFTW), intent(inout) :: OFFTW_d
+      logical, intent(inout) :: flag_fft
 !
 !
       if(allocated(OFFTW_d%X) .eqv. .false.) then
-        call init_sph_domain_OMP_FFTW(sph_rtp, comm_rtp, OFFTW_d)
+        call init_sph_domain_OMP_FFTW(sph_rtp, comm_rtp,                &
+     &                                OFFTW_d, flag_fft)
         return
       end if
 !
       if(size(OFFTW_d%X) .ne. sph_rtp%nnod_rtp) then
-        call finalize_sph_domain_OMP_FFTW(OFFTW_d)
-        call init_sph_domain_OMP_FFTW(sph_rtp, comm_rtp, OFFTW_d)
+        call finalize_sph_domain_OMP_FFTW(OFFTW_d, flag_fft)
+        call init_sph_domain_OMP_FFTW(sph_rtp, comm_rtp,                &
+     &                                OFFTW_d, flag_fft)
       end if
+      flag_fft = .TRUE.
 !
       end subroutine verify_sph_domain_OMP_FFTW
 !

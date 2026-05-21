@@ -10,11 +10,13 @@
 !!@verbatim
 !! ------------------------------------------------------------------
 !!      subroutine init_sph_component_FFTW                              &
-!!     &         (sph_rtp, ncomp_bwd, ncomp_fwd, FFTW_c)
-!!      subroutine finalize_sph_component_FFTW(FFTW_c)
+!!     &         (sph_rtp, ncomp_bwd, ncomp_fwd, FFTW_c, flag_fft)
+!!      subroutine finalize_sph_component_FFTW(FFTW_c, flag_fft)
 !!      subroutine verify_sph_component_FFTW                            &
-!!     &         (sph_rtp, ncomp_bwd, ncomp_fwd, FFTW_c)
+!!     &         (sph_rtp, ncomp_bwd, ncomp_fwd, FFTW_c, flag_fft)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(work_for_comp_FFTW), intent(inout) :: FFTW_c
+!!        logical, intent(inout) :: flag_fft
 !!
 !!   wrapper subroutine for initierize FFT by FFTW
 !! ------------------------------------------------------------------
@@ -133,12 +135,13 @@
 ! ------------------------------------------------------------------
 !
       subroutine init_sph_component_FFTW                                &
-     &         (sph_rtp, ncomp_bwd, ncomp_fwd, FFTW_c)
+     &         (sph_rtp, ncomp_bwd, ncomp_fwd, FFTW_c, flag_fft)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
 !
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
       type(work_for_comp_FFTW), intent(inout) :: FFTW_c
+      logical, intent(inout) :: flag_fft
 !
       integer(kind = kint) :: ip
       integer(kind = 4) :: Nfft4
@@ -166,14 +169,16 @@
 !
       allocate(FFTW_c%t_omp(np_smp,0:3))
       FFTW_c%t_omp = 0.0d0
+      flag_fft = .TRUE.
 !
       end subroutine init_sph_component_FFTW
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_component_FFTW(FFTW_c)
+      subroutine finalize_sph_component_FFTW(FFTW_c, flag_fft)
 !
       type(work_for_comp_FFTW), intent(inout) :: FFTW_c
+      logical, intent(inout) :: flag_fft
 !
       integer(kind = kint) :: j
 !
@@ -186,33 +191,36 @@
       call dealloc_comp_FFTW_plan(FFTW_c)
       call dfftw_cleanup
       deallocate(FFTW_c%t_omp)
+      flag_fft = .TRUE.
 !
       end subroutine finalize_sph_component_FFTW
 !
 ! ------------------------------------------------------------------
 !
       subroutine verify_sph_component_FFTW                              &
-     &         (sph_rtp, ncomp_bwd, ncomp_fwd, FFTW_c)
+     &         (sph_rtp, ncomp_bwd, ncomp_fwd, FFTW_c, flag_fft)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
 !
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
       type(work_for_comp_FFTW), intent(inout) :: FFTW_c
+      logical, intent(inout) :: flag_fft
 !
 !
       if(allocated(FFTW_c%X) .eqv. .false.) then
-        call init_sph_component_FFTW                                    &
-     &     (sph_rtp, ncomp_bwd, ncomp_fwd, FFTW_c)
+        call init_sph_component_FFTW(sph_rtp, ncomp_bwd, ncomp_fwd,     &
+     &                               FFTW_c, flag_fft)
         return
       end if
 !
       if(     int(ncomp_bwd) .ne. FFTW_c%howmany_bwd                    &
      &   .or. int(ncomp_fwd) .ne. FFTW_c%howmany_fwd                    &
      &   .or. sph_rtp%nidx_rtp(3) .ne. FFTW_c%Nfft_r) then
-        call finalize_sph_component_FFTW(FFTW_c)
-        call init_sph_component_FFTW                                    &
-     &    (sph_rtp, ncomp_bwd, ncomp_fwd, FFTW_c)
+        call finalize_sph_component_FFTW(FFTW_c, flag_fft)
+        call init_sph_component_FFTW(sph_rtp, ncomp_bwd, ncomp_fwd,     &
+     &                               FFTW_c, flag_fft)
       end if
+      flag_fft = .TRUE.
 !
       end subroutine verify_sph_component_FFTW
 !

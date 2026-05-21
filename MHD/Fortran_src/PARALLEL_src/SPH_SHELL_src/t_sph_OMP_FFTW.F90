@@ -9,13 +9,15 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine init_rtp_OMP_FFTW                                    &
-!!     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, OFFTW)
-!!      subroutine finalize_rtp_OMP_FFTW(OFFTW)
-!!      subroutine verify_rtp_OMP_FFTW                                  &
-!!     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, OFFTW)
+!!      subroutine init_rtp_OMP_FFTW(sph_rtp, comm_rtp,                 &
+!!     &          ncomp_bwd, ncomp_fwd, OFFTW, flag_fft)
+!!      subroutine finalize_rtp_OMP_FFTW(OFFTW, flag_fft)
+!!      subroutine verify_rtp_OMP_FFTW(sph_rtp, comm_rtp,               &
+!!     &         ncomp_bwd, ncomp_fwd, OFFTW, flag_fft)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
+!!        type(work_for_OpenMP_FFTW), intent(inout) :: OFFTW
+!!        logical, intent(inout) :: flag_fft
 !!
 !!   wrapper subroutine for initierize FFT by FFTW
 !! ------------------------------------------------------------------
@@ -135,8 +137,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_rtp_OMP_FFTW                                      &
-     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, OFFTW)
+      subroutine init_rtp_OMP_FFTW(sph_rtp, comm_rtp,                   &
+     &          ncomp_bwd, ncomp_fwd, OFFTW, flag_fft)
 !
       use set_comm_table_rtp_OMP_FFTW
 !
@@ -145,6 +147,7 @@
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !
       type(work_for_OpenMP_FFTW), intent(inout) :: OFFTW
+      logical, intent(inout) :: flag_fft
 !
       integer, parameter :: IONE_4 = 1
       integer, parameter :: inembed = 0
@@ -175,14 +178,16 @@
      &   (sph_rtp%nnod_rtp, sph_rtp%istack_rtp_rt_smp(np_smp),          &
      &    comm_rtp%irev_sr, OFFTW%Nfft_c, OFFTW%aNfft,                  &
      &    OFFTW%comm_FFTW)
+      flag_fft = .TRUE.
 !
       end subroutine init_rtp_OMP_FFTW
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_rtp_OMP_FFTW(OFFTW)
+      subroutine finalize_rtp_OMP_FFTW(OFFTW, flag_fft)
 !
       type(work_for_OpenMP_FFTW), intent(inout) :: OFFTW
+      logical, intent(inout) :: flag_fft
 !
 !
       call dealloc_comm_table_sph_FFTW(OFFTW%comm_FFTW)
@@ -192,26 +197,28 @@
       call check_clean_OMP_FFTW()
 !
       call dealloc_OMP_FFTW_plan(OFFTW)
+      flag_fft = .TRUE.
 !
       end subroutine finalize_rtp_OMP_FFTW
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_rtp_OMP_FFTW                                    &
-     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, OFFTW)
+      subroutine verify_rtp_OMP_FFTW(sph_rtp, comm_rtp,                 &
+     &         ncomp_bwd, ncomp_fwd, OFFTW, flag_fft)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !
       type(work_for_OpenMP_FFTW), intent(inout) :: OFFTW
+      logical, intent(inout) :: flag_fft
 !
       integer(kind = kint) :: hm_bw, hm_fw
 !
 !
       if(allocated(OFFTW%X) .eqv. .false.) then
-        call init_rtp_OMP_FFTW                                          &
-     &     (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, OFFTW)
+        call init_rtp_OMP_FFTW(sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, &
+     &                         OFFTW, flag_fft)
         return
       end if
 !
@@ -220,10 +227,11 @@
       if(     int(hm_bw) .ne. OFFTW%howmany_bwd                         &
      &   .or. int(hm_fw) .ne. OFFTW%howmany_fwd                         &
      &   .or. sph_rtp%nidx_rtp(3) .ne. OFFTW%Nfft_r) then
-        call finalize_rtp_OMP_FFTW(OFFTW)
-        call init_rtp_OMP_FFTW                                          &
-     &     (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, OFFTW)
+        call finalize_rtp_OMP_FFTW(OFFTW, flag_fft)
+        call init_rtp_OMP_FFTW(sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, &
+     &                         OFFTW, flag_fft)
       end if
+      flag_fft = .TRUE.
 !
       end subroutine verify_rtp_OMP_FFTW
 !

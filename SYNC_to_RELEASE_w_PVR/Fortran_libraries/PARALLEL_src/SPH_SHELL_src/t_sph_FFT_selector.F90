@@ -174,29 +174,30 @@
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           if(id_rank .eq. 0) write(*,*) 'Use prt FFTW'
           call init_prt_FFTW_smp(sph_rtp, comm_rtp,                     &
-     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW, flag_fft)
         else
           if(id_rank .eq. 0) write(*,*) 'Use rtp FFTW'
           call init_rtp_FFTW_smp(sph_rtp, comm_rtp,                     &
-     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW, flag_fft)
         end if
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_DOMAIN) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           if(id_rank .eq. 0) write(*,*) 'Use prt FFTW for domain'
-          call init_prt_field_FFTW                                      &
-     &       (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
+          call init_prt_field_FFTW(sph_rtp, comm_rtp,                   &
+     &                             WK_FFTs%sph_fld_FFTW, flag_fft)
         else
           if(id_rank .eq. 0) write(*,*) 'Use rtp FFTW for domain'
-          call init_rtp_field_FFTW                                      &
-     &       (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
+          call init_rtp_field_FFTW(sph_rtp, comm_rtp,                   &
+     &                             WK_FFTs%sph_fld_FFTW, flag_fft)
         end if
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(id_rank .eq. 0) write(*,*) 'Use single transform in FFTW'
-        call init_sph_single_FFTW(sph_rtp, WK_FFTs%sph_sgl_FFTW)
+        call init_sph_single_FFTW(sph_rtp, WK_FFTs%sph_sgl_FFTW,        &
+     &                            flag_fft)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_COMPONENT) then
         if(id_rank .eq. 0) write(*,*) 'Use FFTW for all compontnent'
-        call init_sph_component_FFTW                                    &
-     &     (sph_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_FFTW)
+        call init_sph_component_FFTW(sph_rtp, ncomp_bwd, ncomp_fwd,     &
+     &                               WK_FFTs%sph_comp_FFTW, flag_fft)
 #endif
       else
         if(sph_rtp%istep_rtp(3) .eq. 1) then
@@ -243,16 +244,17 @@
 #ifdef FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
-        call finalize_sph_field_FFTW(WK_FFTs%sph_fld_FFTW)
+        call finalize_sph_field_FFTW(WK_FFTs%sph_fld_FFTW, flag_fft)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_DOMAIN) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW for domain'
-        call finalize_sph_field_FFTW(WK_FFTs%sph_fld_FFTW)
+        call finalize_sph_field_FFTW(WK_FFTs%sph_fld_FFTW, flag_fft)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize single FFTW'
-        call finalize_sph_single_FFTW(WK_FFTs%sph_sgl_FFTW)
+        call finalize_sph_single_FFTW(WK_FFTs%sph_sgl_FFTW, flag_fft)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_COMPONENT) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW for all comps'
-        call finalize_sph_component_FFTW(WK_FFTs%sph_comp_FFTW)
+        call finalize_sph_component_FFTW(WK_FFTs%sph_comp_FFTW,         &
+     &                                   flag_fft)
 #endif
       else
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTPACK'
@@ -304,29 +306,30 @@
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           if(iflag_debug .gt. 0) write(*,*) 'Use prt FFTW'
           call verify_prt_FFTW_smp(sph_rtp, comm_rtp,                   &
-     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW, flag_fft)
         else
           if(iflag_debug .gt. 0) write(*,*) 'Use rtp FFTW'
           call verify_rtp_FFTW_smp(sph_rtp, comm_rtp,                   &
-     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW, flag_fft)
         end if
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_DOMAIN) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           if(iflag_debug .gt. 0) write(*,*) 'Use prt FFTW for field'
-          call verify_prt_field_FFTW                                    &
-     &       (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
+          call verify_prt_field_FFTW(sph_rtp, comm_rtp,                 &
+     &                               WK_FFTs%sph_fld_FFTW, flag_fft)
         else
           if(iflag_debug .gt. 0) write(*,*) 'Use rtp FFTW for field'
-          call verify_rtp_field_FFTW                                    &
-     &       (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
+          call verify_rtp_field_FFTW(sph_rtp, comm_rtp,                 &
+     &                               WK_FFTs%sph_fld_FFTW, flag_fft)
         end if
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use single FFTW'
-        call verify_sph_single_FFTW(sph_rtp, WK_FFTs%sph_sgl_FFTW)
+        call verify_sph_single_FFTW(sph_rtp, WK_FFTs%sph_sgl_FFTW,      &
+     &                              flag_fft)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_COMPONENT) then
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTW for all comp。'
-        call verify_sph_component_FFTW                                  &
-     &     (sph_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_FFTW)
+        call verify_sph_component_FFTW(sph_rtp, ncomp_bwd, ncomp_fwd,   &
+     &                                 WK_FFTs%sph_comp_FFTW, flag_fft)
 #endif
       else
         if(sph_rtp%istep_rtp(3) .eq. 1) then
