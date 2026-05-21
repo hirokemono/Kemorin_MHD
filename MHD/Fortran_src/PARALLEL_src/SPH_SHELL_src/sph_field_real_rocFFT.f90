@@ -9,18 +9,19 @@
 !!@verbatim
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT by FFTW
-!!      subroutine init_prt_real_rocFFT                                 &
-!!     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, rocFFT_f)
-!!      subroutine init_rtp_real_rocFFT                                 &
-!!     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, rocFFT_f)
-!!      subroutine verify_prt_real_rocFFT                               &
-!!     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, rocFFT_f)
-!!      subroutine verify_rtp_real_rocFFT                               &
-!!     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, rocFFT_f)
+!!      subroutine init_prt_real_rocFFT(sph_rtp, comm_rtp,              &
+!!     &          ncomp_bwd, ncomp_fwd, rocFFT_f, flag_fft)
+!!      subroutine init_rtp_real_rocFFT(sph_rtp, comm_rtp,              &
+!!     &          ncomp_bwd, ncomp_fwd, rocFFT_f, flag_fft)
+!!      subroutine verify_prt_real_rocFFT(sph_rtp, comm_rtp,            &
+!!     &          ncomp_bwd, ncomp_fwd, rocFFT_f, flag_fft)
+!!      subroutine verify_rtp_real_rocFFT(sph_rtp, comm_rtp,            &
+!!     &          ncomp_bwd, ncomp_fwd, rocFFT_f, flag_fft)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
 !!        integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !!        type(work_for_field_rocFFT), intent(inout) :: rocFFT_f
+!!        logical, intent(inout) :: flag_fft
 !! ------------------------------------------------------------------
 !!
 !!   a_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\frac{2\pi j k}{Nfft})
@@ -72,8 +73,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_prt_real_rocFFT                                   &
-     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, rocFFT_f)
+      subroutine init_prt_real_rocFFT(sph_rtp, comm_rtp,                &
+     &          ncomp_bwd, ncomp_fwd, rocFFT_f, flag_fft)
 !
       use comm_table_pin_real_rocFFT
       use multi_pin_complex_rocFFT
@@ -83,6 +84,7 @@
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !
       type(work_for_field_rocFFT), intent(inout) :: rocFFT_f
+      logical, intent(inout) :: flag_fft
 !
       integer(kind = kint) :: howmany_bwd, howmany_fwd, nnod_rt
       integer(kind = kint) :: Nfft_r4
@@ -112,13 +114,14 @@
      &                           * ncomp_fwd
       rocFFT_f%iflag_bwd_rocFFT = nnod_rt * sph_rtp%nidx_rtp(3)         &
      &                           * ncomp_bwd
+      flag_fft = .TRUE.
 !
       end subroutine init_prt_real_rocFFT
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_rtp_real_rocFFT                                   &
-     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, rocFFT_f)
+      subroutine init_rtp_real_rocFFT(sph_rtp, comm_rtp,                &
+     &          ncomp_bwd, ncomp_fwd, rocFFT_f, flag_fft)
 !
       use comm_table_pout_real_rocFFT
       use multi_pout_complex_rocFFT
@@ -128,6 +131,7 @@
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !
       type(work_for_field_rocFFT), intent(inout) :: rocFFT_f
+      logical, intent(inout) :: flag_fft
 !
       integer(kind = kint) :: howmany_bwd, howmany_fwd, nnod_rt
       integer(kind = kint) :: Nfft_r4
@@ -155,20 +159,22 @@
      &                           * ncomp_fwd
       rocFFT_f%iflag_bwd_rocFFT = nnod_rt * sph_rtp%nidx_rtp(3)         &
      &                           * ncomp_bwd
+      flag_fft = .TRUE.
 !
       end subroutine init_rtp_real_rocFFT
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine verify_prt_real_rocFFT                                 &
-     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, rocFFT_f)
+      subroutine verify_prt_real_rocFFT(sph_rtp, comm_rtp,              &
+     &          ncomp_bwd, ncomp_fwd, rocFFT_f, flag_fft)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !
       type(work_for_field_rocFFT), intent(inout) :: rocFFT_f
+      logical, intent(inout) :: flag_fft
 !
       integer(kind = kint) :: num
 !
@@ -176,7 +182,7 @@
       if(     (rocFFT_f%iflag_fwd_rocFFT .lt. 0)                        &
      &   .or. (rocFFT_f%iflag_bwd_rocFFT .lt. 0)) then
         call init_prt_real_rocFFT(sph_rtp, comm_rtp,                    &
-     &                            ncomp_bwd, ncomp_fwd, rocFFT_f)
+     &      ncomp_bwd, ncomp_fwd, rocFFT_f, flag_fft)
         return
       end if
 !
@@ -184,23 +190,25 @@
      &     * sph_rtp%nidx_rtp(3)
       if(     (rocFFT_f%iflag_fwd_rocFFT .ne. (num*ncomp_fwd))          &
      &   .or. (rocFFT_f%iflag_bwd_rocFFT .ne. (num*ncomp_bwd))) then
-        call finalize_sph_rocFFT(rocFFT_f)
+        call finalize_sph_rocFFT(rocFFT_f, flag_fft)
         call init_prt_real_rocFFT(sph_rtp, comm_rtp,                    &
-     &                            ncomp_bwd, ncomp_fwd, rocFFT_f)
+     &      ncomp_bwd, ncomp_fwd, rocFFT_f, flag_fft)
       end if
+      flag_fft = .TRUE.
 !
       end subroutine verify_prt_real_rocFFT
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_rtp_real_rocFFT                                 &
-     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, rocFFT_f)
+      subroutine verify_rtp_real_rocFFT(sph_rtp, comm_rtp,              &
+     &          ncomp_bwd, ncomp_fwd, rocFFT_f, flag_fft)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !
       type(work_for_field_rocFFT), intent(inout) :: rocFFT_f
+      logical, intent(inout) :: flag_fft
 !
       integer(kind = kint) :: num
 !
@@ -208,7 +216,7 @@
       if(     (rocFFT_f%iflag_fwd_rocFFT .lt. 0)                        &
      &   .or. (rocFFT_f%iflag_bwd_rocFFT .lt. 0)) then
         call init_rtp_real_rocFFT(sph_rtp, comm_rtp,                    &
-     &                            ncomp_bwd, ncomp_fwd, rocFFT_f)
+     &      ncomp_bwd, ncomp_fwd, rocFFT_f, flag_fft)
         return
       end if
 !
@@ -216,10 +224,11 @@
      &     * sph_rtp%nidx_rtp(3)
       if(     (rocFFT_f%iflag_fwd_rocFFT .ne. (num*ncomp_fwd))          &
      &   .or. (rocFFT_f%iflag_bwd_rocFFT .ne. (num*ncomp_bwd))) then
-        call finalize_sph_rocFFT(rocFFT_f)
+        call finalize_sph_rocFFT(rocFFT_f, flag_fft)
         call init_rtp_real_rocFFT(sph_rtp, comm_rtp,                    &
-     &                            ncomp_bwd, ncomp_fwd, rocFFT_f)
+     &      ncomp_bwd, ncomp_fwd, rocFFT_f, flag_fft)
       end if
+      flag_fft = .TRUE.
 !
       end subroutine verify_rtp_real_rocFFT
 !
