@@ -11,13 +11,15 @@
 !!@verbatim
 !!  ---------------------------------------------------------------------
 !!
-!!      subroutine init_sph_domain_ISPACK                               &
-!!     &         (sph_rtp, comm_rtp, ispack_d)
-!!      subroutine finalize_sph_domain_ISPACK(ispack_d)
+!!      subroutine init_sph_domain_ISPACK(sph_rtp, comm_rtp,            &
+!!     &                                  ispack_d, flag_fft)
+!!      subroutine finalize_sph_domain_ISPACK(ispack_d, flag_fft)
 !!      subroutine verify_sph_domain_ISPACK                             &
-!!     &         (sph_rtp, comm_rtp, ispack_d)
+!!     &         (sph_rtp, comm_rtp, ispack_d, flag_fft)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
+!!        type(work_for_domain_ispack), intent(inout) :: ispack_d
+!!        logical, intent(inout) :: flag_fft
 !! ------------------------------------------------------------------
 !! wrapper subroutine for initierize FFT for ISPACK
 !! ------------------------------------------------------------------
@@ -127,7 +129,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_domain_ISPACK(sph_rtp, comm_rtp, ispack_d)
+      subroutine init_sph_domain_ISPACK(sph_rtp, comm_rtp,              &
+     &                                  ispack_d, flag_fft)
 !
       use ispack_0931
       use set_comm_table_rtp_ISPACK
@@ -136,6 +139,7 @@
       type(sph_comm_tbl), intent(in) :: comm_rtp
 !
       type(work_for_domain_ispack), intent(inout) :: ispack_d
+      logical, intent(inout) :: flag_fft
 !
 !
       call alloc_const_domain_ispack(sph_rtp%nidx_rtp(3), ispack_d)
@@ -150,26 +154,29 @@
      &    sph_rtp%istep_rtp, sph_rtp%istack_rtp_rt_smp,                 &
      &    comm_rtp%ntot_item_sr, comm_rtp%irev_sr,                      &
      &    ispack_d%comm_sph_ISPACK)
+      flag_fft = .TRUE.
 !
       end subroutine init_sph_domain_ISPACK
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_domain_ISPACK(ispack_d)
+      subroutine finalize_sph_domain_ISPACK(ispack_d, flag_fft)
 !
       type(work_for_domain_ispack), intent(inout) :: ispack_d
+      logical, intent(inout) :: flag_fft
 !
 !
       call dealloc_comm_table_sph_FFT(ispack_d%comm_sph_ISPACK)
       call dealloc_const_domain_ispack(ispack_d)
       call dealloc_work_domain_ispack(ispack_d)
+      flag_fft = .TRUE.
 !
       end subroutine finalize_sph_domain_ISPACK
 !
 ! ------------------------------------------------------------------
 !
       subroutine verify_sph_domain_ISPACK                               &
-     &         (sph_rtp, comm_rtp, ispack_d)
+     &         (sph_rtp, comm_rtp, ispack_d, flag_fft)
 !
       use ispack_0931
       use set_comm_table_rtp_ISPACK
@@ -178,10 +185,10 @@
       type(sph_comm_tbl), intent(in) :: comm_rtp
 !
       type(work_for_domain_ispack), intent(inout) :: ispack_d
+      logical, intent(inout) :: flag_fft
 !
 !
       if((2*sph_rtp%nidx_rtp(3)) .ne. size(ispack_d%T)) then
-!
         if(allocated(ispack_d%T) .eqv. .false.) then
           call alloc_const_domain_ispack(sph_rtp%nidx_rtp(3), ispack_d)
         else if( (2*sph_rtp%nidx_rtp(3)) .gt. size(ispack_d%T) ) then
@@ -207,6 +214,7 @@
         call dealloc_work_domain_ispack(ispack_d)
         call alloc_work_domain_ispack(sph_rtp%nnod_rtp, ispack_d)
       end if
+      flag_fft = .TRUE.
 !
       end subroutine verify_sph_domain_ISPACK
 !

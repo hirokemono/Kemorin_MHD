@@ -11,15 +11,16 @@
 !!@verbatim
 !!  ---------------------------------------------------------------------
 !!
-!!      subroutine init_sph_domain_ISPACK3                              &
-!!     &         (sph_rtp, comm_rtp, ispack3_d)
-!!      subroutine finalize_sph_domain_ISPACK3(ispack3_d)
-!!      subroutine verify_sph_domain_ISPACK3                            &
-!!     &         (sph_rtp, comm_rtp, ispack3_d)
+!!      subroutine init_sph_domain_ISPACK3(sph_rtp, comm_rtp,           &
+!!     &                                   ispack3_d, flag_fft)
+!!      subroutine finalize_sph_domain_ISPACK3(ispack3_d, flag_fft)
+!!      subroutine verify_sph_domain_ISPACK3(sph_rtp, comm_rtp,         &
+!!     &                                     ispack3_d, flag_fft)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
 !!        integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !!        type(work_for_domain_ispack3), intent(inout) :: ispack3_d
+!!        logical, intent(inout) :: flag_fft
 !! ------------------------------------------------------------------
 !! wrapper subroutine for initierize FFT for ISPACK
 !! ------------------------------------------------------------------
@@ -125,7 +126,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_domain_ISPACK3(sph_rtp, comm_rtp, ispack3_d)
+      subroutine init_sph_domain_ISPACK3(sph_rtp, comm_rtp,             &
+     &                                   ispack3_d, flag_fft)
 !
       use transfer_to_long_integers
       use set_comm_table_rtp_ISPACK
@@ -135,6 +137,7 @@
       type(sph_comm_tbl), intent(in) :: comm_rtp
 !
       type(work_for_domain_ispack3), intent(inout) :: ispack3_d
+      logical, intent(inout) :: flag_fft
 !
 !
       call alloc_const_domain_ispack3(sph_rtp%nidx_rtp(3), ispack3_d)
@@ -150,26 +153,29 @@
      &    sph_rtp%istep_rtp, sph_rtp%istack_rtp_rt_smp,                 &
      &    comm_rtp%ntot_item_sr, comm_rtp%irev_sr,                      &
      &    ispack3_d%comm_sph_ISPACK3)
+      flag_fft = .TRUE.
 !
       end subroutine init_sph_domain_ISPACK3
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_domain_ISPACK3(ispack3_d)
+      subroutine finalize_sph_domain_ISPACK3(ispack3_d, flag_fft)
 !
       type(work_for_domain_ispack3), intent(inout) :: ispack3_d
+      logical, intent(inout) :: flag_fft
 !
 !
       call dealloc_comm_table_sph_FFT(ispack3_d%comm_sph_ISPACK3)
       call dealloc_const_domain_ispack3(ispack3_d)
       call dealloc_work_domain_ispack3(ispack3_d)
+      flag_fft = .TRUE.
 !
       end subroutine finalize_sph_domain_ISPACK3
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_sph_domain_ISPACK3                              &
-     &         (sph_rtp, comm_rtp, ispack3_d)
+      subroutine verify_sph_domain_ISPACK3(sph_rtp, comm_rtp,           &
+     &                                     ispack3_d, flag_fft)
 !
       use transfer_to_long_integers
       use set_comm_table_rtp_ISPACK
@@ -179,6 +185,7 @@
       type(sph_comm_tbl), intent(in) :: comm_rtp
 !
       type(work_for_domain_ispack3), intent(inout) :: ispack3_d
+      logical, intent(inout) :: flag_fft
 !
 !
       if((2*sph_rtp%nidx_rtp(3)) .ne. size(ispack3_d%T)) then
@@ -211,6 +218,7 @@
         call dealloc_work_domain_ispack3(ispack3_d)
         call alloc_work_domain_ispack3(sph_rtp%nnod_rtp, ispack3_d)
       end if
+      flag_fft = .TRUE.
 !
       end subroutine verify_sph_domain_ISPACK3
 !

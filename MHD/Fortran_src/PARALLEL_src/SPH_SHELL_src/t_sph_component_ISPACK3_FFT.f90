@@ -12,14 +12,15 @@
 !!  ---------------------------------------------------------------------
 !!
 !!      subroutine init_sph_comp_ISPACK3                                &
-!!     &         (sph_rtp, ncomp_bwd, ncomp_fwd, ispack3_c)
-!!      subroutine finalize_sph_comp_ISPACK3(ispack3_c)
+!!     &         (sph_rtp, ncomp_bwd, ncomp_fwd, ispack3_c, flag_fft)
+!!      subroutine finalize_sph_comp_ISPACK3(ispack3_c, flag_fft)
 !!      subroutine verify_sph_comp_ISPACK3                              &
-!!     &         (sph_rtp, ncomp_bwd, ncomp_fwd, ispack3_c)
+!!     &         (sph_rtp, ncomp_bwd, ncomp_fwd, ispack3_c, flag_fft)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !!        integer(kind = kint), intent(in) :: maxirt_rtp_smp
 !!        type(work_for_comp_ispack3), intent(inout) :: ispack3_c
+!!        logical, intent(inout) :: flag_fft
 !! ------------------------------------------------------------------
 !! wrapper subroutine for initierize FFT for ISPACK
 !! ------------------------------------------------------------------
@@ -126,7 +127,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine init_sph_comp_ISPACK3                                  &
-     &         (sph_rtp, ncomp_bwd, ncomp_fwd, ispack3_c)
+     &         (sph_rtp, ncomp_bwd, ncomp_fwd, ispack3_c, flag_fft)
 !
       use transfer_to_long_integers
 !
@@ -134,6 +135,7 @@
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !
       type(work_for_comp_ispack3), intent(inout) :: ispack3_c
+      logical, intent(inout) :: flag_fft
 !
 !
       call alloc_const_comp_ispack3(sph_rtp%nidx_rtp(3), ispack3_c)
@@ -145,34 +147,37 @@
 !
       allocate(ispack3_c%t_omp(np_smp,0:3))
       ispack3_c%t_omp = 0.0d0
+      flag_fft = .TRUE.
 !
       end subroutine init_sph_comp_ISPACK3
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_comp_ISPACK3(ispack3_c)
+      subroutine finalize_sph_comp_ISPACK3(ispack3_c, flag_fft)
 !
       type(work_for_comp_ispack3), intent(inout) :: ispack3_c
+      logical, intent(inout) :: flag_fft
 !
 !
       call dealloc_const_comp_ispack3(ispack3_c)
       call dealloc_work_comp_ispack3(ispack3_c)
       deallocate(ispack3_c%t_omp)
+      flag_fft = .TRUE.
 !
       end subroutine finalize_sph_comp_ISPACK3
 !
 ! ------------------------------------------------------------------
 !
       subroutine verify_sph_comp_ISPACK3                                &
-     &         (sph_rtp, ncomp_bwd, ncomp_fwd, ispack3_c)
+     &         (sph_rtp, ncomp_bwd, ncomp_fwd, ispack3_c, flag_fft)
 !
       use transfer_to_long_integers
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
-!
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !
       type(work_for_comp_ispack3), intent(inout) :: ispack3_c
+      logical, intent(inout) :: flag_fft
 !
 !
       if((2*sph_rtp%nidx_rtp(3)) .ne. size(ispack3_c%T)) then
@@ -197,7 +202,8 @@
         call alloc_work_comp_ispack3                                    &
      &     (sph_rtp%nidx_rtp(3), ncomp_bwd, ncomp_fwd, ispack3_c)
       end if
-!
+      flag_fft = .TRUE.
+
       end subroutine verify_sph_comp_ISPACK3
 !
 ! ------------------------------------------------------------------

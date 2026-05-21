@@ -12,13 +12,15 @@
 !!  ---------------------------------------------------------------------
 !!
 !!      subroutine init_sph_ISPACK3(sph_rtp, comm_rtp,                  &
-!!     &                            ncomp_bwd, ncomp_fwd, ispack3_t)
-!!      subroutine finalize_sph_ISPACK3(ispack3_t)
+!!     &          ncomp_bwd, ncomp_fwd, ispack3_t, flag_fft)
+!!      subroutine finalize_sph_ISPACK3(ispack3_t, flag_fft)
 !!      subroutine verify_sph_ISPACK3(sph_rtp, comm_rtp,                &
-!!     &          ncomp_bwd, ncomp_fwd, ispack3_t)
+!!     &          ncomp_bwd, ncomp_fwd, ispack3_t, flag_fft)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
+!!        integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !!        type(work_for_ispack3), intent(inout) :: ispack3_t
+!!        logical, intent(inout) :: flag_fft
 !! ------------------------------------------------------------------
 !! wrapper subroutine for initierize FFT for ISPACK
 !! ------------------------------------------------------------------
@@ -124,7 +126,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine init_sph_ISPACK3(sph_rtp, comm_rtp,                    &
-     &                            ncomp_bwd, ncomp_fwd, ispack3_t)
+     &          ncomp_bwd, ncomp_fwd, ispack3_t, flag_fft)
 !
       use transfer_to_long_integers
       use set_comm_table_rtp_ISPACK
@@ -134,6 +136,7 @@
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !
       type(work_for_ispack3), intent(inout) :: ispack3_t
+      logical, intent(inout) :: flag_fft
 !
       integer(kind = kint) :: ncomp
 !
@@ -152,26 +155,29 @@
      &    sph_rtp%istep_rtp, sph_rtp%istack_rtp_rt_smp,                 &
      &    comm_rtp%ntot_item_sr, comm_rtp%irev_sr,                      &
      &    ispack3_t%comm_sph_ISPACK3)
+      flag_fft = .TRUE.
 !
       end subroutine init_sph_ISPACK3
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_ISPACK3(ispack3_t)
+      subroutine finalize_sph_ISPACK3(ispack3_t, flag_fft)
 !
       type(work_for_ispack3), intent(inout) :: ispack3_t
+      logical, intent(inout) :: flag_fft
 !
 !
       call dealloc_comm_table_sph_FFT(ispack3_t%comm_sph_ISPACK3)
       call dealloc_const_4_ispack3(ispack3_t)
       call dealloc_work_4_ispack3(ispack3_t)
+      flag_fft = .TRUE.
 !
       end subroutine finalize_sph_ISPACK3
 !
 ! ------------------------------------------------------------------
 !
       subroutine verify_sph_ISPACK3(sph_rtp, comm_rtp,                  &
-     &          ncomp_bwd, ncomp_fwd, ispack3_t)
+     &          ncomp_bwd, ncomp_fwd, ispack3_t, flag_fft)
 !
       use transfer_to_long_integers
       use set_comm_table_rtp_ISPACK
@@ -181,6 +187,7 @@
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !
       type(work_for_ispack3), intent(inout) :: ispack3_t
+      logical, intent(inout) :: flag_fft
 !
       integer(kind = kint) :: ncomp
 !
@@ -215,6 +222,7 @@
         call dealloc_work_4_ispack3(ispack3_t)
         call alloc_work_4_ispack3(sph_rtp%nnod_rtp, ncomp, ispack3_t)
       end if
+      flag_fft = .TRUE.
 !
       end subroutine verify_sph_ISPACK3
 !

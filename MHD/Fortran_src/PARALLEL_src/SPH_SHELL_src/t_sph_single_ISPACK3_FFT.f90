@@ -11,12 +11,14 @@
 !!@verbatim
 !!  ---------------------------------------------------------------------
 !!
-!!      subroutine init_sph_single_ISPACK3(sph_rtp, ispack3_s)
-!!      subroutine finalize_sph_single_ISPACK3(ispack3_s)
-!!      subroutine verify_sph_single_ISPACK3(sph_rtp, ispack3_s)
+!!      subroutine init_sph_single_ISPACK3(sph_rtp, ispack3_s, flag_fft)
+!!      subroutine finalize_sph_single_ISPACK3(ispack3_s, flag_fft)
+!!      subroutine verify_sph_single_ISPACK3(sph_rtp,                   &
+!!     &                                     ispack3_s, flag_fft)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
 !!        type(work_for_single_ispack3), intent(inout) :: ispack3_s
+!!        logical, intent(inout) :: flag_fft
 !! ------------------------------------------------------------------
 !! wrapper subroutine for initierize FFT for ISPACK
 !! ------------------------------------------------------------------
@@ -123,13 +125,14 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_single_ISPACK3(sph_rtp, ispack3_s)
+      subroutine init_sph_single_ISPACK3(sph_rtp, ispack3_s, flag_fft)
 !
       use transfer_to_long_integers
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
 !
       type(work_for_single_ispack3), intent(inout) :: ispack3_s
+      logical, intent(inout) :: flag_fft
 !
 !
       call alloc_work_single_ispack3(sph_rtp%nidx_rtp(3), ispack3_s)
@@ -138,30 +141,35 @@
 !
       allocate(ispack3_s%t_omp(np_smp,0:3))
       ispack3_s%t_omp = 0.0d0
+      flag_fft = .TRUE.
 !
       end subroutine init_sph_single_ISPACK3
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_single_ISPACK3(ispack3_s)
+      subroutine finalize_sph_single_ISPACK3(ispack3_s, flag_fft)
 !
       type(work_for_single_ispack3), intent(inout) :: ispack3_s
+      logical, intent(inout) :: flag_fft
 !
 !
       call dealloc_work_single_ispack3(ispack3_s)
       deallocate(ispack3_s%t_omp)
+      flag_fft = .TRUE.
 !
       end subroutine finalize_sph_single_ISPACK3
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_sph_single_ISPACK3(sph_rtp, ispack3_s)
+      subroutine verify_sph_single_ISPACK3(sph_rtp,                     &
+     &                                     ispack3_s, flag_fft)
 !
       use transfer_to_long_integers
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
 !
       type(work_for_single_ispack3), intent(inout) :: ispack3_s
+      logical, intent(inout) :: flag_fft
 !
 !
       if((2*sph_rtp%nidx_rtp(3)) .ne. size(ispack3_s%T)) then
@@ -178,6 +186,7 @@
         call FXRINI(cast_long(sph_rtp%nidx_rtp(3)),                     &
      &                        ispack3_s%IT, ispack3_s%T)
       end if
+      flag_fft = .TRUE.
 !
       end subroutine verify_sph_single_ISPACK3
 !

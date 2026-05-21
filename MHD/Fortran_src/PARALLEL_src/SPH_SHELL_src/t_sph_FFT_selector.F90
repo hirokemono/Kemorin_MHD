@@ -205,27 +205,28 @@
       if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V0.93'
         call init_sph_ISPACK(sph_rtp, comm_rtp,                         &
-     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_ISPACK)
+     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_ISPACK, flag_fft)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_DOMAIN) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V0.93 for domain'
         call init_sph_domain_ISPACK                                     &
-     &     (sph_rtp, comm_rtp, WK_FFTs%sph_domain_ISPACK)
+     &     (sph_rtp, comm_rtp, WK_FFTs%sph_domain_ISPACK, flag_fft)
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_ONCE) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1'
-        call init_sph_ISPACK3(sph_rtp, comm_rtp,                        &
-     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_ISPACK3)
+        call init_sph_ISPACK3(sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,  &
+     &                        WK_FFTs%sph_ISPACK3, flag_fft)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_DOMAIN) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1 for domain'
-        call init_sph_domain_ISPACK3                                    &
-     &     (sph_rtp, comm_rtp, WK_FFTs%sph_domain_ispack3)
+        call init_sph_domain_ISPACK3(sph_rtp, comm_rtp,                 &
+     &      WK_FFTs%sph_domain_ispack3, flag_fft)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_COMPONENT) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1 for component'
-        call init_sph_comp_ISPACK3                                      &
-     &     (sph_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_ispack3)
+        call init_sph_comp_ISPACK3(sph_rtp, ncomp_bwd, ncomp_fwd,       &
+     &                             WK_FFTs%sph_comp_ispack3, flag_fft)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_SINGLE) then
         if(id_rank .eq. 0) write(*,*) 'Use single ISPACK V3.0.1'
-        call init_sph_single_ISPACK3(sph_rtp, WK_FFTs%sph_sgl_ispack3)
+        call init_sph_single_ISPACK3(sph_rtp, WK_FFTs%sph_sgl_ispack3,  &
+     &                               flag_fft)
 !
 #ifdef FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_ONCE) then
@@ -387,27 +388,31 @@
 !
       if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK V0.93'
-        call finalize_sph_ISPACK(WK_FFTs%sph_ISPACK)
+        call finalize_sph_ISPACK(WK_FFTs%sph_ISPACK, flag_fft)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_DOMAIN) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                'Finalize ISPACK V0.93 for domain'
-        call finalize_sph_domain_ISPACK(WK_FFTs%sph_domain_ISPACK)
+        call finalize_sph_domain_ISPACK(WK_FFTs%sph_domain_ISPACK,      &
+     &                                  flag_fft)
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK V3.0.1'
-        call finalize_sph_ISPACK3(WK_FFTs%sph_ISPACK3)
+        call finalize_sph_ISPACK3(WK_FFTs%sph_ISPACK3, flag_fft)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_DOMAIN) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                       'Finalize ISPACK V3.0.1 for domain'
-        call finalize_sph_domain_ISPACK3(WK_FFTs%sph_domain_ispack3)
+        call finalize_sph_domain_ISPACK3(WK_FFTs%sph_domain_ispack3,    &
+     &                                   flag_fft)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_COMPONENT) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                       'Finalize ISPACK V3.0.1 for component'
-        call finalize_sph_comp_ISPACK3(WK_FFTs%sph_comp_ispack3)
+        call finalize_sph_comp_ISPACK3(WK_FFTs%sph_comp_ispack3,        &
+     &                                 flag_fft)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                       'Finalize single ISPACK V3.0.1'
-        call finalize_sph_single_ISPACK3(WK_FFTs%sph_sgl_ispack3)
+        call finalize_sph_single_ISPACK3(WK_FFTs%sph_sgl_ispack3,       &
+     &                                   flag_fft)
 !
 #ifdef FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_ONCE) then
@@ -502,30 +507,30 @@
       if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V0.93'
         call verify_sph_ISPACK(sph_rtp, comm_rtp,                       &
-     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_ISPACK)
+     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_ISPACK, flag_fft)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_DOMAIN) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V0.93 for domain'
         call verify_sph_domain_ISPACK                                   &
-     &     (sph_rtp, comm_rtp, WK_FFTs%sph_domain_ISPACK)
+     &     (sph_rtp, comm_rtp, WK_FFTs%sph_domain_ISPACK, flag_fft)
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V3.0.1'
         call verify_sph_ISPACK3(sph_rtp, comm_rtp,                      &
-     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_ISPACK3)
+     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_ISPACK3, flag_fft)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_DOMAIN) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                       'Use ISPACK V3.0.1 for domain'
         call verify_sph_domain_ISPACK3                                  &
-     &     (sph_rtp, comm_rtp, WK_FFTs%sph_domain_ispack3)
+     &     (sph_rtp, comm_rtp, WK_FFTs%sph_domain_ispack3, flag_fft)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_COMPONENT) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                       'Use ISPACK V3.0.1 for component'
-        call verify_sph_comp_ISPACK3                                    &
-     &     (sph_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_ispack3)
+        call verify_sph_comp_ISPACK3(sph_rtp, ncomp_bwd, ncomp_fwd,     &
+     &      WK_FFTs%sph_comp_ispack3, flag_fft)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use single ISPACK V3.0.1'
         call verify_sph_single_ISPACK3                                  &
-     &     (sph_rtp, WK_FFTs%sph_sgl_ispack3)
+     &     (sph_rtp, WK_FFTs%sph_sgl_ispack3, flag_fft)
 !
 #ifdef FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_ONCE) then
