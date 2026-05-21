@@ -54,7 +54,7 @@
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
 !!        integer(kind = kint), intent(in) :: ncomp_bwd
 !!        integer(kind = kint), intent(in) :: n_WR
-!!        real (kind=kreal), intent(inout):: WR(n_WR)
+!!        real(kind = kreal), intent(in) :: WR(n_WR)
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
 !!        type(work_for_ispack), intent(inout) :: ispack_t
@@ -305,7 +305,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_bwd
       integer(kind = kint), intent(in) :: n_WR
-      real (kind=kreal), intent(inout):: WR(n_WR)
+      real(kind = kreal), intent(in) :: WR(n_WR)
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
