@@ -139,11 +139,11 @@
 !
       integer(kind = kint), intent(in) :: iflag_FFT_MHD
 !
-      integer(kind = kint) :: iflag_res, iflag_FFT, iflag_size
+      integer(kind = kint) :: iflag_res, iflag_sph_FFT, iflag_size
 !
 !
-      iflag_size = mod(iflag_FFT_MHD,10)
-      iflag_FFT = iflag_FFT_MHD - iflag_size
+      iflag_size =    mod(iflag_FFT_MHD,10)
+      iflag_sph_FFT = iflag_FFT_MHD - iflag_size
 !
       iflag_res = iflag_FFT_MHD
       if(iflag_FFT_MHD .eq. iflag_FFTW_COMPONENT) then
@@ -153,12 +153,12 @@
       else if(iflag_FFT_MHD .eq. iflag_ISPACK3_COMPONENT) then
         iflag_res = iflag_ISPACK3_SINGLE
 !
-      else if(iflag_FFT .eq. iflag_FFTW                                 &
-     &   .or. iflag_FFT .eq. iflag_rocFFT                               &
-     &   .or. iflag_FFT .eq. iflag_real_rocFFT                          &
-     &   .or. iflag_FFT .eq. iflag_OMP_rocFFT) then
+      else if(iflag_sph_FFT .eq. iflag_FFTW                             &
+     &   .or. iflag_sph_FFT .eq. iflag_rocFFT                           &
+     &   .or. iflag_sph_FFT .eq. iflag_real_rocFFT                      &
+     &   .or. iflag_sph_FFT .eq. iflag_OMP_rocFFT) then
         if(iflag_size .eq. iflag_once_fft)                              &
-     &               iflag_res = iflag_FFT + iflag_domain_once
+     &               iflag_res = iflag_sph_FFT + iflag_domain_once
       end if
       set_FFT_mode_4_snapshot = iflag_res
 !

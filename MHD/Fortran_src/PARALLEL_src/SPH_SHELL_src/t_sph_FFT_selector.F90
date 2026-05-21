@@ -187,7 +187,10 @@
       subroutine init_sph_FFT_select(id_rank, iflag_FFT_in,             &
      &         sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
 !
-      use sph_field_real_rocFFT
+#ifdef _AMD_ROCM_
+      use sph_prt_rocFFT_selector
+      use sph_rtp_rocFFT_selector
+#endif
 !
       integer, intent(in) :: id_rank
       integer(kind = kint) :: iflag_FFT_in
@@ -197,9 +200,26 @@
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
       logical :: flag_FFT
+      integer(kind = kint) :: iflag_sph_FFT, iflag_size
+!
+!
+      iflag_size =    mod(WK_FFTs%iflag_FFT,10)
+      iflag_sph_FFT = WK_FFTs%iflag_FFT - iflag_size
 !
       flag_fft = .FALSE.
 !
+#ifdef _AMD_ROCM_
+      if(sph_rtp%istep_rtp(3) .eq. 1) then
+        call sel_init_prt_rocFFT(id_rank, iflag_sph_FFT, iflag_size,    &
+     &      sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,                    &
+     &      WK_FFTs%sph_rocFFT, flag_FFT)
+      else
+        call sel_init_rtp_rocFFT(id_rank, iflag_sph_FFT, iflag_size,    &
+     &      sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,                    &
+     &      WK_FFTs%sph_rocFFT, flag_FFT)
+      end if
+      if(flag_fft) return
+#endif
 !
       WK_FFTs%iflag_FFT = iflag_FFT_in
       if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_ONCE) then
@@ -284,59 +304,6 @@
         end if
 #endif
 !
-#ifdef _AMD_ROCM_
-      else if(WK_FFTs%iflag_FFT .eq. (iflag_real_rocFFT+iflag_once_fft) &
-     &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_OMP_rocFFT+iflag_once_fft)  &
-     &      ) then
-        if(sph_rtp%istep_rtp(3) .eq. 1) then
-          if(id_rank .eq. 0) write(*,*) 'Use prt real rocFFT'
-          call init_prt_real_rocFFT(sph_rtp, comm_rtp,                  &
-     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT, flag_fft)
-        else
-          if(id_rank .eq. 0) write(*,*) 'Use rtp real rocFFT'
-          call init_rtp_real_rocFFT(sph_rtp, comm_rtp,                  &
-     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT, flag_FFT)
-        end if
-!
-      else if(WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
-     &      ) then
-        if(sph_rtp%istep_rtp(3) .eq. 1) then
-          if(id_rank .eq. 0) write(*,*) 'Use prt complex rocFFT'
-          call init_prt_complex_rocFFT(sph_rtp, comm_rtp,               &
-     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT, flag_fft)
-        else
-          if(id_rank .eq. 0) write(*,*) 'Use rtp complex rocFFT'
-          call init_rtp_complex_rocFFT(sph_rtp, comm_rtp,               &
-     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT, flag_FFT)
-        end if
-!
-      else if(WK_FFTs%iflag_FFT                                         &
-     &                  .eq. (iflag_real_rocFFT+iflag_domain_once)      &
-     &  .or.  WK_FFTs%iflag_FFT                                         &
-     &                  .eq. (iflag_OMP_rocFFT+iflag_domain_once)) then
-        if(sph_rtp%istep_rtp(3) .eq. 1) then
-          if(id_rank .eq. 0) write(*,*) 'Use prt real rocFFT'
-          call init_prt_real_rocFFT(sph_rtp, comm_rtp, ione, ione,      &
-     &                              WK_FFTs%sph_rocFFT, flag_fft)
-        else
-          if(id_rank .eq. 0) write(*,*) 'Use rtp real rocFFT'
-          call init_rtp_real_rocFFT(sph_rtp, comm_rtp, ione, ione,      &
-     &                              WK_FFTs%sph_rocFFT, flag_FFT)
-        end if
-!
-      else if(WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_domain_once)   &
-     &      ) then
-        if(sph_rtp%istep_rtp(3) .eq. 1) then
-          if(id_rank .eq. 0) write(*,*) 'Use prt complex rocFFT'
-          call init_prt_complex_rocFFT(sph_rtp, comm_rtp, ione, ione,   &
-     &                                 WK_FFTs%sph_rocFFT, flag_fft)
-        else
-          if(id_rank .eq. 0) write(*,*) 'Use rtp complex rocFFT'
-          call init_rtp_complex_rocFFT(sph_rtp, comm_rtp, ione, ione,   &
-     &                                 WK_FFTs%sph_rocFFT, flag_FFT)
-        end if
-#endif
-!
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
         if(id_rank .eq. 0) write(*,*) 'Use single FFTPACK'
         call init_sph_single_FFTPACK5(sph_rtp, WK_FFTs%sph_sgl_FFTPACK, &
@@ -384,8 +351,18 @@
 !
       logical :: flag_FFT
 !
+!
       flag_fft = .FALSE.
 !
+#ifdef _AMD_ROCM_
+      if     ((WK_FFTs%iflag_FFT/10 .eq. iflag_OMP_rocFFT)              &
+     &  .or.  (WK_FFTs%iflag_FFT/10 .eq. iflag_real_rocFFT)             &
+     &  .or.  (WK_FFTs%iflag_FFT/10 .eq. iflag_rocFFT)) then
+        if(iflag_debug .gt. 0) write(*,*) 'Finalize rocFFT'
+        call finalize_sph_rocFFT(WK_FFTs%sph_rocFFT, flag_fft)
+        return
+      end if
+#endif
 !
       if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK V0.93'
@@ -455,14 +432,6 @@
         end if
 #endif
 !
-#ifdef _AMD_ROCM_
-      else if((WK_FFTs%iflag_FFT/10 .eq. iflag_OMP_rocFFT)              &
-     &  .or.  (WK_FFTs%iflag_FFT/10 .eq. iflag_real_rocFFT)             &
-     &  .or.  (WK_FFTs%iflag_FFT/10 .eq. iflag_rocFFT)) then
-        if(iflag_debug .gt. 0) write(*,*) 'Finalize rocFFT'
-        call finalize_sph_rocFFT(WK_FFTs%sph_rocFFT, flag_fft)
-#endif
-!
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize single FFTPACK'
         call finalize_sph_single_FFTPACK5(WK_FFTs%sph_sgl_FFTPACK,      &
@@ -494,7 +463,10 @@
       subroutine verify_sph_FFT_select                                  &
      &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
 !
-      use sph_field_real_rocFFT
+#ifdef _AMD_ROCM_
+      use sph_prt_rocFFT_selector
+      use sph_rtp_rocFFT_selector
+#endif
 !
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -502,9 +474,26 @@
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
       logical :: flag_FFT
+      integer(kind = kint) :: iflag_sph_FFT, iflag_size
+!
+!
+      iflag_size =    mod(WK_FFTs%iflag_FFT,10)
+      iflag_sph_FFT = WK_FFTs%iflag_FFT - iflag_size
 !
       flag_fft = .FALSE.
 !
+#ifdef _AMD_ROCM_
+      if(sph_rtp%istep_rtp(3) .eq. 1) then
+        call sel_verify_prt_rocFFT(iflag_sph_FFT, iflag_size,           &
+     &      sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,                    &
+     &      WK_FFTs%sph_rocFFT, flag_FFT)
+      else
+        call sel_verify_rtp_rocFFT(iflag_sph_FFT, iflag_size,           &
+     &      sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,                    &
+     &      WK_FFTs%sph_rocFFT, flag_FFT)
+      end if
+      if(flag_fft) return
+#endif
 !
       if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V0.93'
@@ -589,57 +578,6 @@
         end if
 #endif
 !
-#ifdef _AMD_ROCM_
-      else if(WK_FFTs%iflag_FFT .eq. (iflag_real_rocFFT+iflag_once_fft) &
-     &  .or.  WK_FFTs%iflag_FFT .eq. (iflag_OMP_rocFFT+iflag_once_fft)  &
-     &      ) then
-        if(sph_rtp%istep_rtp(3) .eq. 1) then
-          if(iflag_debug .gt. 0) write(*,*) 'Use prt real rocFFT'
-          call verify_prt_real_rocFFT(sph_rtp, comm_rtp,                &
-     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT, flag_fft)
-        else
-          if(iflag_debug .gt. 0) write(*,*) 'Use rtp real rocFFT'
-          call verify_rtp_real_rocFFT(sph_rtp, comm_rtp,                &
-     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT, flag_fft)
-        end if
-      else if(WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
-     &      ) then
-        if(sph_rtp%istep_rtp(3) .eq. 1) then
-          if(iflag_debug .gt. 0) write(*,*) 'Use prt complex rocFFT'
-          call verify_prt_complex_rocFFT(sph_rtp, comm_rtp,             &
-     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT, flag_FFT)
-        else
-          if(iflag_debug .gt. 0) write(*,*) 'Use rtp complex rocFFT'
-          call verify_rtp_complex_rocFFT(sph_rtp, comm_rtp,             &
-     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_rocFFT, flag_fft)
-        end if
-!
-      else if(WK_FFTs%iflag_FFT                                         &
-     &                  .eq. (iflag_real_rocFFT+iflag_domain_once)      &
-     &  .or.  WK_FFTs%iflag_FFT                                         &
-     &                  .eq. (iflag_OMP_rocFFT+iflag_domain_once)) then
-        if(sph_rtp%istep_rtp(3) .eq. 1) then
-          if(iflag_debug .eq. 0) write(*,*) 'Use prt real rocFFT'
-          call verify_prt_real_rocFFT(sph_rtp, comm_rtp, ione, ione,    &
-     &                              WK_FFTs%sph_rocFFT, flag_fft)
-        else
-          if(iflag_debug .eq. 0) write(*,*) 'Use rtp real rocFFT'
-          call verify_rtp_real_rocFFT(sph_rtp, comm_rtp, ione, ione,    &
-     &                              WK_FFTs%sph_rocFFT, flag_fft)
-        end if
-!
-      else if(WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_domain_once)   &
-     &      ) then
-        if(sph_rtp%istep_rtp(3) .eq. 1) then
-          if(iflag_debug .eq. 0) write(*,*) 'Use prt complex rocFFT'
-          call verify_prt_complex_rocFFT(sph_rtp, comm_rtp, ione, ione, &
-     &                                 WK_FFTs%sph_rocFFT, flag_FFT)
-        else
-          if(iflag_debug .eq. 0) write(*,*) 'Use rtp complex rocFFT'
-          call verify_rtp_complex_rocFFT(sph_rtp, comm_rtp, ione, ione, &
-     &                                 WK_FFTs%sph_rocFFT, flag_fft)
-        end if
-#endif
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use single FFTPACK'
@@ -688,18 +626,10 @@
      &                                  n_WS, v_rtp, WS, WK_FFTs)
 !
       use calypso_mpi
-      use sph_rtp_complex_rocFFT
-      use sph_prt_complex_rocFFT
-      use sph_rtp_real_rocFFT
-      use sph_prt_real_rocFFT
-      use sph_rtp_OpenMP_rocFFT
-      use sph_prt_OpenMP_rocFFT
-      use sph_rtp_domain_cplx_rocFFT
-      use sph_prt_domain_cplx_rocFFT
-      use sph_rtp_domain_real_rocFFT
-      use sph_prt_domain_real_rocFFT
-      use sph_rtp_domain_OMP_rocFFT
-      use sph_prt_domain_OMP_rocFFT
+#ifdef _AMD_ROCM_
+      use sph_prt_rocFFT_selector
+      use sph_rtp_rocFFT_selector
+#endif
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
@@ -710,9 +640,26 @@
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
       logical :: flag_FFT
+      integer(kind = kint) :: iflag_sph_FFT, iflag_size
+!
+!
+      iflag_size =    mod(WK_FFTs%iflag_FFT,10)
+      iflag_sph_FFT = WK_FFTs%iflag_FFT - iflag_size
 !
       flag_fft = .FALSE.
 !
+#ifdef _AMD_ROCM_
+      if(sph_rtp%istep_rtp(3) .eq. 1) then
+        call sel_prt_fwd_rocFFT_to_send(iflag_sph_FFT, iflag_size,      &
+     &      sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),      &
+     &      WK_FFTs%sph_rocFFT, flag_FFT)
+      else
+        call sel_rtp_fwd_rocFFT_to_send(iflag_sph_FFT, iflag_size,      &
+     &      sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),      &
+     &      WK_FFTs%sph_rocFFT, flag_FFT)
+      end if
+      if(flag_fft) return
+#endif
 !
 !      if(my_rank .eq. 0) write(*,*) sph_rtp%istep_rtp(3),              &
 !     &                  'fwd_FFT_select_to_send', WK_FFTs%iflag_FFT
@@ -784,102 +731,6 @@
         end if
 #endif
 !
-#ifdef _AMD_ROCM_
-      else if(WK_FFTs%iflag_FFT .eq. (iflag_real_rocFFT+iflag_once_fft) &
-     &      ) then
-        if(sph_rtp%istep_rtp(3) .eq. 1) then
-          call prt_fwd_real_rocFFT_to_send                              &
-     &       (sph_rtp, WK_FFTs%sph_rocFFT%comm_sph_rocFFT,              &
-     &        WK_FFTs%sph_rocFFT%rocFFT_fwd, ncomp_fwd, n_WS,           &
-     &        v_rtp(1,1), WS(1), WK_FFTs%sph_rocFFT%WK_rocFFT,          &
-     &        flag_FFT)
-        else
-          call rtp_fwd_real_rocFFT_to_send                              &
-     &       (sph_rtp, WK_FFTs%sph_rocFFT%comm_sph_rocFFT,              &
-     &        WK_FFTs%sph_rocFFT%rocFFT_fwd, ncomp_fwd, n_WS,           &
-     &        v_rtp(1,1), WS(1), WK_FFTs%sph_rocFFT%WK_rocFFT,          &
-     &        flag_FFT)
-        end if
-      else if(WK_FFTs%iflag_FFT .eq. (iflag_OMP_rocFFT+iflag_once_fft)  &
-     &      ) then
-        if(sph_rtp%istep_rtp(3) .eq. 1) then
-          call prt_fwd_OMP_rocFFT_to_send                               &
-     &       (sph_rtp, WK_FFTs%sph_rocFFT%comm_sph_rocFFT,              &
-     &        WK_FFTs%sph_rocFFT%rocFFT_fwd, ncomp_fwd, n_WS,           &
-     &        v_rtp(1,1), WS(1), WK_FFTs%sph_rocFFT%WK_rocFFT,          &
-     &        flag_FFT)
-        else
-          call rtp_fwd_OMP_rocFFT_to_send                               &
-     &       (sph_rtp, WK_FFTs%sph_rocFFT%comm_sph_rocFFT,              &
-     &        WK_FFTs%sph_rocFFT%rocFFT_fwd, ncomp_fwd, n_WS,           &
-     &        v_rtp(1,1), WS(1), WK_FFTs%sph_rocFFT%WK_rocFFT,          &
-     &        flag_FFT)
-        end if
-      else if(WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
-     &      ) then
-        if(sph_rtp%istep_rtp(3) .eq. 1) then
-          call prt_fwd_cplx_rocFFT_to_send                              &
-     &       (sph_rtp, WK_FFTs%sph_rocFFT%comm_sph_rocFFT,              &
-     &        WK_FFTs%sph_rocFFT%rocFFT_fwd, ncomp_fwd, n_WS,           &
-     &        v_rtp(1,1), WS(1), WK_FFTs%sph_rocFFT%WK_rocFFT,          &
-     &        flag_FFT)
-        else
-          call rtp_fwd_cplx_rocFFT_to_send                              &
-     &       (sph_rtp, WK_FFTs%sph_rocFFT%comm_sph_rocFFT,              &
-     &        WK_FFTs%sph_rocFFT%rocFFT_fwd, ncomp_fwd, n_WS,           &
-     &        v_rtp(1,1), WS(1), WK_FFTs%sph_rocFFT%WK_rocFFT,          &
-     &        flag_FFT)
-        end if
-!
-      else if(WK_FFTs%iflag_FFT                                         &
-     &                 .eq. (iflag_real_rocFFT+iflag_domain_once)) then
-        if(sph_rtp%istep_rtp(3) .eq. 1) then
-          call prt_dmn_fwd_real_rocFFT_to_send                          &
-     &       (sph_rtp, WK_FFTs%sph_rocFFT%comm_sph_rocFFT,              &
-     &        WK_FFTs%sph_rocFFT%rocFFT_fwd, ncomp_fwd, n_WS,           &
-     &        v_rtp(1,1), WS(1), WK_FFTs%sph_rocFFT%WK_rocFFT,          &
-     &        flag_FFT)
-        else
-          call rtp_dmn_fwd_real_rocFFT_to_send                          &
-     &       (sph_rtp, WK_FFTs%sph_rocFFT%comm_sph_rocFFT,              &
-     &        WK_FFTs%sph_rocFFT%rocFFT_fwd, ncomp_fwd, n_WS,           &
-     &        v_rtp(1,1), WS(1), WK_FFTs%sph_rocFFT%WK_rocFFT,          &
-     &        flag_FFT)
-        end if
-!
-      else if(WK_FFTs%iflag_FFT                                         &
-     &                  .eq. (iflag_OMP_rocFFT+iflag_domain_once)) then
-        if(sph_rtp%istep_rtp(3) .eq. 1) then
-          call prt_dmn_fwd_OMP_rocFFT_to_send                           &
-     &       (sph_rtp, WK_FFTs%sph_rocFFT%comm_sph_rocFFT,              &
-     &        WK_FFTs%sph_rocFFT%rocFFT_fwd, ncomp_fwd, n_WS,           &
-     &        v_rtp(1,1), WS(1), WK_FFTs%sph_rocFFT%WK_rocFFT,          &
-     &        flag_FFT)
-        else
-          call rtp_dmn_fwd_OMP_rocFFT_to_send                           &
-     &       (sph_rtp, WK_FFTs%sph_rocFFT%comm_sph_rocFFT,              &
-     &        WK_FFTs%sph_rocFFT%rocFFT_fwd, ncomp_fwd, n_WS,           &
-     &        v_rtp(1,1), WS(1), WK_FFTs%sph_rocFFT%WK_rocFFT,          &
-     &        flag_FFT)
-        end if
-!
-      else if(WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_domain_once)   &
-     &      ) then
-        if(sph_rtp%istep_rtp(3) .eq. 1) then
-          call prt_dmn_fwd_cplx_rocFFT_to_send                          &
-     &       (sph_rtp, WK_FFTs%sph_rocFFT%comm_sph_rocFFT,              &
-     &        WK_FFTs%sph_rocFFT%rocFFT_fwd, ncomp_fwd, n_WS,           &
-     &        v_rtp(1,1), WS(1), WK_FFTs%sph_rocFFT%WK_rocFFT,          &
-     &        flag_FFT)
-        else
-          call rtp_dmn_fwd_cplx_rocFFT_to_send                          &
-     &       (sph_rtp, WK_FFTs%sph_rocFFT%comm_sph_rocFFT,              &
-     &        WK_FFTs%sph_rocFFT%rocFFT_fwd, ncomp_fwd, n_WS,           &
-     &        v_rtp(1,1), WS(1), WK_FFTs%sph_rocFFT%WK_rocFFT,          &
-     &        flag_FFT)
-        end if
-#endif
-!
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
         call sph_single_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd,    &
      &      n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_sgl_FFTPACK, flag_FFT)
@@ -920,18 +771,10 @@
      &        (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, v_rtp, WK_FFTs)
 !
       use calypso_mpi
-      use sph_rtp_complex_rocFFT
-      use sph_prt_complex_rocFFT
-      use sph_rtp_real_rocFFT
-      use sph_prt_real_rocFFT
-      use sph_rtp_OpenMP_rocFFT
-      use sph_prt_OpenMP_rocFFT
-      use sph_rtp_domain_cplx_rocFFT
-      use sph_prt_domain_cplx_rocFFT
-      use sph_rtp_domain_real_rocFFT
-      use sph_prt_domain_real_rocFFT
-      use sph_rtp_domain_OMP_rocFFT
-      use sph_prt_domain_OMP_rocFFT
+#ifdef _AMD_ROCM_
+      use sph_prt_rocFFT_selector
+      use sph_rtp_rocFFT_selector
+#endif
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -943,8 +786,26 @@
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
       logical :: flag_FFT
+      integer(kind = kint) :: iflag_sph_FFT, iflag_size
+!
+!
+      iflag_size =    mod(WK_FFTs%iflag_FFT,10)
+      iflag_sph_FFT = WK_FFTs%iflag_FFT - iflag_size
 !
       flag_fft = .FALSE.
+#ifdef _AMD_ROCM_
+      if(sph_rtp%istep_rtp(3) .eq. 1) then
+        call sel_prt_bwd_rocFFT_from_recv(iflag_sph_FFT, iflag_size,    &
+     &      sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),      &
+     &      WK_FFTs%sph_rocFFT, flag_FFT)
+      else
+        call sel_rtp_bwd_rocFFT_from_recv(iflag_sph_FFT, iflag_size,    &
+     &      sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),      &
+     &      WK_FFTs%sph_rocFFT, flag_FFT)
+      end if
+      if(flag_fft) return
+#endif
+!
 !
 !      if(my_rank .eq. 0) write(*,*) sph_rtp%istep_rtp(3),              &
 !     &                  'back_FFT_select_from_recv', WK_FFTs%iflag_FFT
@@ -1022,78 +883,6 @@
           call sph_domain_back_OFFTW_from_recv                          &
      &       (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),    &
      &        WK_FFTs%sph_domain_OMP_FFTW, flag_FFT)
-        end if
-#endif
-!
-#ifdef _AMD_ROCM_
-      else if(WK_FFTs%iflag_FFT .eq. (iflag_real_rocFFT+iflag_once_fft) &
-     &      ) then
-        if(sph_rtp%istep_rtp(3) .eq. 1) then
-          call prt_bwd_real_rocFFT_from_recv(sph_rtp, comm_rtp,         &
-     &        WK_FFTs%sph_rocFFT%rocFFT_bwd, ncomp_bwd, n_WR, WR(1),    &
-     &        v_rtp(1,1), WK_FFTs%sph_rocFFT%WK_rocFFT, flag_FFT)
-        else
-          call rtp_bwd_real_rocFFT_from_recv(sph_rtp, comm_rtp,         &
-     &        WK_FFTs%sph_rocFFT%rocFFT_bwd, ncomp_bwd, n_WR, WR(1),    &
-     &        v_rtp(1,1), WK_FFTs%sph_rocFFT%WK_rocFFT, flag_FFT)
-        end if
-      else if(WK_FFTs%iflag_FFT .eq. (iflag_OMP_rocFFT+iflag_once_fft)  &
-     &      ) then
-        if(sph_rtp%istep_rtp(3) .eq. 1) then
-          call prt_bwd_OMP_rocFFT_from_recv(sph_rtp, comm_rtp,          &
-     &        WK_FFTs%sph_rocFFT%rocFFT_bwd, ncomp_bwd, n_WR, WR(1),    &
-     &        v_rtp(1,1), WK_FFTs%sph_rocFFT%WK_rocFFT, flag_FFT)
-        else
-          call rtp_bwd_OMP_rocFFT_from_recv(sph_rtp, comm_rtp,          &
-     &        WK_FFTs%sph_rocFFT%rocFFT_bwd, ncomp_bwd, n_WR, WR(1),    &
-     &        v_rtp(1,1), WK_FFTs%sph_rocFFT%WK_rocFFT, flag_FFT)
-        end if
-      else if(WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_once_fft)      &
-     &      ) then
-        if(sph_rtp%istep_rtp(3) .eq. 1) then
-          call prt_bwd_cplx_rocFFT_from_recv(sph_rtp, comm_rtp,         &
-     &        WK_FFTs%sph_rocFFT%rocFFT_bwd, ncomp_bwd, n_WR, WR(1),    &
-     &        v_rtp(1,1), WK_FFTs%sph_rocFFT%WK_rocFFT, flag_FFT)
-        else
-          call rtp_bwd_cplx_rocFFT_from_recv(sph_rtp, comm_rtp,         &
-     &        WK_FFTs%sph_rocFFT%rocFFT_bwd, ncomp_bwd, n_WR, WR(1),    &
-     &        v_rtp(1,1), WK_FFTs%sph_rocFFT%WK_rocFFT, flag_FFT)
-        end if
-!
-      else if(WK_FFTs%iflag_FFT                                         &
-     &                 .eq. (iflag_real_rocFFT+iflag_domain_once)) then
-        if(sph_rtp%istep_rtp(3) .eq. 1) then
-          call prt_dmn_bwd_real_rocFFT_fm_recv(sph_rtp, comm_rtp,       &
-     &        WK_FFTs%sph_rocFFT%rocFFT_bwd, ncomp_bwd, n_WR, WR(1),    &
-     &        v_rtp(1,1), WK_FFTs%sph_rocFFT%WK_rocFFT, flag_FFT)
-        else
-          call rtp_dmn_bwd_real_rocFFT_fm_recv(sph_rtp, comm_rtp,       &
-     &        WK_FFTs%sph_rocFFT%rocFFT_bwd, ncomp_bwd, n_WR, WR(1),    &
-     &        v_rtp(1,1), WK_FFTs%sph_rocFFT%WK_rocFFT, flag_FFT)
-        end if
-!
-      else if(WK_FFTs%iflag_FFT                                         &
-     &                 .eq. (iflag_OMP_rocFFT+iflag_domain_once)) then
-        if(sph_rtp%istep_rtp(3) .eq. 1) then
-          call prt_dmn_bwd_OMP_rocFFT_fm_recv(sph_rtp, comm_rtp,        &
-     &        WK_FFTs%sph_rocFFT%rocFFT_bwd, ncomp_bwd, n_WR, WR(1),    &
-     &        v_rtp(1,1), WK_FFTs%sph_rocFFT%WK_rocFFT, flag_FFT)
-        else
-          call rtp_dmn_bwd_OMP_rocFFT_fm_recv(sph_rtp, comm_rtp,        &
-     &        WK_FFTs%sph_rocFFT%rocFFT_bwd, ncomp_bwd, n_WR, WR(1),    &
-     &        v_rtp(1,1), WK_FFTs%sph_rocFFT%WK_rocFFT, flag_FFT)
-        end if
-!
-      else if(WK_FFTs%iflag_FFT .eq. (iflag_rocFFT+iflag_domain_once)   &
-     &      ) then
-        if(sph_rtp%istep_rtp(3) .eq. 1) then
-          call prt_dmn_bwd_c_rocFFT_from_recv(sph_rtp, comm_rtp,        &
-     &        WK_FFTs%sph_rocFFT%rocFFT_bwd, ncomp_bwd, n_WR, WR(1),    &
-     &        v_rtp(1,1), WK_FFTs%sph_rocFFT%WK_rocFFT, flag_FFT)
-        else
-          call rtp_dmn_bwd_c_rocFFT_from_recv(sph_rtp, comm_rtp,        &
-     &        WK_FFTs%sph_rocFFT%rocFFT_bwd, ncomp_bwd, n_WR, WR(1),    &
-     &        v_rtp(1,1), WK_FFTs%sph_rocFFT%WK_rocFFT, flag_FFT)
         end if
 #endif
 !
