@@ -9,11 +9,15 @@
 !!@verbatim
 !!  ---------------------------------------------------------------------
 !!
-!!      subroutine init_sph_single_FFTPACK5(sph_rtp, fftpack_t)
-!!      subroutine finalize_sph_single_FFTPACK5(fftpack_t)
-!!      subroutine verify_sph_single_FFTPACK5(sph_rtp, fftpack_t)
+!!      subroutine init_sph_single_FFTPACK5(sph_rtp, fftpack_t,         &
+!!     &                                    flag_fft)
+!!      subroutine finalize_sph_single_FFTPACK5(fftpack_t, flag_fft)
+!!      subroutine verify_sph_single_FFTPACK5(sph_rtp, fftpack_t,       &
+!!     &                                      flag_fft)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
+!!        type(work_for_sgl_fftpack), intent(inout) :: fftpack_t
+!!        logical, intent(inout) :: flag_fft
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT
 !! ------------------------------------------------------------------
@@ -125,11 +129,13 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_single_FFTPACK5(sph_rtp, fftpack_t)
+      subroutine init_sph_single_FFTPACK5(sph_rtp, fftpack_t,           &
+     &                                    flag_fft)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
 !
       type(work_for_sgl_fftpack), intent(inout) :: fftpack_t
+      logical, intent(inout) :: flag_fft
 !
       integer(kind = kint) :: ierr
 !
@@ -139,28 +145,33 @@
      &            ierr)
 !
       call alloc_work_sgl_FFTPACK(sph_rtp%nidx_rtp(3), fftpack_t)
+      flag_fft = .TRUE.
 !
       end subroutine init_sph_single_FFTPACK5
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_single_FFTPACK5(fftpack_t)
+      subroutine finalize_sph_single_FFTPACK5(fftpack_t, flag_fft)
 !
       type(work_for_sgl_fftpack), intent(inout) :: fftpack_t
+      logical, intent(inout) :: flag_fft
 !
 !
       call dealloc_const_sgl_FFTPACK(fftpack_t)
       call dealloc_work_sgl_FFTPACK(fftpack_t)
+      flag_fft = .TRUE.
 !
       end subroutine finalize_sph_single_FFTPACK5
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_sph_single_FFTPACK5(sph_rtp, fftpack_t)
+      subroutine verify_sph_single_FFTPACK5(sph_rtp, fftpack_t,         &
+     &                                      flag_fft)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
 !
       type(work_for_sgl_fftpack), intent(inout) :: fftpack_t
+      logical, intent(inout) :: flag_fft
 !
       integer(kind = kint) :: ierr
 !
@@ -185,6 +196,7 @@
         call dealloc_work_sgl_FFTPACK(fftpack_t)
         call alloc_work_sgl_FFTPACK(sph_rtp%nidx_rtp(3), fftpack_t)
       end if
+      flag_fft = .TRUE.
 !
       end subroutine verify_sph_single_FFTPACK5
 !

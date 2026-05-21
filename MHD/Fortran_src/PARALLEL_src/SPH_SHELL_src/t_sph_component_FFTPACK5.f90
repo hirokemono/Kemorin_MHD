@@ -10,11 +10,14 @@
 !!  ---------------------------------------------------------------------
 !!
 !!      subroutine init_sph_comp_FFTPACK5                               &
-!!     &         (sph_rtp, ncomp_bwd, ncomp_fwd, fftpack_t)
-!!      subroutine finalize_sph_comp_FFTPACK5(fftpack_t)
+!!     &         (sph_rtp, ncomp_bwd, ncomp_fwd, fftpack_t, flag_fft)
+!!      subroutine finalize_sph_comp_FFTPACK5(fftpack_t, flag_fft)
 !!      subroutine verify_sph_comp_FFTPACK5                             &
-!!     &         (sph_rtp, ncomp_bwd, ncomp_fwd, fftpack_t)
+!!     &         (sph_rtp, ncomp_bwd, ncomp_fwd, fftpack_t, flag_fft)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
+!!        type(work_for_comp_fftpack), intent(inout) :: fftpack_t
+!!        logical, intent(inout) :: flag_fft
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT
 !! ------------------------------------------------------------------
@@ -126,12 +129,13 @@
 ! ------------------------------------------------------------------
 !
       subroutine init_sph_comp_FFTPACK5                                 &
-     &         (sph_rtp, ncomp_bwd, ncomp_fwd, fftpack_t)
+     &         (sph_rtp, ncomp_bwd, ncomp_fwd, fftpack_t, flag_fft)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !
       type(work_for_comp_fftpack), intent(inout) :: fftpack_t
+      logical, intent(inout) :: flag_fft
 !
       integer(kind = kint) :: ierr
 !
@@ -142,31 +146,35 @@
 !
       call alloc_work_comp_FFTPACK                                      &
      &   (sph_rtp%nidx_rtp(3), ncomp_bwd, ncomp_fwd,fftpack_t)
+      flag_fft = .TRUE.
 !
       end subroutine init_sph_comp_FFTPACK5
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_comp_FFTPACK5(fftpack_t)
+      subroutine finalize_sph_comp_FFTPACK5(fftpack_t, flag_fft)
 !
       type(work_for_comp_fftpack), intent(inout) :: fftpack_t
+      logical, intent(inout) :: flag_fft
 !
 !
       call dealloc_const_comp_FFTPACK(fftpack_t)
       call dealloc_work_comp_FFTPACK(fftpack_t)
+      flag_fft = .TRUE.
 !
       end subroutine finalize_sph_comp_FFTPACK5
 !
 ! ------------------------------------------------------------------
 !
       subroutine verify_sph_comp_FFTPACK5                               &
-     &         (sph_rtp, ncomp_bwd, ncomp_fwd, fftpack_t)
+     &         (sph_rtp, ncomp_bwd, ncomp_fwd, fftpack_t, flag_fft)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
 !
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !
       type(work_for_comp_fftpack), intent(inout) :: fftpack_t
+      logical, intent(inout) :: flag_fft
 !
       integer(kind = kint) :: ierr, npoint
 !
@@ -194,6 +202,7 @@
         call alloc_work_comp_FFTPACK                                    &
      &     (sph_rtp%nidx_rtp(3), ncomp_bwd, ncomp_fwd, fftpack_t)
       end if
+      flag_fft = .TRUE.
 !
       end subroutine verify_sph_comp_FFTPACK5
 !

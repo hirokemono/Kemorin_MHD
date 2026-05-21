@@ -10,12 +10,14 @@
 !!  ---------------------------------------------------------------------
 !!
 !!      subroutine init_prt_FFTPACK5(sph_rtp, comm_rtp,                 &
-!!     &                             ncomp_bwd, ncomp_fwd, fftpack_t)
+!!     &          ncomp_bwd, ncomp_fwd, fftpack_t, flag_fft)
 !!      subroutine verify_prt_FFTPACK5(sph_rtp, comm_rtp,               &
-!!     &                               ncomp_bwd, ncomp_fwd, fftpack_t)
+!!     &          ncomp_bwd, ncomp_fwd, fftpack_t, flag_fft)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
+!!        integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !!        type(work_for_fftpack), intent(inout) :: fftpack_t
+!!        logical, intent(inout) :: flag_fft
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT
 !! ------------------------------------------------------------------
@@ -109,7 +111,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine init_prt_FFTPACK5(sph_rtp, comm_rtp,                   &
-     &                             ncomp_bwd, ncomp_fwd, fftpack_t)
+     &          ncomp_bwd, ncomp_fwd, fftpack_t, flag_fft)
 !
       use set_comm_table_prt_FFTPACK
 !
@@ -118,6 +120,7 @@
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !
       type(work_for_fftpack), intent(inout) :: fftpack_t
+      logical, intent(inout) :: flag_fft
 !
 !
       call init_sph_FFTPACK5(sph_rtp, comm_rtp,                         &
@@ -130,13 +133,14 @@
      &    sph_rtp%nidx_rtp(3), sph_rtp%istep_rtp,                       &
      &    sph_rtp%istack_rtp_rt_smp(np_smp),                            &
      &    fftpack_t%comm_sph_FFTPACK)
+      flag_fft = .TRUE.
 !
       end subroutine init_prt_FFTPACK5
 !
 ! ------------------------------------------------------------------
 !
       subroutine verify_prt_FFTPACK5(sph_rtp, comm_rtp,                 &
-     &                               ncomp_bwd, ncomp_fwd, fftpack_t)
+     &          ncomp_bwd, ncomp_fwd, fftpack_t, flag_fft)
 !
       use set_comm_table_prt_FFTPACK
 !
@@ -145,6 +149,7 @@
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !
       type(work_for_fftpack), intent(inout) :: fftpack_t
+      logical, intent(inout) :: flag_fft
 !
 !
       if(fftpack_t%iflag_fft_len .ne. sph_rtp%nidx_rtp(3)) then
@@ -160,6 +165,7 @@
 !
       call verify_sph_FFTPACK5(sph_rtp, comm_rtp,                       &
      &                         ncomp_bwd, ncomp_fwd, fftpack_t)
+      flag_fft = .TRUE.
 !
       end subroutine verify_prt_FFTPACK5
 !

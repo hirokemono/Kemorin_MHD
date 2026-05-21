@@ -14,6 +14,10 @@
 !!      subroutine finalize_sph_test_FFT(FFT_t)
 !!      subroutine verify_sph_test_FFT                                  &
 !!     &         (nidx_rtp, ncomp_bwd, ncomp_fwd, FFT_t)
+!!        integer(kind = kint), intent(in) :: nidx_rtp(3)
+!!        integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
+!!        type(work_for_test_FFT), intent(inout) :: FFT_t
+!!        logical, intent(inout) :: flag_FFT
 !!
 !!      subroutine alloc_test_ordering_FFT(Nfft, FFT_t)
 !!      subroutine dealloc_test_ordering_FFT(FFT_t)
@@ -140,11 +144,13 @@
 ! ------------------------------------------------------------------
 !
       subroutine init_sph_test_FFT                                      &
-     &         (nidx_rtp, ncomp_bwd, ncomp_fwd, FFT_t)
+     &         (nidx_rtp, ncomp_bwd, ncomp_fwd, FFT_t, flag_FFT)
 !
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
+!
       type(work_for_test_FFT), intent(inout) :: FFT_t
+      logical, intent(inout) :: flag_FFT
 !
       integer(kind = kint) :: j
       integer(kind = 4) :: Nfft4
@@ -165,13 +171,16 @@
       allocate(FFT_t%t_omp(np_smp,0:3))
       FFT_t%t_omp = 0.0d0
 !
+      flag_FFT = .TRUE.
+!
       end subroutine init_sph_test_FFT
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_test_FFT(FFT_t)
+      subroutine finalize_sph_test_FFT(FFT_t, flag_FFT)
 !
       type(work_for_test_FFT), intent(inout) :: FFT_t
+      logical, intent(inout) :: flag_FFT
 !
       integer(kind = kint) :: j
 !
@@ -185,30 +194,36 @@
       call dfftw_cleanup
       deallocate(FFT_t%t_omp)
 !
+      flag_FFT = .TRUE.
+!
       end subroutine finalize_sph_test_FFT
 !
 ! ------------------------------------------------------------------
 !
       subroutine verify_sph_test_FFT                                    &
-     &         (nidx_rtp, ncomp_bwd, ncomp_fwd, FFT_t)
+     &         (nidx_rtp, ncomp_bwd, ncomp_fwd, FFT_t, flag_FFT)
 !
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
       type(work_for_test_FFT), intent(inout) :: FFT_t
+      logical, intent(inout) :: flag_FFT
 !
       integer(kind = kint) :: Ncomp
 !
 !
       if(allocated(FFT_t%X) .eqv. .false.) then
-        call init_sph_test_FFT(nidx_rtp, ncomp_bwd, ncomp_fwd, FFT_t)
+        call init_sph_test_FFT(nidx_rtp, ncomp_bwd, ncomp_fwd,          &
+     &                         FFT_t, flag_FFT)
         return
       end if
 !
       Ncomp = max(ncomp_bwd, ncomp_fwd)
       if(size(FFT_t%X,1) .ne. Ncomp*nidx_rtp(3)) then
-        call finalize_sph_test_FFT(FFT_t)
-        call init_sph_test_FFT(nidx_rtp, ncomp_bwd, ncomp_fwd, FFT_t)
+        call finalize_sph_test_FFT(FFT_t, flag_FFT)
+        call init_sph_test_FFT(nidx_rtp, ncomp_bwd, ncomp_fwd,          &
+     &                         FFT_t, flag_FFT)
       end if
+      flag_FFT = .TRUE.
 !
       end subroutine verify_sph_test_FFT
 !

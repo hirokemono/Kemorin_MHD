@@ -9,12 +9,13 @@
 !!@verbatim
 !!      subroutine init_sph_FFTPACK5(sph_rtp, comm_rtp,                 &
 !!     &                             ncomp_bwd, ncomp_fwd, fftpack_t)
-!!      subroutine finalize_sph_FFTPACK5(fftpack_t)
+!!      subroutine finalize_sph_FFTPACK5(fftpack_t, flag_fft)
 !!      subroutine verify_sph_FFTPACK5(sph_rtp, comm_rtp,               &
 !!     &                               ncomp_bwd, ncomp_fwd, fftpack_t)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
 !!        type(work_for_fftpack), intent(inout) :: fftpack_t
+!!        logical, intent(inout) :: flag_fft
 !!@endverbatim
 !!
 !!@n @param Nsmp  Number of SMP processors
@@ -93,14 +94,16 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_FFTPACK5(fftpack_t)
+      subroutine finalize_sph_FFTPACK5(fftpack_t, flag_fft)
 !
       type(work_for_fftpack), intent(inout) :: fftpack_t
-!
+      logical, intent(inout) :: flag_fft
+
 !
       call dealloc_comm_table_sph_FFT(fftpack_t%comm_sph_FFTPACK)
       call dealloc_const_4_FFTPACK(fftpack_t)
       call dealloc_work_4_FFTPACK(fftpack_t)
+      flag_fft = .TRUE.
 !
       end subroutine finalize_sph_FFTPACK5
 !
