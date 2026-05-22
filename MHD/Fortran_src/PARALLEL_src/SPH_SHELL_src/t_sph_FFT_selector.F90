@@ -90,8 +90,6 @@
       use t_sph_component_FFTPACK5
       use t_sph_domain_FFTPACK5
       use t_sph_single_FFTPACK5
-      use sph_rtp_domain_FFTPACK5
-      use sph_prt_domain_FFTPACK5
 !
       use t_sph_ISPACK_FFT
       use t_sph_domain_ISPACK_FFT
@@ -128,13 +126,7 @@
         integer(kind = kint) :: iflag_FFT
 !
 !>        Structure to use FFTPACK
-        type(work_for_fftpack) :: sph_FFTPACK
-!>        Structure to use single FFTPACK
-        type(work_for_sgl_fftpack) :: sph_sgl_FFTPACK
-!>        Structure to use single FFTPACK
-        type(work_for_comp_fftpack) :: sph_comp_FFTPACK
-!>        Structure to use single FFTPACK
-        type(work_for_domain_fftpack) :: sph_domain_FFTPACK
+        type(works_sph_FFTPACK) :: WKs_FFTPACK
 !
 !>        Structure to use ISPACK
         type(work_for_ispack) :: sph_ISPACK
@@ -142,13 +134,7 @@
         type(work_for_domain_ispack) :: sph_domain_ISPACK
 !
 !>        Structure to use ISPACK3
-        type(work_for_ispack3) :: sph_ISPACK3
-!>        Structure to use ISPACK3 for domain
-        type(work_for_domain_ispack3) :: sph_domain_ispack3
-!>        Structure to use ISPACK3 for component
-        type(work_for_comp_ispack3) :: sph_comp_ispack3
-!>        Structure to use single ISPACK3
-        type(work_for_single_ispack3) :: sph_sgl_ispack3
+        type(works_sph_ispack3) :: WKs_ISPACK3
 !
 !>        Structure to use FFT test
         type(work_for_test_FFT) :: sph_test_FFT
@@ -270,8 +256,7 @@
       if(iflag_sph_FFT .eq. iflag_ISPACK3) then
         call sel_init_sph_ISPACK3(id_rank, iflag_size,                  &
      &     sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,                     &
-     &     WK_FFTs%sph_ISPACK3, WK_FFTs%sph_domain_ispack3,             &
-     &     WK_FFTs%sph_comp_ispack3, WK_FFTs%sph_sgl_ispack3, flag_FFT)
+     &     WK_FFTs%WKs_ISPACK3, flag_FFT)
       else if(iflag_sph_FFT .eq. iflag_ISPACK0) then
         call sel_init_sph_ISPACK0(id_rank, iflag_size,                  &
      &      sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,                    &
@@ -280,15 +265,11 @@
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           call sel_init_prt_FFTPACK(id_rank, iflag_size,                &
      &        sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,                  &
-     &        WK_FFTs%sph_FFTPACK, WK_FFTs%sph_domain_FFTPACK,          &
-     &        WK_FFTs%sph_comp_FFTPACK, WK_FFTs%sph_sgl_FFTPACK,        &
-     &        flag_FFT)
+     &        WK_FFTs%WKs_FFTPACK, flag_FFT)
         else
           call sel_init_rtp_FFTPACK(id_rank, iflag_size,                &
      &        sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,                  &
-     &        WK_FFTs%sph_FFTPACK, WK_FFTs%sph_domain_FFTPACK,          &
-     &        WK_FFTs%sph_comp_FFTPACK, WK_FFTs%sph_sgl_FFTPACK,        &
-     &        flag_FFT)
+     &        WK_FFTs%WKs_FFTPACK, flag_FFT)
         end if
       end if
       if(flag_fft) return
@@ -368,16 +349,14 @@
 #endif
 !
       if(iflag_sph_FFT .eq. iflag_ISPACK3) then
-        call sel_finalize_sph_ISPACK3(iflag_size, WK_FFTs%sph_ISPACK3,  &
-     &      WK_FFTs%sph_domain_ispack3, WK_FFTs%sph_comp_ispack3,       &
-     &      WK_FFTs%sph_sgl_ispack3, flag_FFT)
+        call sel_finalize_sph_ISPACK3(iflag_size,                       &
+     &                                WK_FFTs%WKs_ISPACK3, flag_FFT)
       else if(iflag_sph_FFT .eq. iflag_ISPACK0) then
         call sel_finalize_sph_ISPACK0(iflag_size,                       &
      &      WK_FFTs%sph_ISPACK, WK_FFTs%sph_domain_ISPACK, flag_FFT)
       else if(iflag_sph_FFT .eq. iflag_FFTPACK) then
-        call sel_finalize_sph_FFTPACK(iflag_size, WK_FFTs%sph_FFTPACK,  &
-     &      WK_FFTs%sph_domain_FFTPACK, WK_FFTs%sph_comp_FFTPACK,       &
-     &      WK_FFTs%sph_sgl_FFTPACK, flag_FFT)
+        call sel_finalize_sph_FFTPACK(iflag_size, WK_FFTs%WKs_FFTPACK,  &
+     &                                flag_FFT)
       end if
       if(flag_fft) return
 !
@@ -474,10 +453,8 @@
 #endif
 !
       if(iflag_sph_FFT .eq. iflag_ISPACK3) then
-        call sel_verify_sph_ISPACK3                                     &
-     &    (iflag_size, sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,         &
-     &     WK_FFTs%sph_ISPACK3, WK_FFTs%sph_domain_ispack3,             &
-     &     WK_FFTs%sph_comp_ispack3, WK_FFTs%sph_sgl_ispack3, flag_FFT)
+        call sel_verify_sph_ISPACK3(iflag_size, sph_rtp, comm_rtp,      &
+     &      ncomp_bwd, ncomp_fwd, WK_FFTs%WKs_ISPACK3, flag_FFT)
       else if(iflag_sph_FFT .eq. iflag_ISPACK0) then
         call sel_verify_sph_ISPACK0                                     &
      &     (iflag_size, sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,        &
@@ -486,15 +463,11 @@
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           call sel_verify_prt_FFTPACK                                   &
      &       (iflag_size, sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,      &
-     &        WK_FFTs%sph_FFTPACK, WK_FFTs%sph_domain_FFTPACK,          &
-     &        WK_FFTs%sph_comp_FFTPACK, WK_FFTs%sph_sgl_FFTPACK,        &
-     &        flag_FFT)
+     &        WK_FFTs%WKs_FFTPACK, flag_FFT)
         else
           call sel_verify_rtp_FFTPACK                                   &
      &       (iflag_size, sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,      &
-     &        WK_FFTs%sph_FFTPACK, WK_FFTs%sph_domain_FFTPACK,          &
-     &        WK_FFTs%sph_comp_FFTPACK, WK_FFTs%sph_sgl_FFTPACK,        &
-     &        flag_FFT)
+     &        WK_FFTs%WKs_FFTPACK, flag_FFT)
         end if
       end if
       if(flag_fft) return
@@ -584,9 +557,7 @@
         if(iflag_sph_FFT .eq. iflag_FFTPACK) then
           call sel_prt_fwd_FFTPACK_to_send(iflag_size,                  &
      &        sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),    &
-     &        WK_FFTs%sph_FFTPACK, WK_FFTs%sph_domain_FFTPACK,          &
-     &        WK_FFTs%sph_comp_FFTPACK, WK_FFTs%sph_sgl_FFTPACK,        &
-     &        flag_FFT)
+     &        WK_FFTs%WKs_FFTPACK, flag_FFT)
         end if
         if(flag_fft) return
 !
@@ -620,18 +591,15 @@
         if(iflag_sph_FFT .eq. iflag_FFTPACK) then
           call sel_rtp_fwd_FFTPACK_to_send(iflag_size,                  &
      &        sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),    &
-     &        WK_FFTs%sph_FFTPACK, WK_FFTs%sph_domain_FFTPACK,          &
-     &        WK_FFTs%sph_comp_FFTPACK, WK_FFTs%sph_sgl_FFTPACK,        &
-     &        flag_FFT)
+     &        WK_FFTs%WKs_FFTPACK, flag_FFT)
         end if
         if(flag_fft) return
       end if
 !
       if(iflag_sph_FFT .eq. iflag_ISPACK3) then
-        call sel_sph_fwd_ISPACK3_to_send(iflag_size, sph_rtp, comm_rtp, &
-     &      ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_ISPACK3,    &
-     &      WK_FFTs%sph_domain_ispack3, WK_FFTs%sph_comp_ispack3,       &
-     &      WK_FFTs%sph_sgl_ispack3, flag_FFT)
+        call sel_sph_fwd_ISPACK3_to_send(iflag_size,                    &
+     &      sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),      &
+     &      WK_FFTs%WKs_ISPACK3, flag_FFT)
       else if(iflag_sph_FFT .eq. iflag_ISPACK0) then
         call sel_sph_fwd_ISPACK0_to_send(iflag_size, sph_rtp,           &
      &      ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_ISPACK,     &
@@ -726,9 +694,7 @@
         if(iflag_sph_FFT .eq. iflag_FFTPACK) then
           call sel_prt_bwd_FFTPACK_from_recv(iflag_size,                &
      &        sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),    &
-     &        WK_FFTs%sph_FFTPACK, WK_FFTs%sph_domain_FFTPACK,          &
-     &        WK_FFTs%sph_comp_FFTPACK, WK_FFTs%sph_sgl_FFTPACK,        &
-     &        flag_FFT)
+     &        WK_FFTs%WKs_FFTPACK, flag_FFT)
         end if
         if(flag_fft) return
 !
@@ -763,9 +729,7 @@
         if(iflag_sph_FFT .eq. iflag_FFTPACK) then
           call sel_rtp_bwd_FFTPACK_from_recv(iflag_size,                &
      &        sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),    &
-     &        WK_FFTs%sph_FFTPACK, WK_FFTs%sph_domain_FFTPACK,          &
-     &        WK_FFTs%sph_comp_FFTPACK, WK_FFTs%sph_sgl_FFTPACK,        &
-     &        flag_FFT)
+     &        WK_FFTs%WKs_FFTPACK, flag_FFT)
         end if
         if(flag_fft) return
       end if
@@ -774,9 +738,7 @@
       if(iflag_sph_FFT .eq. iflag_ISPACK3) then
         call sel_sph_bwd_ISPACK3_from_recv(iflag_size,                  &
      &      sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),      &
-     &      WK_FFTs%sph_ISPACK3, WK_FFTs%sph_domain_ispack3,            &
-     &      WK_FFTs%sph_comp_ispack3, WK_FFTs%sph_sgl_ispack3,          &
-     &      flag_FFT)
+     &      WK_FFTs%WKs_ISPACK3, flag_FFT)
       else if(iflag_sph_FFT .eq. iflag_ISPACK0) then
         call sel_sph_bwd_ISPACK0_from_recv(iflag_size,                  &
      &      sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),      &

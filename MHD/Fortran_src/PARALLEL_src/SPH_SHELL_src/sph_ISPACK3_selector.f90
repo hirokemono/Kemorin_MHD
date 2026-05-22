@@ -10,35 +10,9 @@
 !!
 !!@verbatim
 !!  ---------------------------------------------------------------------
-!!
-!!      subroutine sel_init_sph_ISPACK3(id_rank, iflag_size,            &
-!!     &          sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,              &
-!!     &          sph_ISPACK3, sph_domain_ispack3,                      &
-!!     &          sph_comp_ispack3, sph_sgl_ispack3, flag_FFT)
-!!      subroutine sel_finalize_sph_ISPACK3                             &
-!!     &         (iflag_size, sph_ISPACK3, sph_domain_ispack3,          &
-!!     &          sph_comp_ispack3, sph_sgl_ispack3, flag_FFT)
-!!      subroutine sel_verify_sph_ISPACK3(iflag_size, sph_rtp, comm_rtp,&
-!!     &          ncomp_bwd, ncomp_fwd, sph_ISPACK3, sph_domain_ispack3,&
-!!     &          sph_comp_ispack3, sph_sgl_ispack3, flag_FFT)
-!!        integer(kind = kint), intent(in) :: iflag_size
-!!        integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
-!!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!        type(sph_comm_tbl), intent(in) :: comm_rtp
-!!        type(work_for_ispack3), intent(inout) :: sph_ISPACK3
-!!        type(work_for_domain_ispack3), intent(inout)                  &
-!!     &                              :: sph_domain_ispack3
-!!        type(work_for_comp_ispack3), intent(inout) :: sph_comp_ispack3
-!!        type(work_for_single_ispack3), intent(inout) :: sph_sgl_ispack3
-!!        logical, intent(inout) :: flag_FFT
-!! ------------------------------------------------------------------
-!! wrapper subroutine for initierize FFT for ISPACK
-!! ------------------------------------------------------------------
-!!
 !!      subroutine sel_sph_fwd_ISPACK3_to_send(iflag_size,              &
 !!     &          sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp, WS,        &
-!!     &          sph_ISPACK3, sph_domain_ispack3, sph_comp_ispack3,    &
-!!     &          sph_sgl_ispack3, flag_FFT)
+!!     &          WKs_ISPACK3, flag_FFT)
 !!        integer(kind = kint), intent(in) :: iflag_size
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
@@ -46,11 +20,7 @@
 !!        real(kind = kreal), intent(in)                                &
 !!     &             :: v_rtp(sph_rtp%nnod_rtp,ncomp_fwd)
 !!        real(kind = kreal), intent(inout):: WS(n_WS)
-!!        type(work_for_ispack3), intent(inout) :: sph_ISPACK3
-!!        type(work_for_domain_ispack3), intent(inout)                  &
-!!     &                              :: sph_domain_ispack3
-!!        type(work_for_comp_ispack3), intent(inout) :: sph_comp_ispack3
-!!        type(work_for_single_ispack3), intent(inout) :: sph_sgl_ispack3
+!!        type(works_sph_ispack3), intent(inout) :: WKs_ISPACK3
 !!        logical, intent(inout) :: flag_FFT
 !! ------------------------------------------------------------------
 !!
@@ -67,8 +37,7 @@
 !!
 !!      subroutine sel_sph_bwd_ISPACK3_from_recv(iflag_size,            &
 !!     &          sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, v_rtp,        &
-!!     &          sph_ISPACK3, sph_domain_ispack3, sph_comp_ispack3,    &
-!!     &          sph_sgl_ispack3, flag_FFT)
+!!     &          WKs_ISPACK3, flag_FFT)
 !!        integer(kind = kint), intent(in) :: iflag_size
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -76,11 +45,7 @@
 !!        real(kind = kreal), intent(in) :: WR(n_WR)
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                  :: v_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
-!!        type(work_for_ispack3), intent(inout) :: sph_ISPACK3
-!!        type(work_for_domain_ispack3), intent(inout)                  &
-!!     &                              :: sph_domain_ispack3
-!!        type(work_for_comp_ispack3), intent(inout) :: sph_comp_ispack3
-!!        type(work_for_single_ispack3), intent(inout) :: sph_sgl_ispack3
+!!        type(works_sph_ispack3), intent(inout) :: WKs_ISPACK3
 !!        logical, intent(inout) :: flag_FFT
 !! ------------------------------------------------------------------
 !!
@@ -115,10 +80,7 @@
       use t_spheric_rtp_data
       use t_sph_trans_comm_tbl
 !
-      use t_sph_ISPACK3_FFT
-      use t_sph_domain_ISPACK3_FFT
-      use t_sph_component_ISPACK3_FFT
-      use t_sph_single_ISPACK3_FFT
+      use t_sph_ISPACK3_selector
 !
       implicit none
 !
@@ -128,127 +90,9 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine sel_init_sph_ISPACK3(id_rank, iflag_size,              &
-     &          sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,                &
-     &          sph_ISPACK3, sph_domain_ispack3,                        &
-     &          sph_comp_ispack3, sph_sgl_ispack3, flag_FFT)
-!
-      integer, intent(in) :: id_rank
-      integer(kind = kint), intent(in) :: iflag_size
-      integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_comm_tbl), intent(in) :: comm_rtp
-!
-      type(work_for_ispack3), intent(inout) :: sph_ISPACK3
-      type(work_for_domain_ispack3), intent(inout)                      &
-     &                              :: sph_domain_ispack3
-      type(work_for_comp_ispack3), intent(inout) :: sph_comp_ispack3
-      type(work_for_single_ispack3), intent(inout) :: sph_sgl_ispack3
-      logical, intent(inout) :: flag_FFT
-!
-!
-      if     (iflag_size .eq. iflag_once_fft) then
-        if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1'
-        call init_sph_ISPACK3(sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,  &
-     &                        sph_ISPACK3, flag_fft)
-      else if(iflag_size .eq. iflag_domain_once) then
-        if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1 for domain'
-        call init_sph_domain_ISPACK3(sph_rtp, comm_rtp,                 &
-     &                               sph_domain_ispack3, flag_fft)
-      else if(iflag_size .eq. iflag_component_once) then
-        if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1 for component'
-        call init_sph_comp_ISPACK3(sph_rtp, ncomp_bwd, ncomp_fwd,       &
-     &                             sph_comp_ispack3, flag_fft)
-      else if(iflag_size .eq. iflag_single_fft) then
-        if(id_rank .eq. 0) write(*,*) 'Use single ISPACK V3.0.1'
-        call init_sph_single_ISPACK3(sph_rtp,                           &
-     &                               sph_sgl_ispack3, flag_fft)
-      end if
-!
-      end subroutine sel_init_sph_ISPACK3
-!
-! ------------------------------------------------------------------
-!
-      subroutine sel_finalize_sph_ISPACK3                               &
-     &         (iflag_size, sph_ISPACK3, sph_domain_ispack3,            &
-     &          sph_comp_ispack3, sph_sgl_ispack3, flag_FFT)
-!
-      integer(kind = kint), intent(in) :: iflag_size
-      type(work_for_ispack3), intent(inout) :: sph_ISPACK3
-      type(work_for_domain_ispack3), intent(inout)                      &
-     &                              :: sph_domain_ispack3
-      type(work_for_comp_ispack3), intent(inout) :: sph_comp_ispack3
-      type(work_for_single_ispack3), intent(inout) :: sph_sgl_ispack3
-      logical, intent(inout) :: flag_FFT
-!
-!
-      if     (iflag_size .eq. iflag_once_fft) then
-        if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK V3.0.1'
-        call finalize_sph_ISPACK3(sph_ISPACK3, flag_fft)
-      else if(iflag_size .eq. iflag_domain_once) then
-        if(iflag_debug .gt. 0) write(*,*)                               &
-     &                       'Finalize ISPACK V3.0.1 for domain'
-        call finalize_sph_domain_ISPACK3(sph_domain_ispack3, flag_fft)
-      else if(iflag_size .eq. iflag_component_once) then
-        if(iflag_debug .gt. 0) write(*,*)                               &
-     &                       'Finalize ISPACK V3.0.1 for component'
-        call finalize_sph_comp_ISPACK3(sph_comp_ispack3, flag_fft)
-      else if(iflag_size .eq. iflag_single_fft) then
-        if(iflag_debug .gt. 0) write(*,*)                               &
-     &                       'Finalize single ISPACK V3.0.1'
-        call finalize_sph_single_ISPACK3(sph_sgl_ispack3, flag_fft)
-      end if
-!
-      end subroutine sel_finalize_sph_ISPACK3
-!
-! ------------------------------------------------------------------
-!
-      subroutine sel_verify_sph_ISPACK3(iflag_size, sph_rtp, comm_rtp,  &
-     &          ncomp_bwd, ncomp_fwd, sph_ISPACK3, sph_domain_ispack3,  &
-     &          sph_comp_ispack3, sph_sgl_ispack3, flag_FFT)
-!
-      integer(kind = kint), intent(in) :: iflag_size
-      integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_comm_tbl), intent(in) :: comm_rtp
-!
-      type(work_for_ispack3), intent(inout) :: sph_ISPACK3
-      type(work_for_domain_ispack3), intent(inout)                      &
-     &                              :: sph_domain_ispack3
-      type(work_for_comp_ispack3), intent(inout) :: sph_comp_ispack3
-      type(work_for_single_ispack3), intent(inout) :: sph_sgl_ispack3
-      logical, intent(inout) :: flag_FFT
-!
-!
-      if     (iflag_size .eq. iflag_once_fft) then
-        if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V3.0.1'
-        call verify_sph_ISPACK3(sph_rtp, comm_rtp,                      &
-     &      ncomp_bwd, ncomp_fwd, sph_ISPACK3, flag_fft)
-      else if(iflag_size .eq. iflag_domain_once) then
-        if(iflag_debug .gt. 0) write(*,*)                               &
-     &                       'Use ISPACK V3.0.1 for domain'
-        call verify_sph_domain_ISPACK3                                  &
-     &     (sph_rtp, comm_rtp, sph_domain_ispack3, flag_fft)
-      else if(iflag_size .eq. iflag_component_once) then
-        if(iflag_debug .gt. 0) write(*,*)                               &
-     &                       'Use ISPACK V3.0.1 for component'
-        call verify_sph_comp_ISPACK3(sph_rtp, ncomp_bwd, ncomp_fwd,     &
-     &      sph_comp_ispack3, flag_fft)
-      else if(iflag_size .eq. iflag_single_fft) then
-        if(iflag_debug .gt. 0) write(*,*) 'Use single ISPACK V3.0.1'
-        call verify_sph_single_ISPACK3                                  &
-     &     (sph_rtp, sph_sgl_ispack3, flag_fft)
-      end if
-!
-      end subroutine sel_verify_sph_ISPACK3
-!
-! ------------------------------------------------------------------
-! ------------------------------------------------------------------
-!
       subroutine sel_sph_fwd_ISPACK3_to_send(iflag_size,                &
      &          sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp, WS,          &
-     &          sph_ISPACK3, sph_domain_ispack3, sph_comp_ispack3,      &
-     &          sph_sgl_ispack3, flag_FFT)
+     &          WKs_ISPACK3, flag_FFT)
 !
       integer(kind = kint), intent(in) :: iflag_size
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -258,28 +102,26 @@
       real(kind = kreal), intent(in)                                    &
      &                   :: v_rtp(sph_rtp%nnod_rtp,ncomp_fwd)
       real(kind = kreal), intent(inout):: WS(n_WS)
-      type(work_for_ispack3), intent(inout) :: sph_ISPACK3
-      type(work_for_domain_ispack3), intent(inout)                      &
-     &                              :: sph_domain_ispack3
-      type(work_for_comp_ispack3), intent(inout) :: sph_comp_ispack3
-      type(work_for_single_ispack3), intent(inout) :: sph_sgl_ispack3
+      type(works_sph_ispack3), intent(inout) :: WKs_ISPACK3
       logical, intent(inout) :: flag_FFT
 !
 !
       if     (iflag_size .eq. iflag_once_fft) then
-        call sph_FXRTFA_to_send(sph_rtp, ncomp_fwd,                     &
-     &      n_WS, v_rtp(1,1), WS(1), sph_ISPACK3, flag_FFT)
+        call sph_FXRTFA_to_send                                         &
+     &     (sph_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),                &
+     &      WKs_ISPACK3%sph_full_ISPACK3, flag_FFT)
       else if(iflag_size .eq. iflag_domain_once) then
         call sph_domain_FXRTFA_to_send                                  &
      &     (sph_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),                &
-     &      sph_domain_ispack3, flag_FFT)
+     &      WKs_ISPACK3%sph_domain_ispack3, flag_FFT)
       else if(iflag_size .eq. iflag_component_once) then
         call sph_comp_FXRTFA_to_send                                    &
      &     (sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),      &
-     &      sph_comp_ispack3, flag_FFT)
+     &      WKs_ISPACK3%sph_comp_ispack3, flag_FFT)
       else if(iflag_size .eq. iflag_single_fft) then
-        call sph_single_FXRTFA_to_send(sph_rtp, comm_rtp, ncomp_fwd,    &
-     &      n_WS, v_rtp(1,1), WS(1), sph_sgl_ispack3, flag_FFT)
+        call sph_single_FXRTFA_to_send                                  &
+     &     (sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),      &
+     &      WKs_ISPACK3%sph_sgl_ispack3, flag_FFT)
       end if
 !
       end subroutine sel_sph_fwd_ISPACK3_to_send
@@ -288,8 +130,7 @@
 !
       subroutine sel_sph_bwd_ISPACK3_from_recv(iflag_size,              &
      &          sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, v_rtp,          &
-     &          sph_ISPACK3, sph_domain_ispack3, sph_comp_ispack3,      &
-     &          sph_sgl_ispack3, flag_FFT)
+     &          WKs_ISPACK3, flag_FFT)
 !
       integer(kind = kint), intent(in) :: iflag_size
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -300,28 +141,26 @@
 !
       real(kind = kreal), intent(inout)                                 &
      &                  :: v_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
-      type(work_for_ispack3), intent(inout) :: sph_ISPACK3
-      type(work_for_domain_ispack3), intent(inout)                      &
-     &                              :: sph_domain_ispack3
-      type(work_for_comp_ispack3), intent(inout) :: sph_comp_ispack3
-      type(work_for_single_ispack3), intent(inout) :: sph_sgl_ispack3
+      type(works_sph_ispack3), intent(inout) :: WKs_ISPACK3
       logical, intent(inout) :: flag_FFT
 !
 !
       if     (iflag_size .eq. iflag_once_fft) then
-        call sph_FXRTBA_from_recv(sph_rtp, comm_rtp, ncomp_bwd,         &
-     &      n_WR, WR(1), v_rtp(1,1), sph_ispack3, flag_FFT)
+        call sph_FXRTBA_from_recv                                       &
+     &     (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),      &
+     &      WKs_ISPACK3%sph_full_ISPACK3, flag_FFT)
       else if(iflag_size .eq. iflag_domain_once) then
         call sph_domain_FXRTBA_from_recv                                &
      &     (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),      &
-     &      sph_domain_ispack3, flag_FFT)
+     &      WKs_ISPACK3%sph_domain_ispack3, flag_FFT)
       else if(iflag_size .eq. iflag_component_once) then
         call sph_comp_FXRTBA_from_recv                                  &
      &     (sph_rtp,comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),       &
-     &      sph_comp_ispack3, flag_FFT)
+     &      WKs_ISPACK3%sph_comp_ispack3, flag_FFT)
       else if(iflag_size .eq. iflag_single_fft) then
-        call sph_single_FXRTBA_from_recv(sph_rtp, comm_rtp, ncomp_bwd,  &
-     &      n_WR, WR(1), v_rtp(1,1), sph_sgl_ispack3, flag_FFT)
+        call sph_single_FXRTBA_from_recv                                &
+     &     (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),      &
+     &      WKs_ISPACK3%sph_sgl_ispack3, flag_FFT)
       end if
 !
       end subroutine sel_sph_bwd_ISPACK3_from_recv
