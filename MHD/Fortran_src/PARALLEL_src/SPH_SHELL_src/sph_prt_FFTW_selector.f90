@@ -123,6 +123,9 @@
      &          sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,                &
      &          sph_fld_FFTW, sph_comp_FFTW, sph_sgl_FFTW, flag_FFT)
 !
+      use sph_prt_FFTW
+      use sph_prt_domain_FFTW
+!
       integer, intent(in) :: id_rank
       integer(kind = kint) :: iflag_size
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
@@ -159,6 +162,9 @@
       subroutine sel_finalize_sph_FFTW_smp(iflag_size,                  &
      &          sph_fld_FFTW, sph_comp_FFTW, sph_sgl_FFTW, flag_FFT)
 !
+      use sph_prt_FFTW
+      use sph_prt_domain_FFTW
+!
       integer(kind = kint), intent(in) :: iflag_size
 !
       type(work_for_field_FFTW), intent(inout) :: sph_fld_FFTW
@@ -186,6 +192,9 @@
       subroutine sel_verify_prt_FFTW_smp                                &
      &         (iflag_size, sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,    &
      &          sph_fld_FFTW, sph_comp_FFTW, sph_sgl_FFTW, flag_FFT)
+!
+      use sph_prt_FFTW
+      use sph_prt_domain_FFTW
 !
       integer(kind = kint), intent(in) :: iflag_size
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
@@ -224,6 +233,9 @@
      &          sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp, WS,          &
      &          sph_fld_FFTW, sph_comp_FFTW, sph_sgl_FFTW, flag_FFT)
 !
+      use sph_prt_FFTW
+      use sph_prt_domain_FFTW
+!
       integer(kind = kint), intent(in) :: iflag_size
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
@@ -260,6 +272,9 @@
       subroutine sel_prt_bwd_FFTW_from_recv(iflag_size,                 &
      &          sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, v_rtp,          &
      &          sph_fld_FFTW, sph_comp_FFTW, sph_sgl_FFTW, flag_FFT)
+!
+      use sph_prt_FFTW
+      use sph_prt_domain_FFTW
 !
       integer(kind = kint), intent(in) :: iflag_size
       type(sph_rtp_grid), intent(in) :: sph_rtp

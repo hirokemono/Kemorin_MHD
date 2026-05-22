@@ -121,6 +121,9 @@
      &          sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,                &
      &          sph_fld_FFTW, sph_comp_FFTW, sph_sgl_FFTW, flag_FFT)
 !
+      use sph_rtp_FFTW
+      use sph_rtp_domain_FFTW
+!
       integer, intent(in) :: id_rank
       integer(kind = kint) :: iflag_size
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
@@ -158,6 +161,9 @@
      &         (iflag_size, sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,    &
      &          sph_fld_FFTW, sph_comp_FFTW, sph_sgl_FFTW, flag_FFT)
 !
+      use sph_rtp_FFTW
+      use sph_rtp_domain_FFTW
+!
       integer(kind = kint), intent(in) :: iflag_size
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -171,7 +177,7 @@
 !
       if     (iflag_size .eq. iflag_once_fft) then
         if(iflag_debug .gt. 0) write(*,*) 'Use prt FFTW'
-        call verify_prt_FFTW_smp(sph_rtp, comm_rtp,                     &
+        call verify_rtp_FFTW_smp(sph_rtp, comm_rtp,                     &
      &      ncomp_bwd, ncomp_fwd, sph_fld_FFTW, flag_fft)
       else if(iflag_size .eq. iflag_domain_once) then
         if(iflag_debug .gt. 0) write(*,*) 'Use rtp FFTW for field'
@@ -194,6 +200,9 @@
       subroutine sel_rtp_fwd_FFTW_to_send(iflag_size,                   &
      &          sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp, WS,          &
      &          sph_fld_FFTW, sph_comp_FFTW, sph_sgl_FFTW, flag_FFT)
+!
+      use sph_rtp_FFTW
+      use sph_rtp_domain_FFTW
 !
       integer(kind = kint), intent(in) :: iflag_size
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -234,6 +243,9 @@
       subroutine sel_rtp_bwd_FFTW_from_recv(iflag_size,                 &
      &          sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, v_rtp,          &
      &          sph_fld_FFTW, sph_comp_FFTW, sph_sgl_FFTW, flag_FFT)
+!
+      use sph_rtp_FFTW
+      use sph_rtp_domain_FFTW
 !
       integer(kind = kint), intent(in) :: iflag_size
       type(sph_rtp_grid), intent(in) :: sph_rtp
