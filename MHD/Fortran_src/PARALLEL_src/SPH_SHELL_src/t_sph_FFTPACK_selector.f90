@@ -2,7 +2,7 @@
 !!@brief  module t_sph_FFTPACK_selector
 !!
 !!@author H. Matsui
-!!@date Programmed in Oct., 2009
+!!@date Programmed in May, 2026
 !
 !>@brief  Selector of Fourier transform
 !!
@@ -63,7 +63,7 @@
       implicit none
 !
 !>      Structure for work area of FFTPACK
-      end type works_sph_FFTPACK
+      type works_sph_FFTPACK
 !>        Structure to use FFTPACK
         type(work_for_fftpack) :: sph_FFTPACK
 !>        Structure to use single FFTPACK

@@ -51,7 +51,7 @@
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
 !!        integer(kind = kint), intent(in) :: ncomp_bwd
 !!        integer(kind = kint), intent(in) :: n_WR
-!!        real (kind=kreal), intent(in):: WR(n_WR)
+!!        real(kind = kreal), intent(in) :: WR(n_WR)
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
 !!        type(work_for_field_FFTW), intent(inout) :: FFTW_f
@@ -257,7 +257,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_bwd
       integer(kind = kint), intent(in) :: n_WR
-      real (kind=kreal), intent(in):: WR(n_WR)
+      real(kind = kreal), intent(in) :: WR(n_WR)
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)

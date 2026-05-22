@@ -71,7 +71,7 @@
       implicit none
 !
 !>      Structure for work area of ISPACK3
-      end type works_sph_ispack3
+      type works_sph_ispack3
 !>        Structure to use ISPACK3
         type(work_for_ispack3) :: sph_full_ISPACK3
 !>        Structure to use ISPACK3 for domain

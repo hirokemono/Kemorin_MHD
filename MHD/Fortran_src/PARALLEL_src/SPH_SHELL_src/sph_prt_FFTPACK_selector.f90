@@ -215,7 +215,7 @@
       else if(iflag_size .eq. iflag_domain_once) then
         call prt_domain_RFFTMF_to_send                                  &
      &     (sph_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),                &
-     &      WKs_FFTPACK%%sph_domain_FFTPACK, flag_FFT)
+     &      WKs_FFTPACK%sph_domain_FFTPACK, flag_FFT)
       else if(iflag_size .eq. iflag_component_once) then
         call sph_comp_RFFTMF_to_send                                    &
      &     (sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),      &

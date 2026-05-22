@@ -31,16 +31,14 @@
 !!
 !!      subroutine sel_rtp_fwd_OMP_FFTW_to_send(iflag_size,             &
 !!     &          sph_rtp, ncomp_fwd, n_WS, v_rtp, WS,                  &
-!!     &          sph_OMP_FFTW, sph_domain_OMP_FFTW, flag_FFT)
+!!     &          WKs_FFTW, flag_FFT)
 !!        integer(kind = kint), intent(in) :: iflag_size
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        integer(kind = kint), intent(in) :: ncomp_fwd, n_WS
 !!        real(kind = kreal), intent(in)                                &
 !!     &                   :: v_rtp(sph_rtp%nnod_rtp,ncomp_fwd)
 !!        real(kind = kreal), intent(inout) :: WS(n_WS)
-!!        type(work_for_OpenMP_FFTW), intent(inout) :: sph_OMP_FFTW
-!!        type(work_for_domain_OMP_FFTW), intent(inout)                 &
-!!     &                   :: sph_domain_OMP_FFTW
+!!        type(works_sph_FFTW), intent(inout) :: WKs_FFTW
 !!        logical, intent(inout) :: flag_FFT
 !! ------------------------------------------------------------------
 !!
@@ -57,17 +55,15 @@
 !!
 !!      subroutine sel_rtp_bwd_OMP_FFTW_from_recv(iflag_size,           &
 !!     &          sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, v_rtp,        &
-!!     &          sph_OMP_FFTW, sph_domain_OMP_FFTW, flag_FFT)
+!!     &          WKs_FFTW, flag_FFT)
 !!        integer(kind = kint), intent(in) :: iflag_size
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
 !!        integer(kind = kint), intent(in) :: ncomp_bwd, n_WR
-!!        real(kind = kreal), intent(inout) :: WR(n_WR)
+!!        real(kind = kreal), intent(in) :: WR(n_WR)
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                   :: v_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
-!!        type(work_for_OpenMP_FFTW), intent(inout) :: sph_OMP_FFTW
-!!        type(work_for_domain_OMP_FFTW), intent(inout)                 &
-!!     &                   :: sph_domain_OMP_FFTW
+!!        type(works_sph_FFTW), intent(inout) :: WKs_FFTW
 !!        logical, intent(inout) :: flag_FFT
 !! ------------------------------------------------------------------
 !!
@@ -108,8 +104,7 @@
 !
       use m_FFT_selector
 
-      use t_sph_OMP_FFTW
-      use t_sph_field_OMP_FFTW
+      use t_sph_FFTW_selector
 !
       implicit none
 !
@@ -208,7 +203,7 @@
 !
       subroutine sel_rtp_fwd_OMP_FFTW_to_send(iflag_size,               &
      &          sph_rtp, ncomp_fwd, n_WS, v_rtp, WS,                    &
-     &          sph_OMP_FFTW, sph_domain_OMP_FFTW, flag_FFT)
+     &          WKs_FFTW, flag_FFT)
 !
       integer(kind = kint), intent(in) :: iflag_size
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -217,17 +212,17 @@
      &                   :: v_rtp(sph_rtp%nnod_rtp,ncomp_fwd)
 !
       real(kind = kreal), intent(inout) :: WS(n_WS)
-      type(work_for_OpenMP_FFTW), intent(inout) :: sph_OMP_FFTW
-      type(work_for_domain_OMP_FFTW), intent(inout)                     &
-     &                   :: sph_domain_OMP_FFTW
+      type(works_sph_FFTW), intent(inout) :: WKs_FFTW
       logical, intent(inout) :: flag_FFT
 !
       if     (iflag_size .eq. iflag_once_fft) then
-        call rtp_fwd_OMP_FFTW_from_recv(sph_rtp, ncomp_fwd, n_WS,     &
-     &      v_rtp(1,1), WS(1), sph_OMP_FFTW, flag_FFT)
+        call rtp_fwd_OMP_FFTW_from_recv                                 &
+     &     (sph_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),                &
+     &      WKs_FFTW%sph_OMP_FFTW, flag_FFT)
       else if(iflag_size .eq. iflag_domain_once) then
-        call sph_domain_fwd_OFFTW_to_send(sph_rtp, ncomp_fwd, n_WS,   &
-     &      v_rtp(1,1), WS(1), sph_domain_OMP_FFTW, flag_FFT)
+        call sph_domain_fwd_OFFTW_to_send                               &
+     &     (sph_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),                &
+     &      WKs_FFTW%sph_domain_OMP_FFTW, flag_FFT)
       end if
 !
       end subroutine sel_rtp_fwd_OMP_FFTW_to_send
@@ -236,28 +231,27 @@
 !
       subroutine sel_rtp_bwd_OMP_FFTW_from_recv(iflag_size,             &
      &          sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, v_rtp,          &
-     &          sph_OMP_FFTW, sph_domain_OMP_FFTW, flag_FFT)
+     &          WKs_FFTW, flag_FFT)
 !
       integer(kind = kint), intent(in) :: iflag_size
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
       integer(kind = kint), intent(in) :: ncomp_bwd, n_WR
+      real(kind = kreal), intent(in) :: WR(n_WR)
 !
-      real(kind = kreal), intent(inout) :: WR(n_WR)
       real(kind = kreal), intent(inout)                                 &
      &                   :: v_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
-      type(work_for_OpenMP_FFTW), intent(inout) :: sph_OMP_FFTW
-      type(work_for_domain_OMP_FFTW), intent(inout)                     &
-     &                   :: sph_domain_OMP_FFTW
+      type(works_sph_FFTW), intent(inout) :: WKs_FFTW
       logical, intent(inout) :: flag_FFT
 !
       if     (iflag_size .eq. iflag_once_fft) then
-        call rtp_back_OMP_FFTW_from_recv(sph_rtp, comm_rtp, ncomp_bwd,  &
-     &      n_WR, WR(1), v_rtp(1,1), sph_OMP_FFTW, flag_FFT)
+        call rtp_back_OMP_FFTW_from_recv                                &
+     &     (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),      &
+     &      WKs_FFTW%sph_OMP_FFTW, flag_FFT)
       else if(iflag_size .eq. iflag_domain_once) then
         call sph_domain_back_OFFTW_from_recv                            &
      &     (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),      &
-     &      sph_domain_OMP_FFTW, flag_FFT)
+     &      WKs_FFTW%sph_domain_OMP_FFTW, flag_FFT)
       end if
 !
       end subroutine sel_rtp_bwd_OMP_FFTW_from_recv

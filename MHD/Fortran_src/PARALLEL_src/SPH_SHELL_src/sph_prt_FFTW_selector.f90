@@ -9,19 +9,15 @@
 !!@verbatim
 !!      subroutine sel_init_prt_FFTW_smp(id_rank, iflag_size,           &
 !!     &          sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,              &
-!!     &          sph_fld_FFTW, sph_comp_FFTW, sph_sgl_FFTW, flag_FFT)
-!!      subroutine sel_finalize_sph_FFTW_smp(iflag_size,                &
-!!     &          sph_fld_FFTW, sph_comp_FFTW, sph_sgl_FFTW, flag_FFT)
+!!     &          WKs_FFTW, flag_FFT)
 !!      subroutine sel_verify_prt_FFTW_smp                              &
 !!     &         (iflag_size, sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,  &
-!!     &          sph_fld_FFTW, sph_comp_FFTW, sph_sgl_FFTW, flag_FFT)
+!!     &          WKs_FFTW, flag_FFT)
 !!        integer(kind = kint), intent(in) :: iflag_size
 !!        integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
-!!        type(work_for_field_FFTW), intent(inout) :: sph_fld_FFTW
-!!        type(work_for_sgl_FFTW), intent(inout) :: sph_sgl_FFTW
-!!        type(work_for_comp_FFTW), intent(inout) :: sph_comp_FFTW
+!!        type(works_sph_FFTW), intent(inout) :: WKs_FFTW
 !!        logical, intent(inout) :: flag_FFT
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT for FFTW with OpoenMP
@@ -29,7 +25,7 @@
 !!
 !!      subroutine sel_prt_fwd_FFTW_to_send(iflag_size,                 &
 !!     &          sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp, WS,        &
-!!     &          sph_fld_FFTW, sph_comp_FFTW, sph_sgl_FFTW, flag_FFT)
+!!     &          WKs_FFTW, flag_FFT)
 !!        integer(kind = kint), intent(in) :: iflag_size
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
@@ -37,9 +33,7 @@
 !!        real(kind = kreal), intent(in)                                &
 !!     &           :: v_rtp(sph_rtp%nnod_rtp,ncomp_fwd)
 !!        real(kind = kreal), intent(inout) :: WS(n_WS)
-!!        type(work_for_field_FFTW), intent(inout) :: sph_fld_FFTW
-!!        type(work_for_comp_FFTW), intent(inout) :: sph_comp_FFTW
-!!        type(work_for_sgl_FFTW), intent(inout) :: sph_sgl_FFTW
+!!        type(works_sph_FFTW), intent(inout) :: WKs_FFTW
 !!        logical, intent(inout) :: flag_FFT
 !! ------------------------------------------------------------------
 !!
@@ -56,17 +50,15 @@
 !!
 !!      subroutine sel_prt_bwd_FFTW_from_recv(iflag_size,               &
 !!     &          sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, v_rtp,        &
-!!     &          sph_fld_FFTW, sph_comp_FFTW, sph_sgl_FFTW, flag_FFT)
+!!     &          WKs_FFTW, flag_FFT)
 !!        integer(kind = kint), intent(in) :: iflag_size
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
 !!        integer(kind = kint), intent(in) :: ncomp_bwd, n_WR
-!!        real(kind = kreal), intent(inout) :: WR(n_WR)
+!!        real(kind = kreal), intent(in) :: WR(n_WR)
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                   :: v_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
-!!        type(work_for_field_FFTW), intent(inout) :: sph_fld_FFTW
-!!        type(work_for_comp_FFTW), intent(inout) ::  sph_comp_FFTW
-!!        type(work_for_sgl_FFTW), intent(inout) ::   sph_sgl_FFTW
+!!        type(works_sph_FFTW), intent(inout) :: WKs_FFTW
 !!        logical, intent(inout) :: flag_FFT
 !! ------------------------------------------------------------------
 !!
@@ -90,13 +82,6 @@
 !!
 !! ------------------------------------------------------------------
 !!@endverbatim
-!!
-!!@n @param id_rank     Procdess ID
-!!@n @param Nsmp  Number of SMP processors
-!!@n @param Nstacksmp(0:Nsmp)   End number for each SMP process
-!!@n @param M           Number of components for Fourier transforms
-!!@n @param Nfft        Data length for eadh FFT
-!!@n @param X(M, Nfft)  Data for Fourier transform
 !
       module sph_prt_FFTW_selector
 !
@@ -106,10 +91,8 @@
       use t_sph_trans_comm_tbl
 !
       use m_FFT_selector
-
-      use t_sph_field_FFTW
-      use t_sph_component_FFTW
-      use t_sph_single_FFTW
+!
+      use t_sph_FFTW_selector
 !
       implicit none
 !
@@ -121,7 +104,7 @@
 !
       subroutine sel_init_prt_FFTW_smp(id_rank, iflag_size,             &
      &          sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,                &
-     &          sph_fld_FFTW, sph_comp_FFTW, sph_sgl_FFTW, flag_FFT)
+     &          WKs_FFTW, flag_FFT)
 !
       use sph_prt_FFTW
       use sph_prt_domain_FFTW
@@ -132,66 +115,35 @@
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
 !
-      type(work_for_field_FFTW), intent(inout) :: sph_fld_FFTW
-      type(work_for_comp_FFTW), intent(inout) :: sph_comp_FFTW
-      type(work_for_sgl_FFTW), intent(inout) :: sph_sgl_FFTW
+      type(works_sph_FFTW), intent(inout) :: WKs_FFTW
       logical, intent(inout) :: flag_FFT
 !
 !
       if     (iflag_size .eq. iflag_once_fft) then
         if(id_rank .eq. 0) write(*,*) 'Use prt FFTW'
         call init_prt_FFTW_smp(sph_rtp, comm_rtp,                       &
-     &      ncomp_bwd, ncomp_fwd, sph_fld_FFTW, flag_fft)
+     &      ncomp_bwd, ncomp_fwd, WKs_FFTW%sph_fld_FFTW, flag_fft)
       else if(iflag_size .eq. iflag_domain_once) then
         if(id_rank .eq. 0) write(*,*) 'Use prt FFTW for domain'
         call init_prt_field_FFTW(sph_rtp, comm_rtp,                     &
-     &                           sph_fld_FFTW, flag_fft)
+     &                           WKs_FFTW%sph_fld_FFTW, flag_fft)
       else if(iflag_size .eq. iflag_component_once) then
         if(id_rank .eq. 0) write(*,*) 'Use FFTW for all compontnent'
         call init_sph_component_FFTW(sph_rtp, ncomp_bwd, ncomp_fwd,     &
-     &                               sph_comp_FFTW, flag_fft)
+     &                               WKs_FFTW%sph_comp_FFTW, flag_fft)
       else if(iflag_size .eq. iflag_single_fft) then
         if(id_rank .eq. 0) write(*,*) 'Use single transform in FFTW'
-        call init_sph_single_FFTW(sph_rtp, sph_sgl_FFTW, flag_fft)
+        call init_sph_single_FFTW(sph_rtp, WKs_FFTW%sph_sgl_FFTW,       &
+     &                            flag_fft)
       end if
 !
       end subroutine sel_init_prt_FFTW_smp
 !
 ! ------------------------------------------------------------------
 !
-      subroutine sel_finalize_sph_FFTW_smp(iflag_size,                  &
-     &          sph_fld_FFTW, sph_comp_FFTW, sph_sgl_FFTW, flag_FFT)
-!
-      use sph_prt_FFTW
-      use sph_prt_domain_FFTW
-!
-      integer(kind = kint), intent(in) :: iflag_size
-!
-      type(work_for_field_FFTW), intent(inout) :: sph_fld_FFTW
-      type(work_for_comp_FFTW), intent(inout) :: sph_comp_FFTW
-      type(work_for_sgl_FFTW), intent(inout) :: sph_sgl_FFTW
-      logical, intent(inout) :: flag_FFT
-!
-!
-      if     ((iflag_size .eq. iflag_once_fft)                          &
-     &   .or. (iflag_size .eq. iflag_domain_once))  then
-        if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
-        call finalize_sph_field_FFTW(sph_fld_FFTW, flag_fft)
-      else if(iflag_size .eq. iflag_component_once) then
-        if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW for all comps'
-        call finalize_sph_component_FFTW(sph_comp_FFTW, flag_fft)
-      else if(iflag_size .eq. iflag_single_fft) then
-        if(iflag_debug .gt. 0) write(*,*) 'Finalize single FFTW'
-        call finalize_sph_single_FFTW(sph_sgl_FFTW, flag_fft)
-      end if
-!
-      end subroutine sel_finalize_sph_FFTW_smp
-!
-! ------------------------------------------------------------------
-!
       subroutine sel_verify_prt_FFTW_smp                                &
      &         (iflag_size, sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,    &
-     &          sph_fld_FFTW, sph_comp_FFTW, sph_sgl_FFTW, flag_FFT)
+     &          WKs_FFTW, flag_FFT)
 !
       use sph_prt_FFTW
       use sph_prt_domain_FFTW
@@ -201,27 +153,26 @@
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
 !
-      type(work_for_field_FFTW), intent(inout) :: sph_fld_FFTW
-      type(work_for_sgl_FFTW), intent(inout) :: sph_sgl_FFTW
-      type(work_for_comp_FFTW), intent(inout) :: sph_comp_FFTW
+      type(works_sph_FFTW), intent(inout) :: WKs_FFTW
       logical, intent(inout) :: flag_FFT
 !
 !
       if     (iflag_size .eq. iflag_once_fft) then
         if(iflag_debug .gt. 0) write(*,*) 'Use prt FFTW'
         call verify_prt_FFTW_smp(sph_rtp, comm_rtp,                     &
-     &      ncomp_bwd, ncomp_fwd, sph_fld_FFTW, flag_fft)
+     &      ncomp_bwd, ncomp_fwd, WKs_FFTW%sph_fld_FFTW, flag_fft)
       else if(iflag_size .eq. iflag_domain_once) then
         if(iflag_debug .gt. 0) write(*,*) 'Use prt FFTW for field'
         call verify_prt_field_FFTW(sph_rtp, comm_rtp,                   &
-     &                             sph_fld_FFTW, flag_fft)
+     &                             WKs_FFTW%sph_fld_FFTW, flag_fft)
       else if(iflag_size .eq. iflag_component_once) then
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTW for all comp.'
         call verify_sph_component_FFTW(sph_rtp, ncomp_bwd, ncomp_fwd,   &
-     &                                 sph_comp_FFTW, flag_fft)
+     &      WKs_FFTW%sph_comp_FFTW, flag_fft)
       else if(iflag_size .eq. iflag_single_fft) then
         if(iflag_debug .gt. 0) write(*,*) 'Use single FFTW'
-        call verify_sph_single_FFTW(sph_rtp, sph_sgl_FFTW, flag_fft)
+        call verify_sph_single_FFTW(sph_rtp,                            &
+     &                              WKs_FFTW%sph_sgl_FFTW, flag_fft)
       end if
 !
       end subroutine sel_verify_prt_FFTW_smp
@@ -231,7 +182,7 @@
 !
       subroutine sel_prt_fwd_FFTW_to_send(iflag_size,                   &
      &          sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp, WS,          &
-     &          sph_fld_FFTW, sph_comp_FFTW, sph_sgl_FFTW, flag_FFT)
+     &          WKs_FFTW, flag_FFT)
 !
       use sph_prt_FFTW
       use sph_prt_domain_FFTW
@@ -241,28 +192,30 @@
       type(sph_comm_tbl), intent(in) :: comm_rtp
 !
       integer(kind = kint), intent(in) :: ncomp_fwd, n_WS
-      real (kind=kreal), intent(in):: v_rtp(sph_rtp%nnod_rtp,ncomp_fwd)
-      real (kind=kreal), intent(inout):: WS(n_WS)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: v_rtp(sph_rtp%nnod_rtp,ncomp_fwd)
 !
-      type(work_for_field_FFTW), intent(inout) :: sph_fld_FFTW
-      type(work_for_comp_FFTW), intent(inout) :: sph_comp_FFTW
-      type(work_for_sgl_FFTW), intent(inout) :: sph_sgl_FFTW
-!
+      real(kind = kreal), intent(inout) :: WS(n_WS)
+      type(works_sph_FFTW), intent(inout) :: WKs_FFTW
       logical, intent(inout) :: flag_FFT
 !
 !
       if     (iflag_size .eq. iflag_once_fft) then
-        call prt_fwd_FFTW_smp_to_send(sph_rtp, comm_rtp, ncomp_fwd,     &
-     &      n_WS, v_rtp(1,1), WS(1), sph_fld_FFTW, flag_FFT)
+        call prt_fwd_FFTW_smp_to_send                                   &
+     &     (sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),      &
+     &      WKs_FFTW%sph_fld_FFTW, flag_FFT)
       else if(iflag_size .eq. iflag_domain_once) then
-        call prt_field_fwd_FFTW_to_send(sph_rtp, ncomp_fwd, n_WS,       &
-     &      v_rtp(1,1), WS(1), sph_fld_FFTW, flag_FFT)
+        call prt_field_fwd_FFTW_to_send                                 &
+     &     (sph_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),                &
+     &      WKs_FFTW%sph_fld_FFTW, flag_FFT)
       else if(iflag_size .eq. iflag_component_once) then
-        call sph_comp_fwd_FFTW_to_send(sph_rtp, comm_rtp, ncomp_fwd,    &
-     &      n_WS, v_rtp(1,1), WS(1), sph_comp_FFTW, flag_FFT)
+        call sph_comp_fwd_FFTW_to_send                                  &
+     &     (sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),      &
+     &      WKs_FFTW%sph_comp_FFTW, flag_FFT)
       else if(iflag_size .eq. iflag_single_fft) then
-        call sph_single_fwd_FFTW_to_send(sph_rtp, comm_rtp, ncomp_fwd,  &
-     &      n_WS, v_rtp(1,1), WS(1), sph_sgl_FFTW, flag_FFT)
+        call sph_single_fwd_FFTW_to_send                                &
+     &     (sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),      &
+     &      WKs_FFTW%sph_sgl_FFTW, flag_FFT)
       end if
 !
       end subroutine sel_prt_fwd_FFTW_to_send
@@ -271,7 +224,7 @@
 !
       subroutine sel_prt_bwd_FFTW_from_recv(iflag_size,                 &
      &          sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, v_rtp,          &
-     &          sph_fld_FFTW, sph_comp_FFTW, sph_sgl_FFTW, flag_FFT)
+     &          WKs_FFTW, flag_FFT)
 !
       use sph_prt_FFTW
       use sph_prt_domain_FFTW
@@ -280,32 +233,30 @@
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
       integer(kind = kint), intent(in) :: ncomp_bwd, n_WR
+      real(kind = kreal), intent(in) :: WR(n_WR)
 !
-      real(kind = kreal), intent(inout) :: WR(n_WR)
       real(kind = kreal), intent(inout)                                 &
      &                   :: v_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
-      type(work_for_field_FFTW), intent(inout) :: sph_fld_FFTW
-      type(work_for_comp_FFTW), intent(inout) :: sph_comp_FFTW
-      type(work_for_sgl_FFTW), intent(inout) :: sph_sgl_FFTW
+      type(works_sph_FFTW), intent(inout) :: WKs_FFTW
       logical, intent(inout) :: flag_FFT
 !
 !
       if     (iflag_size .eq. iflag_once_fft) then
         call prt_back_FFTW_smp_from_recv                                &
      &     (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),      &
-     &      sph_fld_FFTW, flag_FFT)
+     &      WKs_FFTW%sph_fld_FFTW, flag_FFT)
       else if(iflag_size .eq. iflag_domain_once) then
         call prt_field_back_FFTW_from_recv                              &
      &     (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),      &
-     &      sph_fld_FFTW, flag_FFT)
+     &      WKs_FFTW%sph_fld_FFTW, flag_FFT)
       else if(iflag_size .eq. iflag_component_once) then
         call sph_comp_back_FFTW_from_recv                               &
      &     (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),      &
-     &      sph_comp_FFTW, flag_FFT)
+     &      WKs_FFTW%sph_comp_FFTW, flag_FFT)
       else if(iflag_size .eq. iflag_single_fft) then
         call sph_single_back_FFTW_from_recv                             &
      &     (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),      &
-     &      sph_sgl_FFTW, flag_FFT)
+     &      WKs_FFTW%sph_sgl_FFTW, flag_FFT)
       end if
 !
       end subroutine sel_prt_bwd_FFTW_from_recv
