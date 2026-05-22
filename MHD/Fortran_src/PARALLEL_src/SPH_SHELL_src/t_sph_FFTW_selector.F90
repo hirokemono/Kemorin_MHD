@@ -7,6 +7,14 @@
 !>@brief  Selector of Fourier transform
 !!
 !!@verbatim
+!!      subroutine sel_finalize_prt_OMP_FFTW(iflag_sph_FFT, iflag_size, &
+!!     &                                     WKs_FFTW, flag_FFT)
+!!      subroutine sel_finalize_rtp_OMP_FFTW(iflag_sph_FFT, iflag_size, &
+!!     &                                     WKs_FFTW, flag_FFT)
+!!        integer(kind = kint), intent(in) :: iflag_sph_FFT, iflag_size
+!!        type(works_sph_FFTW), intent(inout) :: WKs_FFTW
+!!        logical, intent(inout) :: flag_FFT
+!!
 !!      subroutine sel_finalize_sph_FFTW_smp(iflag_size,                &
 !!     &                                     WKs_FFTW, flag_FFT)
 !!        integer(kind = kint), intent(in) :: iflag_size
@@ -60,7 +68,7 @@
       use t_sph_component_FFTW
 !
 #ifdef OMP_FFTW3
-      use t_sph_OMP_FFTW_selector
+      use t_sph_OMP_FFTW
       use t_sph_field_OMP_FFTW
 #endif
       implicit none
@@ -75,10 +83,10 @@
         type(work_for_comp_FFTW) :: sph_comp_FFTW
 !
 #ifdef OMP_FFTW3
-!>      Structure for work area of OpenMP FFTW
-        type(works_sph_OMP_FFTW) :: WKs_FFTW
 !>        Structure to use FFTW with OpenMP
         type(work_for_OpenMP_FFTW) :: sph_OMP_FFTW
+!>        Structure to use FFTW with OpenMP
+        type(work_for_domain_OMP_FFTW) :: sph_domain_OMP_FFTW
 #endif
       end type works_sph_FFTW
 !
@@ -86,6 +94,66 @@
 !
       contains
 !
+! ------------------------------------------------------------------
+!
+      subroutine sel_finalize_prt_OMP_FFTW(iflag_sph_FFT, iflag_size,   &
+     &                                     WKs_FFTW, flag_FFT)
+!
+      use sph_prt_domain_FFTW
+!
+      integer(kind = kint), intent(in) :: iflag_sph_FFT, iflag_size
+!
+      type(works_sph_FFTW), intent(inout) :: WKs_FFTW
+      logical, intent(inout) :: flag_FFT
+!
+!
+      if(iflag_sph_FFT .eq. iflag_FFTW) then
+        call sel_finalize_sph_FFTW_smp(iflag_size, WKs_FFTW, flag_FFT)
+!
+#ifdef OMP_FFTW3
+      else if(iflag_sph_FFT .eq. iflag_OMP_FFTW) then
+        if(     (iflag_size .eq. iflag_once_fft)                        &
+     &     .or. (iflag_size .eq. iflag_domain_once)) then
+          if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
+          call finalize_sph_field_FFTW(WKs_FFTW%sph_fld_FFTW, flag_fft)
+        end if
+#endif
+      end if
+!
+      end subroutine sel_finalize_prt_OMP_FFTW
+!
+! ------------------------------------------------------------------
+!
+      subroutine sel_finalize_rtp_OMP_FFTW(iflag_sph_FFT, iflag_size,   &
+     &                                     WKs_FFTW, flag_FFT)
+!
+      integer(kind = kint), intent(in) :: iflag_sph_FFT, iflag_size
+!
+      type(works_sph_FFTW), intent(inout) :: WKs_FFTW
+      logical, intent(inout) :: flag_FFT
+!
+!
+      if(iflag_sph_FFT .eq. iflag_FFTW) then
+        call sel_finalize_sph_FFTW_smp(iflag_size, WKs_FFTW, flag_FFT)
+!
+#ifdef OMP_FFTW3
+      else if(iflag_sph_FFT .eq. iflag_OMP_FFTW) then
+        if(iflag_size .eq. iflag_once_fft) then
+          if(iflag_debug .gt. 0) write(*,*)                             &
+     &          'Finalize at once OpenMP FFTW'
+          call finalize_rtp_OMP_FFTW(WKs_FFTW%sph_OMP_FFTW, flag_fft)
+        else if(iflag_size .eq. iflag_domain_once) then
+          if(iflag_debug .eq. 0) write(*,*)                             &
+     &        'Finalize rtp OpenMP FFTW for domain'
+          call finalize_sph_domain_OMP_FFTW                             &
+     &       (WKs_FFTW%sph_domain_OMP_FFTW, flag_fft)
+        end if
+#endif
+      end if
+!
+      end subroutine sel_finalize_rtp_OMP_FFTW
+!
+! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
       subroutine sel_finalize_sph_FFTW_smp(iflag_size,                  &

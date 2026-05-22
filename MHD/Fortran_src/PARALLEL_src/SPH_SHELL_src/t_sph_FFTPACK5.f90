@@ -7,13 +7,12 @@
 !>@brief  Fourier transform using FFTPACK5
 !!
 !!@verbatim
-!!      subroutine init_sph_FFTPACK5(sph_rtp, comm_rtp,                 &
-!!     &                             ncomp_bwd, ncomp_fwd, fftpack_t)
+!!      subroutine init_sph_FFTPACK5(sph_rtp, ncomp_bwd, ncomp_fwd,     &
+!!     &                             fftpack_t)
 !!      subroutine finalize_sph_FFTPACK5(fftpack_t, flag_fft)
-!!      subroutine verify_sph_FFTPACK5(sph_rtp, comm_rtp,               &
-!!     &                               ncomp_bwd, ncomp_fwd, fftpack_t)
+!!      subroutine verify_sph_FFTPACK5(sph_rtp, ncomp_bwd, ncomp_fwd,   &
+!!     &                               fftpack_t)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!        type(sph_comm_tbl), intent(in) :: comm_rtp
 !!        type(work_for_fftpack), intent(inout) :: fftpack_t
 !!        logical, intent(inout) :: flag_fft
 !!@endverbatim
@@ -32,7 +31,6 @@
       use m_elapsed_labels_SPH_TRNS
 !
       use t_spheric_rtp_data
-      use t_sph_trans_comm_tbl
       use t_sph_comm_table_from_FFT
 !
       use calypso_mpi
@@ -68,11 +66,10 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_FFTPACK5(sph_rtp, comm_rtp,                   &
-     &                             ncomp_bwd, ncomp_fwd, fftpack_t)
+      subroutine init_sph_FFTPACK5(sph_rtp, ncomp_bwd, ncomp_fwd,       &
+     &                             fftpack_t)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_comm_tbl), intent(in) :: comm_rtp
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !
       type(work_for_fftpack), intent(inout) :: fftpack_t
@@ -109,11 +106,10 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_sph_FFTPACK5(sph_rtp, comm_rtp,                 &
-     &                               ncomp_bwd, ncomp_fwd, fftpack_t)
+      subroutine verify_sph_FFTPACK5(sph_rtp, ncomp_bwd, ncomp_fwd,     &
+     &                               fftpack_t)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_comm_tbl), intent(in) :: comm_rtp
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !
       type(work_for_fftpack), intent(inout) :: fftpack_t

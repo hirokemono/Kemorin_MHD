@@ -123,8 +123,7 @@
       logical, intent(inout) :: flag_fft
 !
 !
-      call init_sph_FFTPACK5(sph_rtp, comm_rtp,                         &
-     &                       ncomp_bwd, ncomp_fwd, fftpack_t)
+      call init_sph_FFTPACK5(sph_rtp, ncomp_bwd, ncomp_fwd, fftpack_t)
 !
       call alloc_comm_table_sph_FFT                                     &
      &   (comm_rtp%ntot_item_sr, fftpack_t%comm_sph_FFTPACK)
@@ -161,8 +160,8 @@
      &      fftpack_t%comm_sph_FFTPACK)
       end if
 !
-      call verify_sph_FFTPACK5(sph_rtp, comm_rtp,                       &
-     &                         ncomp_bwd, ncomp_fwd, fftpack_t)
+      call verify_sph_FFTPACK5(sph_rtp, ncomp_bwd, ncomp_fwd,           &
+     &                         fftpack_t)
       flag_fft = .TRUE.
 !
       end subroutine verify_rtp_FFTPACK5
