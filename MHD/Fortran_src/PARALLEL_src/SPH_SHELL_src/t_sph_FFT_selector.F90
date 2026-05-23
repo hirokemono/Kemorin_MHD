@@ -85,14 +85,6 @@
       use t_sph_trans_comm_tbl
 !
       use m_FFT_selector
-
-      use t_sph_FFTPACK_selector
-      use t_sph_ISPACK3_selector
-!
-      use t_sph_ISPACK_FFT
-      use t_sph_domain_ISPACK_FFT
-!
-      use t_sph_test_FFT
 !
 #ifdef FFTW3
       use t_sph_FFTW_selector
@@ -100,6 +92,12 @@
 #ifdef _AMD_ROCM_
       use t_sph_field_rocFFT
 #endif
+!
+      use t_sph_FFTPACK_selector
+      use t_sph_ISPACK3_selector
+      use t_sph_ISPACK0_selector
+!
+      use t_sph_test_FFT
 !
       implicit none
 !
@@ -112,11 +110,8 @@
         type(works_sph_FFTPACK) :: WKs_FFTPACK
 !>        Structure to use ISPACK3
         type(works_sph_ispack3) :: WKs_ISPACK3
-!
-!>        Structure to use ISPACK
-        type(work_for_ispack) :: sph_ISPACK
-!>        Structure to use ISPACK for domain
-        type(work_for_domain_ispack) :: sph_domain_ISPACK
+!>        Structure for work area of ISPACK
+        type(works_sph_ispack) :: WKs_ISPACK
 !
 !>        Structure to use FFT test
         type(work_for_test_FFT) :: sph_test_FFT
@@ -141,7 +136,6 @@
       subroutine init_sph_FFT_select(id_rank, iflag_FFT_in,             &
      &         sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
 !
-      use sph_ISPACK0_selector
       use sph_rtp_FFTPACK_selector
       use sph_prt_FFTPACK_selector
 !
@@ -198,15 +192,7 @@
       if(flag_fft) return
 #endif
 !
-      if(iflag_sph_FFT .eq. iflag_ISPACK3) then
-        call sel_init_sph_ISPACK3(id_rank, iflag_size,                  &
-     &     sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,                     &
-     &     WK_FFTs%WKs_ISPACK3, flag_FFT)
-      else if(iflag_sph_FFT .eq. iflag_ISPACK0) then
-        call sel_init_sph_ISPACK0(id_rank, iflag_size,                  &
-     &      sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,                    &
-     &      WK_FFTs%sph_ISPACK, WK_FFTs%sph_domain_ISPACK, flag_FFT)
-      else if(iflag_sph_FFT .eq. iflag_FFTPACK) then
+      if(iflag_sph_FFT .eq. iflag_FFTPACK) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           call sel_init_prt_FFTPACK(id_rank, iflag_size,                &
      &        sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,                  &
@@ -216,10 +202,17 @@
      &        sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,                  &
      &        WK_FFTs%WKs_FFTPACK, flag_FFT)
         end if
-      end if
-      if(flag_fft) return
 !
-      if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
+      else if(iflag_sph_FFT .eq. iflag_ISPACK3) then
+        call sel_init_sph_ISPACK3(id_rank, iflag_size,                  &
+     &     sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,                     &
+     &     WK_FFTs%WKs_ISPACK3, flag_FFT)
+      else if(iflag_sph_FFT .eq. iflag_ISPACK0) then
+        call sel_init_sph_ISPACK0(id_rank, iflag_size,                  &
+     &      sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,                    &
+     &      WK_FFTs%WKs_ISPACK, flag_FFT)
+!
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
         if(id_rank .eq. 0) write(*,*) 'Use Test FFT routine'
         call init_sph_test_FFT(sph_rtp%nidx_rtp,                        &
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_test_FFT, flag_fft)
@@ -234,8 +227,6 @@
 ! ------------------------------------------------------------------
 !
       subroutine finalize_sph_FFT_select(sph_rtp, WK_FFTs)
-!
-      use sph_ISPACK0_selector
 !
 #ifdef FFTW3
       use sph_prt_FFTW_selector
@@ -264,31 +255,29 @@
 !
 #ifdef FFTW3
       if(sph_rtp%istep_rtp(3) .eq. 1) then
-        call sel_finalize_prt_OMP_FFTW(iflag_sph_FFT, iflag_size,       &
-     &                                 WK_FFTs%WKs_FFTW, flag_FFT)
+        call sel_finalize_prt_FFTW(iflag_sph_FFT, iflag_size,           &
+     &                             WK_FFTs%WKs_FFTW, flag_FFT)
       else
-        call sel_finalize_rtp_OMP_FFTW(iflag_sph_FFT, iflag_size,       &
-     &                                 WK_FFTs%WKs_FFTW, flag_FFT)
+        call sel_finalize_rtp_FFTW(iflag_sph_FFT, iflag_size,           &
+     &                             WK_FFTs%WKs_FFTW, flag_FFT)
       end if
       if(flag_fft) return
 #endif
 !
-      if(iflag_sph_FFT .eq. iflag_ISPACK3) then
+      if(iflag_sph_FFT .eq. iflag_FFTPACK) then
+        call sel_finalize_sph_FFTPACK(iflag_size, WK_FFTs%WKs_FFTPACK,  &
+     &                                flag_FFT)
+      else if(iflag_sph_FFT .eq. iflag_ISPACK3) then
         call sel_finalize_sph_ISPACK3(iflag_size,                       &
      &                                WK_FFTs%WKs_ISPACK3, flag_FFT)
       else if(iflag_sph_FFT .eq. iflag_ISPACK0) then
         call sel_finalize_sph_ISPACK0(iflag_size,                       &
-     &      WK_FFTs%sph_ISPACK, WK_FFTs%sph_domain_ISPACK, flag_FFT)
-      else if(iflag_sph_FFT .eq. iflag_FFTPACK) then
-        call sel_finalize_sph_FFTPACK(iflag_size, WK_FFTs%WKs_FFTPACK,  &
-     &                                flag_FFT)
-      end if
-      if(flag_fft) return
+     &                                WK_FFTs%WKs_ISPACK, flag_FFT)
 !
-      if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize Test FFT'
         call finalize_sph_test_FFT(WK_FFTs%sph_test_FFT, flag_FFT)
-      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
+      else
         if(iflag_debug .gt. 0) write(*,*) 'Finalize single FFTPACK'
         call finalize_sph_single_FFTPACK5                               &
      &     (WK_FFTs%WKs_FFTPACK%sph_sgl_FFTPACK, flag_fft)
@@ -301,7 +290,6 @@
       subroutine verify_sph_FFT_select                                  &
      &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
 !
-      use sph_ISPACK0_selector
       use sph_rtp_FFTPACK_selector
       use sph_prt_FFTPACK_selector
 !
@@ -329,62 +317,52 @@
 !
       flag_fft = .FALSE.
 !
-      if(sph_rtp%istep_rtp(3) .eq. 1) then
 #ifdef _AMD_ROCM_
+      if(sph_rtp%istep_rtp(3) .eq. 1) then
         call sel_verify_prt_rocFFT(iflag_sph_FFT, iflag_size,           &
      &      sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,                    &
      &      WK_FFTs%sph_rocFFT, flag_FFT)
-        if(flag_fft) return
-#endif
-!
-#ifdef FFTW3
-        call sel_verify_prt_FFTW_smp(iflag_sph_FFT, iflag_size,         &
-     &      sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,                    &
-     &      WK_FFTs%WKs_FFTW, flag_fft)
-        if(flag_fft) return
-#endif
-!
-        if(iflag_sph_FFT .eq. iflag_FFTPACK) then
-          call sel_verify_prt_FFTPACK                                   &
-     &       (iflag_size, sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,      &
-     &        WK_FFTs%WKs_FFTPACK, flag_FFT)
-        end if
-        if(flag_fft) return
-!
       else
-#ifdef _AMD_ROCM_
         call sel_verify_rtp_rocFFT(iflag_sph_FFT, iflag_size,           &
      &      sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,                    &
      &      WK_FFTs%sph_rocFFT, flag_FFT)
-        if(flag_fft) return
+      end if
+      if(flag_fft) return
 #endif
 !
 #ifdef FFTW3
+      if(sph_rtp%istep_rtp(3) .eq. 1) then
+        call sel_verify_prt_FFTW_smp(iflag_sph_FFT, iflag_size,         &
+     &      sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,                    &
+     &      WK_FFTs%WKs_FFTW, flag_fft)
+      else
         call sel_verify_rtp_FFTW_smp(iflag_sph_FFT, iflag_size,         &
      &      sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,                    &
      &      WK_FFTs%WKs_FFTW, flag_fft)
-        if(flag_fft) return
+      end if
+      if(flag_fft) return
 #endif
 !
-        if(iflag_sph_FFT .eq. iflag_FFTPACK) then
+      if(iflag_sph_FFT .eq. iflag_FFTPACK) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call sel_verify_prt_FFTPACK                                   &
+     &       (iflag_size, sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,      &
+     &        WK_FFTs%WKs_FFTPACK, flag_FFT)
+        else
           call sel_verify_rtp_FFTPACK                                   &
      &       (iflag_size, sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,      &
      &        WK_FFTs%WKs_FFTPACK, flag_FFT)
         end if
-        if(flag_fft) return
-      end if
 !
-      if(iflag_sph_FFT .eq. iflag_ISPACK3) then
+      else if(iflag_sph_FFT .eq. iflag_ISPACK3) then
         call sel_verify_sph_ISPACK3(iflag_size, sph_rtp, comm_rtp,      &
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%WKs_ISPACK3, flag_FFT)
       else if(iflag_sph_FFT .eq. iflag_ISPACK0) then
         call sel_verify_sph_ISPACK0                                     &
      &     (iflag_size, sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd,        &
-     &      WK_FFTs%sph_ISPACK, WK_FFTs%sph_domain_ISPACK, flag_FFT)
-      end if
-      if(flag_fft) return
+     &      WK_FFTs%WKs_ISPACK, flag_FFT)
 !
-      if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
         if(iflag_debug .gt. 0) write(*,*) 'Use Test FFT routine'
         call verify_sph_test_FFT(sph_rtp%nidx_rtp,                      &
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_test_FFT, flag_fft)
@@ -403,7 +381,6 @@
      &                                  n_WS, v_rtp, WS, WK_FFTs)
 !
       use calypso_mpi
-      use sph_ISPACK0_selector
       use sph_ISPACK3_selector
       use sph_rtp_FFTPACK_selector
       use sph_prt_FFTPACK_selector
@@ -435,70 +412,59 @@
 !
       flag_fft = .FALSE.
 !
-      if(sph_rtp%istep_rtp(3) .eq. 1) then
 #ifdef _AMD_ROCM_
+      if(sph_rtp%istep_rtp(3) .eq. 1) then
         call sel_prt_fwd_rocFFT_to_send(iflag_sph_FFT, iflag_size,      &
      &      sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),      &
      &      WK_FFTs%sph_rocFFT, flag_FFT)
-        if(flag_fft) return
-#endif
-!
-#ifdef FFTW3
-        call sel_prt_fwd_FFTW_to_send(iflag_sph_FFT, iflag_size,        &
-     &      sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),      &
-     &      WK_FFTs%WKs_FFTW, flag_FFT)
-        if(flag_fft) return
-#endif
-!
-        if(iflag_sph_FFT .eq. iflag_FFTPACK) then
-          call sel_prt_fwd_FFTPACK_to_send(iflag_size,                  &
-     &        sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),    &
-     &        WK_FFTs%WKs_FFTPACK, flag_FFT)
-        end if
-        if(flag_fft) return
-!
-!
       else
-#ifdef _AMD_ROCM_
         call sel_rtp_fwd_rocFFT_to_send(iflag_sph_FFT, iflag_size,      &
      &      sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),      &
      &      WK_FFTs%sph_rocFFT, flag_FFT)
-        if(flag_fft) return
+      end if
+      if(flag_fft) return
 #endif
 !
 #ifdef FFTW3
+      if(sph_rtp%istep_rtp(3) .eq. 1) then
+        call sel_prt_fwd_FFTW_to_send(iflag_sph_FFT, iflag_size,        &
+     &      sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),      &
+     &      WK_FFTs%WKs_FFTW, flag_FFT)
+      else
         call sel_rtp_fwd_FFTW_to_send(iflag_sph_FFT, iflag_size,        &
      &      sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),      &
      &      WK_FFTs%WKs_FFTW, flag_FFT)
-        if(flag_fft) return
+      end if
+      if(flag_fft) return
 #endif
 !
-        if(iflag_sph_FFT .eq. iflag_FFTPACK) then
+      if(iflag_sph_FFT .eq. iflag_FFTPACK) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call sel_prt_fwd_FFTPACK_to_send(iflag_size,                  &
+     &        sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),    &
+     &        WK_FFTs%WKs_FFTPACK, flag_FFT)
+        else
           call sel_rtp_fwd_FFTPACK_to_send(iflag_size,                  &
      &        sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),    &
      &        WK_FFTs%WKs_FFTPACK, flag_FFT)
         end if
-        if(flag_fft) return
-      end if
 !
-      if(iflag_sph_FFT .eq. iflag_ISPACK3) then
+      else if(iflag_sph_FFT .eq. iflag_ISPACK3) then
         call sel_sph_fwd_ISPACK3_to_send(iflag_size,                    &
      &      sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),      &
      &      WK_FFTs%WKs_ISPACK3, flag_FFT)
       else if(iflag_sph_FFT .eq. iflag_ISPACK0) then
-        call sel_sph_fwd_ISPACK0_to_send(iflag_size, sph_rtp,           &
-     &      ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_ISPACK,     &
-     &      WK_FFTs%sph_domain_ISPACK, flag_FFT)
-      end if
-      if(flag_fft) return
+        call sel_sph_fwd_ISPACK0_to_send(iflag_size,                    &
+     &      sph_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),                &
+     &      WK_FFTs%WKs_ISPACK, flag_FFT)
 !
-!
-      if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
         call sph_test_fwd_FFT_to_send                                   &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
      &      comm_rtp%irev_sr, v_rtp(1,1), WS(1),                        &
      &      WK_FFTs%sph_test_FFT, flag_FFT)
+!
       else
         call sph_single_RFFTMF_to_send                                  &
      &     (sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),      &
@@ -512,7 +478,6 @@
       subroutine back_FFT_select_from_recv                              &
      &        (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, v_rtp, WK_FFTs)
 !
-      use sph_ISPACK0_selector
       use sph_ISPACK3_selector
       use sph_rtp_FFTPACK_selector
       use sph_prt_FFTPACK_selector
@@ -545,60 +510,51 @@
 !
       flag_fft = .FALSE.
 !
-      if(sph_rtp%istep_rtp(3) .eq. 1) then
 #ifdef _AMD_ROCM_
+      if(sph_rtp%istep_rtp(3) .eq. 1) then
         call sel_prt_bwd_rocFFT_from_recv(iflag_sph_FFT, iflag_size,    &
      &      sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),      &
      &      WK_FFTs%sph_rocFFT, flag_FFT)
-        if(flag_fft) return
-#endif
-!
-#ifdef FFTW3
-        call sel_prt_bwd_FFTW_from_recv(iflag_sph_FFT, iflag_size,      &
-     &      sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),      &
-     &      WK_FFTs%WKs_FFTW, flag_FFT)
-        if(flag_fft) return
-#endif
-!
-        if(iflag_sph_FFT .eq. iflag_FFTPACK) then
-          call sel_prt_bwd_FFTPACK_from_recv(iflag_size,                &
-     &        sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),    &
-     &        WK_FFTs%WKs_FFTPACK, flag_FFT)
-        end if
-        if(flag_fft) return
-!
-!
       else
-#ifdef _AMD_ROCM_
         call sel_rtp_bwd_rocFFT_from_recv(iflag_sph_FFT, iflag_size,    &
      &      sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),      &
      &      WK_FFTs%sph_rocFFT, flag_FFT)
-        if(flag_fft) return
+      end if
+      if(flag_fft) return
 #endif
 !
 #ifdef FFTW3
+      if(sph_rtp%istep_rtp(3) .eq. 1) then
+        call sel_prt_bwd_FFTW_from_recv(iflag_sph_FFT, iflag_size,      &
+     &      sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),      &
+     &      WK_FFTs%WKs_FFTW, flag_FFT)
+      else
         call sel_rtp_bwd_FFTW_from_recv(iflag_sph_FFT, iflag_size,      &
      &      sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),      &
      &      WK_FFTs%WKs_FFTW, flag_FFT)
-        if(flag_fft) return
+      end if
+      if(flag_fft) return
 #endif
-        if(iflag_sph_FFT .eq. iflag_FFTPACK) then
+!
+      if(iflag_sph_FFT .eq. iflag_FFTPACK) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call sel_prt_bwd_FFTPACK_from_recv(iflag_size,                &
+     &        sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),    &
+     &        WK_FFTs%WKs_FFTPACK, flag_FFT)
+        else
           call sel_rtp_bwd_FFTPACK_from_recv(iflag_size,                &
      &        sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),    &
      &        WK_FFTs%WKs_FFTPACK, flag_FFT)
         end if
-        if(flag_fft) return
-      end if
 !
-!
-      if(iflag_sph_FFT .eq. iflag_ISPACK3) then
+      else if(iflag_sph_FFT .eq. iflag_ISPACK3) then
         call sel_sph_bwd_ISPACK3_from_recv(iflag_size,                  &
      &      sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),      &
      &      WK_FFTs%WKs_ISPACK3, flag_FFT)
       else if(iflag_sph_FFT .eq. iflag_ISPACK0) then
         call sel_sph_bwd_ISPACK0_from_recv(iflag_size,                  &
      &      sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),      &
-     &      WK_FFTs%sph_ISPACK, WK_FFTs%sph_domain_ISPACK, flag_FFT)
+     &      WK_FFTs%WKs_ISPACK, flag_FFT)
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
         call sph_test_back_FFT_from_recv                                &

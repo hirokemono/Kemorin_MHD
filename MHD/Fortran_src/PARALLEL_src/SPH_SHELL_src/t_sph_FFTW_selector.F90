@@ -7,10 +7,10 @@
 !>@brief  Selector of Fourier transform
 !!
 !!@verbatim
-!!      subroutine sel_finalize_prt_OMP_FFTW(iflag_sph_FFT, iflag_size, &
-!!     &                                     WKs_FFTW, flag_FFT)
-!!      subroutine sel_finalize_rtp_OMP_FFTW(iflag_sph_FFT, iflag_size, &
-!!     &                                     WKs_FFTW, flag_FFT)
+!!      subroutine sel_finalize_prt_FFTW(iflag_sph_FFT, iflag_size,     &
+!!     &                                 WKs_FFTW, flag_FFT)
+!!      subroutine sel_finalize_rtp_FFTW(iflag_sph_FFT, iflag_size,     &
+!!     &                                 WKs_FFTW, flag_FFT)
 !!        integer(kind = kint), intent(in) :: iflag_sph_FFT, iflag_size
 !!        type(works_sph_FFTW), intent(inout) :: WKs_FFTW
 !!        logical, intent(inout) :: flag_FFT
@@ -96,8 +96,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine sel_finalize_prt_OMP_FFTW(iflag_sph_FFT, iflag_size,   &
-     &                                     WKs_FFTW, flag_FFT)
+      subroutine sel_finalize_prt_FFTW(iflag_sph_FFT, iflag_size,       &
+     &                                 WKs_FFTW, flag_FFT)
 !
       use sph_prt_domain_FFTW
 !
@@ -120,12 +120,12 @@
 #endif
       end if
 !
-      end subroutine sel_finalize_prt_OMP_FFTW
+      end subroutine sel_finalize_prt_FFTW
 !
 ! ------------------------------------------------------------------
 !
-      subroutine sel_finalize_rtp_OMP_FFTW(iflag_sph_FFT, iflag_size,   &
-     &                                     WKs_FFTW, flag_FFT)
+      subroutine sel_finalize_rtp_FFTW(iflag_sph_FFT, iflag_size,       &
+     &                                 WKs_FFTW, flag_FFT)
 !
       integer(kind = kint), intent(in) :: iflag_sph_FFT, iflag_size
 !
@@ -151,7 +151,7 @@
 #endif
       end if
 !
-      end subroutine sel_finalize_rtp_OMP_FFTW
+      end subroutine sel_finalize_rtp_FFTW
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
