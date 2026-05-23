@@ -18,11 +18,11 @@
 !!     &          ncomp, nvector, nscalar, irev_sr_rtm,                 &
 !!     &          n_WR, WR, symp, asmp)
 !!
-!!      subroutine cal_vr_rtm_vec_sym_matmul_big(nnod_rtm, nidx_rtm,    &
+!!      subroutine cal_v_rtm_sym_matmul_big_smp(nnod_rtm, nidx_rtm,     &
 !!     &          istep_rtm, nidx_rlm, asin_theta_1d_rtm,               &
 !!     &          kst, nkr, mp_rlm, mn_rlm, nl_rtm, symp_r, asmp_p,     &
 !!     &          asmp_r, symp_p, ncomp, nvector, irev_sr_rtm, n_WS, WS)
-!!      subroutine cal_vr_rtm_scl_sym_matmul_big                        &
+!!      subroutine cal_s_rtm_sym_matmul_big_smp                         &
 !!     &         (nnod_rtm, nidx_rtm, istep_rtm, nidx_rlm, kst, nkr,    &
 !!     &          mp_rlm, nl_rtm, symp, asmp, ncomp, nvector, nscalar,  &
 !!     &          irev_sr_rtm, n_WS, WS)
@@ -210,7 +210,7 @@
       nkrv = nkr * nvector
 !
 !$omp  parallel do collapse(2)                                          &
-!$omp$ private(lp_rtm,ln_rtm,wp_rtm,kk,kr_nd,k_rlm,nd,                  &
+!$omp& private(lp_rtm,ln_rtm,wp_rtm,kk,kr_nd,k_rlm,nd,                  &
 !$omp&         ip_rtpm,ip_rtnm,ipp_recv,ipn_recv)
       do lp_rtm = 1, nlo_rtm
         do kk = 1, nkr*nscalar
@@ -242,7 +242,7 @@
 !
 !   Equator (if necessary)
 !$omp  parallel do collapse(2)                                          &
-!$omp$ private(lp_rtm,wp_rtm,kk,kr_nd,k_rlm,nd,ip_rtpm,ipp_recv)
+!$omp& private(lp_rtm,wp_rtm,kk,kr_nd,k_rlm,nd,ip_rtpm,ipp_recv)
       do lp_rtm = nlo_rtm+1, nle_rtm
         do kk = 1, nkr*nscalar
           kr_nd = kk + kst*nscalar
@@ -268,7 +268,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_vr_rtm_vec_sym_matmul_big(nnod_rtm, nidx_rtm,      &
+      subroutine cal_v_rtm_sym_matmul_big_smp(nnod_rtm, nidx_rtm,       &
      &          istep_rtm, nidx_rlm, asin_theta_1d_rtm,                 &
      &          kst, nkr, mp_rlm, mn_rlm, nl_rtm, symp_r, asmp_p,       &
      &          asmp_r, symp_p, ncomp, nvector, irev_sr_rtm, n_WS, WS)
@@ -402,11 +402,11 @@
       end do
 !$omp end parallel do
 !
-      end subroutine cal_vr_rtm_vec_sym_matmul_big
+      end subroutine cal_v_rtm_sym_matmul_big_smp
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_vr_rtm_scl_sym_matmul_big                          &
+      subroutine cal_s_rtm_sym_matmul_big_smp                           &
      &         (nnod_rtm, nidx_rtm, istep_rtm, nidx_rlm, kst, nkr,      &
      &          mp_rlm, nl_rtm, symp, asmp, ncomp, nvector, nscalar,    &
      &          irev_sr_rtm, n_WS, WS)
@@ -484,7 +484,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine cal_vr_rtm_scl_sym_matmul_big
+      end subroutine cal_s_rtm_sym_matmul_big_smp
 !
 ! -----------------------------------------------------------------------
 !

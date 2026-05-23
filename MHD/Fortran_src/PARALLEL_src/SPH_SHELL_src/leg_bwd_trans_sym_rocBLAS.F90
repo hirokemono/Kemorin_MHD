@@ -68,8 +68,8 @@
      &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,    &
      &          n_WR, n_WS, WR, WS, WK_l_bsm, rocBLAS_WK)
 !
-      use set_sp_rlm_leg_matmul_big
-      use set_vr_rtm_leg_matmul_big
+      use set_s_rlm_l_matmul_big_smp
+      use set_v_rtm_lg_matmul_big_smp
       use rocBLAS_for_legendre_trans
 !
       integer(kind = kint), intent(in) :: iflag_matmul
@@ -111,14 +111,14 @@
      &          - idx_trns%lstack_even_rlm(mp_rlm)
 !
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+9)
-        call set_sp_rlm_vec_sym_matmul_big                              &
+        call set_sv_rlm_sym_matmul_big_smp                              &
      &     (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%istep_rlm,      &
      &      sph_rlm%idx_gl_1d_rlm_j, sph_rlm%ar_1d_rlm, leg%g_sph_rlm,  &
      &      izero, nkr, jst, n_jk_e, n_jk_o,                            &
      &      ncomp, nvector, comm_rlm%irev_sr, n_WR, WR,                 &
      &      WK_l_bsm%pol_e(1,1), WK_l_bsm%tor_e(1,1),                   &
      &      WK_l_bsm%pol_o(1,1), WK_l_bsm%tor_o(1,1))
-        call set_sp_rlm_scl_sym_matmul_big                              &
+        call set_sc_rlm_sym_matmul_big_smp                              &
      &     (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%istep_rlm,      &
      &      izero, nkr, jst, n_jk_e, n_jk_o,                            &
      &      ncomp, nvector, nscalar, comm_rlm%irev_sr, n_WR, WR,        &
@@ -147,14 +147,14 @@
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+11)
 !
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+12)
-        call cal_vr_rtm_vec_sym_matmul_big                              &
+        call cal_v_rtm_sym_matmul_big_smp                               &
      &     (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,      &
      &      sph_rlm%nidx_rlm, leg%asin_t_rtm, izero, nkr,               &
      &      mp_rlm, idx_trns%mn_rlm(mp_rlm), nl_rtm,                    &
      &      WK_l_bsm%symp_r(1,1), WK_l_bsm%asmp_p(1,1),                 &
      &      WK_l_bsm%asmp_r(1,1), WK_l_bsm%symp_p(1,1),                 &
      &      ncomp, nvector, comm_rtm%irev_sr, n_WS, WS)
-        call cal_vr_rtm_scl_sym_matmul_big                              &
+        call cal_s_rtm_sym_matmul_big_smp                               &
      &     (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,      &
      &      sph_rlm%nidx_rlm, izero, nkr, mp_rlm, nl_rtm,               &
      &      WK_l_bsm%symp_r(1,1), WK_l_bsm%asmp_r(1,1),                 &
