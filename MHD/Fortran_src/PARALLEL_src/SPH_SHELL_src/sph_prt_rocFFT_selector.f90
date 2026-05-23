@@ -48,7 +48,7 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sel_prt_bwd_rocFFT_to_send                           &
+!!      subroutine sel_prt_bwd_rocFFT_from_recv                         &
 !!     &         (iflag_sph_FFT, iflag_size, sph_rtp, comm_rtp,         &
 !!     &          ncomp_bwd, n_WR, WR, v_rtp, sph_rocFFT, flag_FFT)
 !!        integer(kind = kint), intent(in) :: iflag_sph_FFT, iflag_size
@@ -259,7 +259,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine sel_prt_bwd_rocFFT_to_send                             &
+      subroutine sel_prt_bwd_rocFFT_from_recv                           &
      &         (iflag_sph_FFT, iflag_size, sph_rtp, comm_rtp,           &
      &          ncomp_bwd, n_WR, WR, v_rtp, sph_rocFFT, flag_FFT)
 !
@@ -313,7 +313,7 @@
         end if
       end if
 !
-      end subroutine sel_prt_bwd_rocFFT_to_send
+      end subroutine sel_prt_bwd_rocFFT_from_recv
 !
 ! ------------------------------------------------------------------
 !
