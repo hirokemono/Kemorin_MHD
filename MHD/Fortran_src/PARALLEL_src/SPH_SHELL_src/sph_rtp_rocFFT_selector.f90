@@ -23,7 +23,7 @@
 !!   wrapper subroutine for initierize FFT for ISPACK
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sel_rtp_fwd_rocFFT_from_recv                         &
+!!      subroutine sel_rtp_fwd_rocFFT_to_send                           &
 !!     &         (iflag_sph_FFT, iflag_size, sph_rtp, comm_rtp,         &
 !!     &          ncomp_fwd, n_WS, v_rtp, WS, sph_rocFFT, flag_FFT)
 !!        integer(kind = kint), intent(in) :: iflag_sph_FFT, iflag_size
@@ -197,7 +197,7 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine sel_rtp_fwd_rocFFT_from_recv                           &
+      subroutine sel_rtp_fwd_rocFFT_to_send                             &
      &         (iflag_sph_FFT, iflag_size, sph_rtp, comm_rtp,           &
      &          ncomp_fwd, n_WS, v_rtp, WS, sph_rocFFT, flag_FFT)
 !
@@ -257,7 +257,7 @@
         end if
       end if
 !
-      end subroutine sel_rtp_fwd_rocFFT_from_recv
+      end subroutine sel_rtp_fwd_rocFFT_to_send
 !
 ! ------------------------------------------------------------------
 !
