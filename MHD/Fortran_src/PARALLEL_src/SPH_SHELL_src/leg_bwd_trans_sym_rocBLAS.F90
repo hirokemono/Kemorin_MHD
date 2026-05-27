@@ -114,14 +114,14 @@
         call set_sv_rlm_sym_matmul_big_smp                              &
      &     (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%istep_rlm,      &
      &      sph_rlm%idx_gl_1d_rlm_j, sph_rlm%ar_1d_rlm, leg%g_sph_rlm,  &
-     &      izero, nkr, jst, n_jk_e, n_jk_o,                            &
-     &      ncomp, nvector, comm_rlm%irev_sr, n_WR, WR,                 &
+     &      nkr, jst, n_jk_e, n_jk_o, ncomp, nvector,                   &
+     &      comm_rlm%irev_sr, n_WR, WR,                                 &
      &      WK_l_bsm%pol_e(1,1), WK_l_bsm%tor_e(1,1),                   &
      &      WK_l_bsm%pol_o(1,1), WK_l_bsm%tor_o(1,1))
         call set_sc_rlm_sym_matmul_big_smp                              &
      &     (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%istep_rlm,      &
-     &      izero, nkr, jst, n_jk_e, n_jk_o,                            &
-     &      ncomp, nvector, nscalar, comm_rlm%irev_sr, n_WR, WR,        &
+     &      nkr, jst, n_jk_e, n_jk_o, ncomp, nvector, nscalar,          &
+     &      comm_rlm%irev_sr, n_WR, WR,                                 &
      &      WK_l_bsm%pol_e(1,1), WK_l_bsm%pol_o(1,1))
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+9)
 !
@@ -149,14 +149,14 @@
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+12)
         call cal_v_rtm_sym_matmul_big_smp                               &
      &     (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,      &
-     &      sph_rlm%nidx_rlm, leg%asin_t_rtm, izero, nkr,               &
+     &      sph_rlm%nidx_rlm, leg%asin_t_rtm, nkr,                      &
      &      mp_rlm, idx_trns%mn_rlm(mp_rlm), nl_rtm,                    &
      &      WK_l_bsm%symp_r(1,1), WK_l_bsm%asmp_p(1,1),                 &
      &      WK_l_bsm%asmp_r(1,1), WK_l_bsm%symp_p(1,1),                 &
      &      ncomp, nvector, comm_rtm%irev_sr, n_WS, WS)
         call cal_s_rtm_sym_matmul_big_smp                               &
      &     (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,      &
-     &      sph_rlm%nidx_rlm, izero, nkr, mp_rlm, nl_rtm,               &
+     &      sph_rlm%nidx_rlm, nkr, mp_rlm, nl_rtm,                      &
      &      WK_l_bsm%symp_r(1,1), WK_l_bsm%asmp_r(1,1),                 &
      &      ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+12)

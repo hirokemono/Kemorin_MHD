@@ -56,8 +56,6 @@
 !
       implicit none
 !
-      real(kind = kreal), private :: st_elapsed
-      real(kind = kreal), private :: elaps(4)
       integer, external :: omp_get_max_threads
 !
 ! -----------------------------------------------------------------------
@@ -121,16 +119,15 @@
         call set_vec_rtm_sym_matmul_big_smp                             &
      &     (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,      &
      &      sph_rlm%nidx_rlm, leg%asin_t_rtm, leg%weight_rtm,           &
-     &      izero, nkr, mp_rlm, idx_trns%mn_rlm(mp_rlm),                &
+     &      nkr, mp_rlm, idx_trns%mn_rlm(mp_rlm),                       &
      &      nle_rtm, nlo_rtm, ncomp, nvector, comm_rtm%irev_sr,         &
      &      n_WR, WR, WK_l_bsm%symp_r(1,1), WK_l_bsm%asmp_p(1,1),       &
      &      WK_l_bsm%asmp_r(1,1), WK_l_bsm%symp_p(1,1) )
         call set_scl_rtm_sym_matmul_big_smp                             &
-     &     (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,      &
-     &      sph_rlm%nidx_rlm, leg%weight_rtm, izero, nkr,               &
-     &      mp_rlm, nle_rtm, nlo_rtm,                                   &
-     &      ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WR, WR,        &
-     &      WK_l_bsm%symp_r(1,1), WK_l_bsm%asmp_r(1,1))
+     &    (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,       &
+     &     sph_rlm%nidx_rlm, leg%weight_rtm, nkr, mp_rlm,               &
+     &     nle_rtm, nlo_rtm, ncomp, nvector, nscalar, comm_rtm%irev_sr, &
+     &     n_WR, WR, WK_l_bsm%symp_r(1,1), WK_l_bsm%asmp_r(1,1))
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+13)
 !
 !  even l-m
@@ -160,13 +157,13 @@
      &     (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,                         &
      &      sph_rlm%istep_rlm, sph_rlm%idx_gl_1d_rlm_j,                 &
      &      sph_rlm%radius_1d_rlm_r, leg%g_sph_rlm,                     &
-     &      izero, nkr, jst, n_jk_o, n_jk_e,                            &
+     &      nkr, jst, n_jk_o, n_jk_e,                                   &
      &      WK_l_bsm%pol_e(1,1), WK_l_bsm%pol_o(1,1),                   &
      &      WK_l_bsm%tor_e(1,1), WK_l_bsm%tor_o(1,1),                   &
      &      ncomp, nvector, comm_rlm%irev_sr, n_WS, WS)
         call cal_sc_rlm_sym_matmul_big_smp(sph_rlm%nnod_rlm,            &
-     &     sph_rlm%nidx_rlm, sph_rlm%istep_rlm, leg%g_sph_rlm,          &
-     &      izero, nkr, jst, n_jk_o, n_jk_e,                            &
+     &      sph_rlm%nidx_rlm, sph_rlm%istep_rlm, leg%g_sph_rlm,         &
+     &      nkr, jst, n_jk_o, n_jk_e,                                   &
      &      WK_l_bsm%pol_e(1,1), WK_l_bsm%pol_o(1,1),                   &
      &      ncomp, nvector, nscalar, comm_rlm%irev_sr, n_WS, WS)
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+17)
