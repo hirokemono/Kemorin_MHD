@@ -37,15 +37,6 @@
 !
       implicit none
 !
-!>      Character flag to use rocFFT
-      character(len = kchara), parameter :: hd_rocFFT =     'rocFFT'
-!>      Character flag to use real to real rocFFT
-      character(len = kchara), parameter, private                       &
-     &                              :: hd_rocFFT_r2r = 'rocFFT_real'
-!>      Character flag to use rocFFT with OpenMP
-      character(len = kchara), parameter                                &
-     &                              :: hd_OMP_rocFFT = 'OpenMP_rocFFT'
-!
 ! ----------------------------------------------------------------------
 !
       contains

@@ -54,22 +54,28 @@
 !>      Character flag to use test FFT
       character(len = kchara), parameter :: hd_FFT_TEST =  'TEST'
 !
-!>      Character flag to use FFTPACK
-      character(len = kchara), parameter :: hd_FFTPACK =  'FFTPACK'
-!>      Character flag to use FFTPACK5
-      character(len = kchara), parameter :: hd_FFTPACK5 = 'FFTPACK5'
 !
+!>      flag parts for FFTPACK
+      character(len = kchara), parameter :: FFTPACK_names(2)            &
+     &                               = (/'FFTPACK ', 'FFTPACK5'/)
 !>      Character flag to use FFTW3
-      character(len = kchara), parameter :: hd_FFTW =     'FFTW'
-!>      Character flag to use FFTW3
-      character(len = kchara), parameter :: hd_FFTW3 =    'FFTW3'
-!>      Character flag to use FFTW3 for each component
-      character(len = kchara), parameter :: hd_OMP_FFTW =  'OMP_FFTW'
-!>      Character flag to use FFTW3 for each component
-      character(len = kchara), parameter :: hd_OMP_FFTW3 = 'OMP_FFTW3'
-!
+      character(len = kchara), parameter                                &
+     &                          :: FFTW_names(2) = (/'FFTW ', 'FFTW3'/)
+!>      flag parts for ISPACK 0.97
+      character(len = kchara), parameter :: ISPACK_names(3)             &
+     &                      = (/'ISPACK   ', 'ISPACK1  ', 'ISPACK097'/)
 !>      Character flag to use ISPACK
-      character(len = kchara), parameter :: hd_ISPACK =   'ISPACK'
+      character(len = kchara), parameter :: hd_ISPACK3 =  'ISPACK3'
+!
+!>      Character flag to use rocFFT
+      character(len = kchara), parameter :: hd_rocFFT =     'rocFFT'
+!>      Character flag to use real to real rocFFT
+      character(len = kchara), parameter, private                       &
+     &                              :: hd_rocFFT_r2r = 'rocFFT_real'
+!>      Character flag to use rocFFT with OpenMP
+      character(len = kchara), parameter                                &
+     &                              :: hd_OMP_rocFFT = 'OpenMP_rocFFT'
+!
 !
 !>     Character lables for at once FFT:  'once'
       type(multi_flag_labels), save :: at_once_FFT_flags
@@ -80,72 +86,6 @@
       type(multi_flag_labels), save :: comp_FFT_flags
 !>     Character lables for single FFT:            'single',  'sgl'
       type(multi_flag_labels), save :: single_FFT_flags
-!
-!
-!
-!>      Character flag to use single FFTPACK5
-      character(len = kchara), parameter                                &
-     &                            :: hd_FFTPACK_S = 'FFTPACK_SINGLE'
-!>      Character flag to use FFTPACK5 for each component
-      character(len = kchara), parameter                                &
-     &                            :: hd_FFTPACK_C = 'FFTPACK_COMPONENT'
-!>      Character flag to use FFTPACK5 for each domain
-      character(len = kchara), parameter                                &
-     &                            :: hd_FFTPACK_D = 'FFTPACK_DOMAIN'
-!>      Character flag to use FFTPACK5 at once
-      character(len = kchara), parameter                                &
-     &                            :: hd_FFTPACK_O = 'FFTPACK_ONCE'
-!
-!>      Character flag to use FFTW3 for each component
-      character(len = kchara), parameter :: hd_FFTW_D =  'FFTW_DOMAIN'
-!>      Character flag to use FFTW3 for each component
-      character(len = kchara), parameter :: hd_FFTW3_D = 'fftw3_domain'
-!>      Character flag to use single transforms in FFTW3
-      character(len = kchara), parameter :: hd_FFTW_S =  'FFTW_SINGLE'
-!>      Character flag to use single transforms in FFTW3
-      character(len = kchara), parameter :: hd_FFTW3_S = 'fftw3_single'
-!>      Character flag to use FFTW3 for all components
-      character(len = kchara), parameter                                &
-     &                               :: hd_FFTW_C =   'FFTW_COMPONENT'
-!>      Character flag to use FFTW3 for all components
-      character(len = kchara), parameter                                &
-     &                               :: hd_FFTW3_C =  'fftw3_component'
-!>      Character flag to use FFTW3 for all components
-      character(len = kchara), parameter                                &
-     &                               :: hd_FFTW_O =   'FFTW_ONCE'
-!>      Character flag to use FFTW3 for all components
-      character(len = kchara), parameter                                &
-     &                               :: hd_FFTW3_O =  'FFTW3_ONCE'
-!
-!>      Character flag to use FFTW3 for each component
-      character(len = kchara), parameter                                &
-     &                           :: hd_OMP_FFTW_D =  'OMP_FFTW_DOMAIN'
-!>      Character flag to use FFTW3 for each component
-      character(len = kchara), parameter                                &
-     &                           :: hd_OMP_FFTW3_D = 'OMP_FFTW3_DOMAIN'
-!
-!>      Character flag to use ISPACK for domain
-      character(len = kchara), parameter                                &
-     &                               :: hd_ISPACK_D =  'ISPACK_DOMAIN'
-!>      Character flag to use ISPACK at once
-      character(len = kchara), parameter                                &
-     &                               :: hd_ISPACK_O =  'ISPACK_ONCE'
-!
-!>      Character flag to use ISPACK for domain
-      character(len = kchara), parameter                                &
-     &                           :: hd_ISPACK3_D =  'ISPACK3_DOMAIN'
-!>      Character flag to use ISPACK for component
-      character(len = kchara), parameter                                &
-     &                           :: hd_ISPACK3_C =  'ISPACK3_COMPONENT'
-!>      Character flag to use single ISPACK
-      character(len = kchara), parameter                                &
-     &                           :: hd_ISPACK3_S =  'ISPACK3_SINGLE'
-!>      Character flag to use ISPACK at once
-      character(len = kchara), parameter                                &
-     &                           :: hd_ISPACK3_O =  'ISPACK3_ONCE'
-!
-!
-!
 !
 !
 !!>      integer flag for undefined FFT routine
@@ -179,30 +119,8 @@
 !>      integer flag to use FFTPACK5
       integer(kind = kint), parameter :: iflag_domain_once =    4
 !
-!
-!>      integer flag to use FFTPACK5
-      integer(kind = kint), parameter :: iflag_FFTPACK_ONCE =        51
-!>      integer flag to use FFTPACK5
-      integer(kind = kint), parameter :: iflag_FFTPACK_SINGLE =      52
-!>      integer flag to use FFTPACK5
-      integer(kind = kint), parameter :: iflag_FFTPACK_COMPONENT =   53
-!>      integer flag to use FFTPACK5
-      integer(kind = kint), parameter :: iflag_FFTPACK_DOMAIN =      54
-!
-!>      integer flag to use FFTW3
-      integer(kind = kint), parameter :: iflag_FFTW_ONCE =          11
-!>      integer flag to use single transforms in FFTW3
-      integer(kind = kint), parameter :: iflag_FFTW_SINGLE =        12
-!
 !>      integer flag to use test FFT
       integer(kind = kint), parameter :: iflag_FFT_TEST =    99
-!
-!      private :: hd_FFTPACK
-!      private :: hd_FFTW, hd_FFTW3, hd_FFTW_S, hd_FFTW3_S
-!      private :: hd_FFTW_D, hd_FFTW3_D
-!      private :: hd_ISPACK, hd_ISPACK3, hd_FFT_TEST
-!      private :: hd_OMP_FFTW,  hd_OMP_FFTW_D
-!      private :: hd_OMP_FFTW3, hd_OMP_FFTW3_D
 !
 ! ------------------------------------------------------------------
 !

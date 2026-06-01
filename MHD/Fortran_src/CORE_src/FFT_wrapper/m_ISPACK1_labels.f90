@@ -33,10 +33,6 @@
 !
       implicit none
 !
-!>      flag parts for ISPACK 0.97
-      character(len = kchara), parameter, private :: ISPACK_names(3)    &
-     &                     = (/'ISPACK   ', 'ISPACK1  ', 'ISPACK097'/)
-!
 !>     Character lables for at once ISPACKv0.97 for transform
 !!        'ISPACK',          'ISPACK1',         'ISPACK097',
 !!        'ISPACK_once',     'ISPACK_at_once',  'ISPACK1_once', 

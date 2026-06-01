@@ -37,10 +37,6 @@
 !
       implicit none
 !
-!>      flag parts for FFTW3
-      character(len = kchara), parameter, private :: FFTW_names(2)      &
-     &                               = (/'FFTW ', 'FFTW3'/)
-!
 !>     Character lables for FFTW3:    'FFTW',    'FFTW3'
       type(multi_flag_labels), save :: FFTW_flags
 !

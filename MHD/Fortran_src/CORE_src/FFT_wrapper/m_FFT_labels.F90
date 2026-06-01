@@ -218,7 +218,6 @@
       call init_multi_flags_by_labels(itwo, single_FFT_names,           &
      &                                single_FFT_flags)
 !
-!
       end subroutine init_FFT_loop_mode_flags
 !
 ! ------------------------------------------------------------------
@@ -299,9 +298,9 @@
       call init_FFT_mode_flags()
 !
 #ifdef FFTW3
-      iflag = iflag_FFTW_SINGLE
+      iflag = iflag_FFTW + iflag_single_fft
 #else
-      iflag = iflag_FFTPACK_ONCE
+      iflag = iflag_FFTPACK + iflag_once_fft
 #endif
       if(iflag_ctl .eq. 0) then
         set_fft_library_ctl = iflag

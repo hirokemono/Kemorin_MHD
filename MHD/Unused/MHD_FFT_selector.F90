@@ -98,8 +98,12 @@
 !
       implicit none
 !
+!>      integer flag to use single transforms in FFTW3
+      integer(kind = kint), parameter :: iflag_FFTW_SINGLE =        12
 !>      integer flag to use FFTW3 for each component
       integer(kind = kint), parameter :: iflag_FFTW_DOMAIN =        14
+!>      integer flag to use FFTW3
+      integer(kind = kint), parameter :: iflag_FFTW_ONCE =          11
 !>      integer flag to use ISPACK Ver.0.93 at once
       integer(kind = kint), parameter :: iflag_ISPACK1_ONCE =       21
 !>      integer flag to use ISPACK Ver. 3.01

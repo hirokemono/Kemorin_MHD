@@ -215,7 +215,7 @@
 !
 !      call allocate_spectr_name
 !
-        call s_inverse_fft_4_plane(iflag_FFTPACK_ONCE,                  &
+        call s_inverse_fft_4_plane((iflag_FFTPACK + iflag_once_fft),    &
      &      npl_spec1, c_size1%nx_all, c_size1%ny_all, c_size1%nz_all,  &
      &      plane_fft_wk1%kx_max, plane_fft_wk1%ky_max,                 &
      &      plane_fft_wk1%iz_max, plane_fft_wk1%num_spectr,             &
