@@ -144,30 +144,30 @@
 !
       start = 0.0d0
       start = OMP_GET_WTIME()
-      if(iflag_FFT .eq. iflag_ISPACK1_ONCE) then
+      if     (iflag_FFT .eq. (iflag_ISPACK0 + iflag_once_fft)) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V0.93'
         call init_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
-      else if(iflag_FFT .eq. iflag_ISPACK1_SINGLE) then
+      else if(iflag_FFT .eq. (iflag_ISPACK0 + iflag_single_fft)) then
         call calypso_single_FTTRUI(Nsmp, Nstacksmp,                     &
-     &                            Nfft, WKS%WK_ISPACK1)
-      else if(iflag_FFT .eq. iflag_ISPACK3_ONCE) then
+     &                             Nfft, WKS%WK_ISPACK1)
+      else if(iflag_FFT .eq. (iflag_ISPACK3 + iflag_once_fft)) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1'
         call init_wk_ispack3_t(Nsmp, Nstacksmp,                         &
      &                         cast_long(Nfft), WKS%WK_ISPACK3)
-      else if(iflag_FFT .eq. iflag_ISPACK3_SINGLE) then
+      else if(iflag_FFT .eq. (iflag_ISPACK3 + iflag_single_fft)) then
         call calypso_single_FXRINI(Nsmp, Nstacksmp,                     &
      &                             cast_long(Nfft), WKS%WK_ISPACK3)
 
 
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
+      else if(iflag_FFT .eq. (iflag_FFTW + iflag_once_fft)) then
         if(id_rank .eq. 0) write(*,*) 'Use FFTW'
         call init_FFTW_mul_type(Nsmp, Nstacksmp, Nfft, WKS%WK_MUL_FFTW)
-      else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
+      else if(iflag_FFT .eq. (iflag_FFTW + iflag_single_fft)) then
         if(id_rank .eq. 0) write(*,*) 'Use single transform in FFTW'
         call init_FFTW_type(Nsmp, Nfft, WKS%WK_FFTW)
 #endif
-      else if(iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
+      else if(iflag_FFT .eq. (iflag_FFTPACK + iflag_single_fft)) then
         if(id_rank .eq. 0) write(*,*) 'Use FFTPACK'
         call calypso_single_RFFTMI(Nsmp, Nstacksmp,                     &
      &                             Nfft, WKS%WK_FFTPACK)
@@ -195,19 +195,19 @@
 !
       start = 0.0d0
       start = OMP_GET_WTIME()
-      if(     (iflag_FFT .eq. iflag_ISPACK1_ONCE)                       &
-     &   .or. (iflag_FFT .eq. iflag_ISPACK1_SINGLE)) then
+      if(     (iflag_FFT .eq. (iflag_ISPACK0 + iflag_once_fft))         &
+     &   .or. (iflag_FFT .eq. (iflag_ISPACK0 + iflag_single_fft))) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK V0.93'
         call finalize_wk_ispack_t(WKS%WK_ISPACK1)
-      else if((iflag_FFT .eq. iflag_ISPACK3_ONCE)                       &
-     &   .or. (iflag_FFT .eq. iflag_ISPACK3_SINGLE)) then
+      else if((iflag_FFT .eq. (iflag_ISPACK3 + iflag_once_fft))         &
+     &   .or. (iflag_FFT .eq. (iflag_ISPACK3 + iflag_single_fft))) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK V3.0.1'
         call finalize_wk_ispack3_t(WKS%WK_ISPACK3)
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
+      else if(iflag_FFT .eq. (iflag_FFTW + iflag_once_fft)) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
         call finalize_FFTW_mul_type(Nsmp, WKS%WK_MUL_FFTW)
-      else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
+      else if(iflag_FFT .eq. (iflag_FFTW + iflag_single_fft)) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize single FFTW'
         call finalize_FFTW_type(Nsmp, WKS%WK_FFTW)
 #endif
@@ -236,23 +236,23 @@
       type(working_FFTs), intent(inout) :: WKS
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK1_ONCE) then
+      if(iflag_FFT .eq. (iflag_ISPACK0 + iflag_once_fft)) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V0.93'
         call verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
-      else if(iflag_FFT .eq. iflag_ISPACK1_SINGLE) then
+      else if(iflag_FFT .eq. (iflag_ISPACK0 + iflag_single_fft)) then
         call verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
-      else if(iflag_FFT .eq. iflag_ISPACK3_ONCE) then
+      else if(iflag_FFT .eq. (iflag_ISPACK3 + iflag_once_fft)) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V3.0.1'
         call verify_wk_ispack3_t(Nsmp, Nstacksmp,                       &
      &                          cast_long(Nfft), WKS%WK_ISPACK3)
-      else if(iflag_FFT .eq. iflag_ISPACK3_SINGLE) then
+      else if(iflag_FFT .eq. (iflag_ISPACK3 + iflag_single_fft)) then
         if(iflag_debug .gt. 0) write(*,*) 'Use single ISPACK V3'
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
+      else if(iflag_FFT .eq. (iflag_FFTW + iflag_once_fft)) then
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTW'
         call verify_wk_FFTW_mul_type(Nsmp, Nstacksmp,                   &
      &      Nfft, WKS%WK_MUL_FFTW)
-      else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
+      else if(iflag_FFT .eq. (iflag_FFTW + iflag_single_fft)) then
         if(iflag_debug .gt. 0) write(*,*) 'Use single FFTW transforms'
         call verify_wk_FFTW_type(Nsmp, Nfft, WKS%WK_FFTW)
 #endif
@@ -289,29 +289,29 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK1_ONCE) then
+      if(iflag_FFT .eq. (iflag_ISPACK0 + iflag_once_fft)) then
         call FTTRUF_kemo_t(Nsmp, Nstacksmp, M, Nfft, X,                 &
      &      WKS%WK_ISPACK1, elapsed_fft, elapsed_cpy)
-      else if(iflag_FFT .eq. iflag_ISPACK1_SINGLE) then
+      else if(iflag_FFT .eq. (iflag_ISPACK0 + iflag_single_fft)) then
         call calypso_single_pout_FTTRUF(Nsmp, Nstacksmp, M, Nfft, X,    &
      &      WKS%WK_ISPACK1, elapsed_fft, elapsed_cpy)
-      else if(iflag_FFT .eq. iflag_ISPACK3_ONCE) then
+      else if(iflag_FFT .eq. (iflag_ISPACK3 + iflag_once_fft)) then
         call FXRTFA_kemo_t(Nsmp, Nstacksmp, cast_long(M),               &
      &                     cast_long(Nfft), X, WKS%WK_ISPACK3,          &
      &                     elapsed_fft, elapsed_cpy)
-      else if(iflag_FFT .eq. iflag_ISPACK3_SINGLE) then
+      else if(iflag_FFT .eq. (iflag_ISPACK3 + iflag_single_fft)) then
         call calypso_single_pout_FXRTFA(Nsmp, Nstacksmp, cast_long(M),  &
      &                              cast_long(Nfft), X, WKS%WK_ISPACK3, &
      &                              elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
+      else if(iflag_FFT .eq. (iflag_FFTW + iflag_once_fft)) then
         call calypso_multi_pout_fwd_FFTW3(Nsmp, Nstacksmp, M, Nfft, X,  &
      &      WKS%WK_MUL_FFTW, elapsed_fft, elapsed_cpy)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call FFTW_forward_type(Nsmp, Nstacksmp, M, Nfft, X,             &
      &      WKS%WK_FFTW, elapsed_fft, elapsed_cpy)
 #endif
-      else if(iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
+      else if(iflag_FFT .eq. (iflag_FFTPACK + iflag_single_fft)) then
         call calypso_single_pout_RFFTMF(Nsmp, Nstacksmp, M, Nfft, X,    &
      &      WKS%WK_FFTPACK, elapsed_fft, elapsed_cpy)
       else
@@ -346,30 +346,30 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK1_ONCE) then
+      if(iflag_FFT .eq. (iflag_ISPACK0 + iflag_once_fft)) then
         call FTTRUB_kemo_t(Nsmp, Nstacksmp, M, Nfft, X,                 &
      &       WKS%WK_ISPACK1, elapsed_fft, elapsed_cpy)
-      else if(iflag_FFT .eq. iflag_ISPACK1_SINGLE) then
+      else if(iflag_FFT .eq. iflag_ISPACK1_SINGLE + iflag_single_fft) then
         call calypso_single_pout_FTTRUB(Nsmp, Nstacksmp, M, Nfft, X,    &
      &      WKS%WK_ISPACK1, elapsed_fft, elapsed_cpy)
-      else if(iflag_FFT .eq. iflag_ISPACK3_ONCE) then
+      else if(iflag_FFT .eq. (iflag_ISPACK3 + iflag_once_fft)) then
         call FXRTBA_kemo_t(Nsmp, Nstacksmp, cast_long(M),               &
      &                     cast_long(Nfft), X, WKS%WK_ISPACK3,          &
      &                     elapsed_fft, elapsed_cpy)
-      else if(iflag_FFT .eq. iflag_ISPACK3_SINGLE) then
+      else if(iflag_FFT .eq. (iflag_ISPACK3 + iflag_single_fft)) then
         call calypso_single_pout_FXRTBA(Nsmp, Nstacksmp, cast_long(M),  &
      &                              cast_long(Nfft), X, WKS%WK_ISPACK3, &
      &                              elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
+      else if(iflag_FFT .eq. (iflag_FFTW + iflag_once_fft)) then
         call calypso_multi_pout_bwd_FFTW3(Nsmp, Nstacksmp, M, Nfft, X,  &
      &      WKS%WK_MUL_FFTW, elapsed_fft, elapsed_cpy)
-      else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
+      else if(iflag_FFT .eq. (iflag_FFTW + iflag_single_fft)) then
         call FFTW_backward_type(Nsmp, Nstacksmp, M,                     &
      &                          Nfft, X, WKS%WK_FFTW,                   &
      &                          elapsed_fft, elapsed_cpy)
 #endif
-      else if(iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
+      else if(iflag_FFT .eq. (iflag_FFTPACK + iflag_single_fft)) then
         call calypso_single_pout_RFFTMB(Nsmp, Nstacksmp, M, Nfft, X,    &
      &      WKS%WK_FFTPACK, elapsed_fft, elapsed_cpy)
       else
