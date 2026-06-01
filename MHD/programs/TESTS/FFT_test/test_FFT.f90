@@ -37,7 +37,8 @@
       write(*,*) '34: SINGLE ISPACK-3.01'
       read(*,*) iflag_FFT_t
 !
-      write(*,*) 'iflag_FFT_t', iflag_FFT_t, iflag_ISPACK3_SINGLE
+      write(*,*) 'iflag_FFT_t', iflag_FFT_t,                            &
+     &          iflag_ISPACK3, iflag_single_fft
       if(iflag_FFT_t .lt. 0) then
         call FFT_test_with_phi_in_data(iflag_FFT_t, n_loop,             &
      &                                 ft0, WK_FFTS)

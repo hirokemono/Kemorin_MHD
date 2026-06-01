@@ -44,7 +44,7 @@
       type(merged_mesh), save :: mgd_mesh_pm
       real(kind = kreal) :: elapsed_fft = 0.0d0, elapsed_cpy = 0.0d0
 !
-      integer(kind=kint ) :: istep
+      integer(kind=kint ) :: iflag, istep
       integer(kind=kint ) :: ist, ied, iint
 
 ! ==============================================
@@ -112,8 +112,8 @@
 !
 !  -------   Fourier Transform
 !
-       call s_cal_fft_for_horizontal                                    &
-     &    (iflag_ISPACK1_ONCE, plane_fft_wk1%kx_max,                    &
+       iflag = iflag_ISPACK0 + iflag_once_fft
+       call s_cal_fft_for_horizontal(iflag, plane_fft_wk1%kx_max,       &
      &     plane_fft_wk1%ky_max, plane_fft_wk1%iz_max,                  &
      &     plane_fft_wk1%num_spectr, plane_fft_wk1%num_io,              &
      &     plane_fft_wk1%num_fft, plane_fft_wk1%icomp_fft,              &

@@ -41,49 +41,49 @@
 #ifdef OMP_FFTW3
       integer(kind = kint), parameter :: num_test =   15
       integer(kind = kint), parameter :: list_test(num_test)            &
-     &        = (/iflag_FFTPACK_ONCE,                                   &
-     &            iflag_FFTPACK_COMPONENT,                              &
-     &            iflag_FFTPACK_DOMAIN,                                 &
-     &            iflag_FFTPACK_SINGLE,                                 &
-     &            iflag_FFTW_ONCE,                                      &
-     &            iflag_FFTW_SINGLE,                                    &
-     &            iflag_FFTW_COMPONENT,                                 &
-     &            iflag_FFTW_DOMAIN,                                    &
-     &            iflag_OMP_FFTW_ONCE,                                  &
-     &            iflag_OMP_FFTW_DOMAIN,                                &
-     &            iflag_ISPACK1_ONCE,                                   &
-     &            iflag_ISPACK3_ONCE,                                   &
-     &            iflag_ISPACK3_COMPONENT,                              &
-     &            iflag_ISPACK3_SINGLE,                                 &
-     &            iflag_ISPACK3_DOMAIN/)
+     &        = (/(iflag_FFTPACK +  iflag_once_fft),                    &
+     &            (iflag_FFTPACK +  iflag_component_once),              &
+     &            (iflag_FFTPACK +  iflag_domain_once),                 &
+     &            (iflag_FFTPACK +  iflag_single_fft),                  &
+     &            (iflag_FFTW +     iflag_once_fft),                    &
+     &            (iflag_FFTW +     iflag_single_fft),                  &
+     &            (iflag_FFTW +     iflag_component_once),              &
+     &            (iflag_FFTW +     iflag_domain_once),                 &
+     &            (iflag_OMP_FFTW + iflag_once_fft),                    &
+     &            (iflag_OMP_FFTW + iflag_domain_once),                 &
+     &            (iflag_ISPACK0 +  iflag_once_fft),                    &
+     &            (iflag_ISPACK3 +  iflag_once_fft),                    &
+     &            (iflag_ISPACK3 +  iflag_component_once),              &
+     &            (iflag_ISPACK3 +  iflag_single_fft),                  &
+     &            (iflag_ISPACK3 +  iflag_domain_once)/)
 #elif FFTW3
       integer(kind = kint), parameter :: num_test =   13
       integer(kind = kint), parameter :: list_test(num_test)            &
-     &        = (/iflag_FFTPACK_ONCE,                                   &
-     &            iflag_FFTPACK_COMPONENT,                              &
-     &            iflag_FFTPACK_DOMAIN,                                 &
-     &            iflag_FFTPACK_SINGLE,                                 &
-     &            iflag_FFTW_ONCE,                                      &
-     &            iflag_FFTW_SINGLE,                                    &
-     &            iflag_FFTW_COMPONENT,                                 &
-     &            iflag_FFTW_DOMAIN,                                    &
-     &            iflag_ISPACK1_ONCE,                                   &
-     &            iflag_ISPACK3_ONCE,                                   &
-     &            iflag_ISPACK3_COMPONENT,                              &
-     &            iflag_ISPACK3_SINGLE,                                 &
-     &            iflag_ISPACK3_DOMAIN/)
+     &        = (/(iflag_FFTPACK + iflag_once_fft),                     &
+     &            (iflag_FFTPACK + iflag_component_once),               &
+     &            (iflag_FFTPACK + iflag_domain_once),                  &
+     &            (iflag_FFTPACK + iflag_single_fft),                   &
+     &            (iflag_FFTW +    iflag_once_fft),                     &
+     &            (iflag_FFTW +    iflag_single_fft),                   &
+     &            (iflag_FFTW +    iflag_component_once),               &
+     &            (iflag_FFTW +    iflag_domain_once),                  &
+     &            (iflag_ISPACK0 + iflag_once_fft),                     &
+     &            (iflag_ISPACK3 + iflag_once_fft),                     &
+     &            (iflag_ISPACK3 + iflag_component_once),               &
+     &            (iflag_ISPACK3 + iflag_single_fft),                   &
+     &            (iflag_ISPACK3 + iflag_domain_once)/)
 #else
       integer(kind = kint), parameter :: num_test =   9
       integer(kind = kint), parameter :: list_test(num_test)            &
-     &        = (/iflag_FFTPACK_ONCE,                                   &
-     &            iflag_FFTPACK_COMPONENT,                              &
-     &            iflag_FFTPACK_DOMAIN,                                 &
-     &            iflag_FFTPACK_SINGLE,                                 &
-     &            iflag_ISPACK1_ONCE,                                   &
-     &            iflag_ISPACK3_ONCE,                                   &
-     &            iflag_ISPACK3_COMPONENT,                              &
-     &            iflag_ISPACK3_SINGLE,                                 &
-     &            iflag_ISPACK3_DOMAIN/)
+     &        = (/(iflag_FFTPACK + iflag_once_fft),                     &
+     &            (iflag_FFTPACK + iflag_component_once),               &
+     &            (iflag_FFTPACK + iflag_domain_once),                  &
+     &            (iflag_FFTPACK + iflag_single_fft),                   &
+     &            (iflag_ISPACK0 + iflag_once_fft),                     &
+     &            (iflag_ISPACK3 + iflag_once_fft),                     &
+     &            (iflag_ISPACK3 + iflag_component_once),               &
+     &            (iflag_ISPACK3 + iflag_single_fft),                   &
+     &            (iflag_ISPACK3 + iflag_domain_once)/)
 #endif
 !
       real(kind = kreal) :: etime_shortest = -1.0e10
@@ -146,12 +146,12 @@
       iflag_sph_FFT = iflag_FFT_MHD - iflag_size
 !
       iflag_res = iflag_FFT_MHD
-      if(iflag_FFT_MHD .eq. iflag_FFTW_COMPONENT) then
-        iflag_res = iflag_FFTW_SINGLE
-      else if(iflag_FFT_MHD .eq. iflag_FFTPACK_COMPONENT) then
-        iflag_res = iflag_FFTPACK_SINGLE
-      else if(iflag_FFT_MHD .eq. iflag_ISPACK3_COMPONENT) then
-        iflag_res = iflag_ISPACK3_SINGLE
+      if(iflag_size .eq. iflag_component_once) then
+        if(    (iflag_sph_FFT .eq. iflag_FFTW)                          &
+     &    .or. (iflag_sph_FFT .eq. iflag_FFTPACK)                       &
+     &    .or. (iflag_sph_FFT .eq. iflag_ISPACK3)) then
+          iflag_res = iflag_sph_FFT + iflag_single_fft
+        end if
 !
       else if(iflag_sph_FFT .eq. iflag_FFTW                             &
      &   .or. iflag_sph_FFT .eq. iflag_rocFFT                           &

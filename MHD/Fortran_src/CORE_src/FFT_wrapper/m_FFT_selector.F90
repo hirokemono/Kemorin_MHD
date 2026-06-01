@@ -193,29 +193,6 @@
       integer(kind = kint), parameter :: iflag_FFTW_ONCE =          11
 !>      integer flag to use single transforms in FFTW3
       integer(kind = kint), parameter :: iflag_FFTW_SINGLE =        12
-!>      integer flag to use single transforms in FFTW3
-      integer(kind = kint), parameter :: iflag_FFTW_COMPONENT =     13
-!>      integer flag to use FFTW3 for each component
-      integer(kind = kint), parameter :: iflag_FFTW_DOMAIN =        14
-!
-!>      integer flag to use FFTW3 with OpenMP at once
-      integer(kind = kint), parameter :: iflag_OMP_FFTW_ONCE =      41
-!>      integer flag to use FFTW3 with OpenMP for domain
-      integer(kind = kint), parameter :: iflag_OMP_FFTW_DOMAIN =    42
-!
-!>      integer flag to use ISPACK Ver.0.93 at once
-      integer(kind = kint), parameter :: iflag_ISPACK1_ONCE =       21
-!>      integer flag to use ISPACK Ver.0.93 for domain
-      integer(kind = kint), parameter :: iflag_ISPACK1_DOMAIN =     22
-!
-!>      integer flag to use ISPACK Ver. 3.01
-      integer(kind = kint), parameter :: iflag_ISPACK3_ONCE =       31
-!>      integer flag to use ISPACK Ver. 3.01 for domain
-      integer(kind = kint), parameter :: iflag_ISPACK3_DOMAIN =     32
-!>      integer flag to use ISPACK Ver. 3.01 for domain
-      integer(kind = kint), parameter :: iflag_ISPACK3_COMPONENT =  33
-!>      integer flag to use ISPACK Ver. 3.01 for domain
-      integer(kind = kint), parameter :: iflag_ISPACK3_SINGLE =     34
 !
 !>      integer flag to use test FFT
       integer(kind = kint), parameter :: iflag_FFT_TEST =    99
