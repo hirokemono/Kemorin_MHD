@@ -228,64 +228,59 @@
       integer(kind = kint), intent(in) :: i_mode
       real(kind = kreal), intent(in) :: etime_fft
 !
+      character(len = 20) :: size_label
       character(len = kchara) :: FFT_name, FFT_type, tmpchara
+      integer(kind = kint) :: iflag_FFT, iflag_size
 !
+!
+      iflag_size = mod(i_mode,10)
+      iflag_FFT =  i_mode - iflag_FFT
 !
       tmpchara = find_FFT_label(i_mode)
 !
-      if     (i_mode .eq. iflag_FFTPACK_ONCE) then
-        write(*,*) 'elapsed by FFTPACK at once               (',        &
-     &            trim(tmpchara), '): ', etime_fft
-      else if(i_mode .eq. iflag_FFTPACK_SINGLE) then
-        write(*,*) 'elapsed by single FFTPACK                (',        &
-     &            trim(tmpchara), '): ', etime_fft
-      else if(i_mode .eq. iflag_FFTPACK_COMPONENT) then
-        write(*,*) 'elapsed by FFTPACK for all component     (',        &
-     &            trim(tmpchara), '): ', etime_fft
-      else if(i_mode .eq. iflag_FFTPACK_DOMAIN) then
-        write(*,*) 'elapsed by FFTPACK for domain            (',        &
-     &            trim(tmpchara), '): ', etime_fft
-!
-      else if(i_mode .eq. iflag_FFTW_ONCE) then
-        write(*,*) 'elapsed by FFTW3 for at once             (',        &
-     &            trim(tmpchara), '): ', etime_fft
-      else if(i_mode .eq. iflag_FFTW_SINGLE) then
-        write(*,*) 'elapsed by single FFTW3                  (',        &
-     &            trim(tmpchara), '): ', etime_fft
-      else if(i_mode .eq. iflag_FFTW_COMPONENT) then
-        write(*,*) 'elapsed by FFTW3 for all component       (',        &
-     &            trim(tmpchara), '): ', etime_fft
-      else if(i_mode .eq. iflag_FFTW_DOMAIN) then
-        write(*,*) 'elapsed by FFTW3 for domain              (',        &
-     &            trim(tmpchara), '): ', etime_fft
-!
-      else if(i_mode .eq. iflag_OMP_FFTW_ONCE) then
-        write(*,*) 'elapsed by FFTW3 with OpoenMP at once    (',        &
-     &            trim(tmpchara), '): ', etime_fft
-      else if(i_mode .eq. iflag_OMP_FFTW_DOMAIN) then
-        write(*,*) 'elapsed by FFTW3 with OpoenMP for domain (',        &
-     &            trim(tmpchara), '): ', etime_fft
-!
-      else if(i_mode .eq. iflag_ISPACK1_ONCE) then
-        write(*,*) 'elapsed by ISPACK V0.93                  (',        &
-     &            trim(tmpchara), '): ', etime_fft
-      else if(i_mode .eq. iflag_ISPACK1_DOMAIN) then
-        write(*,*) 'elapsed by ISPACK V0.93 for domain       (',        &
-     &            trim(tmpchara), '): ', etime_fft
-!
-      else if(i_mode .eq. iflag_ISPACK3_ONCE) then
-        write(*,*) 'elapsed by ISPACK V3.0.1                 (',        &
-     &            trim(tmpchara), '): ', etime_fft
-      else if(i_mode .eq. iflag_ISPACK3_DOMAIN) then
-        write(*,*) 'elapsed by ISPACK V3.0.1 for domain      (',        &
-     &            trim(tmpchara), '): ', etime_fft
-      else if(i_mode .eq. iflag_ISPACK3_COMPONENT) then
-        write(*,*) 'elapsed by ISPACK V3.0.1 for component   (',        &
-     &            trim(tmpchara), '): ', etime_fft
-      else if(i_mode .eq. iflag_ISPACK3_SINGLE) then
-        write(*,*) 'elapsed by single ISPACK V3.0.1          (',        &
-     &            trim(tmpchara), '): ', etime_fft
+      if     (iflag_size .eq. iflag_once_fft) then
+        write(size_label,'(a20)') 'at once:            '
+      else if(iflag_size .eq. iflag_single_fft) then
+        write(size_label,'(a20)') 'for each transform: '
+      else if(iflag_size .eq. iflag_component_once) then
+        write(size_label,'(a20)') 'for all component:  '
+      else if(iflag_size .eq. iflag_domain_once) then
+        write(size_label,'(a20)') 'for each component: '
+      else
+        write(size_label,'(a20)') 'for unknown size:   '
       end if
+!
+      if     (iflag_FFT .eq. iflag_FFTPACK) then
+        write(*,'(a,a20)',ADVANCE='NO')                                 &
+     &         'Elapsed by FFTPACK ', size_label, '              ('
+      else if(iflag_FFT .eq. iflag_ISPACK0) then
+        write(*,'(a,a20)',ADVANCE='NO')                                 &
+     &         'Elapsed by ISPACK V0.93 ', size_label, '         ('
+      else if(iflag_FFT .eq. iflag_ISPACK3) then
+        write(*,'(a,a20)',ADVANCE='NO')                                 &
+     &         'Elapsed by ISPACK V3.0.1 ', size_label, '        ('
+      else if(iflag_FFT .eq. iflag_FFTW) then
+        write(*,'(a,a20)',ADVANCE='NO')                                 &
+     &         'Elapsed by FFTW Ver.3 ', size_label, '           ('
+      else if(iflag_FFT .eq. iflag_OMP_FFTW) then
+        write(*,'(a,a20)',ADVANCE='NO')                                 &
+     &         'Elapsed by FFTW V.3 with OpenMP ', size_label, ' ('
+      else if(iflag_FFT .eq. iflag_rocFFT) then
+        write(*,'(a,a20)',ADVANCE='NO')                                 &
+     &         'Elapsed by complex rocFFT ', size_label, '       ('
+      else if(iflag_FFT .eq. iflag_real_rocFFT) then
+        write(*,'(a,a20)',ADVANCE='NO')                                 &
+     &         'Elapsed by real rocFFT ', size_label, '          ('
+      else if(iflag_FFT .eq. iflag_OMP_rocFFT) then
+        write(*,'(a,a20)',ADVANCE='NO')                                 &
+     &         'Elapsed by rocFFT with OpenMP ', size_label, '   ('
+      else
+        write(*,'(a,a20)',ADVANCE='NO')                                 &
+     &         'Elapsed by unknown ', size_label, '              ('
+      end if
+!
+      write(*,'(2a)',ADVANCE='NO') trim(tmpchara), '): '
+      write(*,*) etime_fft
 !
       end subroutine write_elapsed_4_FFT
 !
