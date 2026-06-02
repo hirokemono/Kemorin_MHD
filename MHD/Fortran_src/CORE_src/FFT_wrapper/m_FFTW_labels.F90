@@ -37,6 +37,10 @@
 !
       implicit none
 !
+!>      Character flag to use FFTW3
+      character(len = kchara), parameter, private                       &
+     &                          :: FFTW_names(2) = (/'FFTW ', 'FFTW3'/)
+!
 !>     Character lables for FFTW3:    'FFTW',    'FFTW3'
       type(multi_flag_labels), save :: FFTW_flags
 !
@@ -58,7 +62,7 @@
 !!        'single_FFTW', 'single_FFTW3', 'sgl_FFTW',     'sgl_FFTW3' 
       type(multi_flag_labels), save :: single_FFTW_flags
 !
-      private :: init_FFTW_flags, check_FFTW_mode_flags
+      private :: check_FFTW_mode_flags
       private :: find_set_FFTW_flag, find_FFTW_label
 !
 ! ----------------------------------------------------------------------
@@ -135,18 +139,6 @@
       end subroutine check_all_FFTW_mode_flags
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine init_FFTW_flags(FFTW_flags)
-!
-      type(multi_flag_labels), intent(in) :: FFTW_flags
-!
-      call init_each_FFT_mode_flags(FFTW_flags,                         &
-     &    at_once_FFTW_flags, domain_FFTW_flags,                        &
-     &    comp_FFTW_flags, single_FFTW_flags)
-!
-      end subroutine init_FFTW_flags
-!
 ! ----------------------------------------------------------------------
 !
       integer(kind = kint) function find_set_FFTW_flag(label)

@@ -62,31 +62,12 @@
 !
       implicit none
 !
-!>      Character flag for at once transeform
+!>      Character flag to sarch fastest FFT
       character(len = kchara), parameter, private                       &
-     &                              :: hd_at_once =       'once'
-!>      Character flag for once transform over component
+     &               :: hd_search_fastest_fft = 'Search_fastest'
+!>      Character flag to use test FFT
       character(len = kchara), parameter, private                       &
-     &                              :: hd_once_for_comp = 'component'
-!>      Character flag for once transform over domain
-      character(len = kchara), parameter, private                       &
-     &                              :: hd_once_for_mode = 'domain'
-!>      Character flag single transform
-      character(len = kchara), parameter, private                       &
-     &                              :: hd_single_FFT =    'single'
-!
-!
-!>      flag parts for once FFT over component
-      character(len = kchara), parameter, private                       &
-     &          :: at_once_FFT_names(2) = (/'once   ', 'at_once'/)
-!>      flag parts for once FFT over component
-      character(len = kchara), parameter, private                       &
-     &          :: comps_FFT_names(2)  = (/'component', 'comps    '/)
-!>      flag parts for single FFT
-      character(len = kchara), parameter, private                       &
-     &          :: single_FFT_names(2)  = (/'single', 'sgl   '/)
-!
-      private :: init_FFT_loop_mode_flags
+     &               :: hd_FFT_TEST = 'TEST'
 !
 ! ----------------------------------------------------------------------
 !
@@ -95,8 +76,6 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_FFT_mode_flags()
-!
-      type(multi_flag_labels) :: rocFFT_base_flags
 !
 !
       if(allocated(at_once_FFT_flags%flags)) return
@@ -203,37 +182,18 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine init_FFT_loop_mode_flags()
-!
-      type(multi_flag_labels) :: tmp_flags
-      integer(kind = kint) :: icou
-!
-!
-      call init_multi_flags_by_labels(itwo, at_once_FFT_names,          &
-     &                                at_once_FFT_flags)
-      call init_multi_flags_by_one_label(hd_once_for_mode,              &
-     &                                   domain_FFT_flags)
-      call init_multi_flags_by_labels(itwo, comps_FFT_names,            &
-     &                                comp_FFT_flags)
-      call init_multi_flags_by_labels(itwo, single_FFT_names,           &
-     &                                single_FFT_flags)
-!
-      end subroutine init_FFT_loop_mode_flags
-!
-! ------------------------------------------------------------------
-!
       subroutine write_elapsed_4_FFT(i_mode, etime_fft)
 !
       integer(kind = kint), intent(in) :: i_mode
       real(kind = kreal), intent(in) :: etime_fft
 !
       character(len = 20) :: size_label
-      character(len = kchara) :: FFT_name, FFT_type, tmpchara
+      character(len = kchara) :: tmpchara
       integer(kind = kint) :: iflag_FFT, iflag_size
 !
 !
       iflag_size = mod(i_mode,10)
-      iflag_FFT =  i_mode - iflag_FFT
+      iflag_FFT =  i_mode - iflag_size
 !
       tmpchara = find_FFT_label(i_mode)
 !
@@ -283,6 +243,7 @@
 !
       end subroutine write_elapsed_4_FFT
 !
+! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
       integer(kind = kint) function                                     &

@@ -7,6 +7,15 @@
 !>@brief  Selector of Fourier transform
 !!
 !!@verbatim
+!!      subroutine init_FFT_loop_mode_flags()
+!!      subroutine init_each_FFT_mode_flags(base_FFT_flags,             &
+!!     &          at_once_TGT_flags, domain_TGT_flags,                  &
+!!     &          comp_TGT_flags, single_TGT_flags)
+!!        type(multi_flag_labels), intent(in) :: base_FFT_flags
+!!        type(multi_flag_labels), intent(inout) :: at_once_TGT_flags
+!!        type(multi_flag_labels), intent(inout) :: domain_TGT_flags
+!!        type(multi_flag_labels), intent(inout) :: comp_TGT_flags
+!!        type(multi_flag_labels), intent(inout) :: single_TGT_flags
 !!   ------------------------------------------------------------------
 !!      FFT Package lists
 !!
@@ -46,46 +55,29 @@
 !
       implicit none
 !
-
-!>      Character flag to sarch fastest FFT
-      character(len = kchara), parameter                                &
-     &          :: hd_search_fastest_fft = 'Search_fastest'
-!
-!>      Character flag to use test FFT
-      character(len = kchara), parameter :: hd_FFT_TEST =  'TEST'
-!
-!
-!>      flag parts for FFTPACK
-      character(len = kchara), parameter :: FFTPACK_names(2)            &
-     &                               = (/'FFTPACK ', 'FFTPACK5'/)
-!>      Character flag to use FFTW3
-      character(len = kchara), parameter                                &
-     &                          :: FFTW_names(2) = (/'FFTW ', 'FFTW3'/)
-!>      flag parts for ISPACK 0.97
-      character(len = kchara), parameter :: ISPACK_names(3)             &
-     &                      = (/'ISPACK   ', 'ISPACK1  ', 'ISPACK097'/)
-!>      Character flag to use ISPACK
-      character(len = kchara), parameter :: hd_ISPACK3 =  'ISPACK3'
-!
-!>      Character flag to use rocFFT
-      character(len = kchara), parameter :: hd_rocFFT =     'rocFFT'
-!>      Character flag to use real to real rocFFT
+!>      Character flag for once transform over domain
       character(len = kchara), parameter, private                       &
-     &                              :: hd_rocFFT_r2r = 'rocFFT_real'
-!>      Character flag to use rocFFT with OpenMP
-      character(len = kchara), parameter                                &
-     &                              :: hd_OMP_rocFFT = 'OpenMP_rocFFT'
+     &                              :: hd_once_for_mode = 'domain'
+!>      flag parts for once FFT over component
+      character(len = kchara), parameter, private                       &
+     &          :: at_once_FFT_names(2) = (/'once   ', 'at_once'/)
+!>      flag parts for once FFT over component
+      character(len = kchara), parameter, private                       &
+     &          :: comps_FFT_names(2)  = (/'component', 'comps    '/)
+!>      flag parts for single FFT
+      character(len = kchara), parameter, private                       &
+     &          :: single_FFT_names(2)  = (/'single', 'sgl   '/)
 !
 !
 !>     Character lables for at once FFT:  'once'
       type(multi_flag_labels), save :: at_once_FFT_flags
 !>     Character lables for once FFT over domain:  'domain'
-      type(multi_flag_labels), save :: domain_FFT_flags
+      type(multi_flag_labels), private, save :: domain_FFT_flags
 !>     Character lables for once FFT over component:
 !!                                     'component',  'comps'
-      type(multi_flag_labels), save :: comp_FFT_flags
+      type(multi_flag_labels), private, save :: comp_FFT_flags
 !>     Character lables for single FFT:            'single',  'sgl'
-      type(multi_flag_labels), save :: single_FFT_flags
+      type(multi_flag_labels), private, save :: single_FFT_flags
 !
 !
 !!>      integer flag for undefined FFT routine
@@ -128,6 +120,22 @@
 !
 ! ------------------------------------------------------------------
 !
+      subroutine init_FFT_loop_mode_flags()
+!
+!
+      call init_multi_flags_by_labels(itwo, at_once_FFT_names,          &
+     &                                at_once_FFT_flags)
+      call init_multi_flags_by_one_label(hd_once_for_mode,              &
+     &                                   domain_FFT_flags)
+      call init_multi_flags_by_labels(itwo, comps_FFT_names,            &
+     &                                comp_FFT_flags)
+      call init_multi_flags_by_labels(itwo, single_FFT_names,           &
+     &                                single_FFT_flags)
+!
+      end subroutine init_FFT_loop_mode_flags
+!
+! ------------------------------------------------------------------
+!
       subroutine init_each_FFT_mode_flags(base_FFT_flags,               &
      &          at_once_TGT_flags, domain_TGT_flags,                    &
      &          comp_TGT_flags, single_TGT_flags)
@@ -140,6 +148,7 @@
 !
       type(multi_flag_labels) :: tmp_flags
       integer(kind = kint) :: icou
+!
 !
       call alloc_multi_flags(izero, at_once_TGT_flags)
       call append_multi_flag_labels(base_FFT_flags, at_once_TGT_flags)

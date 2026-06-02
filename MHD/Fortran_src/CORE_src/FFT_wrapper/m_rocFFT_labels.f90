@@ -37,6 +37,10 @@
 !
       implicit none
 !
+!>      Character flag to use rocFFT
+      character(len = kchara), parameter, private                       &
+     &                                   :: hd_rocFFT =     'rocFFT'
+!
 ! ----------------------------------------------------------------------
 !
       contains

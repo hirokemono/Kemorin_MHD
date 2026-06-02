@@ -39,7 +39,7 @@
       implicit none
 !
 #ifdef FFTW3
-      integer(kind = kint), parameter :: num_test =   8
+      integer(kind = kint), parameter :: num_test =   7
       integer(kind = kint), parameter :: list_test(num_test)            &
      &        = (/(iflag_FFTPACK + iflag_once_fft),                     &
      &            (iflag_FFTPACK + iflag_component_once),               &
