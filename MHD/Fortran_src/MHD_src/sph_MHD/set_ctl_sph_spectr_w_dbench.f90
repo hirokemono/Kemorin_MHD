@@ -64,8 +64,7 @@
      &   (smonitor_ctl%dbench_ctl, MHD_BC, num_vspec, circle, bench)
 
       call alloc_volume_spectr_data(num_vspec, pwr)
-      call set_ctl_params_base_vol_spectr(smonitor_ctl,                 &
-     &                                    pwr%v_spectr(1))
+      call set_base_vol_spectr_prefix(smonitor_ctl,  pwr%v_spectr(1))
       call set_ctl_prm_base_vol_spectr(smonitor_ctl, pwr%v_spectr(1))
 !
       do inum = 1, smonitor_ctl%num_vspec_ctl
