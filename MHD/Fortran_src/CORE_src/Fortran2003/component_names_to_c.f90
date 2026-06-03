@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine set_primary_componnet_flag_f(input_flag_c) bind(c)
-!!        character(C_CHAR), intent(inout) :: input_flag(*)
+!!        type(C_ptr), value :: input_flag_c
 !!
 !!      type(c_ptr) function c_link_xyz_dir_list_to_ctl()               &
 !!     &           bind(C, NAME='c_link_xyz_dir_list_to_ctl')

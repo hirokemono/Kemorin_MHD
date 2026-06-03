@@ -15,6 +15,10 @@
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!        type(circle_parameters), intent(inout) :: circle
 !!        type(dynamobench_monitor), intent(inout) :: bench
+!!
+!!      subroutine check_full_sphere_vol_spectr(velo_BC, v_spectr)
+!!        type(boundary_condition_lists), intent(in) :: velo_BC
+!!        type(sph_vol_mean_squares), intent(inout) :: v_spectr
 !!@endverbatim
       module set_ctl_sph_spectr_w_dbench
 !
@@ -31,9 +35,6 @@
 !
       private :: cnt_ctl_params_v_spec_w_dbench
       private :: add_ctl_params_v_spec_w_dbench
-      private :: find_fill_to_centre_bc
-      private :: find_rotatable_inner_core_bc
-      private :: find_boudary_condition
 !
 ! -----------------------------------------------------------------------
 !
@@ -66,6 +67,8 @@
       call alloc_volume_spectr_data(num_vspec, pwr)
       call set_base_vol_spectr_prefix(smonitor_ctl,  pwr%v_spectr(1))
       call set_ctl_prm_base_vol_spectr(smonitor_ctl, pwr%v_spectr(1))
+      call check_full_sphere_vol_spectr(MHD_BC%velo_BC,                 &
+     &                                  pwr%v_spectr(1))
 !
       do inum = 1, smonitor_ctl%num_vspec_ctl
         call set_ctl_params_vol_sph_spectr(smonitor_ctl%v_pwr(inum),    &
@@ -85,6 +88,7 @@
       use t_sph_volume_mean_square
       use t_multi_flag_labels
       use m_file_format_labels
+      use find_sph_boudary_condition
       use skip_comment_f
 !
       type(dynamobench_control), intent(in) :: dbench_ctl
@@ -162,6 +166,7 @@
       use t_sph_volume_mean_square
       use t_multi_flag_labels
       use m_file_format_labels
+      use find_sph_boudary_condition
       use skip_comment_f
 !
       type(MHD_BC_lists), intent(in) :: MHD_BC
@@ -213,62 +218,23 @@
       end subroutine add_ctl_params_v_spec_w_dbench
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
 !
-      logical function find_fill_to_centre_bc(nod_bc_list, sf_bc_list)
+      subroutine check_full_sphere_vol_spectr(velo_BC, v_spectr)
 !
-      use m_boundary_condition_IDs
+      use t_sph_volume_mean_square
+      use find_sph_boudary_condition
 !
-      type(boundary_condition_list), intent(in) :: nod_bc_list
-      type(boundary_condition_list), intent(in) :: sf_bc_list
+      type(boundary_condition_lists), intent(in) :: velo_BC
+      type(sph_vol_mean_squares), intent(inout) :: v_spectr
 !
-      find_fill_to_centre_bc                                            &
-     &     = find_boudary_condition(iflag_sph_2_center, nod_bc_list)
-      if(find_fill_to_centre_bc) return
 !
-      find_fill_to_centre_bc                                            &
-     &     = find_boudary_condition(iflag_sph_2_center, sf_bc_list)
+      if(find_fill_to_centre_bc(velo_BC%nod_BC,                         &
+     &                          velo_BC%surf_BC)) then
+        v_spectr%kr_inside =  -1
+        v_spectr%kr_outside = -1
+      end if
 !
-      end function find_fill_to_centre_bc
-!
-! -----------------------------------------------------------------------
-!
-      logical function find_rotatable_inner_core_bc(velo_nod,           &
-     &                                              torque_surf)
-!
-      use m_boundary_condition_IDs
-!
-      type(boundary_condition_list), intent(in) :: velo_nod
-      type(boundary_condition_list), intent(in) :: torque_surf
-!
-      find_rotatable_inner_core_bc                                      &
-     &     = find_boudary_condition(iflag_rotatable_icore, velo_nod)
-      if(find_rotatable_inner_core_bc) return
-!
-      find_rotatable_inner_core_bc                                      &
-     &     = find_boudary_condition(iflag_rotatable_icore, torque_surf)
-!
-      end function find_rotatable_inner_core_bc
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      logical function find_boudary_condition(iflag_target, bc_list)
-!
-      integer(kind = kint), intent(in) :: iflag_target
-      type(boundary_condition_list), intent(in) :: bc_list
-!
-      integer(kind = kint) :: i
-!
-      find_boudary_condition = .FALSE.
-      do i = 1, bc_list%num_bc
-        if(bc_list%ibc_type(i) .eq. iflag_target) then
-          find_boudary_condition = .TRUE.
-          return
-        end if
-      end do
-!
-      end function find_boudary_condition
+      end subroutine check_full_sphere_vol_spectr
 !
 ! -----------------------------------------------------------------------
 !

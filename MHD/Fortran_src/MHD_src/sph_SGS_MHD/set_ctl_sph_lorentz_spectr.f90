@@ -9,8 +9,9 @@
 !!
 !!@verbatim
 !!      subroutine set_ctl_params_layer_lor_spec(lp_ctl, lor_spectr)
-!!      subroutine set_ctl_params_vol_lor_spectr(smonitor_ctl,          &
+!!      subroutine set_ctl_params_vol_lor_spectr(smonitor_ctl, MHD_BC,  &
 !!     &                                         lor_spectr)
+!!        type(MHD_BC_lists), intent(in) :: MHD_BC
 !!        type(sph_monitor_control), intent(in) :: smonitor_ctl
 !!        type(sph_mean_squares), intent(inout) :: lor_spectr
 !!@endverbatim
@@ -39,6 +40,7 @@
 !
       use m_file_format_labels
       use set_control_sph_spectr
+      use set_ctl_sph_spectr_w_dbench
       use skip_comment_f
 !
       type(layerd_spectr_control), intent(in) :: lp_ctl
@@ -58,17 +60,20 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ctl_params_vol_lor_spectr(smonitor_ctl,            &
+      subroutine set_ctl_params_vol_lor_spectr(smonitor_ctl, MHD_BC,    &
      &                                         lor_spectr)
 !
       use t_ctl_data_4_sph_monitor
       use t_pickup_sph_spectr_data
       use t_multi_flag_labels
+      use t_bc_data_list
 !
       use m_file_format_labels
       use set_control_sph_spectr
+      use set_ctl_sph_spectr_w_dbench
       use skip_comment_f
 !
+      type(MHD_BC_lists), intent(in) :: MHD_BC
       type(sph_monitor_control), intent(in) :: smonitor_ctl
       type(sph_mean_squares), intent(inout) :: lor_spectr
 !
@@ -92,6 +97,8 @@
      &                                      lor_spectr%v_spectr(icou))
         call set_ctl_prm_base_vol_spectr(smonitor_ctl,                  &
      &                                   lor_spectr%v_spectr(icou))
+        call check_full_sphere_vol_spectr(MHD_BC%velo_BC,               &
+     &                                    lor_spectr%v_spectr(icou))
       end if
 !
       do inum = 1, smonitor_ctl%num_vspec_ctl

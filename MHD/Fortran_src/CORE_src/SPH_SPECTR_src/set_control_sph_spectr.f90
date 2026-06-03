@@ -16,6 +16,7 @@
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!
 !!      subroutine set_base_vol_spectr_prefix(smonitor_ctl, v_spectr)
+!!      subroutine set_ctl_prm_base_vol_spectr(smonitor_ctl, v_spectr)
 !!        type(sph_monitor_control), intent(in) :: smonitor_ctl
 !!        type(sph_vol_mean_squares), intent(inout) :: v_spectr
 !!      subroutine set_ctl_params_vol_sph_spectr(v_pwr_ctl, v_spectr)
@@ -296,8 +297,6 @@
 !
       type(volume_spectr_control), intent(in) :: v_pwr_ctl
       type(sph_vol_mean_squares), intent(inout) :: v_spectr
-!
-      character(len = kchara) :: input_flag
 !
 !
       v_spectr%flag_skip_v_spec_l =  .FALSE.

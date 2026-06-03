@@ -53,10 +53,7 @@
 !
       if(v_pwr%r_inside .le. zero) then
         v_pwr%c_inter_in = one
-        if(sph_rj%iflag_rj_center .gt. 0) then
-          v_pwr%kr_inside(1:2) = 0
-          v_pwr%r_inside =   zero
-        else if(v_pwr%kr_inside(1) .eq. 0) then
+        if(v_pwr%kr_inside(1) .eq. 0) then
           v_pwr%kr_inside(1:2) = sph_params%nlayer_ICB
           v_pwr%r_inside = sph_params%radius_ICB
         else

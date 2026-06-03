@@ -231,7 +231,7 @@
       call set_ctl_params_layer_lor_spec(smonitor_ctl%lp_ctl,           &
      &                                   monitor%lor_spectr)
 !
-      call set_ctl_params_vol_lor_spectr(smonitor_ctl,                  &
+      call set_ctl_params_vol_lor_spectr(smonitor_ctl, MHD_BC,          &
      &                                   monitor%lor_spectr)
 !   Set parameters for dynamo benchmark output
 !
