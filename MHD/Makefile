@@ -33,6 +33,8 @@ FEM_UTIL_BINDIR= $(BUILDDIR)/FEM_utils
 MAKENAME=       $(MAKEDIR)/Makefile
 EXP_MAKEHEAD=   $(EXPDIR)/Makefile.header
 TESTS_MAKEHEAD= $(TESTDIR)/Makefile.header
+
+PYTHON_MAKEFILE= $(PYTHONDIR)/Makefile
 #
 #   AMD ROCm settings
 #
@@ -231,33 +233,49 @@ makemake:
 		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
 		depends
 	
-	echo '#' > $(TESTS_MAKEHEAD)
-	echo '# Makefile header for Kemorin Dynamo tests' >> $(TESTS_MAKEHEAD)
-	echo '#' >> $(TESTS_MAKEHEAD)
+	@echo '#' > $(TESTS_MAKEHEAD)
+	@echo '# -----------------------------------------------------------' >> $(TESTS_MAKEHEAD)
+	@echo '# Makefile header for Kemorin Dynamo tests' >> $(TESTS_MAKEHEAD)
+	@echo '# -----------------------------------------------------------' >> $(TESTS_MAKEHEAD)
+	@echo '#' >> $(TESTS_MAKEHEAD)
 	$(GMAKE) makeheaders \
 		MAKENAME="$(TESTS_MAKEHEAD)"
 	@echo '#' >> $(TESTS_MAKEHEAD)
 	@echo '# -----------------------------------------------------------' >> $(TESTS_MAKEHEAD)
-	@echo '# library lists' >> $(MAKENAME)
+	@echo '# library lists' >> $(TESTS_MAKEHEAD)
 	@echo '# -----------------------------------------------------------' >> $(TESTS_MAKEHEAD)
 	$(GMAKE) makelib_list \
 		MAKENAME="$(TESTS_MAKEHEAD)"
 	
-	echo '#' > $(EXP_MAKEHEAD)
-	echo '# Makefile header for Kemorin Dynamo example' >> $(EXP_MAKEHEAD)
-	echo '#' >> $(EXP_MAKEHEAD)
+	@echo '#' > $(EXP_MAKEHEAD)
+	@echo '# -----------------------------------------------------------' >> $(EXP_MAKEHEAD)
+	@echo '# Makefile header for Kemorin Dynamo example' >> $(EXP_MAKEHEAD)
+	@echo '# -----------------------------------------------------------' >> $(EXP_MAKEHEAD)
+	@echo '#' >> $(EXP_MAKEHEAD)
 	$(GMAKE) makeheaders \
 		MAKENAME="$(EXP_MAKEHEAD)"
 	@echo '#' >> $(EXP_MAKEHEAD)
-	@echo '# ----  library lists ----------------------------------------' >> $(EXP_MAKEHEAD)
+	@echo '# -----------------------------------------------------------' >> $(EXP_MAKEHEAD)
+	@echo '# library lists' >> $(EXP_MAKEHEAD)
+	@echo '# -----------------------------------------------------------' >> $(EXP_MAKEHEAD)
 	@echo '#' >> $(EXP_MAKEHEAD)
 	$(GMAKE) makelib_list \
 		MAKENAME="$(EXP_MAKEHEAD)"
 	
-	echo "# create Makefile"
-	echo '#' > $(MAKENAME)
-	echo '# Makefile for Kemorin Dynamo package' >> $(MAKENAME)
-	echo '#' >> $(MAKENAME)
+	@echo '#' > $(PYTHON_MAKEFILE)
+	@echo '# -----------------------------------------------------------' >> $(PYTHON_MAKEFILE)
+	@echo '# Makefile for Kemorin Dynamo shared library' >> $(PYTHON_MAKEFILE)
+	@echo '# -----------------------------------------------------------' >> $(PYTHON_MAKEFILE)
+	@echo '#' >> $(PYTHON_MAKEFILE)
+	$(GMAKE) makeheaders \
+		MAKENAME="$(PYTHON_MAKEFILE)"
+	
+	@echo "# create Makefile"
+	@echo '#' > $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '# Makefile for Kemorin Dynamo package' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
 	$(GMAKE) makeheaders 
 		MAKENAME="$(MAKENAME)"
 	

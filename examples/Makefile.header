@@ -1,5 +1,7 @@
 #
+# -----------------------------------------------------------
 # Makefile header for Kemorin Dynamo example
+# -----------------------------------------------------------
 #
 #
 SHELL = /bin/sh
@@ -116,7 +118,9 @@ SPH_TEST_BINDIR = /Users/matsui/src_kemo/bin/tests
 FEM_UTIL_BINDIR = /Users/matsui/src_kemo/bin/FEM_utils
 #
 #
-# ----  library lists ----------------------------------------
+# -----------------------------------------------------------
+# library lists
+# -----------------------------------------------------------
 #
 LIB_CALYPSO =      -lcalipso_kemo
 LIB_CALYPSO_FILE = libcalipso_kemo.a
