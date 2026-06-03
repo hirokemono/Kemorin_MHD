@@ -6,14 +6,13 @@ SHELL           = /bin/sh
 #
 #  directory of GeoFEM
 #
-HOMEDIR = /Users/matsui
-SRCDIR = $(HOMEDIR)/src_0323
-INSTDIR=   $(HOMEDIR)/local
+SRCDIR = /Users/matsui/git/Kemorin_MHD
+INSTDIR= /Users/matsui/local/gcc
 #
-MHDDIR = $(SRCDIR)/MHD
-MAKEDIR= $(SRCDIR)/work
-BUILDDIR= $(SRCDIR)/bin
-PYTHONDIR= $(MHDDIR)/pythons
+MHDDIR =   $(SRCDIR)/MHD
+MAKEDIR=   $(SRCDIR)/work
+BUILDDIR=  $(SRCDIR)/bin
+PYTHONDIR= $(SRCDIR)/pythons
 
 MAKE64DIR= $(SRCDIR)/work_64
 BUILD64DIR= $(SRCDIR)/bin_64
