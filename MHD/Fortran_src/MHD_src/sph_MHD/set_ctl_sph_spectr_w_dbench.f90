@@ -31,8 +31,9 @@
 !
       private :: cnt_ctl_params_v_spec_w_dbench
       private :: add_ctl_params_v_spec_w_dbench
-      private :: find_conductive_inner_core_bc
+      private :: find_fill_to_centre_bc
       private :: find_rotatable_inner_core_bc
+      private :: find_boudary_condition
 !
 ! -----------------------------------------------------------------------
 !
@@ -142,8 +143,8 @@
      &                     circle%gzip_flag_circle = .TRUE.
       end if
 !
-      if(find_conductive_inner_core_bc(MHD_BC%magne_BC%nod_BC,          &
-     &                                 MHD_BC%magne_BC%surf_BC)         &
+      if(find_fill_to_centre_bc(MHD_BC%magne_BC%nod_BC,                 &
+     &                          MHD_BC%magne_BC%surf_BC)                &
      &    .eqv. .FALSE.) return 
       if(find_rotatable_inner_core_bc(MHD_BC%velo_BC%nod_BC,            &
      &                                 MHD_BC%velo_BC%surf_BC)          &
@@ -181,11 +182,18 @@
 !
       v_spectr(bench%ipwr_ocore)%kr_inside =  -1
       v_spectr(bench%ipwr_ocore)%kr_outside = -1
-      v_spectr(bench%ipwr_ocore)%r_inside =   7.0d0 / 13.0d0
-      v_spectr(bench%ipwr_ocore)%r_outside = 20.0d0 / 13.0d0
 !
-      if(find_conductive_inner_core_bc(MHD_BC%magne_BC%nod_BC,          &
-     &                                 MHD_BC%magne_BC%surf_BC)         &
+      if(find_fill_to_centre_bc(MHD_BC%velo_BC%nod_BC,                  &
+     &                          MHD_BC%velo_BC%surf_BC)) then
+        v_spectr(bench%ipwr_ocore)%r_inside =  0.0d0
+        v_spectr(bench%ipwr_ocore)%r_outside = 1.0d0
+      else
+        v_spectr(bench%ipwr_ocore)%r_inside =   7.0d0 / 13.0d0
+        v_spectr(bench%ipwr_ocore)%r_outside = 20.0d0 / 13.0d0
+      end if
+!
+      if(find_fill_to_centre_bc(MHD_BC%magne_BC%nod_BC,                 &
+     &                          MHD_BC%magne_BC%surf_BC)                &
      &    .eqv. .FALSE.) return 
       if(find_rotatable_inner_core_bc(MHD_BC%velo_BC%nod_BC,            &
      &                                MHD_BC%velo_BC%surf_BC)           &
@@ -206,31 +214,23 @@
       end subroutine add_ctl_params_v_spec_w_dbench
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
-      logical function find_conductive_inner_core_bc(magne_nod,         &
-     &                                               magne_surf)
+      logical function find_fill_to_centre_bc(nod_bc_list, sf_bc_list)
 !
       use m_boundary_condition_IDs
 !
-      type(boundary_condition_list), intent(in) :: magne_nod
-      type(boundary_condition_list), intent(in) :: magne_surf
-      integer(kind = kint) :: i
+      type(boundary_condition_list), intent(in) :: nod_bc_list
+      type(boundary_condition_list), intent(in) :: sf_bc_list
 !
-      find_conductive_inner_core_bc = .FALSE.
-      do i = 1, magne_nod%num_bc
-        if(magne_nod%ibc_type(i) .eq. iflag_sph_2_center) then
-          find_conductive_inner_core_bc = .TRUE.
-          return
-        end if
-      end do
-      do i = 1, magne_surf%num_bc
-        if(magne_surf%ibc_type(i) .eq. iflag_sph_2_center) then
-          find_conductive_inner_core_bc = .TRUE.
-          return
-        end if
-      end do
+      find_fill_to_centre_bc                                            &
+     &     = find_boudary_condition(iflag_sph_2_center, nod_bc_list)
+      if(find_fill_to_centre_bc) return
 !
-      end function find_conductive_inner_core_bc
+      find_fill_to_centre_bc                                            &
+     &     = find_boudary_condition(iflag_sph_2_center, sf_bc_list)
+!
+      end function find_fill_to_centre_bc
 !
 ! -----------------------------------------------------------------------
 !
@@ -241,24 +241,35 @@
 !
       type(boundary_condition_list), intent(in) :: velo_nod
       type(boundary_condition_list), intent(in) :: torque_surf
-      integer(kind = kint) :: i
 !
-      find_rotatable_inner_core_bc = .FALSE.
-      do i = 1, velo_nod%num_bc
-        if(velo_nod%ibc_type(i) .eq. iflag_rotatable_icore) then
-          find_rotatable_inner_core_bc = .TRUE.
-          return
-        end if
-      end do
+      find_rotatable_inner_core_bc                                      &
+     &     = find_boudary_condition(iflag_rotatable_icore, velo_nod)
+      if(find_rotatable_inner_core_bc) return
 !
-      do i = 1, torque_surf%num_bc
-        if(torque_surf%ibc_type(i) .eq. iflag_rotatable_icore) then
-          find_rotatable_inner_core_bc = .TRUE.
-          return
-        end if
-      end do
+      find_rotatable_inner_core_bc                                      &
+     &     = find_boudary_condition(iflag_rotatable_icore, torque_surf)
 !
       end function find_rotatable_inner_core_bc
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      logical function find_boudary_condition(iflag_target, bc_list)
+!
+      integer(kind = kint), intent(in) :: iflag_target
+      type(boundary_condition_list), intent(in) :: bc_list
+!
+      integer(kind = kint) :: i
+!
+      find_boudary_condition = .FALSE.
+      do i = 1, bc_list%num_bc
+        if(bc_list%ibc_type(i) .eq. iflag_target) then
+          find_boudary_condition = .TRUE.
+          return
+        end if
+      end do
+!
+      end function find_boudary_condition
 !
 ! -----------------------------------------------------------------------
 !
