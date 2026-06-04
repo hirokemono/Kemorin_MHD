@@ -238,37 +238,25 @@ makemake:
 	@echo '# Makefile header for Kemorin Dynamo tests' >> $(TESTS_MAKEHEAD)
 	@echo '# -----------------------------------------------------------' >> $(TESTS_MAKEHEAD)
 	@echo '#' >> $(TESTS_MAKEHEAD)
-	$(GMAKE) makeheaders \
-		MAKENAME="$(TESTS_MAKEHEAD)"
+	$(GMAKE) makeheaders  MAKENAME="$(TESTS_MAKEHEAD)"
 	@echo '#' >> $(TESTS_MAKEHEAD)
-	@echo '# -----------------------------------------------------------' >> $(TESTS_MAKEHEAD)
-	@echo '# library lists' >> $(TESTS_MAKEHEAD)
-	@echo '# -----------------------------------------------------------' >> $(TESTS_MAKEHEAD)
-	$(GMAKE) makelib_list \
-		MAKENAME="$(TESTS_MAKEHEAD)"
+	$(GMAKE) makelib_list MAKENAME="$(TESTS_MAKEHEAD)"
 	
 	@echo '#' > $(EXP_MAKEHEAD)
 	@echo '# -----------------------------------------------------------' >> $(EXP_MAKEHEAD)
 	@echo '# Makefile header for Kemorin Dynamo example' >> $(EXP_MAKEHEAD)
 	@echo '# -----------------------------------------------------------' >> $(EXP_MAKEHEAD)
 	@echo '#' >> $(EXP_MAKEHEAD)
-	$(GMAKE) makeheaders \
-		MAKENAME="$(EXP_MAKEHEAD)"
+	$(GMAKE) makeheaders  MAKENAME="$(EXP_MAKEHEAD)"
 	@echo '#' >> $(EXP_MAKEHEAD)
-	@echo '# -----------------------------------------------------------' >> $(EXP_MAKEHEAD)
-	@echo '# library lists' >> $(EXP_MAKEHEAD)
-	@echo '# -----------------------------------------------------------' >> $(EXP_MAKEHEAD)
-	@echo '#' >> $(EXP_MAKEHEAD)
-	$(GMAKE) makelib_list \
-		MAKENAME="$(EXP_MAKEHEAD)"
+	$(GMAKE) makelib_list MAKENAME="$(EXP_MAKEHEAD)"
 	
 	@echo '#' > $(PYTHON_MAKEFILE)
 	@echo '# -----------------------------------------------------------' >> $(PYTHON_MAKEFILE)
 	@echo '# Makefile for Kemorin Dynamo shared library' >> $(PYTHON_MAKEFILE)
 	@echo '# -----------------------------------------------------------' >> $(PYTHON_MAKEFILE)
 	@echo '#' >> $(PYTHON_MAKEFILE)
-	$(GMAKE) makeheaders \
-		MAKENAME="$(PYTHON_MAKEFILE)"
+	$(GMAKE) makeheaders  MAKENAME="$(PYTHON_MAKEFILE)"
 	
 	@echo "# create Makefile"
 	@echo '#' > $(MAKENAME)
@@ -276,8 +264,7 @@ makemake:
 	@echo '# Makefile for Kemorin Dynamo package' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	$(GMAKE) makeheaders 
-		MAKENAME="$(MAKENAME)"
+	$(GMAKE) makeheaders MAKENAME="$(MAKENAME)"
 	
 	@echo 'create sub directory list...'
 	@for dir in $(SUBDIRS) ; do \
@@ -295,26 +282,13 @@ makemake:
 		 ) \
 	done
 	@echo '#' >> $(MAKENAME)
-	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
-	@echo '# target lists ' >> $(MAKENAME)
-	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	$(GMAKE) maketarget_list MAKENAME="$(MAKENAME)"
 	@echo '#' >> $(MAKENAME)
-	$(GMAKE) maketarget_list 
-		MAKENAME="$(MAKENAME)"
-	@echo '#' >> $(MAKENAME)
-	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
-	@echo '# library lists' >> $(MAKENAME)
-	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
-	$(GMAKE) makelib_list \
-		MAKENAME="$(MAKENAME)"
-	@echo '#' >> $(MAKENAME)
+	$(GMAKE) makelib_list MAKENAME="$(MAKENAME)"
 	@echo '#' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '# objects list' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo 'create object module list...'
 	@for dir in $(SUBDIRS) ; do \
@@ -510,6 +484,10 @@ makeheaders:
 	@echo '#' >> $(MAKENAME)
 
 maketarget_list:
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '# target lists ' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
 	@echo 'PROGRAMS= parallels utilities' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo 'ifdef OPENGL_LIBS' >> $(MAKENAME)
@@ -542,6 +520,9 @@ maketarget_list:
 	done
 
 makelib_list:
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '# library lists' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@for dir in  $(SUBDIRS) ; do \
 		( \
 		echo 'generate library list for ' $$dir ; \
