@@ -238,7 +238,9 @@ makemake:
 	@echo '# Makefile header for Kemorin Dynamo tests' >> $(TESTS_MAKEHEAD)
 	@echo '# -----------------------------------------------------------' >> $(TESTS_MAKEHEAD)
 	@echo '#' >> $(TESTS_MAKEHEAD)
-	$(GMAKE) makeheaders  MAKENAME="$(TESTS_MAKEHEAD)"
+	$(GMAKE) makeheaders       \
+		MAKEDIR="$(MAKEDIR)"   \
+		MAKENAME="$(TESTS_MAKEHEAD)"
 	@echo '#' >> $(TESTS_MAKEHEAD)
 	$(GMAKE) makelib_list MAKENAME="$(TESTS_MAKEHEAD)"
 	
@@ -247,7 +249,9 @@ makemake:
 	@echo '# Makefile header for Kemorin Dynamo example' >> $(EXP_MAKEHEAD)
 	@echo '# -----------------------------------------------------------' >> $(EXP_MAKEHEAD)
 	@echo '#' >> $(EXP_MAKEHEAD)
-	$(GMAKE) makeheaders  MAKENAME="$(EXP_MAKEHEAD)"
+	$(GMAKE) makeheaders       \
+		MAKEDIR="$(MAKEDIR)"   \
+		MAKENAME="$(EXP_MAKEHEAD)"
 	@echo '#' >> $(EXP_MAKEHEAD)
 	$(GMAKE) makelib_list MAKENAME="$(EXP_MAKEHEAD)"
 	
@@ -256,7 +260,9 @@ makemake:
 	@echo '# Makefile for Kemorin Dynamo shared library' >> $(PYTHON_MAKEFILE)
 	@echo '# -----------------------------------------------------------' >> $(PYTHON_MAKEFILE)
 	@echo '#' >> $(PYTHON_MAKEFILE)
-	$(GMAKE) makeheaders  MAKENAME="$(PYTHON_MAKEFILE)"
+	$(GMAKE) makeheaders       \
+		MAKEDIR="$(PYTHONDIR)" \
+		MAKENAME="$(PYTHON_MAKEFILE)"
 	
 	@echo "# create Makefile"
 	@echo '#' > $(MAKENAME)
@@ -264,7 +270,9 @@ makemake:
 	@echo '# Makefile for Kemorin Dynamo package' >> $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	$(GMAKE) makeheaders MAKENAME="$(MAKENAME)"
+	$(GMAKE) makeheaders       \
+		MAKEDIR="$(MAKEDIR)"   \
+		MAKENAME="$(MAKENAME)"
 	
 	@echo 'create sub directory list...'
 	@for dir in $(SUBDIRS) ; do \
