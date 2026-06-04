@@ -86,8 +86,8 @@ External_libs \
 programs
 
 
-F_INCLUDE = -I. -I$(MAKEDIR)
-C_INCLUDE = -I. -I$(MAKEDIR)
+F_INCLUDE = -I. -I$$(MAKEDIR)
+C_INCLUDE = -I. -I$$(MAKEDIR)
 
 CPP_FLAGS =
 C_INCLUDE += -I$(MHDDIR)/C_src/CORE_C
@@ -503,9 +503,9 @@ makeheaders:
 	@echo EXPDIR=      $(EXPDIR)    >> $(MAKENAME)
 	@echo TESTDIR=     $(TESTDIR)   >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@echo SPH_UTIL_BINDIR =   $(SPH_UTIL_BINDIR)  >> $(MAKENAME)
-	@echo SPH_TEST_BINDIR =   $(SPH_TEST_BINDIR)  >> $(MAKENAME)
-	@echo FEM_UTIL_BINDIR =   $(FEM_UTIL_BINDIR)  >> $(MAKENAME)
+	@echo SPH_UTIL_BINDIR = '$$(BUILDDIR)/utilities'  >> $(MAKENAME)
+	@echo SPH_TEST_BINDIR = '$$(BUILDDIR)/tests'      >> $(MAKENAME)
+	@echo FEM_UTIL_BINDIR = '$$(BUILDDIR)/FEM_utils'  >> $(MAKENAME)
 	>> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 

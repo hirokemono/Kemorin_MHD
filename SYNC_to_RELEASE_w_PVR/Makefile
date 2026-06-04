@@ -40,8 +40,8 @@ programs
 
 
 
-F_INCLUDE = -I. -I$(MAKEDIR)
-C_INCLUDE = -I. -I$(MAKEDIR)
+F_INCLUDE = -I. -I$$(MAKEDIR)
+C_INCLUDE = -I. -I$$(MAKEDIR)
 
 CPP_FLAGS =
 
