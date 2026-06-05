@@ -26,7 +26,6 @@ MPIRUN=mpirun
 SHAREDLIB_FLAG = --enable-shared
 F90OPTFLAGS =  -fPIC -O3 -Wall -g -fopenmp  $(F_INCLUDE)
 F90CPPFLAGS =  -DPNG_OUTPUT -DZLIB_IO -DFFTW3 -DBLAS -DHDF5_IO -DGLFW3 -DFFMPEG
-F90DLLFLAGS = -fPIC $(F90OPTFLAGS)
 OPTFLAGS =  -fPIC -O3 -Wall -g  -D__APPLE__
 CXXFLAGS =  -D__APPLE__
 #
@@ -189,7 +188,7 @@ LIB_MT_STREAM_FILE = libmtstream_f-1.11.a
 LIB_PYTHONS= \
 -L$(PYTHONDIR) -lcalypso_to_pythons
 LIB_FILE_PYTHONS= \
-$(PYTHONDIR)/libcalypso_to_pythons.so
+$(PYTHONDIR)/libcalypso_to_pythons.dylib
 #
 LIB_PYTHON_UTILS= \
 $(LIB_MESH) $(LIB_KEMO_C)

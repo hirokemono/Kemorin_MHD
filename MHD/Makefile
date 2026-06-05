@@ -346,6 +346,7 @@ makemake:
 		OPENGL_LIBS='$(OPENGL_LIBS)'  \
 		FFTW3_LIBS='$(FFTW3_LIBS)' \
 		FFTW3_OMP_LIBS='$(FFTW3_OMP_LIBS)' \
+		COCOA_FLAG='$(COCOA_FLAG)' \
 		target_task \
 		) \
 	done
@@ -407,7 +408,6 @@ makeheaders:
 	@echo 'SHAREDLIB_FLAG = $(SHAREDLIB_FLAG)' >> $(MAKENAME)
 	@echo 'F90OPTFLAGS = $(SHAREDLIB_FLAGS) $(F90OPTFLAGS) $(OPENMP_FCFLAGS)  $$(F_INCLUDE)' >> $(MAKENAME)
 	@echo 'F90CPPFLAGS = $(FORTRAN_C_CONNECT)'          >> $(MAKENAME)
-	@echo 'F90DLLFLAGS = -fPIC $$(F90OPTFLAGS)'         >> $(MAKENAME)
 	@echo 'OPTFLAGS = $(SHAREDLIB_FLAGS) $(OPTFLAGS) $(OPENMP_CFLAGS) $(COCOA_FLAG)' >> $(MAKENAME)
 	@echo 'CXXFLAGS = $(CXXFLAGS) $(COCOA_FLAG)' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)

@@ -5,7 +5,12 @@
 PROG_DIR = $$(MHDDIR)/programs
 
 LIB_PYTHONS =      '-L$$(PYTHONDIR) -lcalypso_to_pythons'
-LIB_FILE_PYTHONS = '$$(PYTHONDIR)/libcalypso_to_pythons.so'
+
+ifdef COCOA_FLAG
+  LIB_FILE_PYTHONS = '$$(PYTHONDIR)/libcalypso_to_pythons.dylib'
+else
+  LIB_FILE_PYTHONS = '$$(PYTHONDIR)/libcalypso_to_pythons.so'
+endif
 
 MOD_PYTHONS = \
 '$$(MOD_MHD_F2003)' \
@@ -132,7 +137,7 @@ lib_tasks:
 	@echo '$$(LIB_FILE_PYTHONS)': '$$(MOD_PYTHONS)' \
 	'$$(LIB_FILES_PYTHON_UTILS)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' -shared -fPIC '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(LIB_FILE_PYTHONS)' \
+	@echo '	''$$(F90)' -shared  '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(LIB_FILE_PYTHONS)' \
 	'$$(MOD_PYTHONS)' \
 	'-L. $$(LIB_PYTHON_UTILS)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
