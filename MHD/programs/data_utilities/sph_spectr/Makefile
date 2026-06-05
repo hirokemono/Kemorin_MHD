@@ -138,6 +138,7 @@ t_ctl_data_temp_model.o \
 t_ctl_data_termal_norm.o \
 t_ctl_data_valuable_density.o \
 t_ctl_data_valuable_diffuse.o \
+t_ctl_data_ref_point.o \
 \
 ctl_data_MHD_model_IO.o \
 ctl_data_SGS_MHD_model_IO.o \
