@@ -98,12 +98,14 @@
 !
       do nd = 1, n_comp
         start = OMP_GET_WTIME()
-!$omp parallel workshare
-        WK_fft%X_rocFFT(1:WK_fft%Nfft_r) = 0.0d0
-!$omp end parallel workshare
-!$omp parallel workshare
-        WK_fft%X_rocFFT(1:WK_fft%Nfft) = X(nd,1:WK_fft%Nfft)
-!$omp end parallel workshare
+!$omp parallel do
+        do i = 1, WK_fft%Nfft
+          WK_fft%X_rocFFT(i) = X(nd,i)
+        end do
+!$omp end parallel do
+        do i = WK_fft%Nfft+1, WK_fft%Nfft_r
+          WK_fft%X_rocFFT(i) = 0.0d0
+        end do
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 
         start = OMP_GET_WTIME()
@@ -165,9 +167,11 @@
         elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-!$omp parallel workshare
-        X(nd,1:WK_fft%Nfft) = WK_fft%X_rocFFT(1:WK_fft%Nfft)
-!$omp end parallel workshare
+!$omp parallel do
+        do i = 1, WK_fft%Nfft
+          X(nd,i) = WK_fft%X_rocFFT(i)
+        end do
+!$omp end parallel do
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
       end do
 !
@@ -193,12 +197,14 @@
 !
       do nd = 1, n_comp
         start = OMP_GET_WTIME()
-!$omp parallel workshare
-        WK_fft%X_rocFFT(1:WK_fft%Nfft_r) = 0.0d0
-!$omp end parallel workshare
-!$omp parallel workshare
-        WK_fft%X_rocFFT(1:WK_fft%Nfft) = X(nd,1:WK_fft%Nfft)
-!$omp end parallel workshare
+!$omp parallel do
+        do i = 1, WK_fft%Nfft
+          WK_fft%X_rocFFT(i) = X(nd,i)
+        end do
+!$omp end parallel do
+        do i = WK_fft%Nfft+1, WK_fft%Nfft_r
+          WK_fft%X_rocFFT(i) = 0.0d0
+        end do
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 
         start = OMP_GET_WTIME()
@@ -259,9 +265,11 @@
         elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-!$omp parallel workshare
-        X(nd,1:WK_fft%Nfft) = WK_fft%X_rocFFT(1:WK_fft%Nfft)
-!$omp end parallel workshare
+!$omp parallel do
+        do i = 1, WK_fft%Nfft
+          X(nd,i) = WK_fft%X_rocFFT(i)
+        end do
+!$omp end parallel do
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
       end do
 !
