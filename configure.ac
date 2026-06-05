@@ -51,6 +51,17 @@ builtin(include,MHD/confdb/pkg.m4)
 AC_CONFIG_SRCDIR([MHD/programs/SPH_MHD/main_sph_MHD.f90])
 # AC_CONFIG_HEADERS([config.h])
 
+AC_ARG_ENABLE(shared,
+[  --enable-shared          Make shared library for Python
+   --disable-shared to disable shared library],
+[if test "$enableval" != no ; then
+  MAKE_sharedlib='yes'
+ else
+    MAKE_sharedlib='no'
+ fi],
+[MAKE_sharedlib='no'])
+
+
 AC_ARG_ENABLE(cocoa,
 [  --enable-cocoa          Use Cocoa framework
    --disable-cocoa to disable Cocoa framework],
@@ -133,8 +144,9 @@ AC_ARG_WITH(ffmpeg,
 [USE_ffmpeg='no'])
 
 
-AC_MSG_RESULT(enable-cocoa... "${USE_Cocoa}")
-AC_MSG_RESULT(enable-OpenGL.. "${USE_gl}")
+AC_MSG_RESULT(enable-shared... "${MAKE_sharedlib}")
+AC_MSG_RESULT(enable-cocoa...  "${USE_Cocoa}")
+AC_MSG_RESULT(enable-OpenGL..  "${USE_gl}")
 
 AC_MSG_RESULT(with-rocm...   "${USE_rocm}")
 AC_MSG_RESULT(with-fftw3...  "${USE_fftw3}")
@@ -538,6 +550,16 @@ AC_SUBST(FFMPEG_CFLAGS)
 AC_SUBST(FFMPEG_LIBS)
 
 
+# Add Shared library flag
+# if test -n "${SHAREDLIB_FLAG}"
+# then
+    if test ${MAKE_sharedlib} = "yes"
+    then
+        SHAREDLIB_FLAG="--enable-shared"
+    fi
+# fi
+AC_SUBST(SHAREDLIB_FLAG)
+
 # Check pgplot for Fortran compiler
 LIBS="${ZLIB_LIBS} ${PNG_LIBS} ${X_LIBS}"
 LDFLAGS=""
@@ -559,6 +581,12 @@ AC_MSG_RESULT(  host:          "${host}")
 AC_MSG_RESULT(XL_FORTRAN:      "${XL_FORTRAN}")
 AC_MSG_RESULT(x86 instruction: "${SSE_FLAG}")
 AC_MSG_RESULT(mpirun command and options: "${MPIRUN}")
+AC_MSG_RESULT()
+if test -n "${SHAREDLIB_FLAG}"; then
+        AC_MSG_RESULT(Make shared library ...  yes)
+else
+        AC_MSG_RESULT(Make shared library ...   no)
+fi
 AC_MSG_RESULT()
 if test -n "${OPENMP_FCFLAGS}"; then
         AC_MSG_RESULT(    Use OpenMP ...        yes)

@@ -86,6 +86,10 @@ External_libs \
 programs
 
 
+OPTFLAGS =
+F90OPTFLAGS =
+SHAREDLIB_FLAGS =
+
 F_INCLUDE = -I. -I$$(MAKEDIR)
 C_INCLUDE = -I. -I$$(MAKEDIR)
 
@@ -93,9 +97,14 @@ CPP_FLAGS =
 C_INCLUDE += -I$(MHDDIR)/C_src/CORE_C
 C_INCLUDE += -I$(MHDDIR)/C_src/CONTROLS
 
+ifdef SHAREDLIB_FLAG
+  SHAREDLIB_FLAGS+= -fPIC
+endif
+
+
 ifdef PNG_LIBS
   CPP_FLAGS += -DPNG_OUTPUT
-  C_INCLUDE+= $$(PNG_CFLAGS) 
+  C_INCLUDE+= $$(PNG_CFLAGS)
   F90LIBS+= $$(PNG_LIBS)
 endif
 ifdef ZLIB_LIBS
@@ -395,10 +404,11 @@ makeheaders:
 	@echo '#' >> $(MAKENAME)
 	@echo '# Compiler options' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@echo 'F90OPTFLAGS = $(F90OPTFLAGS) $(OPENMP_FCFLAGS)  $$(F_INCLUDE)' >> $(MAKENAME)
+	@echo 'SHAREDLIB_FLAG = $(SHAREDLIB_FLAG)' >> $(MAKENAME)
+	@echo 'F90OPTFLAGS = $(SHAREDLIB_FLAGS) $(F90OPTFLAGS) $(OPENMP_FCFLAGS)  $$(F_INCLUDE)' >> $(MAKENAME)
 	@echo 'F90CPPFLAGS = $(FORTRAN_C_CONNECT)'          >> $(MAKENAME)
 	@echo 'F90DLLFLAGS = -fPIC $$(F90OPTFLAGS)'         >> $(MAKENAME)
-	@echo 'OPTFLAGS = $(OPTFLAGS) $(OPENMP_CFLAGS) $(COCOA_FLAG)' >> $(MAKENAME)
+	@echo 'OPTFLAGS = $(SHAREDLIB_FLAGS) $(OPTFLAGS) $(OPENMP_CFLAGS) $(COCOA_FLAG)' >> $(MAKENAME)
 	@echo 'CXXFLAGS = $(CXXFLAGS) $(COCOA_FLAG)' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo '# Libralies and includes settting' >> $(MAKENAME)

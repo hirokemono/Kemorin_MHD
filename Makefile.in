@@ -65,7 +65,8 @@ SSE8 =     @SSE8@
 F90OPTFLAGS= @FCFLAGS@
 OPTFLAGS =   @CFLAGS@
 CXXFLAGS =   @CXXFLAGS@
-DEPFLAGS= -MM -w -DDEPENDENCY_CHECK
+DEPFLAGS = -MM -w -DDEPENDENCY_CHECK
+SHAREDLIB_FLAG = @SHAREDLIB_FLAG@
 #
 #   AMD ROCm settings
 #
@@ -175,6 +176,7 @@ F90OPTFLAGS="$(F90OPTFLAGS)"       \
 COCOA_FLAG="$(COCOA_FLAG)"         \
 CXXFLAGS="$(CXXFLAGS)"             \
 DEPFLAGS="$(DEPFLAGS)"             \
+SHAREDLIB_FLAG="$(SHAREDLIB_FLAG)" \
 F90LIB="$(F90LIB)"                 \
 F90_LOCAL="$(F90_LOCAL)"           \
 MAKE_MOD_DEP='$(MAKE_MOD_DEP)'     \
@@ -222,7 +224,7 @@ $(MAKE_MOD_DEP): $(MHDDIR)/module_dependency/make_module_dependency.f90
 	$(F90_LOCAL) -o $@ $(MAKEDIR)/make_module_dependency.o
 
 makemake: $(MAKE_MOD_DEP)
-	@echo "# Construct Makefile"; \
+	@echo "# Construct Makefile"
 	cd $(MHDDIR) ; \
 		$(GMAKE) $(MAKE_PARAMETERS) \
 		MAKEDIR="$(MAKEDIR)" \
@@ -230,7 +232,7 @@ makemake: $(MAKE_MOD_DEP)
 		makemake
 
 makemake64: $(MAKE_MOD_DEP)
-	@echo "# Construct Makefile for 64-bit integer"; \
+	@echo "# Construct Makefile for 64-bit integer"
 	cd $(MHDDIR) ; \
 		$(GMAKE) $(MAKE_PARAMETERS) \
 		MAKEDIR="$(MAKE64DIR)" \
