@@ -9,7 +9,6 @@ TARGET = fem_mhd
 TARGET_SNAP=    fem_snapshot
 TARGET_FILTER=  filtered_snap
 TARGET_VOL_AVE= volume_average
-TARGET_MHD_MAT= check_mhd_matrix
 
 TARGET_SNAP_TMP = snap_works
 
@@ -41,12 +40,6 @@ MOD_MHD_PLUG =  \
 main_MHD.o \
 analyzer_MHD.o \
 FEM_analyzer_MHD.o
-
-MOD_MHD_MAT =  \
-main_MHD_matrices.o \
-analyzer_check_mat_MHD.o \
-FEM_check_MHD_matrices.o
-
 
 MOD_SNAP_PLUG = \
 main_snapshot.o \
@@ -85,7 +78,6 @@ target_list:
 	@echo 'TARGET_SNAP =    $$(BUILDDIR)/$(TARGET_SNAP)'    >> $(MAKENAME)
 	@echo 'TARGET_FILTER =  $$(BUILDDIR)/$(TARGET_FILTER)'  >> $(MAKENAME)
 	@echo 'TARGET_VOL_AVE = $$(BUILDDIR)/$(TARGET_VOL_AVE)' >> $(MAKENAME)
-	@echo 'TARGET_MHD_MAT = $$(BUILDDIR)/$(TARGET_MHD_MAT)' >> $(MAKENAME)
 	@echo 'TARGET_SNAP_TMP =  $$(BUILDDIR)/$(TARGET_SNAP_TMP)'  >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
@@ -94,7 +86,7 @@ target_task:
 	'$$(TARGET)'         \
 	'$$(TARGET_SNAP)'    \
 	'$$(TARGET_FILTER)'  \
-	'$$(TARGET_MHD_MAT)' \
+	'$$(TARGET_FEM_MHD_MAT)' \
 	'$$(TARGET_SNAP_TMP)' \
 	'$$(TARGET_VOL_AVE)'     >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -132,13 +124,6 @@ target_task:
 	'$$(MOD_SNAP_VOL_AVE) -L. $$(LIBS_MHD)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_MHD_MAT)': '$$(MOD_MHD_MAT) $$(LIB_FILES_MHD)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
-	-o '$$(TARGET_MHD_MAT)' \
-	'$$(MOD_MHD_MAT) -L. $$(LIBS_MHD)' \
-	'$$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
 
 
 lib_name:
@@ -158,9 +143,6 @@ mod_list:
 	@echo  $(MOD_FILTERING_ALL)   >> $(MAKENAME)
 	@echo  MOD_SNAP_VOL_AVE=  \\  >> $(MAKENAME)
 	@echo  $(MOD_SNAP_VOL_AVE)    >> $(MAKENAME)
-	@echo  '#' >> $(MAKENAME)
-	@echo  MOD_MHD_MAT=  \\       >> $(MAKENAME)
-	@echo  $(MOD_MHD_MAT)         >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 	@echo  MOD_SNAP_TMP=  \\      >> $(MAKENAME)
 	@echo  $(MOD_SNAP_TMP)        >> $(MAKENAME)
