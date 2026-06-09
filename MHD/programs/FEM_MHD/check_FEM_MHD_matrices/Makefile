@@ -1,9 +1,9 @@
 #
 #
 #
-FEM_MHD_MAT_DIR = $$(MHD_OUT_DIR)/check_FEM_MHD_matrices
 
-TARGET_FEM_MHD_MAT= check_FEM_MHD_matrices
+FEM_MHD_MAT_DIR =   $$(MHD_OUT_DIR)/check_FEM_MHD_matrices
+TARGET_FEM_MHD_MAT= $$(BUILDDIR)/check_FEM_MHD_matrices
 
 SOURCES = $(shell ls *.f90)
 MOD_FEM_MHD_MAT = $(addsuffix .o,$(basename $(SOURCES)) )
@@ -16,7 +16,7 @@ dir_list:
 	@echo 'FEM_MHD_MAT_DIR = $(FEM_MHD_MAT_DIR)' >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_FEM_MHD_MAT = $$(BUILDDIR)/$(TARGET_FEM_MHD_MAT)' >> $(MAKENAME)
+	@echo 'TARGET_FEM_MHD_MAT = $(TARGET_FEM_MHD_MAT)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
