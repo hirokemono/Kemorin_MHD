@@ -44,6 +44,11 @@ F_INCLUDE = -I. -I$$(MAKEDIR)
 C_INCLUDE = -I. -I$$(MAKEDIR)
 
 CPP_FLAGS =
+SHAREDLIB_FLAGS =
+
+ifdef SHAREDLIB_FLAG
+  SHAREDLIB_FLAGS+= -fPIC
+endif
 
 ifdef PNG_LIBS
   CPP_FLAGS += -DPNG_OUTPUT
@@ -231,6 +236,7 @@ makemake:
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
+		COCOA_FLAG='$(COCOA_FLAG)' \
 		target_task; \
 		) \
 	done
@@ -277,9 +283,9 @@ makeheaders:
 	@echo '#' >> $(MAKENAME)
 	@echo '# Compiler options' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@echo 'F90OPTFLAGS = $(F90OPTFLAGS) $(OPENMP_FCFLAGS)  $$(F_INCLUDE)' >> $(MAKENAME)
-	@echo 'F90CPPFLAGS = $(FORTRAN_C_CONNECT)'          >> $(MAKENAME)
-	@echo 'OPTFLAGS = $(OPTFLAGS) $(OPENMP_CFLAGS) $(COCOA_FLAG)' >> $(MAKENAME)
+	@echo 'F90OPTFLAGS = $(SHAREDLIB_FLAGS) $(F90OPTFLAGS) $(OPENMP_FCFLAGS)  $$(F_INCLUDE)' >> $(MAKENAME)
+	@echo 'F90CPPFLAGS = $(FORTRAN_C_CONNECT)'                                               >> $(MAKENAME)
+	@echo 'OPTFLAGS =    $(SHAREDLIB_FLAGS) $(OPTFLAGS) $(OPENMP_CFLAGS) $(COCOA_FLAG)'      >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo '# Libralies and includes settting' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)

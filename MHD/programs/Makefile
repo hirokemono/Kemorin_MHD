@@ -85,7 +85,7 @@ target_list:
 
 target_task:
 	@echo 'parallels: '            \
-	'fem_mhd  sph_mhd visualizer'  \
+	'fem_mhd_targets  sph_mhd_targets  visualizer'  \
 	'const_filteres itp_tools'     >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo 'utilities: '            \
@@ -93,7 +93,7 @@ target_task:
 	'rayleigh_link'                >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo 'FEM_minimum: '          \
-	'fem_mhd cubed_sph_utils '     \
+	'fem_mhd_targets cubed_sph_utils '     \
 	'partitioners refineres'       >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \

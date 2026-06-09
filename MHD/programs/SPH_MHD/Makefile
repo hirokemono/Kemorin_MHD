@@ -94,7 +94,7 @@ target_list:
 	@echo >> $(MAKENAME)
 
 target_task:
-	@echo sph_mhd: \
+	@echo sph_mhd_targets: \
 	 '$$(TARGET_SPH_LICV)'       \
 	 '$$(TARGET_SPH_SGS_MHD)'    \
 	 '$$(TARGET_SPH_MHD_VIZS)'    \

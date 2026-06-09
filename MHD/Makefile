@@ -33,8 +33,6 @@ FEM_UTIL_BINDIR= $(BUILDDIR)/FEM_utils
 MAKENAME=       $(MAKEDIR)/Makefile
 EXP_MAKEHEAD=   $(EXPDIR)/Makefile.header
 TESTS_MAKEHEAD= $(TESTDIR)/Makefile.header
-
-PYTHON_MAKEFILE= $(PYTHONDIR)/Makefile
 #
 #   AMD ROCm settings
 #
@@ -264,15 +262,6 @@ makemake:
 	@echo '#' >> $(EXP_MAKEHEAD)
 	$(GMAKE) makelib_list MAKENAME="$(EXP_MAKEHEAD)"
 	
-	@echo '#' > $(PYTHON_MAKEFILE)
-	@echo '# -----------------------------------------------------------' >> $(PYTHON_MAKEFILE)
-	@echo '# Makefile for Kemorin Dynamo shared library' >> $(PYTHON_MAKEFILE)
-	@echo '# -----------------------------------------------------------' >> $(PYTHON_MAKEFILE)
-	@echo '#' >> $(PYTHON_MAKEFILE)
-	$(GMAKE) makeheaders       \
-		MAKEDIR="$(PYTHONDIR)" \
-		MAKENAME="$(PYTHON_MAKEFILE)"
-	
 	@echo "# create Makefile"
 	@echo '#' > $(MAKENAME)
 	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
@@ -394,14 +383,14 @@ makeheaders:
 	@echo '#' >> $(MAKENAME)
 	@echo '# Compiler commands' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@echo CC=$(CC)            >> $(MAKENAME)
+	@echo CC=$(CC)               >> $(MAKENAME)
 	@echo F90=$(MPIF90)          >> $(MAKENAME)
 	@echo CXX=$(CXX)             >> $(MAKENAME)
 	@echo AS=$(AS)               >> $(MAKENAME)
 	@echo AR=$(AR)               >> $(MAKENAME)
-	@echo RANLIB=$(RANLIB) >> $(MAKENAME)
+	@echo RANLIB=$(RANLIB)       >> $(MAKENAME)
 	@echo F90_LOCAL=$(F90_LOCAL) >> $(MAKENAME)
-	@echo MPIRUN=$(MPIRUN) >> $(MAKENAME)
+	@echo MPIRUN=$(MPIRUN)       >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo '# Compiler options' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)

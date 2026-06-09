@@ -32,7 +32,7 @@ target_list:
 	@echo >> $(MAKENAME)
 
 target_task:
-	@echo sph_mhd: \
+	@echo sph_mhd_targets: \
 	 '$$(TARGET_SPH_MHD)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_MHD_PSF): $$(MOD_SPH_MHD_MAIN) $$(LIB_FILES_SPH_MHD)' \
