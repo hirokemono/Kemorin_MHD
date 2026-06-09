@@ -1,11 +1,11 @@
-!analyzer_volume_ave.f90
-!      module analyzer_volume_ave
+!analyzer_FEM_volume_average.f90
+!      module analyzer_FEM_volume_average
 !
 !..................................................
 !
 !      Written by H. Matsui on Dec., 2007
 !
-      module analyzer_volume_ave
+      module analyzer_FEM_volume_average
 !
       use m_precision
       use m_machine_parameter
@@ -27,7 +27,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer
+      subroutine init_FEM_volume_ave
 !
       use input_control
 !
@@ -56,11 +56,11 @@
      &    FSGSs%FEM_SGS, FSGSs%SGS_MHD_wk, FMHDs%MHD_IO,                &
      &    FMHDs%fem_sq, FMHDs%m_SR)
 !
-      end subroutine init_analyzer
+      end subroutine init_FEM_volume_ave
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine analyze
+      subroutine analyze_FEM_volume_ave
 !
 !
       integer(kind=kint ) :: i_step
@@ -76,8 +76,8 @@
 !
 !      call FEM_finalize_vol_average
 !
-      end subroutine analyze
+      end subroutine analyze_FEM_volume_ave
 !
 ! ----------------------------------------------------------------------
 !
-      end module analyzer_volume_ave
+      end module analyzer_FEM_volume_average

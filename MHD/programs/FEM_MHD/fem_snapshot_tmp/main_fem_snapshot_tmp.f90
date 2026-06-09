@@ -12,15 +12,15 @@
       use m_precision
 !
       use calypso_mpi
-      use analyzer_snap_tmp
-
+      use analyzer_FEM_snapshot_tmp
+!
       implicit none
 !
-
+!
       call calypso_MPI_init
 !
-      call init_analyzer
-      call analyze
+      call initialize_FEM_snap_tmp
+      call analyze_FEM_snap_tmp
 !
       call calypso_MPI_finalize
 !

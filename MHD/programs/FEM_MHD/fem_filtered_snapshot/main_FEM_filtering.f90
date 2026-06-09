@@ -1,8 +1,8 @@
 !
-!     program  kemorin_FEM_snapshot
+!     program  kemorin_FEM_filtering
 
 !-----------------------------------------------------------------------
-      program kemorin_FEM_snapshot
+      program kemorin_FEM_filtering
 !
 !    main routine for GeoFEM/Tiger version       on mar. 2000 (ver 1.0)
 !    main routine for Kemo's MHD                 on May, 2003 (ver 2.0)
@@ -11,7 +11,7 @@
 
       use m_precision
 !
-      use analyzer_filtering
+      use analyzer_FEM_filtering
       use calypso_mpi
 !
       implicit none
@@ -19,12 +19,12 @@
 !
       call calypso_MPI_init
 !
-      call init_analyzer
-      call analyze
+      call init_FEM_filtering
+      call analyze_FEM_filtering
 !
       call calypso_MPI_finalize
 !
       write(*,*) '***** program finished *****'
       stop
 !
-      end program kemorin_FEM_snapshot
+      end program kemorin_FEM_filtering

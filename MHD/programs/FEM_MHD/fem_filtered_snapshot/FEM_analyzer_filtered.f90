@@ -10,6 +10,19 @@
 !>@brief Initialization for snapshot
 !!
 !!@verbatim
+!!      subroutine FEM_initialize_filtered                              &
+!!     &         (MHD_files, MHD_step, FEM_model, ak_MHD, FEM_MHD,      &
+!!     &          FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, m_SR)
+!!        type(MHD_file_IO_params), intent(inout) :: MHD_files
+!!        type(FEM_mesh_field_data), intent(inout) :: FEM_MHD
+!!        type(FEM_MHD_model_data), intent(inout) :: FEM_model
+!!        type(coefs_4_MHD_type), intent(inout) :: ak_MHD
+!!        type(FEM_SGS_structure), intent(inout) :: FEM_SGS
+!!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
+!!        type(MHD_step_param), intent(inout) :: MHD_step
+!!        type(MHD_IO_data), intent(inout) :: MHD_IO
+!!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
+!!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine FEM_analyze_filtered(i_step, MHD_files, FEM_model,   &
 !!     &          ak_MHD, MHD_step, FEM_SGS, SGS_MHD_wk, FEM_MHD, ucd,  &
 !!     &          MHD_IO, fem_sq, m_SR)
@@ -36,6 +49,7 @@
       use t_IO_step_parameter
       use t_MHD_step_parameter
       use t_MHD_file_parameter
+      use t_ucd_file
       use t_ucd_data
       use t_FEM_MHD_mean_square
       use t_FEM_SGS_structure
@@ -52,6 +66,51 @@
 ! ----------------------------------------------------------------------
 !
        contains
+!
+! ----------------------------------------------------------------------
+!
+      subroutine FEM_initialize_filtered                                &
+     &         (MHD_files, MHD_step, FEM_model, ak_MHD, FEM_MHD,        &
+     &          FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq, m_SR)
+!
+      use t_boundary_field_IO
+!
+      use initialize_4_snapshot
+      use FEM_MHD_ucd_data
+!
+      type(MHD_file_IO_params), intent(inout) :: MHD_files
+!
+      type(FEM_mesh_field_data), intent(inout) :: FEM_MHD
+      type(FEM_MHD_model_data), intent(inout) :: FEM_model
+      type(coefs_4_MHD_type), intent(inout) :: ak_MHD
+      type(FEM_SGS_structure), intent(inout) :: FEM_SGS
+      type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
+!
+      type(MHD_step_param), intent(inout) :: MHD_step
+      type(MHD_IO_data), intent(inout) :: MHD_IO
+      type(FEM_MHD_mean_square), intent(inout) :: fem_sq
+      type(mesh_SR), intent(inout) :: m_SR
+!
+!   matrix assembling
+!
+      if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
+      call init_analyzer_snap(MHD_files,                                &
+     &    FEM_model%FEM_prm, FEM_SGS%SGS_par, FEM_model%bc_FEM_IO,      &
+     &    MHD_step, FEM_MHD%geofem, FEM_model%MHD_mesh,                 &
+     &    FEM_SGS%FEM_filters, FEM_model%MHD_prop, ak_MHD,              &
+     &    FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs, FEM_SGS%Csims,       &
+     &    FEM_MHD%iphys, FEM_SGS%iphys_LES, FEM_MHD%field,              &
+     &    FEM_model%FEM_ref, SNAP_time_IO, MHD_step%rst_step,           &
+     &    SGS_MHD_wk, fem_sq, MHD_IO%rst_IO, m_SR, FEM_MHD%label_sim)
+!
+      call output_grd_file_w_org_connect                                &
+     &   (MHD_step%ucd_step, FEM_MHD%geofem%mesh, FEM_model%MHD_mesh,   &
+     &    FEM_MHD%field, MHD_files%ucd_file_IO, MHD_IO%ucd,             &
+     &    m_SR%SR_sig, m_SR%SR_i)
+!
+      call alloc_phys_range(FEM_MHD%field%ntot_phys_viz, MHD_IO%range)
+!
+      end subroutine FEM_initialize_filtered
 !
 ! ----------------------------------------------------------------------
 !
@@ -193,5 +252,23 @@
       end subroutine FEM_analyze_filtered
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine FEM_finalize_filtered(MHD_files, MHD_step, MHD_IO)
+!
+      type(MHD_file_IO_params), intent(in) :: MHD_files
+      type(MHD_step_param), intent(in) :: MHD_step
+!
+      type(MHD_IO_data), intent(inout) :: MHD_IO
+!
+!
+      if(MHD_step%ucd_step%increment .gt. 0) then
+        call finalize_output_ucd(MHD_files%ucd_file_IO, MHD_IO%ucd)
+        call dealloc_phys_range(MHD_IO%range)
+      end if
+!      call close_boundary_monitor(my_rank)
+!
+      end subroutine FEM_finalize_filtered
+!
+!-----------------------------------------------------------------------
 !
       end module FEM_analyzer_filtered

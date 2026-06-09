@@ -1,12 +1,12 @@
-!analyzer_filtering.f90
-!      module analyzer_filtering
+!analyzer_FEM_filtering.f90
+!      module analyzer_FEM_filtering
 !
 !..................................................
 !
 !      Written by H. Matsui & H. Okuda
 !      Modified by H. Matsui
 !
-      module analyzer_filtering
+      module analyzer_FEM_filtering
 !
       use m_precision
       use calypso_mpi
@@ -32,11 +32,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer
+      subroutine init_FEM_filtering
 !
-      use FEM_analyzer_snapshot
-      use input_control
+      use FEM_analyzer_filtered
       use FEM_to_VIZ_bridge
+      use input_control
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -60,7 +60,7 @@
 !
 !     --------------------- 
 !
-      call FEM_initialize_snapshot                                      &
+      call FEM_initialize_filtered                                      &
      &   (FMHDs%MHD_files, FMHDs%MHD_step, FMHDs%FEM_model,             &
      &    FMHDs%MHD_CG%ak_MHD, FMHDs%FEM_MHD,                           &
      &    FSGSs%FEM_SGS, FSGSs%SGS_MHD_wk, FMHDs%MHD_IO,                &
@@ -81,15 +81,15 @@
      &    FMVIZs%VIZ_DAT, FMVIZs%vizs_ctl, FMVIZs%VIZs, FMHDs%m_SR)
       call dealloc_viz_controls(FMVIZs%vizs_ctl)
 !
-      end subroutine init_analyzer
+      end subroutine init_FEM_filtering
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine analyze
+      subroutine analyze_FEM_filtering
 !
-      use FEM_analyzer_snapshot
-      use output_viz_file_control
+      use FEM_analyzer_filtered
       use FEM_to_VIZ_bridge
+      use output_viz_file_control
 !
       integer(kind=kint ) :: i_step
       logical :: visval
@@ -121,13 +121,13 @@
       call visualize_fin                                                &
      &   (elps_VIZ1, FMHDs%MHD_step%viz_step, FMHDs%MHD_step%time_d,    &
      &    FMVIZs%VIZs)
-      call FEM_finalize_snapshot                                        &
+      call FEM_finalize_filtered                                        &
      &   (FMHDs%MHD_files, FMHDs%MHD_step, FMHDs%MHD_IO)
 !
       call output_elapsed_times
 !
-      end subroutine analyze
+      end subroutine analyze_FEM_filtering
 !
 ! ----------------------------------------------------------------------
 !
-      end module analyzer_filtering
+      end module analyzer_FEM_filtering

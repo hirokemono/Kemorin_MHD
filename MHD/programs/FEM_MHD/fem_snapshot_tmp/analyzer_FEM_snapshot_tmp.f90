@@ -1,12 +1,12 @@
-!analyzer_snap_tmp.f90
-!      module analyzer_snap_tmp
+!analyzer_FEM_snapshot_tmp.f90
+!      module analyzer_FEM_snapshot_tmp
 !
 !..................................................
 !
 !      Written by H. Matsui & H. Okuda
 !      Modified by H. Matsui
 !
-      module analyzer_snap_tmp
+      module analyzer_FEM_snapshot_tmp
 !
       use m_precision
       use calypso_mpi
@@ -33,7 +33,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer
+      subroutine initialize_FEM_snap_tmp
 !
       use input_control
       use FEM_to_VIZ_bridge
@@ -91,11 +91,11 @@
      &    FMVIZs%VIZ_DAT, FMVIZs%vizs_ctl, FMVIZs%VIZs, FMHDs%m_SR)
       call dealloc_viz_controls(FMVIZs%vizs_ctl)
 !
-      end subroutine init_analyzer
+      end subroutine initialize_FEM_snap_tmp
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine analyze
+      subroutine analyze_FEM_snap_tmp
 !
       use output_viz_file_control
       use FEM_to_VIZ_bridge
@@ -137,8 +137,8 @@
 !
       call output_elapsed_times
 !
-      end subroutine analyze
+      end subroutine analyze_FEM_snap_tmp
 !
 ! ----------------------------------------------------------------------
 !
-      end module analyzer_snap_tmp
+      end module analyzer_FEM_snapshot_tmp
