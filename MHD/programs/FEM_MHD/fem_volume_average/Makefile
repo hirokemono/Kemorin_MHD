@@ -17,7 +17,6 @@ dir_list:
 
 target_list:
 	@echo 'TARGET_FEM_SNAP_VOL_AVE = $(TARGET_FEM_SNAP_VOL_AVE)' >> $(MAKENAME)
-	@echo >> $(MAKENAME)
 
 target_task:
 	@echo '$$(TARGET_FEM_SNAP_VOL_AVE)': '$$(MOD_FEM_SNAP_VOL_AVE) $$(LIB_FILES_FEM_MHD)' \

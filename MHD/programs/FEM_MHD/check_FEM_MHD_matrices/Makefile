@@ -17,7 +17,6 @@ dir_list:
 
 target_list:
 	@echo 'TARGET_FEM_MHD_MAT = $(TARGET_FEM_MHD_MAT)' >> $(MAKENAME)
-	@echo >> $(MAKENAME)
 
 target_task:
 	@echo '$$(TARGET_FEM_MHD_MAT)': '$$(MOD_FEM_MHD_MAT) $$(LIB_FILES_FEM_MHD)' \

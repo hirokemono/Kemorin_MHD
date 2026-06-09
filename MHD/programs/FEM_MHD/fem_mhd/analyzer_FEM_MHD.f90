@@ -1,13 +1,13 @@
 !
-!      module analyzer_MHD
+!      module analyzer_FEM_MHD
 !
 !      Written by H. Matsui and H. Okuda
 !      modified by H. Matsui on June, 2005 
 !
-!      subroutine initialization_MHD
-!      subroutine evolution_MHD
+!      subroutine initialization_FEM_MHD
+!      subroutine evolution_FEM_MHD
 !
-      module analyzer_MHD
+      module analyzer_FEM_MHD
 !
       use m_precision
       use calypso_mpi
@@ -35,7 +35,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine initialization_MHD
+      subroutine initialization_FEM_MHD
 !
       use input_control
       use FEM_to_VIZ_bridge
@@ -98,11 +98,11 @@
       call dealloc_viz_controls(FMVIZs%vizs_ctl)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
 !
-      end subroutine initialization_MHD
+      end subroutine initialization_FEM_MHD
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine evolution_MHD
+      subroutine evolution_FEM_MHD
 !
       use output_viz_file_control
       use FEM_to_VIZ_bridge
@@ -171,8 +171,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !
-      end subroutine evolution_MHD
+      end subroutine evolution_FEM_MHD
 !
 ! ----------------------------------------------------------------------
 !
-      end module analyzer_MHD
+      end module analyzer_FEM_MHD

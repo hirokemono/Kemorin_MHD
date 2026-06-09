@@ -17,7 +17,6 @@ dir_list:
 
 target_list:
 	@echo 'TARGET_FEM_SNAP_FILTER = $(TARGET_FEM_SNAP_FILTER)' >> $(MAKENAME)
-	@echo >> $(MAKENAME)
 
 target_task:
 	@echo '$$(TARGET_FEM_SNAP_FILTER)': '$$(MOD_FEM_SNAP_FILTER) $$(LIB_FILES_FEM_MHD)' \
