@@ -4,21 +4,6 @@
 
 PROG_DIR = $$(MHDDIR)/programs
 
-LIB_PYTHONS =      '-L$$(PYTHONDIR) -lcalypso_to_pythons'
-
-ifdef COCOA_FLAG
-  LIB_FILE_PYTHONS = '$$(PYTHONDIR)/libcalypso_to_pythons.dylib'
-else
-  LIB_FILE_PYTHONS = '$$(PYTHONDIR)/libcalypso_to_pythons.so'
-endif
-
-MOD_PYTHONS = \
-'$$(MOD_MHD_F2003)' \
-'$$(MOD_VIZ_F2003)' \
-'$$(MOD_SPH_UTIL_DLL)' \
-'$$(MOD_MHD_CTL_DLL)' \
-'$$(MOD_VIZ_CTL_DLL)'
-
 SUBDIRS = \
 FEM_MHD \
 SPH_MHD \
@@ -38,17 +23,6 @@ data_utilities
 
 ifdef OPENGL_LIBS
   SUBDIRS += VIEWER
-endif
-
-LIB_PYTHON_UTILS =  \
-'$$(LIB_MESH)'
-
-LIB_FILES_PYTHON_UTILS =  \
-'$$(LIB_MESH_FILE)'
-
-ifdef FORTRAN_C_CONNECT
-  LIB_PYTHON_UTILS+=        '$$(LIB_KEMO_C)'
-  LIB_FILES_PYTHON_UTILS+=  '$$(LIB_KEMO_C_FILE)'
 endif
 
 #
@@ -111,16 +85,6 @@ target_task:
 
 
 lib_name:
-	@echo  LIB_PYTHONS=  \\           >> $(MAKENAME)
-	@echo  $(LIB_PYTHONS)             >> $(MAKENAME)
-	@echo  LIB_FILE_PYTHONS=  \\           >> $(MAKENAME)
-	@echo  $(LIB_FILE_PYTHONS)             >> $(MAKENAME)
-	@echo  '#' >> $(MAKENAME)
-	@echo  LIB_PYTHON_UTILS=  \\           >> $(MAKENAME)
-	@echo  $(LIB_PYTHON_UTILS)             >> $(MAKENAME)
-	@echo  LIB_FILES_PYTHON_UTILS=  \\     >> $(MAKENAME)
-	@echo  $(LIB_FILES_PYTHON_UTILS)       >> $(MAKENAME)
-	@echo  '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		echo 'generate library list for ' $$dir ; \
@@ -133,15 +97,6 @@ lib_name:
 	done
 
 lib_tasks:
-	@echo '#' >> $(MAKENAME)
-	@echo '$$(LIB_FILE_PYTHONS)': '$$(MOD_PYTHONS)' \
-	'$$(LIB_FILES_PYTHON_UTILS)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' -shared  '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(LIB_FILE_PYTHONS)' \
-	'$$(MOD_PYTHONS)' \
-	'-L. $$(LIB_PYTHON_UTILS)' \
-	'$$(F90LIBS)' >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
 	@for dir in $(DLIBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
@@ -165,9 +120,6 @@ lib_tasks:
 
 
 mod_list:
-	@echo  MOD_PYTHONS=  \\     >> $(MAKENAME)
-	@echo  $(MOD_PYTHONS)       >> $(MAKENAME)
-	@echo '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \

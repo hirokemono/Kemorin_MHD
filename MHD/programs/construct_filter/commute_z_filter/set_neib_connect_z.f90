@@ -31,9 +31,9 @@
       subroutine s_set_neib_connect_z(totalele, nfilter2_1,             &
      &                                nneib_ele, jdx)
 !
-      integer(kind = kint), intent(in) :: nneib_ele(totalele,2)
       integer(kind = kint), intent(in) :: totalele
       integer(kind = kint), intent(in) :: nfilter2_1
+      integer(kind = kint), intent(in) :: nneib_ele(totalele,2)
 !
       integer(kind = kint), intent(inout)                               &
      &                     :: jdx(totalele,nfilter2_1,3)

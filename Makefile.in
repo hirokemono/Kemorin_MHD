@@ -276,4 +276,4 @@ testclean:
 distclean:
 	echo "# Back to initial package"; \
 	make testclean
-	rm -fr $(MAKEDIR) $(MAKE64DIR) $(BUILDDIR) $(BUILD64DIR) Makefile config.log
+	rm -fr $(MAKEDIR) $(MAKE64DIR) $(BUILDDIR) $(BUILD64DIR) $(PYTHONDIR) Makefile config.log

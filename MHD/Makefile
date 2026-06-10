@@ -81,6 +81,7 @@ SUBDIRS =     \
 Fortran_src   \
 C_src         \
 External_libs \
+pythons       \
 programs
 
 
@@ -625,7 +626,6 @@ makeclean:
 	@echo '	rm -f *.a *.L'     >> $(MAKENAME)
 	@echo '	rm -f *.h'         >> $(MAKENAME)
 	@echo '	rm -f GL'          >> $(MAKENAME)
-	@echo '	cd $(PYTHONDIR); make clean'  >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
 clean:
