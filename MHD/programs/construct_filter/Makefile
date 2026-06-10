@@ -21,7 +21,13 @@ ifdef FORTRAN_C_CONNECT
 endif
 
 SUBDIRS = \
-const_3d_filter \
+commute_3d_filter     \
+sort_commute3d_filter \
+moments3d_transfer    \
+filter3d_transfer     \
+filter3d_trans_single \
+filter_coef_transfer  \
+\
 commute_z_filter  \
 test_plane_delta_z
 
@@ -58,6 +64,11 @@ target_list:
 
 target_task:
 	@echo const_filteres: const_3d_filter const_z_filter >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo const_3d_filter:   \
+	'$$(TARGET_3D_FILTER)        $$(TARGET_SORT_3D_FILTER)'       \
+	'$$(TARGET_NEWMESH_FILTER3D) $$(TARGET_NEWMESH_SGL_FILTER3D)' \
+	'$$(TARGET_NEWMESH_MOMENTS)  $$(TARGET_FILTER_TRANS)   '  >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo const_z_filter:  \
 	'$$(TARGET_Z_FILTER)'  \
