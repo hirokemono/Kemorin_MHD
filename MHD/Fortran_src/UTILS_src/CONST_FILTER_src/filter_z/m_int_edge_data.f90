@@ -1,11 +1,16 @@
+!>@file   m_int_edge_data.f90
+!!        module m_int_edge_data
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2013
 !
-!      module m_int_edge_data
-!
-!     Written by H. Matsui
-!
-!      subroutine allocate_int_edge_data(numnod, numele)
-!      subroutine deallocate_int_edge_data
-!
+!>@brief mass matrix for vertical filter construction
+!!
+!!@verbatim
+!!      subroutine allocate_int_edge_data(numnod, numele)
+!!      subroutine deallocate_int_edge_data
+!!@endverbatim
+!!
       module m_int_edge_data
 !
       use m_precision
@@ -16,7 +21,6 @@
       real(kind=kreal), dimension(:), allocatable :: dz
       real(kind=kreal), dimension(:), allocatable :: mk
       real(kind=kreal), dimension(:,:), allocatable :: mk_c
-!
 !
 ! -----------------------------------------------------------------------
 !

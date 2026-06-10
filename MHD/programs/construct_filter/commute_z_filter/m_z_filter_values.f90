@@ -1,8 +1,16 @@
+!>@file   m_z_filter_values.f90
+!!        module m_z_filter_values
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
 !
-!     module m_z_filter_values
-!
-!      Written by Kemorin
-!
+!>@brief commutive filter data in vertical direction
+!!
+!!@verbatim
+!!      subroutine allocate_z_filter_mom_params
+!!      subroutine deallocate_z_filter_mom_params
+!!      subroutine check_integrated_values(id_rank)
+!!@endverbatim
       module m_z_filter_values
 !
       use m_precision
@@ -10,13 +18,8 @@
       implicit none
 !
 !
+      integer(kind = kint), private :: nfilter6_1
       real(kind = kreal), dimension(:), allocatable :: f_mom_full
-!
-!
-      integer (kind = kint) :: nfilter2_1, nfilter2_2, nfilter2_4
-      integer (kind = kint) :: nfilter2_3, nfilter6_1
-      private :: nfilter2_1, nfilter2_2, nfilter2_3
-      private :: nfilter2_4, nfilter6_1
 !
 !  ---------------------------------------------------------------------
 !
@@ -28,12 +31,7 @@
 !
       integer (kind = kint) :: nfilter
 !
-      nfilter2_1 = 2*nfilter + 1
-      nfilter2_2 = 2*nfilter + 2
-      nfilter2_3 = 2*nfilter + 3
-      nfilter2_4 = 2*nfilter + 4
       nfilter6_1 = 6*nfilter + 1
-!
       allocate( f_mom_full(0:nfilter6_1) )
 !
       f_mom_full = 0.0d0

@@ -49,7 +49,6 @@
       use m_commute_filter_z
       use m_matrix_4_z_commute
       use m_neibor_data_z
-      use m_z_filter_values
 !
       integer (kind = kint), intent(in) :: numnod
       type(CRS_matrix), intent(inout) :: mat_crs

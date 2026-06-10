@@ -178,7 +178,7 @@
       call s_set_neib_ele_z(totalele, nfilter2_1, numfilter, nneib_ele, &
      &    ineib_ele)
       if (my_rank.eq.0) write(*,*) 's_set_neib_connect_z'
-      call s_set_neib_connect_z
+      call s_set_neib_connect_z(totalele, nfilter2_1, nneib_ele, jdx)
 !      call check_neib_ele(my_rank)
 !
 !     det dz / dxi

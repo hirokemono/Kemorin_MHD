@@ -1,8 +1,16 @@
+!>@file   m_work_4_integration.f90
+!!        module m_work_4_integration
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2008
 !
-!      module m_work_4_integration
-!
-!      Written by Kemorin
-!
+!>@brief Work area for construct vertical filter
+!!
+!!@verbatim
+!!         subroutine allocate_work_4_commute
+!!         subroutine check_work_4_norm_ele(id_rank)
+!!@endverbatim
+!!
       module m_work_4_integration
 !
       use m_precision
@@ -56,7 +64,6 @@
        end subroutine allocate_work_4_commute
 !
 ! -----------------------------------------------------------------------
-!
 !
        subroutine check_work_4_norm_ele(id_rank)
 !

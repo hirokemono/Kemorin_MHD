@@ -23,20 +23,20 @@ begin const_z_filter
   begin filter_control
     num_int_points             6
     num_element_4_filter_ctl   6
-    array horiz_filter_ctl           1
+    array horiz_filter_ctl
       horiz_filter_ctl      Gaussian      2.0e0
     end array horiz_filter_ctl
 !
-    array  ref_filter_ctl      2
+    array  ref_filter_ctl
       ref_filter_ctl        Gaussian      2.0e0
     end array ref_filter_ctl
 !
-    array  moments_ctl    5
-      moments_ctl    0    refered   1.0e0                           end
-      moments_ctl    1    refered   0.0e0                           end
-      moments_ctl    2    refered   1.33333333333333333333333d0     end
-      moments_ctl    3    refered   0.0e0                           end
-      moments_ctl    4    refered   0.0e0                           end
+    array  moments_ctl
+      moments_ctl    0    refered   1.0e0
+      moments_ctl    1    refered   0.0e0
+      moments_ctl    2    refered   1.33333333333333333333333d0
+      moments_ctl    3    refered   0.0e0
+      moments_ctl    4    refered   0.0e0
     end array moments_ctl
 !
     solver_type             blockNN

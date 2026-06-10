@@ -1,8 +1,12 @@
+!>@file   input_control_gen_z_filter.f90
+!!        module input_control_gen_z_filter
+!!
+!!@author H. Matsui
+!!@date Programmed in June, 2007
 !
-!      module input_control_gen_z_filter
-!
-!     Written by H. Matsui on June, 2007
-!
+!>@brief input reoutines for vertical filter
+!!
+!!@verbatim
 !!      subroutine s_input_control_4_z_commute                          &
 !!     &         (nod_comm, node, ele, surf, edge,                      &
 !!     &          mat_crs, CG_param, DJDS_param)
@@ -14,7 +18,8 @@
 !!        type(CRS_matrix), intent(inout) :: mat_crs
 !!        type(CG_poarameter), intent(inout) :: CG_param
 !!        type(DJDS_poarameter), intent(inout) :: DJDS_param
-!
+!!@endverbatim
+!!
       module input_control_gen_z_filter
 !
       use m_precision

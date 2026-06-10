@@ -1,11 +1,16 @@
+!>@file   m_consist_mass_crs.f90
+!!        module m_consist_mass_crs
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
 !
-!     module m_consist_mass_crs
-!
-!     Written by H. Matsui
-!
-!      subroutine allocate_consist_mass_crs(numnod)
-!      subroutine deallocate_consist_mass_crs
-!
+!>@brief CRS format consistent mass matices
+!!
+!!@verbatim
+!!      subroutine allocate_consist_mass_crs(numnod)
+!!      subroutine deallocate_consist_mass_crs
+!!@endverbatim
+!!
       module m_consist_mass_crs
 !
       use m_precision

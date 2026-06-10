@@ -1,13 +1,18 @@
+!>@file   m_neibor_data_z.f90
+!!        module m_neibor_data_z
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2008
 !
-!      module m_neibor_data_z
-!
-!      Written by Kemorin
-!
-!      subroutine allocate_neib_nod(numnod, internal_node)
-!      subroutine allocate_neib_ele
-!      subroutine check_neib_nod(id_rank, numnod, internal_node)
-!      subroutine check_neib_ele(id_rank)
-!
+!>@brief Neighboring data to construct vertical filter
+!!
+!!@verbatim
+!!        subroutine allocate_neib_nod(numnod, internal_node)
+!!        subroutine allocate_neib_ele
+!!        subroutine check_neib_nod(id_rank, numnod, internal_node)
+!!        subroutine check_neib_ele(id_rank)
+!!@endverbatim
+!!
       module m_neibor_data_z
 !
       use m_precision

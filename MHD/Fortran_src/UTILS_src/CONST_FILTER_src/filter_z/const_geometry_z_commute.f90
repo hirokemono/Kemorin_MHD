@@ -1,12 +1,21 @@
+!>@file   const_geometry_z_commute.f90
+!!        module const_geometry_z_commute
+!!
+!!@author H. Matsui
+!!@date Programmed in Apr., 2008
 !
-!      module const_geometry_z_commute
-!
-!     Written by Hiroaki Matsui
-!     Modified by Hiroaki Matsui on Apr., 2008
-!
+!>@brief geometry data for horizontal filter
+!!
+!!@verbatim
 !!      subroutine set_geometry_z_commute                               &
 !!     &         (nod_comm, node, ele, surf, edge_z_filter)
-!
+!!        type(communication_table), intent(inout) :: nod_comm
+!!        type(node_data), intent(inout) :: node
+!!        type(element_data), intent(inout) :: ele
+!!        type(surface_data), intent(inout) :: surf
+!!        type(edge_data), intent(inout) :: edge_z_filter
+!!@endverbatim
+!!
       module const_geometry_z_commute
 !
       use m_precision

@@ -1,6 +1,7 @@
 #
 #
 #
+G_FILTER_PLUG_DIR = $$(PROG_DIR)/construct_filter
 
 LIBS_COMMUTE = \
 '$$(LIB_UTILS)'  \
@@ -21,15 +22,15 @@ endif
 
 SUBDIRS = \
 const_3d_filter \
-const_z_filter
-
+commute_z_filter  \
+test_plane_delta_z
 
 #
 #  -------------------------------------------------------------------------
 #
 
 dir_list:
-	@echo 'G_FILTER_PLUG_DIR = $$(PROG_DIR)/construct_filter' >> $(MAKENAME)
+	@echo 'G_FILTER_PLUG_DIR = $(G_FILTER_PLUG_DIR)' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( \
@@ -58,6 +59,11 @@ target_list:
 target_task:
 	@echo const_filteres: const_3d_filter const_z_filter >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo const_z_filter:  \
+	'$$(TARGET_Z_FILTER)'  \
+	'$$(TARGET_TEST_PLANE_DZ)' \
+	>> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
@@ -74,6 +80,8 @@ lib_name:
 	@echo  LIB_FILES_COMMUTE=  \\     >> $(MAKENAME)
 	@echo  $(LIB_FILES_COMMUTE)       >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
+
+lib_tasks:
 
 mod_list:
 	@for dir in $(SUBDIRS); do \

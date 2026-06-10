@@ -1,15 +1,22 @@
+!>@file   m_int_edge_vart_width.f90
+!!        module m_int_edge_vart_width
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
 !
-!     module m_int_edge_vart_width
-!
-!!     subroutine int_edge_vart_width                                   &
-!!    &         (numele, edge, n_int, g_FEM, jac_1d)
+!>@brief FEM shape functgions for vertical filter
+!!
+!!@verbatim
+!!      subroutine int_edge_vart_width                                  &
+!!     &         (numele, edge, n_int, g_FEM, jac_1d)
 !!      subroutine int_edge_diff_vart_w                                 &
 !!     &         (ele, edge, n_int, spf_1d, g_FEM, jac_1d)
 !!      subroutine int_edge_d2_vart_w                                   &
 !!     &         (node, ele, edge, n_int, spf_1d, g_FEM, jac_1d)
 !!      subroutine int_edge_d2_vart_w2                                  &
 !!     &         (ele, edge, n_int, spf_1d, g_FEM, jac_1d)
-!
+!!@endverbatim
+!!
       module m_int_edge_vart_width
 !
       use m_precision

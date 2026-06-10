@@ -1,16 +1,16 @@
 !
 !      module set_neib_nod_z
 !
-      module set_neib_nod_z
-!
 !        programmed by H. Matsui on June, 2007
+!
+!      subroutine s_set_neib_nod_z(numnod, nsize, numfilter, nneib_nod, &
+!     &          ineib_nod)
+!
+      module set_neib_nod_z
 !
       use m_precision
 !
       implicit none
-!
-!      subroutine s_set_neib_nod_z(numnod, nsize, numfilter, nneib_nod, &
-!     &          ineib_nod)
 !
 !-----------------------------------------------------------------------
 !

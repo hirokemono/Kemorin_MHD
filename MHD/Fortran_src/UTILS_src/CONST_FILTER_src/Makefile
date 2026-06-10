@@ -11,6 +11,7 @@ MODULE_LIST=   'MOD_GEN_FILTER'
 UPPER_MODULES=
 
 SUBDIRS = \
+filter_z  \
 filter_3d \
 IO
 

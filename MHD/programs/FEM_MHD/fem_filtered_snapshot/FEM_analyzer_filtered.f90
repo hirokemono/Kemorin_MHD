@@ -1,7 +1,7 @@
 !>@file   FEM_analyzer_filtered.f90
 !!        module FEM_analyzer_filtered
 !!
-!!@author H. Matsui amd H.Okuda
+!!@author H. Matsui and H.Okuda
 !!        programmed by H.Matsui and H. Okuda
 !!                                    in July 2000 (ver 1.1)
 !!        Modified by H. Matsui in July, 2006

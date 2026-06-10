@@ -12,6 +12,9 @@ AC_CANONICAL_HOST
 AM_PROG_AS
 AC_SUBST(CCAS)
 
+dnl Include gmake Check related definitions
+builtin(include,MHD/confdb/check_gnu_make.m4)
+
 dnl Include OpenMP related definitions
 builtin(include,MHD/confdb/ax_pthread.m4)
 builtin(include,MHD/confdb/ax_openmp.m4)
@@ -22,9 +25,6 @@ builtin(include,MHD/confdb/ax_rocm.m4)
 
 dnl Include MPI related definitions
 builtin(include,MHD/confdb/ax_mpi.m4)
-
-dnl Include gmake Check related definitions
-builtin(include,MHD/confdb/check_gnu_make.m4)
 
 dnl Include BLAS library check
 builtin(include,MHD/confdb/ax_blas.m4)

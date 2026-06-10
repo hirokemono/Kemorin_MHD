@@ -1,11 +1,16 @@
+!>@file   m_matrix_4_z_commute.f90
+!!        module m_matrix_4_z_commute
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
 !
-!      module m_matrix_4_z_commute
-!
-!      Written by Kemorin
-!
-!      subroutine allocate_matrix_4_commutation(numnod)
-!      subroutine check_nod_normalize_matrix(id_rank, numnod)
-!
+!>@brief dense matrix for vertical filter construction
+!!
+!!@verbatim
+!!        subroutine allocate_matrix_4_commutation(numnod)
+!!        subroutine check_nod_normalize_matrix(id_rank, numnod)
+!!@endverbatim
+!!
       module m_matrix_4_z_commute
 !
       use m_precision
@@ -27,7 +32,7 @@
 !
       integer(kind = kint), intent(in) :: numnod
 !
-      allocate( d_norm_nod(numnod,nfilter2_3,0:nfilter2_3) )
+      allocate(d_norm_nod(numnod,nfilter2_3,0:nfilter2_3))
 !
       d_norm_nod =   0.0d0
 !

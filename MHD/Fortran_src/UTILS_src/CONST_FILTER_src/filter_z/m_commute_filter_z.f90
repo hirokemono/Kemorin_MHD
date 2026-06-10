@@ -1,9 +1,17 @@
+!>@file   m_commute_filter_z.f90
+!!        module m_commute_filter_z
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
 !
-!      module m_commute_filter_z
-!
+!>@brief commutive filter in vertical direction
+!!
+!!@verbatim
+!!        subroutine allocate_z_filter_mom_params
+!!        subroutine deallocate_z_filter_mom_params
+!!@endverbatim
+!!
       module m_commute_filter_z
-!
-!      Written by Kemorin
 !
       use m_precision
 !
