@@ -1,10 +1,16 @@
 #
 #
 #
+ITP_PLUG_DIR = $$(PROG_DIR)/interpolate
 
 SUBDIRS = \
-generate_table \
-interpolate
+const_interpolate_table \
+const_ele_interpolate_tbl \
+\
+interpolate_field   \
+interpolate_restart \
+interpolate_node    \
+interpolate_element
 
 LIBS_INTERPOLATE = \
 '$$(LIB_UTILS)'    \
@@ -28,7 +34,7 @@ endif
 #
 
 dir_list:
-	@echo 'ITP_PLUG_DIR =      $$(PROG_DIR)/interpolate'      >> $(MAKENAME)
+	@echo 'ITP_PLUG_DIR = $(ITP_PLUG_DIR)'      >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( \
@@ -54,13 +60,13 @@ target_list:
 	done
 
 target_task:
-	@echo itp_tools: \
-	 '$$(TARGET_GEN_TABLE)'     \
+	@echo interpolate_tools: \
+	 '$$(TARGET_GEN_ITP_TABLE)' \
 	 '$$(TARGET_GEN_ELE_TABLE)' \
-	 '$$(TARGET_ITP_UDT)'       \
-	 '$$(TARGET_ITP_RST)'       \
-	 '$$(TARGET_ITP_TEST)'      \
-	 '$$(TARGET_ITP_ELE_TEST)'   >> $(MAKENAME)
+	 '$$(TARGET_ITP_FIELD)'     \
+	 '$$(TARGET_ITP_RESTART)'   \
+	 '$$(TARGET_ITP_MESH)'      \
+	 '$$(TARGET_ITP_ELEMENT)'   >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
@@ -71,8 +77,6 @@ target_task:
 		) \
 	done
 
-
-
 lib_name:
 	@echo  LIBS_INTERPOLATE=  \\          >> $(MAKENAME)
 	@echo  $(LIBS_INTERPOLATE)            >> $(MAKENAME)
@@ -80,7 +84,7 @@ lib_name:
 	@echo  $(LIB_FILES_INTERPOLATE)       >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
-
+lib_tasks:
 
 mod_list:
 	@for dir in $(SUBDIRS); do \

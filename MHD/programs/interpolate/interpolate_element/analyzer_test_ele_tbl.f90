@@ -17,12 +17,12 @@
 !
       use t_step_parameter
       use t_IO_step_parameter
-      use t_structure_4_interolation
+      use t_structure_4_interpolation
       use t_mesh_SR
 !
       implicit none
 !
-      type(structure_4_interolation), save:: itp_etst
+      type(structure_4_interpolation), save:: itp_etst
       type(mesh_SR), save :: m_SR7
 !
 ! ----------------------------------------------------------------------
@@ -33,7 +33,6 @@
 !
       subroutine init_analyzer
 !
-      use input_control_interpolate
       use const_mesh_information
       use set_size_4_smp_types
       use element_posi_2_nodal_array

@@ -13,14 +13,14 @@
       use calypso_mpi
       use m_machine_parameter
 !
-      use t_structure_4_interolation
+      use t_structure_4_interpolation
       use t_ucd_data
       use t_IO_step_parameter
       use t_solver_SR
 !
       implicit none
 !
-      type(structure_4_interolation), save :: itp_udt
+      type(structure_4_interpolation), save :: itp_udt
 !
       type(ctl_data_gen_table), save :: gtbl_ctl
 !

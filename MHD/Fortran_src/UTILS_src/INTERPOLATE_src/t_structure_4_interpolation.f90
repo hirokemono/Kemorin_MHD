@@ -1,5 +1,5 @@
-!>@file   t_structure_4_interolation.f90
-!!@brief  module t_structure_4_interolation
+!>@file   t_structure_4_interpolation.f90
+!!@brief  module t_structure_4_interpolation
 !!
 !!@author H. Matsui
 !!@date Programmed in Apr., 2010
@@ -8,13 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine s_input_control_interpolate(itp_d, ierr)
-!!        type(structure_4_interolation), intent(inout) :: itp_d
+!!        type(structure_4_interpolation), intent(inout) :: itp_d
 !!      subroutine set_ctl_interpolate_udt(fld_ctl, nod_fld)
 !!        type(field_control), intent(in) :: fld_ctl
 !!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
 !!
-      module t_structure_4_interolation
+      module t_structure_4_interpolation
 !
       use m_precision
 !
@@ -30,7 +30,7 @@
 !
       implicit none
 !
-      type structure_4_interolation
+      type structure_4_interpolation
         integer :: nprocs_2nd
 !
         type(ctl_data_gen_table) :: gtbl_ctl
@@ -51,7 +51,7 @@
 !
         type(vectors_4_solver) :: v_1st_sol
         type(vectors_4_solver) :: v_2nd_sol
-      end type structure_4_interolation
+      end type structure_4_interpolation
 !
 !-----------------------------------------------------------------------
 !
@@ -75,7 +75,7 @@
       use interpolate_nod_field_2_type
       use read_ctl_data_gen_table
 !
-      type(structure_4_interolation), intent(inout) :: itp_d
+      type(structure_4_interpolation), intent(inout) :: itp_d
       integer(kind = kint), intent(inout) :: ierr
 !
 !
@@ -159,4 +159,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module t_structure_4_interolation
+      end module t_structure_4_interpolation

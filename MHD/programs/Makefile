@@ -60,7 +60,7 @@ target_list:
 target_task:
 	@echo 'parallels: '            \
 	'fem_mhd_targets  sph_mhd_targets  visualizer'  \
-	'const_filteres itp_tools'     >> $(MAKENAME)
+	'const_filteres interpolate_tools'     >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo 'utilities: '            \
 	'data_utils mesh_utils'        \

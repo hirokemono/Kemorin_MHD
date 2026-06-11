@@ -13,14 +13,14 @@
       use calypso_mpi
       use m_machine_parameter
 !
-      use t_structure_4_interolation
+      use t_structure_4_interpolation
       use t_field_data_IO
       use t_IO_step_parameter
       use t_solver_SR
 !
       implicit none
 !
-      type(structure_4_interolation), save :: itp_rst
+      type(structure_4_interpolation), save :: itp_rst
 !
       type(time_data), save :: itp_time_IO
       type(field_IO), save :: itp_fld_IO
