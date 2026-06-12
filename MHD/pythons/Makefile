@@ -22,7 +22,6 @@ endif
 
 MOD_PYTHONS = \
 '$$(MOD_MHD_F2003)' \
-'$$(MOD_VIZ_F2003)' \
 '$$(MOD_SPH_UTIL_DLL)' \
 '$$(MOD_MHD_CTL_DLL)' \
 '$$(MOD_VIZ_CTL_DLL)'

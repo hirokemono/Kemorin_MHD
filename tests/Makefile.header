@@ -24,10 +24,10 @@ MPIRUN=mpirun
 # Compiler options
 #
 SHAREDLIB_FLAG = --enable-shared
-F90OPTFLAGS =  -fPIC -O3 -Wall -g -fopenmp  $(F_INCLUDE)
-F90CPPFLAGS =  -DPNG_OUTPUT -DZLIB_IO -DFFTW3 -DBLAS -DHDF5_IO -DGLFW3 -DFFMPEG
-OPTFLAGS =  -fPIC -O3 -Wall -g  -D__APPLE__
-CXXFLAGS =  -D__APPLE__
+F90OPTFLAGS =     -fPIC -O3 -Wall -g -fopenmp  $(F_INCLUDE)
+F90CPPFLAGS =     -DPNG_OUTPUT -DZLIB_IO -DFFTW3 -DBLAS -DHDF5_IO -DGLFW3 -DFFMPEG
+OPTFLAGS =        -fPIC -O3 -Wall -g  -D__APPLE__
+CXXFLAGS =        -D__APPLE__
 #
 # Libralies and includes settting
 #
@@ -185,16 +185,6 @@ LIB_ISPACK3_FILE = libispack3_fft.a
 LIB_MT_STREAM =      -lmtstream_f-1.11
 LIB_MT_STREAM_FILE = libmtstream_f-1.11.a
 
-LIB_PYTHONS= \
--L$(PYTHONDIR) -lcalypso_to_pythons
-LIB_FILE_PYTHONS= \
-$(PYTHONDIR)/libcalypso_to_pythons.dylib
-#
-LIB_PYTHON_UTILS= \
-$(LIB_MESH) $(LIB_KEMO_C)
-LIB_FILES_PYTHON_UTILS= \
-$(LIB_MESH_FILE) $(LIB_KEMO_C_FILE)
-#
 LIBS_FEM_MHD= \
 $(LIB_MHD) $(LIB_VIZ) $(LIB_PARA) $(LIB_SOLVER) $(LIB_MESH) $(LIB_MT_STREAM) $(LIB_KEMO_C)
 LIB_FILES_FEM_MHD= \

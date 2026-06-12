@@ -81,7 +81,6 @@ SUBDIRS =     \
 Fortran_src   \
 C_src         \
 External_libs \
-pythons       \
 programs
 
 
@@ -97,6 +96,7 @@ C_INCLUDE += -I$(MHDDIR)/C_src/CORE_C
 C_INCLUDE += -I$(MHDDIR)/C_src/CONTROLS
 
 ifdef SHAREDLIB_FLAG
+  SUBDIRS+=         pythons
   SHAREDLIB_FLAGS+= -fPIC
 endif
 
@@ -396,10 +396,10 @@ makeheaders:
 	@echo '# Compiler options' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo 'SHAREDLIB_FLAG = $(SHAREDLIB_FLAG)' >> $(MAKENAME)
-	@echo 'F90OPTFLAGS = $(SHAREDLIB_FLAGS) $(F90OPTFLAGS) $(OPENMP_FCFLAGS)  $$(F_INCLUDE)' >> $(MAKENAME)
-	@echo 'F90CPPFLAGS = $(FORTRAN_C_CONNECT)'          >> $(MAKENAME)
-	@echo 'OPTFLAGS = $(SHAREDLIB_FLAGS) $(OPTFLAGS) $(OPENMP_CFLAGS) $(COCOA_FLAG)' >> $(MAKENAME)
-	@echo 'CXXFLAGS = $(CXXFLAGS) $(COCOA_FLAG)' >> $(MAKENAME)
+	@echo 'F90OPTFLAGS =    $(SHAREDLIB_FLAGS) $(F90OPTFLAGS) $(OPENMP_FCFLAGS)  $$(F_INCLUDE)' >> $(MAKENAME)
+	@echo 'F90CPPFLAGS =    $(FORTRAN_C_CONNECT)'          >> $(MAKENAME)
+	@echo 'OPTFLAGS =       $(SHAREDLIB_FLAGS) $(OPTFLAGS) $(OPENMP_CFLAGS) $(COCOA_FLAG)' >> $(MAKENAME)
+	@echo 'CXXFLAGS =       $(CXXFLAGS) $(COCOA_FLAG)' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo '# Libralies and includes settting' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)

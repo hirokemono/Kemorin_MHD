@@ -27,6 +27,10 @@ MPICHINCDIR = @MPIINCDIR@
 MPILIBS =     @MPILIBS@
 MPIRUN =      @MPIRUN@
 #
+#    Platform
+#
+HOST = @host@
+#
 #    compilers
 #
 F90 = @FC@

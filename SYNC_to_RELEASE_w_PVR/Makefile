@@ -24,10 +24,29 @@ EXP_MAKEHEAD=   $(EXPDIR)/Makefile.header
 TESTS_MAKEHEAD= $(TESTDIR)/Makefile.header
 
 #
+#   BLAS settings
+#
+BLAS_LIBS =
+#
+#    FFTW3 settings
+#
+PKGFLAGS_FFTW3 =
+FFTW3_CFLAGS =
+FFTW3_LIBS =
+FFTW3_OMP_LIBS =
+#
+#    HDF5 fortran wrapper settings
+#
+HDF5_FFLAGS =
+HDF5_LDFLAGS =
+HDF5_FLIBS =
+#
 #   zlib and libpng settings
 #
 ZLIB_CFLAGS =
 ZLIB_LIBS =
+PNG_CFLAGS =
+PNG_LIBS = 
 #
 #  -------------------------------------------------------------------------
 #
@@ -47,6 +66,7 @@ CPP_FLAGS =
 SHAREDLIB_FLAGS =
 
 ifdef SHAREDLIB_FLAG
+  SUBDIRS+=         pythons
   SHAREDLIB_FLAGS+= -fPIC
 endif
 
@@ -283,9 +303,10 @@ makeheaders:
 	@echo '#' >> $(MAKENAME)
 	@echo '# Compiler options' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@echo 'F90OPTFLAGS = $(SHAREDLIB_FLAGS) $(F90OPTFLAGS) $(OPENMP_FCFLAGS)  $$(F_INCLUDE)' >> $(MAKENAME)
-	@echo 'F90CPPFLAGS = $(FORTRAN_C_CONNECT)'                                               >> $(MAKENAME)
-	@echo 'OPTFLAGS =    $(SHAREDLIB_FLAGS) $(OPTFLAGS) $(OPENMP_CFLAGS) $(COCOA_FLAG)'      >> $(MAKENAME)
+	@echo 'SHAREDLIB_FLAG = $(SHAREDLIB_FLAG)' >> $(MAKENAME)
+	@echo 'F90OPTFLAGS =    $(SHAREDLIB_FLAGS) $(F90OPTFLAGS) $(OPENMP_FCFLAGS)  $$(F_INCLUDE)' >> $(MAKENAME)
+	@echo 'F90CPPFLAGS =    $(FORTRAN_C_CONNECT)'                                               >> $(MAKENAME)
+	@echo 'OPTFLAGS =       $(SHAREDLIB_FLAGS) $(OPTFLAGS) $(OPENMP_CFLAGS) $(COCOA_FLAG)'      >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo '# Libralies and includes settting' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
@@ -364,6 +385,7 @@ makelib_list:
 		GMAKE='$(GMAKE)' \
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
+		FORTRAN_C_CONNECT='$(FORTRAN_C_CONNECT)' \
 		lib_name; \
 		 ) \
 	done
