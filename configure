@@ -715,6 +715,7 @@ ifGNUmake
 RANLIB
 ar_bin
 XL_FORTRAN
+MACOS_FLAG
 SSE8
 SSE4
 SSE_CPU
@@ -5238,6 +5239,10 @@ fi
 
 
 
+
+
+
+
 # SYNOPSIS
 #
 #   AX_PTHREAD([ACTION-IF-FOUND[, ACTION-IF-NOT-FOUND]])
@@ -5514,10 +5519,6 @@ fi
 # maintainer to run autoupdate.  We don't issue MESSAGE
 # from autoconf, because that's instructions for what
 # to do *after* running autoupdate.
-
-
-
-
 
 
 
@@ -8079,10 +8080,24 @@ esac
 
 
 
-if test ${host} = "powerpc64-bgq-linux"
-then
-  XL_FORTRAN="__bgq__"
-fi
+
+# Detect the target system
+case "$host" in
+    *-apple-darwin*)
+        MACOS_FLAG="__apple__"
+        XL_FORTRAN=""
+        ;;
+    powerpc64-bgq-linux)
+        MACOS_FLAG=""
+        XL_FORTRAN="__bgq__"
+        ;;
+    *)
+        MACOS_FLAG=""
+        XL_FORTRAN=""
+        ;;
+esac
+
+
 
 
 
@@ -15066,6 +15081,8 @@ printf '%s\n' "" >&6; }
 printf '%s\n' "---------------------------------------------------------------" >&6; }
 { printf '%s\n' "$as_me:${as_lineno-$LINENO}: result: " >&5
 printf '%s\n' "" >&6; }
+{ printf '%s\n' "$as_me:${as_lineno-$LINENO}: result: MACOS_FLAG     \"${MACOS_FLAG}\"" >&5
+printf '%s\n' "MACOS_FLAG     \"${MACOS_FLAG}\"" >&6; }
 
 
 

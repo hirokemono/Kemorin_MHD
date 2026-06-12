@@ -229,11 +229,25 @@ AC_SUBST(SSE_CPU)
 AC_SUBST(SSE4)
 AC_SUBST(SSE8)
 
-if test ${host} = "powerpc64-bgq-linux"
-then
-  XL_FORTRAN="__bgq__"
-fi
+
+# Detect the target system
+case "$host" in
+    *-apple-darwin*)
+        MACOS_FLAG="__apple__"
+        XL_FORTRAN=""
+        ;;
+    powerpc64-bgq-linux)
+        MACOS_FLAG=""
+        XL_FORTRAN="__bgq__"
+        ;;
+    *)
+        MACOS_FLAG=""
+        XL_FORTRAN=""
+        ;;
+esac
+AC_SUBST(MACOS_FLAG)
 AC_SUBST(XL_FORTRAN)
+
 
 
 
@@ -666,6 +680,7 @@ fi
 AC_MSG_RESULT()
 AC_MSG_RESULT(---------------------------------------------------------------)
 AC_MSG_RESULT()
+AC_MSG_RESULT(MACOS_FLAG     "${MACOS_FLAG}")
 
 
 
