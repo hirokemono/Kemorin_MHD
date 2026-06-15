@@ -3,7 +3,10 @@
 !
 !        programmed by H. Matsui on June, 2007
 !
-!      subroutine s_const_commute_matrix(numnod)
+!!      subroutine s_const_commute_matrix(numnod, zfilter_wk, mat_crs)
+!!        integer (kind= kint), intent(in) :: numnod
+!!        type(z_filter_work), intent(in) :: zfilter_wk
+!!        type(CRS_matrix), intent(inout) :: mat_crs
 !
       module const_z_commute_matrix
 !
@@ -20,7 +23,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_const_commute_matrix(numnod, mat_crs)
+      subroutine s_const_commute_matrix(numnod, zfilter_wk, mat_crs)
 !
       use m_commute_filter_z
       use m_matrix_4_z_commute
@@ -29,6 +32,8 @@
       use m_int_edge_vart_width
 !
       integer (kind= kint), intent(in) :: numnod
+      type(z_filter_work), intent(in) :: zfilter_wk
+!
       type(CRS_matrix), intent(inout) :: mat_crs
 !
       integer (kind = kint) :: kk, kfact, inod, i, k1, jj, k2, k21
@@ -64,7 +69,7 @@
 !
         do k1 = 1, ncomp_mat
           do inod = 1, numnod
-            jj = ncomp_st(inod) + k1 - 1
+            jj = zfilter_wk%ncomp_z_st(inod) + k1 - 1
             k21 = k2 + (k1-1)*ncomp_mat + (inod-1)*ncomp_mat*ncomp_mat
             mat_crs%D_crs(k21) = d_norm_nod(inod,jj,kfact)
           end do

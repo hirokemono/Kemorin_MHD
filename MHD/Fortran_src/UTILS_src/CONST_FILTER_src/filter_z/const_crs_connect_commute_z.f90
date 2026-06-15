@@ -27,13 +27,17 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_connect_2_n_filter(node)
+      subroutine set_connect_2_n_filter(node, nneib_nod, ncomp_st)
 !
       use t_geometry_data
       use m_commute_filter_z
-      use m_neibor_data_z
 !
       type(node_data), intent(in) :: node
+      integer(kind = kint), intent(in)                                  &
+     &                     :: nneib_nod(node%internal_node,2)
+!
+      integer(kind = kint), intent(inout) :: ncomp_st(node%numnod)
+!
       integer(kind = kint) :: inod
       integer(kind = kint_gl) :: i
 !

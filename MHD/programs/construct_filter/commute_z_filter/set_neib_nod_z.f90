@@ -18,12 +18,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_set_neib_nod_z(numnod, nsize, numfilter, nneib_nod,  &
-     &          ineib_nod)
+      subroutine s_set_neib_nod_z(numnod, nsize, numfilter,             &
+     &                            nneib_nod, ineib_nod)
 !
-      integer(kind = kint) :: numnod, nsize, numfilter
-      integer(kind = kint), dimension(numnod,2) :: nneib_nod
-      integer(kind = kint), dimension(numnod,nsize,2) ::ineib_nod
+      integer(kind = kint), intent(in) :: numnod, nsize, numfilter
+      integer(kind = kint), intent(inout) :: nneib_nod(numnod,2)
+      integer(kind = kint), intent(inout)                               &
+     &                      :: ineib_nod(numnod,nsize,2)
+!
       integer(kind = kint) :: i, j
 !
 !

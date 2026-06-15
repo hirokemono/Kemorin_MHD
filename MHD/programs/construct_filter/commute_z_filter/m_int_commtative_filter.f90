@@ -3,16 +3,22 @@
 !
 !      Written by Kemorin
 !
-!      subroutine allocate_int_commute_filter(numnod_z, numele_z)
-!      subroutine deallocate_int_commute_filter
-!
-!      subroutine check_int_commutative_filter(id_rank, numnod_z)
-!      subroutine check_neib_nod_2nd(id_rank, numnod_z)
-!      subroutine check_neib_ele_2nd(id_rank, numele_z)
+!!      subroutine allocate_int_commute_filter(numnod_z, numele_z,      &
+!!     &                                       neib_z2)
+!!      subroutine deallocate_int_commute_filter(neib_z2)
+!!        type(neighbour_data_z), intent(inout) :: neib_z2
+!!
+!!      subroutine check_int_commutative_filter(id_rank, numnod_z)
+!!      subroutine check_neib_nod_2nd(id_rank, numnod_z)
+!!      subroutine check_neib_ele_2nd(id_rank, numele_z, neib_z2)
+!!        integer, intent(in) :: id_rank
+!!        integer(kind = kint), intent(in) ::  numele_z
+!!        type(neighbour_data_z), intent(in) :: neib_z2
 !
       module m_int_commtative_filter
 !
       use m_precision
+      use m_neibor_data_z
 !
       implicit none
 !
@@ -38,18 +44,17 @@
       integer(kind = kint), allocatable :: nneib_nod2(:,:)
       integer(kind = kint), allocatable :: ineib_nod2(:,:,:)
 !
-      integer(kind = kint), allocatable :: nneib_ele2(:,:)
-      integer(kind = kint), allocatable :: ineib_ele2(:,:,:)
-!
 !-----------------------------------------------------------------------
 !
       contains
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_int_commute_filter(numnod_z, numele_z)
+      subroutine allocate_int_commute_filter(numnod_z, numele_z,        &
+     &                                       neib_z2)
 !
-      integer(kind = kint) :: numnod_z, numele_z
+      integer(kind = kint), intent(in) :: numnod_z, numele_z
+      type(neighbour_data_z), intent(inout) :: neib_z2
 !
       nside = (ndep_filter-1)/2
 !
@@ -71,8 +76,8 @@
       allocate( nneib_nod2(numnod_z,2) )
       allocate( ineib_nod2(numnod_z,ndep_filter,2) )
 !
-      allocate( nneib_ele2(numele_z,2) )
-      allocate( ineib_ele2(numele_z,ndep_filter,2) )
+      allocate(neib_z2%nneib_ele(numele_z,2))
+      allocate(neib_z2%ineib_ele(numele_z,ndep_filter,2))
 !
       c_filter = 0.0d0
 !
@@ -92,14 +97,16 @@
       nneib_nod2 = nside
       ineib_nod2 = -1
 !
-      nneib_ele2 = nside
-      ineib_ele2 = -1
+      neib_z2%nneib_ele(1:numele_z,1:2) = nside
+      neib_z2%ineib_ele(1:numele_z,1:ndep_filter,1:2) = -1
 !
       end subroutine allocate_int_commute_filter
 !
 !-----------------------------------------------------------------------
 !
-      subroutine deallocate_int_commute_filter
+      subroutine deallocate_int_commute_filter(neib_z2)
+!
+      type(neighbour_data_z), intent(inout) :: neib_z2
 !
 !
       deallocate( c_filter )
@@ -120,8 +127,8 @@
       deallocate( nneib_nod2 )
       deallocate( ineib_nod2 )
 !
-      deallocate( nneib_ele2 )
-      deallocate( ineib_ele2 )
+      deallocate(neib_z2%nneib_ele)
+      deallocate(neib_z2%ineib_ele)
 !
       end subroutine deallocate_int_commute_filter
 !
@@ -190,22 +197,24 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_neib_ele_2nd(id_rank, numele_z)
+      subroutine check_neib_ele_2nd(id_rank, numele_z, neib_z2)
 !
       use m_commute_filter_z
 !
-      integer :: id_rank
-      integer(kind = kint) ::  numele_z
-      integer(kind = kint) :: i, j, k
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) ::  numele_z
+      type(neighbour_data_z), intent(in) :: neib_z2
+!
+      integer(kind = kint) :: i, k
 !
       write(50+id_rank,*) 'nneib_ele2'
-      write(50+id_rank,'(10i16)') (nneib_ele2(i,1),i=1,numele_z)
-      write(50+id_rank,'(10i16)') (nneib_ele2(i,2),i=1,numele_z)
+      write(50+id_rank,'(10i16)') (neib_z2%nneib_ele(i,1),i=1,numele_z)
+      write(50+id_rank,'(10i16)') (neib_z2%nneib_ele(i,2),i=1,numele_z)
       write(50+id_rank,*) 'direction, iele, ineib_ele2'
       do k = 1, 2
         do i = 1, numele_z
           write(50+id_rank,'(10i16)') k, i,                             &
-     &            (ineib_ele2(i,j,k),j=1,nneib_ele2(i,k))
+     &        neib_z2%ineib_ele(i,1:neib_z2%nneib_ele(i,k),k)
         end do
       end do
 !
