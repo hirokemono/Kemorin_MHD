@@ -76,14 +76,34 @@ OPENGL_INC =
 OPENGL_LIBS= 
 #
 PGPLOT_LIBS= 
-
+#
+#  -------------------------------------------------------------------------
+#
+#   Sub directory list
+#
 SUBDIRS =     \
 Fortran_src   \
 C_src         \
 External_libs \
 programs
 
+#
+#    compilers
+#
+F90=
+CC=
+CXX=
+AS=
 
+F90_LOCAL=
+MPIF90=
+
+GMAKE=
+AR=
+RANLIB=
+#
+#    Compiler flags
+#
 OPTFLAGS =
 F90OPTFLAGS =
 SHAREDLIB_FLAGS =
@@ -541,6 +561,7 @@ makelib_list:
 		MAKENAME='$(MAKENAME)' \
 		FORTRAN_C_CONNECT='$(FORTRAN_C_CONNECT)' \
 		64BIT_INT='$(64BIT_INT)'   \
+		COCOA_FLAG='$(COCOA_FLAG)' \
 		OPENGL_LIBS='$(OPENGL_LIBS)'  \
 		lib_name; \
 		 ) \

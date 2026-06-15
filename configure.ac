@@ -62,15 +62,15 @@ AC_ARG_ENABLE(shared,
 [MAKE_sharedlib='no'])
 
 
-AC_ARG_ENABLE(cocoa,
-[  --enable-cocoa          Use Cocoa framework
-   --disable-cocoa to disable Cocoa framework],
-[if test "$enableval" != no ; then
-  USE_Cocoa='yes'
- else
-  USE_Cocoa='no'
- fi],
-[USE_Cocoa='no'])
+# AC_ARG_ENABLE(cocoa,
+# [  --enable-cocoa          Use Cocoa framework
+#    --disable-cocoa to disable Cocoa framework],
+# [if test "$enableval" != no ; then
+#   USE_Cocoa='yes'
+#  else
+#   USE_Cocoa='no'
+#  fi],
+# [USE_Cocoa='no'])
 
 AC_ARG_ENABLE(gl,
 [  --enable-gl             Use OpenGL viewer
@@ -145,8 +145,8 @@ AC_ARG_WITH(ffmpeg,
 
 
 AC_MSG_RESULT(enable-shared... "${MAKE_sharedlib}")
-AC_MSG_RESULT(enable-cocoa...  "${USE_Cocoa}")
 AC_MSG_RESULT(enable-OpenGL..  "${USE_gl}")
+# AC_MSG_RESULT(enable-cocoa...  "${USE_Cocoa}")
 
 AC_MSG_RESULT(with-rocm...   "${USE_rocm}")
 AC_MSG_RESULT(with-fftw3...  "${USE_fftw3}")
@@ -230,22 +230,22 @@ AC_SUBST(SSE4)
 AC_SUBST(SSE8)
 
 
-# Detect the target system
-case "$host" in
+# Detect target system
+case $host in
     *-apple-darwin*)
-        MACOS_FLAG="__apple__"
+        COCOA_FLAG="-D__APPLE__"
         XL_FORTRAN=""
         ;;
     powerpc64-bgq-linux)
-        MACOS_FLAG=""
+        COCOA_FLAG=""
         XL_FORTRAN="__bgq__"
         ;;
     *)
-        MACOS_FLAG=""
+        COCOA_FLAG=""
         XL_FORTRAN=""
         ;;
 esac
-AC_SUBST(MACOS_FLAG)
+AC_SUBST(COCOA_FLAG)
 AC_SUBST(XL_FORTRAN)
 
 
@@ -321,6 +321,12 @@ AC_MSG_RESULT(ROCM_LIBS...     "${ROCM_LIBS}")
 AC_MSG_RESULT(ROCM_ROCPROFV2_LDFLAGS... "${ROCM_ROCPROFV2_LDFLAGS}")
 AC_MSG_RESULT(ROCM_ROCPROFSDK_LDFLAGS..."${ROCM_ROCPROFSDK_LDFLAGS}")
 
+# Add Shared library flag
+if test ${MAKE_sharedlib} = "yes"
+then
+    SHAREDLIB_FLAG="--enable-shared"
+fi
+AC_SUBST(SHAREDLIB_FLAG)
 
 # Check "mpirun" command
 if test -n "${MPIRUN}"; then
@@ -452,14 +458,12 @@ AC_SUBST(PNG_LIBS)
 	AC_SUBST(X_CFLAGS)
 
 # Checks for Cocoa framework
-if test ${USE_Cocoa} = "yes"
+if test -n "${COCOA_FLAG}"
 then
 	USE_gl = "yes"
 	GL_LIBS="-framework OpenGL  -framework CoreVideo  -framework IOKit -framework Cocoa"
 	GL_INC="${X_CFLAGS}"
-	COCOA_FLAG="-D__APPLE__"
 else
-	COCOA_FLAG=""
 # Checks for OpenGL
 	if test ${USE_gl} = "yes"
 	then
@@ -564,16 +568,6 @@ AC_SUBST(FFMPEG_CFLAGS)
 AC_SUBST(FFMPEG_LIBS)
 
 
-# Add Shared library flag
-# if test -n "${SHAREDLIB_FLAG}"
-# then
-    if test ${MAKE_sharedlib} = "yes"
-    then
-        SHAREDLIB_FLAG="--enable-shared"
-    fi
-# fi
-AC_SUBST(SHAREDLIB_FLAG)
-
 # Check pgplot for Fortran compiler
 LIBS="${ZLIB_LIBS} ${PNG_LIBS} ${X_LIBS}"
 LDFLAGS=""
@@ -592,6 +586,11 @@ AC_MSG_RESULT()
 AC_MSG_RESULT(-----   Configuration summary   -------------------------------)
 AC_MSG_RESULT()
 AC_MSG_RESULT(  host:          "${host}")
+if test -n "${COCOA_FLAG}"; then
+        AC_MSG_RESULT(Apple MacOS:            yes)
+else
+        AC_MSG_RESULT(Apple MacOS:             no)
+fi
 AC_MSG_RESULT(XL_FORTRAN:      "${XL_FORTRAN}")
 AC_MSG_RESULT(x86 instruction: "${SSE_FLAG}")
 AC_MSG_RESULT(mpirun command and options: "${MPIRUN}")
@@ -646,11 +645,6 @@ else
         AC_MSG_RESULT(    Use libpng output...      no)
 fi
 AC_MSG_RESULT()
-if test -n "${COCOA_FLAG}"; then
-        AC_MSG_RESULT(    Use Cocoa...          yes)
-else
-        AC_MSG_RESULT(    Use Cocoa...           no)
-fi
 if test -n "${X_LIBS}"; then
         AC_MSG_RESULT(    Use X Window...       yes)
 else
@@ -680,7 +674,6 @@ fi
 AC_MSG_RESULT()
 AC_MSG_RESULT(---------------------------------------------------------------)
 AC_MSG_RESULT()
-AC_MSG_RESULT(MACOS_FLAG     "${MACOS_FLAG}")
 
 
 

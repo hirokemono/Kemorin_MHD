@@ -48,22 +48,42 @@ ZLIB_LIBS =
 PNG_CFLAGS =
 PNG_LIBS = 
 #
+#   MacOS flag
+#
+COCOA_FLAG=
+#
 #  -------------------------------------------------------------------------
 #
-
+#
+#   Sub directory list
+#
 SUBDIRS =         \
 Fortran_libraries \
 C_libraries       \
 External_libs     \
 programs
+#
+#    compilers
+#
+F90=
+CC=
 
+MPIF90=
 
+GMAKE=
+AR=
+RANLIB=
+
+#
+#    Compiler flags
+#
+OPTFLAGS =
+F90OPTFLAGS =
+SHAREDLIB_FLAGS =
+CPP_FLAGS =
 
 F_INCLUDE = -I. -I$$(MAKEDIR)
 C_INCLUDE = -I. -I$$(MAKEDIR)
-
-CPP_FLAGS =
-SHAREDLIB_FLAGS =
 
 ifdef SHAREDLIB_FLAG
   SUBDIRS+=         pythons
@@ -246,6 +266,7 @@ makemake:
 	@echo 'create excecution construct list...'
 	@echo '#' >> $(MAKENAME)
 	@echo 'all: $$(PROGRAMS)' >> $(MAKENAME)
+	@echo 'pythons: $$(LIB_FILE_PYTHONS)' >> $(MAKENAME)
 	@for dir in programs ; do \
 		( cd $${dir};  \
 		$(GMAKE) \
@@ -376,6 +397,7 @@ makelib_list:
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
 		FORTRAN_C_CONNECT='$(FORTRAN_C_CONNECT)' \
+		COCOA_FLAG='$(COCOA_FLAG)' \
 		lib_name; \
 		 ) \
 	done
