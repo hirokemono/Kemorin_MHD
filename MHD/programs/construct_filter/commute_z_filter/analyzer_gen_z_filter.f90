@@ -107,6 +107,11 @@
       type(DJDS_ordering_table) :: djds_tbl_z
       type(DJDS_MATRIX) :: djds_mat_z
 !
+      type(neighbour_data_z), save :: neib_z1
+      type(z_filter_work), save :: zfilter_wk1
+!
+      type(neighbour_data_z), save :: neib_z2
+!
       real(kind = kreal) :: INITtime, PRECtime
       real(kind = kreal) :: COMPtime, COMMtime
       integer(kind=kint) :: itr_res, ierr
@@ -163,30 +168,35 @@
 !
       call allocate_neib_nod(z_filter_mesh1%node%numnod,                &
      &                       z_filter_mesh1%node%internal_node)
-      if (my_rank.eq.0) write(*,*) 's_set_neib_nod_z'
+      if(my_rank .eq. 0) write(*,*) 's_set_neib_nod_z'
       call s_set_neib_nod_z(z_filter_mesh1%node%internal_node,          &
      &    nfilter2_2, numfilter+1, nneib_nod, ineib_nod)
-      if (my_rank.eq.0) write(*,*) 'set_connect_2_n_filter'
-      call set_connect_2_n_filter(z_filter_mesh1%node)
-!      call check_neib_nod(my_rank, z_filter_mesh1%node%numnod,         &
-!     &                             z_filter_mesh1%node%internal_node)
+!      call check_neib_nod(my_rank, z_filter_mesh1%node%internal_node)
 !
 !    set information for filtering for element
 !
-      call allocate_neib_ele
+      call alloc_z_neib_ele(z_filter_mesh1%node%numnod,                 &
+     &                      neib_z1, zfilter_wk1)
+      if(my_rank .eq. 0) write(*,*) 'set_connect_2_n_filter'
+      call set_connect_2_n_filter(z_filter_mesh1%node,                  &
+     &                            nneib_nod, zfilter_wk1%ncomp_z_st)
+!
       if (my_rank.eq.0) write(*,*) 's_set_neib_ele_z'
-      call s_set_neib_ele_z(totalele, nfilter2_1, numfilter, nneib_ele, &
-     &    ineib_ele)
+      call s_set_neib_ele_z(totalele, nfilter2_1, numfilter,            &
+     &                      neib_z1%nneib_ele, neib_z1%ineib_ele)
       if (my_rank.eq.0) write(*,*) 's_set_neib_connect_z'
-      call s_set_neib_connect_z(totalele, nfilter2_1, nneib_ele, jdx)
-!      call check_neib_ele(my_rank)
+      call s_set_neib_connect_z(totalele, nfilter2_1,                   &
+     &                          neib_z1%nneib_ele, zfilter_wk1%jdx_z)
+!      call check_z_neib_ele(my_rank, z_filter_mesh1%node%numnod,       &
+!     &                      neib_z1, zfilter_wk1)
 !
 !     det dz / dxi
 !
       if (my_rank.eq.0) write(*,*) 'set_difference_of_position'
       call set_difference_of_position                                   &
-     &   (z_filter_mesh1%node, edge_z_filter1)
-!      call check_difference_of_position(my_rank)
+     &   (z_filter_mesh1%node, edge_z_filter1,                          &
+     &    neib_z1%nneib_ele, neib_z1%ineib_ele, zfilter_wk1%alpha)
+!      call check_difference_of_position(my_rank, neib_z1, zfilter_wk1)
 !
 !   set moments of filter
 !
@@ -224,7 +234,7 @@
        call set_matrix_4_border(z_filter_mesh1%node%numnod, mat_crs_z)
        write(*,*) 's_const_commute_matrix'
        call s_const_commute_matrix                                      &
-     &    (z_filter_mesh1%node%numnod, mat_crs_z)
+     &    (z_filter_mesh1%node%numnod, zfilter_wk1, mat_crs_z)
        write(*,*) 's_switch_crs_matrix'
        call s_switch_crs_matrix(tbl_crs_z, mat_crs_z)
        write(*,*) 'check_crs_matrix_comps'
@@ -276,7 +286,8 @@
 !
        ndep_filter = ncomp_mat
        call allocate_int_commute_filter                                 &
-      &   (z_filter_mesh1%node%numnod, z_filter_mesh1%ele%numele)
+      &   (z_filter_mesh1%node%numnod, z_filter_mesh1%ele%numele,       &
+      &    neib_z2)
 !
        write(*,*) 's_copy_1darray_2_2darray'
        call s_copy_1darray_2_2darray                                    &
@@ -290,8 +301,9 @@
 !       call check_neib_nod_2nd(my_rank)
        write(*,*) 's_set_neib_ele_z'
        call s_set_neib_ele_z(z_filter_mesh1%ele%numele,                 &
-     &     ncomp_mat, nside, nneib_ele2, ineib_ele2)
-!       call check_neib_ele_2nd(my_rank, z_filter_mesh1%ele%numele)
+     &     ncomp_mat, nside, neib_z2%nneib_ele, neib_z2%ineib_ele)
+!       call check_neib_ele_2nd(my_rank, z_filter_mesh1%ele%numele,     &
+!     &                         neib_z2)
 !
        call int_edge_filter_peri(ndep_filter, totalnod_x, xsize,        &
      &      xmom_h_x, xmom_ht_x, gauss_z, g_z_int)
