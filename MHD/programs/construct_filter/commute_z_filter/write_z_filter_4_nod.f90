@@ -25,10 +25,9 @@
 !
       subroutine write_filter_4_nod(node, ele, edge_z_filter, neib_z2)
 !
-      use t_neibor_data_z
+      use t_neighbour_data_z
       use m_int_commtative_filter
       use m_commute_filter_z
-      use m_neibor_data_z
       use m_z_filter_values
       use m_int_edge_vart_width
       use const_geometry_z_commute

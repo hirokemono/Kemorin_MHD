@@ -49,10 +49,9 @@
 !
       subroutine set_matrix_4_border(numnod, neib_z, mat_crs)
 !
-      use t_neibor_data_z
+      use t_neighbour_data_z
       use m_commute_filter_z
       use m_matrix_4_z_commute
-      use m_neibor_data_z
 !
       integer (kind = kint), intent(in) :: numnod
       type(neighbour_data_z), intent(in) :: neib_z

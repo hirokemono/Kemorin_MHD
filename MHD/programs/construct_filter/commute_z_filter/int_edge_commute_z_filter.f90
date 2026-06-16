@@ -32,12 +32,11 @@
       use m_constants
       use m_commute_filter_z
       use m_int_commtative_filter
-      use m_neibor_data_z
       use m_z_filter_values
       use m_work_4_integration
       use m_int_edge_data
 !
-      use t_neibor_data_z
+      use t_neighbour_data_z
       use set_filter_moments
 !
       integer(kind = kint), intent(in) :: numnod, numele

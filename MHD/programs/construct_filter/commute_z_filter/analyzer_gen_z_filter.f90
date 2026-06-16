@@ -61,7 +61,6 @@
       use calypso_mpi
 !
       use m_commute_filter_z
-      use m_neibor_data_z
       use m_z_filter_values
       use m_work_4_integration
       use m_matrix_4_z_commute
@@ -69,14 +68,14 @@
       use m_int_edge_data
       use m_matrix_4_LU
 !
-      use t_neibor_data_z
+      use t_neighbour_data_z
+      use t_neighbour_index_z
 !
       use const_delta_z_analytical
 
       use const_crs_connect_commute_z
       use solve_precond_DJDS
 
-      use set_diff_position_z_filter
       use int_edge_norm_nod_z_filter
       use int_edge_moment_z_filter
       use int_edge_horiz_filter_peri
@@ -92,9 +91,6 @@
       use copy_1darray_2_2darray
       use switch_crs_matrix
       use cal_jacobian_linear_1d
-      use set_neib_nod_z
-      use set_neib_ele_z
-      use set_neib_connect_z
       use set_matrices_4_z_filter
       use copy_matrix_2_djds_array
       use write_z_filter_4_nod
@@ -169,34 +165,25 @@
 !
 !    set information for filtering for node
 !
-      call alloc_z_neib_nod(z_filter_mesh1%node%internal_node,          &
-     &                      nfilter2_2, (numfilter+1), neib_z1)
-      if(my_rank .eq. 0) write(*,*) 's_set_neib_nod_z'
-      call s_set_neib_nod_z(z_filter_mesh1%node%internal_node,          &
-     &                      nfilter2_2, numfilter+1,                    &
-     &                      neib_z1%nneib_nod, neib_z1%ineib_nod)
-!      write(50+my_rank,*) 'neib_z1%nneib_nod'
-!      call check_z_neib_nod(my_rank, z_filter_mesh1%node%internal_node,&
-!     &                      neib_z1)
+      call init_z_neighbour                                             &
+     &   (z_filter_mesh1%node%internal_node, totalele,                  &
+     &    nfilter2_2, nfilter2_1, (numfilter+1), numfilter, neib_z1)
+!      write(50+my_rank,*) 'neib_z1'
+!      call check_z_neighbour(my_rank,                                  &
+!     &    z_filter_mesh1%node%internal_node, totalele, neib_z1)
 !
 !    set information for filtering for element
 !
-      call alloc_z_neib_ele(totalele, nfilter2_1, numfilter, neib_z1)
-      call alloc_z_neib_index(z_filter_mesh1%node%numnod, zfilter_wk1)
+      call alloc_z_neib_index(z_filter_mesh1%node%numnod, nfilter2_1,   &
+     &                        zfilter_wk1)
       if(my_rank .eq. 0) write(*,*) 'set_connect_2_n_filter'
       call set_connect_2_n_filter(z_filter_mesh1%node,                  &
      &    neib_z1%nneib_nod, zfilter_wk1%ncomp_z_st)
-!
-      if (my_rank.eq.0) write(*,*) 's_set_neib_ele_z'
-      call s_set_neib_ele_z(totalele, nfilter2_1, numfilter,            &
-     &                      neib_z1%nneib_ele, neib_z1%ineib_ele)
       if (my_rank.eq.0) write(*,*) 's_set_neib_connect_z'
       call s_set_neib_connect_z(totalele, nfilter2_1,                   &
      &                          neib_z1%nneib_ele, zfilter_wk1%jdx_z)
-!      write(50+my_rank,*) 'neib_z1%nneib_ele'
-!      call check_z_neib_ele(my_rank, totalele, neib_z1)
 !      call check_z_neib_index(my_rank, z_filter_mesh1%node%numnod,       &
-!     &                        zfilter_wk1)
+!     &                        totalele, zfilter_wk1)
 !
 !     det dz / dxi
 !
@@ -204,7 +191,8 @@
       call set_difference_of_position                                   &
      &   (z_filter_mesh1%node, edge_z_filter1,                          &
      &    neib_z1%nneib_ele, neib_z1%ineib_ele, zfilter_wk1%alpha)
-!      call check_difference_of_position(my_rank, neib_z1, zfilter_wk1)
+!      call check_difference_of_position(my_rank, totalele, neib_z1,    &
+!     &                                  zfilter_wk1)
 !
 !   set moments of filter
 !
@@ -294,11 +282,13 @@
 !
 !
        ndep_filter = ncomp_mat
-      call alloc_z_neib_nod(z_filter_mesh1%node%numnod,                 &
-     &                      ndep_filter, nside, neib_z2)
-      call alloc_z_neib_ele(z_filter_mesh1%ele%numele,                  &
-     &                      ndep_filter, nside, neib_z2)
       call allocate_int_commute_filter(z_filter_mesh1%node%numnod)
+      call init_z_neighbour                                             &
+     &   (z_filter_mesh1%node%numnod, z_filter_mesh1%ele%numele,        &
+     &    ncomp_mat, ncomp_mat, nside, nside, neib_z2)
+!       write(50+my_rank,*) 'neib_z2'
+!       call check_z_neighbour(my_rank, z_filter_mesh1%node%numnod,     &
+!     &                        z_filter_mesh1%ele%numele, neib_z2)
 !
        write(*,*) 's_copy_1darray_2_2darray'
        call s_copy_1darray_2_2darray                                    &
@@ -306,18 +296,6 @@
      &     c_filter, mat_crs_z%X_crs)
        call dealloc_crs_mat_data(mat_crs_z)
 !
-       write(*,*) 's_set_neib_nod_z'
-       call s_set_neib_nod_z(z_filter_mesh1%node%numnod,                &
-     &     ncomp_mat, nside, neib_z2%nneib_nod, neib_z2%ineib_nod)
-!       write(50+my_rank,*) 'neib_z2%nneib_nod'
-!       call check_z_neib_nod(my_rank, z_filter_mesh1%node%numnod,      &
-!     &                       neib_z2)
-       write(*,*) 's_set_neib_ele_z'
-       call s_set_neib_ele_z(z_filter_mesh1%ele%numele,                 &
-     &     ncomp_mat, nside, neib_z2%nneib_ele, neib_z2%ineib_ele)
-!       write(50+my_rank,*) 'neib_z2%nneib_ele'
-!       call check_z_neib_ele(my_rank, z_filter_mesh1%ele%numele,       &
-!     &                       neib_z2)
 !
        call int_edge_filter_peri(ndep_filter, totalnod_x, xsize,        &
      &      xmom_h_x, xmom_ht_x, gauss_z, g_z_int)
@@ -349,10 +327,8 @@
        call dealloc_gauss_points(gauss_z)
 !
        call deallocate_int_commute_filter
-       call dealloc_z_neib_nod(neib_z2)
-       call dealloc_z_neib_ele(neib_z2)
-       call dealloc_z_neib_nod(neib_z1)
-       call dealloc_z_neib_ele(neib_z1)
+       call dealloc_z_neighbour(neib_z2)
+       call dealloc_z_neighbour(neib_z1)
 !
 !    finerizing
 !

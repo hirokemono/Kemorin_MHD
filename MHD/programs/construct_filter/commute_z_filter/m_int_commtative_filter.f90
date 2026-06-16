@@ -14,7 +14,6 @@
       module m_int_commtative_filter
 !
       use m_precision
-      use m_neibor_data_z
 !
       implicit none
 !
