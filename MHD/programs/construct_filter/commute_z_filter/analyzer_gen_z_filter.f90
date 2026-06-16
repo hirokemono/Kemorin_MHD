@@ -166,20 +166,20 @@
 !
 !    set information for filtering for node
 !
-      call allocate_neib_nod(z_filter_mesh1%node%numnod,                &
-     &                       z_filter_mesh1%node%internal_node,         &
-     &                       neib_z1)
+      call alloc_z_neib_nod(z_filter_mesh1%node%internal_node,          &
+     &                      nfilter2_2, (numfilter+1), neib_z1)
       if(my_rank .eq. 0) write(*,*) 's_set_neib_nod_z'
       call s_set_neib_nod_z(z_filter_mesh1%node%internal_node,          &
      &                      nfilter2_2, numfilter+1,                    &
      &                      neib_z1%nneib_nod, neib_z1%ineib_nod)
-!      call check_neib_nod(my_rank, z_filter_mesh1%node%internal_node,  &
-!     &                    neib_z1)
+!      write(50+my_rank,*) 'neib_z1%nneib_nod'
+!      call check_z_neib_nod(my_rank, z_filter_mesh1%node%internal_node,&
+!     &                      neib_z1)
 !
 !    set information for filtering for element
 !
-      call alloc_z_neib_ele(z_filter_mesh1%node%numnod,                 &
-     &                      neib_z1, zfilter_wk1)
+      call alloc_z_neib_ele(totalele, nfilter2_1, numfilter, neib_z1)
+      call alloc_z_neib_index(z_filter_mesh1%node%numnod, zfilter_wk1)
       if(my_rank .eq. 0) write(*,*) 'set_connect_2_n_filter'
       call set_connect_2_n_filter(z_filter_mesh1%node,                  &
      &    neib_z1%nneib_nod, zfilter_wk1%ncomp_z_st)
@@ -190,8 +190,10 @@
       if (my_rank.eq.0) write(*,*) 's_set_neib_connect_z'
       call s_set_neib_connect_z(totalele, nfilter2_1,                   &
      &                          neib_z1%nneib_ele, zfilter_wk1%jdx_z)
-!      call check_z_neib_ele(my_rank, z_filter_mesh1%node%numnod,       &
-!     &                      neib_z1, zfilter_wk1)
+!      write(50+my_rank,*) 'neib_z1%nneib_ele'
+!      call check_z_neib_ele(my_rank, totalele, neib_z1)
+!      call check_z_neib_index(my_rank, z_filter_mesh1%node%numnod,       &
+!     &                        zfilter_wk1)
 !
 !     det dz / dxi
 !
@@ -289,9 +291,11 @@
 !
 !
        ndep_filter = ncomp_mat
-       call allocate_int_commute_filter                                 &
-      &   (z_filter_mesh1%node%numnod, z_filter_mesh1%ele%numele,       &
-      &    neib_z2)
+      call alloc_z_neib_nod(z_filter_mesh1%node%numnod,                 &
+     &                      ndep_filter, nside, neib_z2)
+      call alloc_z_neib_ele(z_filter_mesh1%ele%numele,                  &
+     &                      ndep_filter, nside, neib_z2)
+      call allocate_int_commute_filter(z_filter_mesh1%node%numnod)
 !
        write(*,*) 's_copy_1darray_2_2darray'
        call s_copy_1darray_2_2darray                                    &
@@ -302,13 +306,15 @@
        write(*,*) 's_set_neib_nod_z'
        call s_set_neib_nod_z(z_filter_mesh1%node%numnod,                &
      &     ncomp_mat, nside, neib_z2%nneib_nod, neib_z2%ineib_nod)
-!       call check_neib_nod_2nd(my_rank, z_filter_mesh1%node%numnod,    &
-!     &                         neib_z2)
+!       write(50+my_rank,*) 'neib_z2%nneib_nod'
+!       call check_z_neib_nod(my_rank, z_filter_mesh1%node%numnod,      &
+!     &                       neib_z2)
        write(*,*) 's_set_neib_ele_z'
        call s_set_neib_ele_z(z_filter_mesh1%ele%numele,                 &
      &     ncomp_mat, nside, neib_z2%nneib_ele, neib_z2%ineib_ele)
-!       call check_neib_ele_2nd(my_rank, z_filter_mesh1%ele%numele,     &
-!     &                         neib_z2)
+!       write(50+my_rank,*) 'neib_z2%nneib_ele'
+!       call check_z_neib_ele(my_rank, z_filter_mesh1%ele%numele,       &
+!     &                       neib_z2)
 !
        call int_edge_filter_peri(ndep_filter, totalnod_x, xsize,        &
      &      xmom_h_x, xmom_ht_x, gauss_z, g_z_int)
@@ -338,6 +344,12 @@
        call deallocate_filter_values
        call dealloc_work_4_integration(g_z_int)
        call dealloc_gauss_points(gauss_z)
+!
+       call deallocate_int_commute_filter
+       call dealloc_z_neib_nod(neib_z2)
+       call dealloc_z_neib_ele(neib_z2)
+       call dealloc_z_neib_nod(neib_z1)
+       call dealloc_z_neib_ele(neib_z1)
 !
 !    finerizing
 !
