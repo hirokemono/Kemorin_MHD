@@ -5,8 +5,12 @@
 !
 !
 !!      subroutine int_edge_commutative_filter(numnod, numele,          &
-!!     &          zz, ie_edge, gauss, g_int)
+!!     &          zz, ie_edge, gauss, neib_z2, g_int)
+!!        integer(kind = kint), intent(in) :: numnod, numele
+!!        integer(kind = kint), intent(in) :: ie_edge(numele,2)
+!!        real(kind = kreal), intent(in) :: zz(numnod)
 !!        type(gauss_points), intent(in) :: gauss
+!!        type(neighbour_data_z), intent(in) :: neib_z2
 !!        type(gauss_integrations), intent(inout) :: g_int
 !
       module int_edge_commute_z_filter
@@ -23,11 +27,12 @@
 !   --------------------------------------------------------------------
 !
       subroutine int_edge_commutative_filter(numnod, numele,            &
-     &          zz, ie_edge, gauss, g_int)
+     &          zz, ie_edge, gauss, neib_z2, g_int)
 !
       use m_constants
       use m_commute_filter_z
       use m_int_commtative_filter
+      use m_neibor_data_z
       use m_z_filter_values
       use m_work_4_integration
       use m_int_edge_data
@@ -37,6 +42,7 @@
       integer(kind = kint), intent(in) :: ie_edge(numele,2)
       real(kind = kreal), intent(in) :: zz(numnod)
       type(gauss_points), intent(in) :: gauss
+      type(neighbour_data_z), intent(in) :: neib_z2
 !
       type(gauss_integrations), intent(inout) :: g_int
 !
@@ -51,7 +57,7 @@
       do inod = 1, numnod
         zz0 = zz(inod)
         do je = 1, ncomp_mat-1
-          j0 = je - nneib_nod2(inod,1) - 1
+          j0 = je - neib_z2%nneib_nod(inod,1) - 1
           jele = inod + j0
           zs = dble(2*(j0)  )
           ze = dble(2*(j0+1))

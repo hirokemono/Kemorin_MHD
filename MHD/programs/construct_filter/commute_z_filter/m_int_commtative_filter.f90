@@ -9,9 +9,10 @@
 !!        type(neighbour_data_z), intent(inout) :: neib_z2
 !!
 !!      subroutine check_int_commutative_filter(id_rank, numnod_z)
-!!      subroutine check_neib_nod_2nd(id_rank, numnod_z)
+!!      subroutine check_neib_nod_2nd(id_rank, numnod_z, neib_z2)
 !!      subroutine check_neib_ele_2nd(id_rank, numele_z, neib_z2)
 !!        integer, intent(in) :: id_rank
+!!        integer(kind = kint), intent(in) :: numnod_z
 !!        integer(kind = kint), intent(in) ::  numele_z
 !!        type(neighbour_data_z), intent(in) :: neib_z2
 !
@@ -40,9 +41,6 @@
 !
       real(kind = kreal), allocatable :: xmom_dt(:,:)
       real(kind = kreal), allocatable :: xmom_dot(:,:)
-!
-      integer(kind = kint), allocatable :: nneib_nod2(:,:)
-      integer(kind = kint), allocatable :: ineib_nod2(:,:,:)
 !
 !-----------------------------------------------------------------------
 !
@@ -73,12 +71,6 @@
       allocate( xmom_dt(numnod_z,0:2) )
       allocate( xmom_dot(numnod_z,0:2) )
 !
-      allocate( nneib_nod2(numnod_z,2) )
-      allocate( ineib_nod2(numnod_z,ndep_filter,2) )
-!
-      allocate(neib_z2%nneib_ele(numele_z,2))
-      allocate(neib_z2%ineib_ele(numele_z,ndep_filter,2))
-!
       c_filter = 0.0d0
 !
       xmom_h_x = 0.0d0
@@ -94,8 +86,15 @@
       xmom_dt = 0.0d0
       xmom_dot = 0.0d0
 !
-      nneib_nod2 = nside
-      ineib_nod2 = -1
+!
+      allocate(neib_z2%nneib_nod(numnod_z,2))
+      allocate(neib_z2%ineib_nod(numnod_z,ndep_filter,2))
+!
+      allocate(neib_z2%nneib_ele(numele_z,2))
+      allocate(neib_z2%ineib_ele(numele_z,ndep_filter,2))
+!
+      neib_z2%nneib_nod(1:numnod_z,1:2) = nside
+      neib_z2%ineib_nod(1:numnod_z,1:ndep_filter,1:2) = -1
 !
       neib_z2%nneib_ele(1:numele_z,1:2) = nside
       neib_z2%ineib_ele(1:numele_z,1:ndep_filter,1:2) = -1
@@ -124,8 +123,8 @@
       deallocate( xmom_dt )
       deallocate( xmom_dot )
 !
-      deallocate( nneib_nod2 )
-      deallocate( ineib_nod2 )
+      deallocate(neib_z2%nneib_nod)
+      deallocate(neib_z2%ineib_nod)
 !
       deallocate(neib_z2%nneib_ele)
       deallocate(neib_z2%ineib_ele)
@@ -174,22 +173,24 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine check_neib_nod_2nd(id_rank, numnod_z)
+      subroutine check_neib_nod_2nd(id_rank, numnod_z, neib_z2)
 !
       use m_commute_filter_z
 !
-      integer :: id_rank
-      integer(kind = kint) :: numnod_z
-      integer(kind = kint) :: i, j, k
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: numnod_z
+      type(neighbour_data_z), intent(in) :: neib_z2
+!
+      integer(kind = kint) :: i, k
 !
       write(50+id_rank,*) 'nneib_nod2'
-      write(50+id_rank,'(10i16)') (nneib_nod2(i,1),i=1,numnod_z)
-      write(50+id_rank,'(10i16)') (nneib_nod2(i,2),i=1,numnod_z)
+      write(50+id_rank,'(10i16)') neib_z2%nneib_nod(1:numnod_z,1)
+      write(50+id_rank,'(10i16)') neib_z2%nneib_nod(1:numnod_z,2)
       write(50+id_rank,*) 'direction, inod, ineib_nod2'
       do k = 1, 2
         do i = 1, numnod_z
           write(50+id_rank,'(10i16)') k, i,                             &
-     &            (ineib_nod2(i,j,k),j=1,nneib_nod2(i,k))
+     &            neib_z2%ineib_nod(i,1:neib_z2%nneib_nod(i,k),k)
         end do
       end do
 !

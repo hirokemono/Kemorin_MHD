@@ -3,8 +3,10 @@
 !
 !        programmed by H. Matsui on June, 2007
 !
-!!      subroutine s_const_commute_matrix(numnod, zfilter_wk, mat_crs)
+!!      subroutine s_const_commute_matrix(numnod, neib_z, zfilter_wk,   &
+!!     &                                  mat_crs)
 !!        integer (kind= kint), intent(in) :: numnod
+!!        type(neighbour_data_z), intent(in) :: neib_z
 !!        type(z_filter_work), intent(in) :: zfilter_wk
 !!        type(CRS_matrix), intent(inout) :: mat_crs
 !
@@ -23,7 +25,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_const_commute_matrix(numnod, zfilter_wk, mat_crs)
+      subroutine s_const_commute_matrix(numnod, neib_z, zfilter_wk,     &
+     &                                  mat_crs)
 !
       use m_commute_filter_z
       use m_matrix_4_z_commute
@@ -33,6 +36,7 @@
 !
       integer (kind= kint), intent(in) :: numnod
       type(z_filter_work), intent(in) :: zfilter_wk
+      type(neighbour_data_z), intent(in) :: neib_z
 !
       type(CRS_matrix), intent(inout) :: mat_crs
 !
@@ -49,21 +53,21 @@
        if (kfact.eq.0) then
         do inod = 1, numnod
          i = k2 + ncomp_mat*(inod-1)
-         jj = nneib_nod(inod,1) + 1
+         jj = neib_z%nneib_nod(inod,1) + 1
           mat_crs%B_crs(i) = f_mom(kk)
         end do
 !
        else
         do inod = 1, numnod
          i = k2 + ncomp_mat*(inod-1)
-         jj = nneib_nod(inod,1) + 1
+         jj = neib_z%nneib_nod(inod,1) + 1
           mat_crs%B_crs(i) = delta_z(inod)**kfact * f_mom(kk)
         end do
 !         i = k2
-!         jj =  nneib_nod(1,1) + 1
+!         jj =  neib_z%nneib_nod(1,1) + 1
 !         mat_crs%B_crs(i) = 2.0*delta_z(1) * f_mom(kk)
 !         i = k2 + ncomp_mat*(numnod-1)
-!         jj =  nneib_nod(numnod,1) + 1
+!         jj =  neib_z%nneib_nod(numnod,1) + 1
 !         mat_crs%B_crs(i) = 2.0d0*delta_z(numnod) * f_mom(kk)
        end if
 !

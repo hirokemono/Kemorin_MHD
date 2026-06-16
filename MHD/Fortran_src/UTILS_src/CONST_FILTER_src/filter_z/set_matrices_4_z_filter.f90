@@ -4,7 +4,10 @@
 !      Written by H. Matsui
 !
 !      subroutine set_consist_mass_mat(numnod)
-!      subroutine set_matrix_4_border(numnod)
+!!      subroutine set_matrix_4_border(numnod, neib_z, mat_crs)
+!!        integer (kind = kint), intent(in) :: numnod
+!!        type(neighbour_data_z), intent(in) :: neib_z
+!!        type(CRS_matrix), intent(inout) :: mat_crs
 !
       module set_matrices_4_z_filter
 !
@@ -44,13 +47,15 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_matrix_4_border(numnod, mat_crs)
+      subroutine set_matrix_4_border(numnod, neib_z, mat_crs)
 !
       use m_commute_filter_z
       use m_matrix_4_z_commute
       use m_neibor_data_z
 !
       integer (kind = kint), intent(in) :: numnod
+      type(neighbour_data_z), intent(in) :: neib_z
+!
       type(CRS_matrix), intent(inout) :: mat_crs
       integer (kind = kint) :: inod, i, ji
 !
@@ -64,7 +69,7 @@
         mat_crs%B_crs(i) = 2 + ncomp_mat*(inod-1)
       end do
       do inod = 1, numnod
-        if (nneib_nod(inod,1) .lt. ((ncomp_mat-1)/2) ) then
+        if (neib_z%nneib_nod(inod,1) .lt. ((ncomp_mat-1)/2) ) then
           ji = 1 + (ncomp_mat-2) * ncomp_mat                            &
      &           + (inod-1) * ncomp_mat*ncomp_mat
           mat_crs%D_crs(ji) = one
@@ -72,7 +77,7 @@
           ji = 1 + (inod-1) * ncomp_mat*ncomp_mat
           mat_crs%D_crs(ji) = one
         end if
-        if (nneib_nod(inod,2) .lt. ((ncomp_mat-1)/2) ) then
+        if (neib_z%nneib_nod(inod,2) .lt. ((ncomp_mat-1)/2) ) then
           ji = 2 + (2-1) * ncomp_mat + (inod-1) * ncomp_mat*ncomp_mat
           mat_crs%D_crs(ji) = one
         else

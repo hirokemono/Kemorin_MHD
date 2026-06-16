@@ -167,11 +167,14 @@
 !    set information for filtering for node
 !
       call allocate_neib_nod(z_filter_mesh1%node%numnod,                &
-     &                       z_filter_mesh1%node%internal_node)
+     &                       z_filter_mesh1%node%internal_node,         &
+     &                       neib_z1)
       if(my_rank .eq. 0) write(*,*) 's_set_neib_nod_z'
       call s_set_neib_nod_z(z_filter_mesh1%node%internal_node,          &
-     &    nfilter2_2, numfilter+1, nneib_nod, ineib_nod)
-!      call check_neib_nod(my_rank, z_filter_mesh1%node%internal_node)
+     &                      nfilter2_2, numfilter+1,                    &
+     &                      neib_z1%nneib_nod, neib_z1%ineib_nod)
+!      call check_neib_nod(my_rank, z_filter_mesh1%node%internal_node,  &
+!     &                    neib_z1)
 !
 !    set information for filtering for element
 !
@@ -179,7 +182,7 @@
      &                      neib_z1, zfilter_wk1)
       if(my_rank .eq. 0) write(*,*) 'set_connect_2_n_filter'
       call set_connect_2_n_filter(z_filter_mesh1%node,                  &
-     &                            nneib_nod, zfilter_wk1%ncomp_z_st)
+     &    neib_z1%nneib_nod, zfilter_wk1%ncomp_z_st)
 !
       if (my_rank.eq.0) write(*,*) 's_set_neib_ele_z'
       call s_set_neib_ele_z(totalele, nfilter2_1, numfilter,            &
@@ -222,8 +225,8 @@
       call allocate_matrix_4_commutation(z_filter_mesh1%node%numnod)
 !
       if (my_rank.eq.0) write(*,*) 'int_edge_norm_nod'
-       call int_edge_norm_nod                                           &
-     &    (z_filter_mesh1%node, edge_z_filter1, gauss_z, g_z_int)
+       call int_edge_norm_nod(z_filter_mesh1%node, edge_z_filter1,      &
+      &                       gauss_z, neib_z1, g_z_int)
 !       call check_nod_normalize_matrix                                 &
 !     &     (my_rank, z_filter_mesh1%node%numnod)
 !
@@ -231,10 +234,11 @@
        mat_crs_z%NB_crs = ncomp_mat
        call alloc_crs_mat_data(tbl_crs_z, mat_crs_z)
 !
-       call set_matrix_4_border(z_filter_mesh1%node%numnod, mat_crs_z)
+       call set_matrix_4_border(z_filter_mesh1%node%numnod,             &
+     &                          neib_z1, mat_crs_z)
        write(*,*) 's_const_commute_matrix'
        call s_const_commute_matrix                                      &
-     &    (z_filter_mesh1%node%numnod, zfilter_wk1, mat_crs_z)
+     &    (z_filter_mesh1%node%numnod, neib_z1, zfilter_wk1, mat_crs_z)
        write(*,*) 's_switch_crs_matrix'
        call s_switch_crs_matrix(tbl_crs_z, mat_crs_z)
        write(*,*) 'check_crs_matrix_comps'
@@ -297,8 +301,9 @@
 !
        write(*,*) 's_set_neib_nod_z'
        call s_set_neib_nod_z(z_filter_mesh1%node%numnod,                &
-     &     ncomp_mat, nside, nneib_nod2, ineib_nod2)
-!       call check_neib_nod_2nd(my_rank)
+     &     ncomp_mat, nside, neib_z2%nneib_nod, neib_z2%ineib_nod)
+!       call check_neib_nod_2nd(my_rank, z_filter_mesh1%node%numnod,    &
+!     &                         neib_z2)
        write(*,*) 's_set_neib_ele_z'
        call s_set_neib_ele_z(z_filter_mesh1%ele%numele,                 &
      &     ncomp_mat, nside, neib_z2%nneib_ele, neib_z2%ineib_ele)
@@ -314,7 +319,7 @@
        call int_edge_commutative_filter                                 &
      &    (z_filter_mesh1%node%numnod, z_filter_mesh1%ele%numele,       &
      &     z_filter_mesh1%node%xx(1:z_filter_mesh1%node%numnod,3),      &
-     &     edge_z_filter1%ie_edge, gauss_z, g_z_int)
+     &     edge_z_filter1%ie_edge, gauss_z, neib_z2, g_z_int)
 !       call check_int_commutative_filter                               &
 !     &    (my_rank, z_filter_mesh1%node%numnod)
 !
@@ -328,7 +333,7 @@
 !    output results
 !
        call write_filter_4_nod(z_filter_mesh1%node, z_filter_mesh1%ele, &
-     &     edge_z_filter1)
+     &                         edge_z_filter1, neib_z2)
 !
        call deallocate_filter_values
        call dealloc_work_4_integration(g_z_int)

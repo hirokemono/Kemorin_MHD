@@ -7,18 +7,21 @@
 !>@brief Neighboring data to construct vertical filter
 !!
 !!@verbatim
-!!      subroutine allocate_neib_nod(numnod, internal_node)
+!!      subroutine allocate_neib_nod(numnod, internal_node, neib_z)
+!!        integer(kind = kint), intent(in) :: numnod, internal_node
+!!        type(neighbour_data_z), intent(inout) :: neib_z
 !!      subroutine alloc_z_neib_ele(numnod, neib_z, zfilter_wk)
 !!      subroutine dealloc_z_neib_ele(neib_z, zfilter_wk)
 !!        integer(kind = kint), intent(in) :: numnod
 !!        type(neighbour_data_z), intent(inout) :: neib_z
 !!        type(z_filter_work), intent(inout) :: zfilter_wk
-!!        subroutine check_neib_nod(id_rank, numnod, internal_node)
+!!        subroutine check_neib_nod(id_rank, internal_node, neib_z)
 !!      subroutine check_z_neib_ele(id_rank, numnod, neib_z, zfilter_wk)
 !!      subroutine check_difference_of_position(id_rank,                &
 !!     &                                        neib_z, zfilter_wk)
 !!        integer, intent(in) :: id_rank
 !!        integer(kind = kint), intent(in) :: numnod
+!!        integer(kind = kint), intent(in) :: internal_node
 !!        type(neighbour_data_z), intent(in) :: neib_z
 !!        type(z_filter_work), intent(in) :: zfilter_wk
 !!@endverbatim
@@ -29,10 +32,10 @@
 !
       implicit none
 !
-        integer(kind = kint), dimension(:,:), allocatable :: nneib_nod
-        integer(kind = kint), dimension(:,:,:), allocatable :: ineib_nod
-!
       type neighbour_data_z
+        integer(kind = kint), allocatable :: nneib_nod(:,:)
+        integer(kind = kint), allocatable :: ineib_nod(:,:,:)
+!
         integer(kind = kint), allocatable :: nneib_ele(:,:)
         integer(kind = kint), allocatable :: ineib_ele(:,:,:)
       end type neighbour_data_z
@@ -50,18 +53,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_neib_nod(numnod, internal_node)
+      subroutine allocate_neib_nod(numnod, internal_node, neib_z)
 !
       use m_commute_filter_z
 !
       integer(kind = kint), intent(in) :: numnod, internal_node
+      type(neighbour_data_z), intent(inout) :: neib_z
 !
-      allocate(nneib_nod(internal_node,2))
-      allocate(ineib_nod(internal_node,nfilter2_2,2))
-      
+!
+      allocate(neib_z%nneib_nod(internal_node,2))
+      allocate(neib_z%ineib_nod(internal_node,nfilter2_2,2))
 
-      nneib_nod = numfilter + 1
-      ineib_nod = -1
+      neib_z%nneib_nod(1:internal_node,1:2) = numfilter + 1
+      neib_z%ineib_nod(1:internal_node,1:nfilter2_2,1:2) = -1
 !
       end subroutine allocate_neib_nod
 !
@@ -113,23 +117,24 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine check_neib_nod(id_rank, internal_node)
+      subroutine check_neib_nod(id_rank, internal_node, neib_z)
 !
       use m_commute_filter_z
 !
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: internal_node
+      type(neighbour_data_z), intent(in) :: neib_z
 !
-      integer(kind = kint) :: i, j, k
+      integer(kind = kint) :: i, k
 !
       write(50+id_rank,*) 'nneib_nod'
-      write(50+id_rank,'(10i16)') (nneib_nod(i,1),i=1,internal_node)
-      write(50+id_rank,'(10i16)') (nneib_nod(i,2),i=1,internal_node)
+      write(50+id_rank,'(10i16)') neib_z%nneib_nod(1:internal_node,1)
+      write(50+id_rank,'(10i16)') neib_z%nneib_nod(1:internal_node,2)
       write(50+id_rank,*) 'direction, inod, ineib_nod'
       do k = 1, 2
         do i = 1, internal_node
           write(50+id_rank,'(10i16)') k, i,                             &
-     &            (ineib_nod(i,j,k),j=1,nneib_nod(i,k))
+     &            neib_z%ineib_nod(i,neib_z%nneib_nod(i,k),k)
         end do
       end do
 !

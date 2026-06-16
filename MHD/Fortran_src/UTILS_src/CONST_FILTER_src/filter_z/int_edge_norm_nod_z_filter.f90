@@ -7,6 +7,7 @@
 !!        type(node_data), intent(in) :: node
 !!        type(edge_data), intent(in) :: edge
 !!        type(gauss_points), intent(in) :: gauss
+!!        type(neighbour_data_z), intent(in) :: neib_z
 !!        type(gauss_integrations), intent(inout) :: g_int
 !
       module int_edge_norm_nod_z_filter
@@ -25,7 +26,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine int_edge_norm_nod(node, edge, gauss, g_int)
+      subroutine int_edge_norm_nod(node, edge, gauss, neib_z, g_int)
 !
       use m_constants
       use m_commute_filter_z
@@ -38,6 +39,7 @@
       type(node_data), intent(in) :: node
       type(edge_data), intent(in) :: edge
       type(gauss_points), intent(in) :: gauss
+      type(neighbour_data_z), intent(in) :: neib_z
 !
       type(gauss_integrations), intent(inout) :: g_int
 !
@@ -52,7 +54,7 @@
         inod0 = node%inod_global(inod)
         zz0 =   node%xx(inod0,3) 
         do je = 1, nfilter2_3 - 1
-          j0 = je - nneib_nod(inod0,1) - 1
+          j0 = je - neib_z%nneib_nod(inod0,1) - 1
           jele = inod0 + j0
           zs = dble(2*(j0)  )
           ze = dble(2*(j0+1))

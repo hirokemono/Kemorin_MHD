@@ -3,10 +3,11 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine write_filter_4_nod(node, ele, edge_z_filter)
+!!      subroutine write_filter_4_nod(node, ele, edge_z_filter, neib_z2)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(edge_data), intent(in) :: edge_z_filter
+!!        type(neighbour_data_z), intent(in) :: neib_z2
 !
       module write_z_filter_4_nod
 !
@@ -22,10 +23,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_filter_4_nod(node, ele, edge_z_filter)
+      subroutine write_filter_4_nod(node, ele, edge_z_filter, neib_z2)
 !
       use m_int_commtative_filter
       use m_commute_filter_z
+      use m_neibor_data_z
       use m_z_filter_values
       use m_int_edge_vart_width
       use const_geometry_z_commute
@@ -33,6 +35,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(edge_data), intent(in) :: edge_z_filter
+      type(neighbour_data_z), intent(in) :: neib_z2
 !
       integer (kind= kint), parameter :: id_filter_z = 15
       integer (kind= kint) :: i, inod, iele, j, k, kf
@@ -126,8 +129,8 @@
 !
         do inod = 1, node%internal_node
           write(id_filter_z,'(20i16)')                                  &
-     &      node%inod_global(inod), nneib_nod2(inod,1:2),               &
-     &     (node%inod_global(inod+i-nneib_nod2(inod,1)-1),              &
+     &      node%inod_global(inod), neib_z2%nneib_nod(inod,1:2),        &
+     &     (node%inod_global(inod+i-neib_z2%nneib_nod(inod,1)-1),       &
      &        i=1,ncomp_mat)
         end do
 !
