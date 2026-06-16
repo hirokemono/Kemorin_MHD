@@ -34,6 +34,8 @@
       use m_z_filter_values
       use m_int_edge_vart_width
 !
+      use t_neibor_data_z
+!
       integer (kind= kint), intent(in) :: numnod
       type(z_filter_work), intent(in) :: zfilter_wk
       type(neighbour_data_z), intent(in) :: neib_z

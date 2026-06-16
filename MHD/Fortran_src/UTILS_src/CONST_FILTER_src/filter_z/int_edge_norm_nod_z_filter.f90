@@ -34,6 +34,9 @@
       use m_matrix_4_z_commute
       use m_neibor_data_z
       use m_int_edge_data
+!
+      use t_neibor_data_z
+!
       use set_filter_moments
 !
       type(node_data), intent(in) :: node
