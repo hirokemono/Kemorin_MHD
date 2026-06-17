@@ -8,15 +8,17 @@
 !!
 !!@verbatim
 !!      subroutine int_edge_norm_nod(node, ele, edge, gauss, neib_z,    &
-!!     &                             dz_ele, sk_norm_n, g_int)
+!!     &          dz_ele, g_int, sk_norm_n, d_norm_nod)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(edge_data), intent(in) :: edge
 !!        type(gauss_points), intent(in) :: gauss
 !!        type(neighbour_data_z), intent(in) :: neib_z
 !!        real(kind = kreal), intent(in) :: dz_ele
-!!        real(kind = kreal), intent(inout) :: sk_norm_n(0:nfilter6_1)
 !!        type(gauss_integrations), intent(inout) :: g_int
+!!      real(kind = kreal), intent(inout) :: sk_norm_n(0:nfilter6_1)
+!!      real(kind = kreal), intent(inout)                               &
+!!     &           :: d_norm_nod(node%numnod,nfilter2_3,0:nfilter2_3)
 !!@endverbatim
 !
       module int_edge_norm_nod_z_filter
@@ -36,11 +38,10 @@
 !   --------------------------------------------------------------------
 !
       subroutine int_edge_norm_nod(node, ele, edge, gauss, neib_z,      &
-     &                             dz_ele, sk_norm_n, g_int)
+     &          dz_ele, g_int, sk_norm_n, d_norm_nod)
 !
       use m_constants
       use m_commute_filter_z
-      use m_matrix_4_z_commute
 !
       use t_neighbour_data_z
 !
@@ -53,8 +54,10 @@
       type(neighbour_data_z), intent(in) :: neib_z
       real(kind = kreal), intent(in) :: dz_ele(ele%numele)
 !
-      real(kind = kreal), intent(inout) :: sk_norm_n(0:nfilter6_1)
       type(gauss_integrations), intent(inout) :: g_int
+      real(kind = kreal), intent(inout) :: sk_norm_n(0:nfilter6_1)
+      real(kind = kreal), intent(inout)                                 &
+     &           :: d_norm_nod(node%numnod,nfilter2_3,0:nfilter2_3)
 !
       integer(kind = kint_gl) :: inod0, jele
       integer(kind = kint) :: inod

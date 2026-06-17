@@ -59,7 +59,6 @@
 !
       use t_neighbour_data_z
       use m_commute_filter_z
-      use m_matrix_4_z_commute
 !
       integer (kind = kint), intent(in) :: numnod
       type(neighbour_data_z), intent(in) :: neib_z

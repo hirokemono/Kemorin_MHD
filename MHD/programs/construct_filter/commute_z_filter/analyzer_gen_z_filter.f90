@@ -62,7 +62,6 @@
 !
       use m_commute_filter_z
       use m_z_filter_values
-      use m_matrix_4_z_commute
       use m_int_commtative_filter
       use m_int_edge_data
       use m_matrix_4_LU
@@ -113,7 +112,8 @@
 !
       type(neighbour_data_z), save :: neib_z2
 !
-      real(kind=kreal), allocatable:: sk_norm_n(:)
+      real(kind = kreal), allocatable:: sk_norm_n(:)
+      real(kind = kreal), allocatable:: d_norm_nod(:,:,:)
 !
       real(kind = kreal) :: INITtime, PRECtime
       real(kind = kreal) :: COMPtime, COMMtime
@@ -224,13 +224,17 @@
       allocate(sk_norm_n(0:nfilter6_1))
       sk_norm_n = 0.0d0
 !
-      call allocate_matrix_4_commutation(z_filter_mesh1%node%numnod)
+      allocate(d_norm_nod(z_filter_mesh1%node%numnod,                   &
+     &                    nfilter2_3, 0:nfilter2_3))
+      d_norm_nod(1:z_filter_mesh1%node%numnod,                          &
+     &           1:nfilter2_3,0:nfilter2_3) =   0.0d0
 !
       if (my_rank.eq.0) write(*,*) 'int_edge_norm_nod'
        call int_edge_norm_nod(z_filter_mesh1%node, z_filter_mesh1%ele,  &
-      &    edge_z_filter1, gauss_z, neib_z1, dz, sk_norm_n, g_z_int)
+      &                       edge_z_filter1, gauss_z, neib_z1, dz,     &
+      &                       g_z_int, sk_norm_n, d_norm_nod)
 !       call check_nod_normalize_matrix                                 &
-!     &     (my_rank, z_filter_mesh1%node%numnod)
+!     &    (my_rank, z_filter_mesh1%node%numnod, d_norm_nod)
 !
        write(*,*) 'alloc_crs_mat_data'
        mat_crs_z%NB_crs = ncomp_mat
@@ -240,7 +244,10 @@
      &                          neib_z1, mat_crs_z)
        write(*,*) 's_const_commute_matrix'
        call s_const_commute_matrix(z_filter_mesh1%node%numnod,          &
-     &     neib_z1, zfilter_wk1, dz_plane1%delta_z_n, mat_crs_z)
+     &     neib_z1, zfilter_wk1, dz_plane1%delta_z_n, d_norm_nod,       &
+     &     mat_crs_z)
+       deallocate(d_norm_nod)
+!
        write(*,*) 's_switch_crs_matrix'
        call s_switch_crs_matrix(tbl_crs_z, mat_crs_z)
        write(*,*) 'check_crs_matrix_comps'
@@ -359,5 +366,29 @@
         end subroutine analyze_gen_z_filter
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine check_nod_normalize_matrix(id_rank,                    &
+     &                                      numnod, d_norm_nod)
+!
+      use m_commute_filter_z
+!
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: numnod
+      real(kind = kreal), intent(in)                                    &
+     &           :: d_norm_nod(numnod,nfilter2_3,0:nfilter2_3)
+      integer(kind = kint) :: i, k
+!
+!
+      do k = 0, nfilter2_3
+        do i = 1, numnod
+        write(id_rank+60,*) 'd_norm_nod (node_id,order) = ', i, k
+        write(id_rank+60,'(1p5e16.8)') d_norm_nod(i,1:nfilter2_3,k)
+        end do
+      end do
+!
+      end subroutine check_nod_normalize_matrix
+!
+! -----------------------------------------------------------------------
 !
       end module analyzer_gen_z_filter

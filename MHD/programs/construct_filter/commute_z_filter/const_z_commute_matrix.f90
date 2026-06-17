@@ -1,15 +1,22 @@
+!>@file   const_z_commute_matrix.f90
+!!        module const_z_commute_matrix
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
 !
-!      module const_z_commute_matrix
-!
-!        programmed by H. Matsui on June, 2007
-!
+!>@brief FEM matrix to construct vertical filter
+!!
+!!@verbatim
 !!      subroutine s_const_commute_matrix(numnod, neib_z, zfilter_wk,   &
-!!     &                                  delta_z, mat_crs)
+!!     &                                  delta_z, d_norm_nod, mat_crs)
 !!        integer (kind= kint), intent(in) :: numnod
 !!        type(neighbour_data_z), intent(in) :: neib_z
 !!        type(z_filter_work), intent(in) :: zfilter_wk
 !!        real(kind = kreal), intent(in) :: delta_z(numnod)
+!!        real(kind = kreal), intent(in)                                &
+!!     &           :: d_norm_nod(numnod,nfilter2_3,0:nfilter2_3)
 !!        type(CRS_matrix), intent(inout) :: mat_crs
+!!@endverbatim
 !
       module const_z_commute_matrix
 !
@@ -27,10 +34,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_const_commute_matrix(numnod, neib_z, zfilter_wk,     &
-     &                                  delta_z, mat_crs)
+     &                                  delta_z, d_norm_nod, mat_crs)
 !
       use m_commute_filter_z
-      use m_matrix_4_z_commute
       use m_z_filter_values
 !
       use t_neighbour_index_z
@@ -40,6 +46,8 @@
       type(z_filter_work), intent(in) :: zfilter_wk
       type(neighbour_data_z), intent(in) :: neib_z
       real(kind = kreal), intent(in) :: delta_z(numnod)
+      real(kind = kreal), intent(in)                                    &
+     &           :: d_norm_nod(numnod,nfilter2_3,0:nfilter2_3)
 !
       type(CRS_matrix), intent(inout) :: mat_crs
 !
