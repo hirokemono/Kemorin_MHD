@@ -33,7 +33,6 @@
       use m_int_commtative_filter
       use m_commute_filter_z
       use m_z_filter_values
-      use m_int_edge_vart_width
       use const_geometry_z_commute
 !
       type(node_data), intent(in) :: node
@@ -115,7 +114,8 @@
         do inod = 1, node%internal_node
           write(id_filter_z,'(i16,1p4E25.15e3)')                        &
      &      node%inod_global(inod), node%xx(inod,3),                    &
-     &      delta_z(inod), delta_dz(inod), d2_dz(inod)
+     &      dz_plane%delta_z_n(inod), dz_plane%delta_dz_n(inod),        &
+     &      dz_plane%d2_dz_n(inod)
         end do
 !
         write(id_filter_z,*)                                            &

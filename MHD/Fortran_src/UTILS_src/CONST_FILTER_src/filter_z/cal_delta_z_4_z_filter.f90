@@ -1,12 +1,16 @@
-!cal_delta_z_4_z_filter.f90
-!      module cal_delta_z_4_z_filter
+!>@file   cal_delta_z_4_z_filter.f90
+!!        module cal_delta_z_4_z_filter
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
 !
-!      Written by H. Matsui
-!
+!>@brief get vertical spacing for vertical filter
+!!
+!!@verbatim
 !!      subroutine elapsed_label_4_Zfilter
-!!      subroutine cal_delta_z                                          &
-!!     &         (CG_param, DJDS_param, nod_comm, node, ele, edge,      &
-!!     &          spf_1d, g_FEM, jac_1d, tbl_crs, mat_crs, SR_sig, SR_r)
+!!      subroutine cal_delta_z(CG_param, DJDS_param,                    &
+!!     &          nod_comm, node, ele, edge, spf_1d, g_FEM, jac_1d,     &
+!!     &          dz_plane, tbl_crs, mat_crs, SR_sig, SR_r)
 !!        type(CG_poarameter), intent(inout) :: CG_param
 !!        type(DJDS_poarameter), intent(in) :: DJDS_param
 !!        type(communication_table), intent(in) :: nod_comm
@@ -16,10 +20,12 @@
 !!        type(edge_shape_function), intent(in) :: spf_1d
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_1d), intent(in) :: jac_1d
+!!        type(edge_z_width), intent(inout) :: dz_plane
 !!        type(CRS_matrix_connect), intent(inout) :: tbl_crs
 !!        type(CRS_matrix), intent(inout) :: mat_crs
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!@endverbatim
 !
       module cal_delta_z_4_z_filter
 !
@@ -40,6 +46,8 @@
       use t_work_time
 !
       implicit none
+!
+      logical, private :: flag_mass = .TRUE.
 !
       logical :: flag_Zfilte_time = .FALSE.
       integer(kind = kint) :: ist_elapsed_Zfilter = 0
@@ -90,15 +98,17 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine cal_delta_z                                            &
-     &         (CG_param, DJDS_param, nod_comm, node, ele, edge,        &
-     &          spf_1d, g_FEM, jac_1d, tbl_crs, mat_crs, SR_sig, SR_r)
+      subroutine cal_delta_z(CG_param, DJDS_param,                      &
+     &          nod_comm, node, ele, edge, spf_1d, g_FEM, jac_1d,       &
+     &          dz_plane, tbl_crs, mat_crs, SR_sig, SR_r)
 !
+      use t_vart_edge_width
       use m_int_edge_data
       use m_commute_filter_z
 !
       use calcs_by_LUsolver
       use solve_by_mass_z
+      use int_edge_z_spacing
       use int_edge_mass_mat_z_filter
       use set_matrices_4_z_filter
 !
@@ -112,6 +122,7 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_1d), intent(in) :: jac_1d
 !
+      type(edge_z_width), intent(inout) :: dz_plane
       type(CRS_matrix_connect), intent(inout) :: tbl_crs
       type(CRS_matrix), intent(inout) :: mat_crs
       type(send_recv_status), intent(inout) :: SR_sig
@@ -137,7 +148,7 @@
         call allocate_consist_mass_crs(node%numnod, tbl_crs)
         call set_consist_mass_mat(node%numnod)
 !
-        call allocate_delta_z(node%numnod, ele%numele)
+        call alloc_edge_vart_width(node%numnod, ele%numele, dz_plane)
         call int_edge_vart_width(node%numnod, ele%numele, edge,         &
       &                          num_int, g_FEM, jac_1d, rhs_dz)
 !
@@ -146,7 +157,8 @@
 !
         write(*,*) mat_crs%METHOD_crs
         if(mat_crs%METHOD_crs .eq. 'LU') then
-          call solve_delta_z_etc_LU(node%numnod, rhs_dz, delta_z)
+          call solve_delta_z_etc_LU(node%numnod, rhs_dz,                &
+     &                              dz_plane%delta_z_n)
         else
           write(*,*) 'solve_crs_by_mass_z'
           call solve_crs_by_mass_z(CG_param, DJDS_param, nod_comm,      &
@@ -157,17 +169,18 @@
      &                             COMPtime, COMMtime, elps1)
 !
 !$omp parallel workshare
-          delta_z(1:node%numnod) = sol_mk_crs(1:node%numnod)
+          dz_plane%delta_z_n(1:node%numnod) = sol_mk_crs(1:node%numnod)
 !$omp end parallel workshare
         end if
 !
         write(*,*) 'int_edge_diff_vart_w'
         call int_edge_diff_vart_w(node, ele, edge, num_int,             &
-     &                            spf_1d, g_FEM, jac_1d, delta_dz)
+     &      spf_1d, g_FEM, jac_1d, dz_plane%delta_z_n, rhs_dz)
         rhs_mk_crs(1:node%numnod) = rhs_dz(1:node%numnod)
 
         if(mat_crs%METHOD_crs .eq. 'LU') then
-          call solve_delta_z_etc_LU(node%numnod, rhs_dz, delta_dz)
+          call solve_delta_z_etc_LU(node%numnod, rhs_dz,                &
+     &                              dz_plane%delta_dz_n)
         else
           write(*,*) 'solve_crs_by_mass_z2'
           call solve_crs_by_mass_z2(CG_param, DJDS_param, nod_comm,     &
@@ -178,18 +191,21 @@
      &                             COMPtime, COMMtime, elps1)
 !
 !$omp parallel workshare
-          delta_dz(1:node%numnod) = sol_mk_crs(1:node%numnod)
+          dz_plane%delta_dz_n(1:node%numnod)                            &
+     &           = sol_mk_crs(1:node%numnod)
 !$omp end parallel workshare
         end if
 !
         call int_edge_d2_vart_w(node, ele, edge, num_int, spf_1d,       &
-      &                         g_FEM, jac_1d, rhs_dz)
+      &     g_FEM, jac_1d, dz_plane%delta_z_n, dz_plane%delta_dz_n,     &
+      &     rhs_dz)
 !        call int_edge_d2_vart_w2(node, ele, edge, num_int, spf_1d,     &
-!     &                           g_FEM, jac_1d, rhs_dz)
+!     &      g_FEM, jac_1d, dz_plane%delta_dz_n, rhs_dz)
         rhs_mk_crs(1:node%numnod) = rhs_dz(1:node%numnod)
 
         if(mat_crs%METHOD_crs .eq. 'LU') then
-          call solve_delta_z_etc_LU(node%numnod, rhs_dz, d2_dz)
+          call solve_delta_z_etc_LU(node%numnod, rhs_dz,                &
+     &                              dz_plane%d2_dz_n)
         else
           write(*,*) 'solve_crs_by_mass_z2'
           call solve_crs_by_mass_z2(CG_param, DJDS_param, nod_comm,     &
@@ -201,26 +217,34 @@
      &                             COMPtime, COMMtime, elps1)
 !
 !$omp parallel workshare
-          d2_dz(1:node%numnod) = sol_mk_crs(1:node%numnod)
+          dz_plane%d2_dz_n(1:node%numnod) = sol_mk_crs(1:node%numnod)
 !$omp end parallel workshare
         end if
 !
-        d2_dz(1:node%numnod) = rhs_dz(1:node%numnod) * mk(1:node%numnod)
+!$omp parallel workshare
+        dz_plane%d2_dz_n(1:node%numnod)                                 &
+     &       = rhs_dz(1:node%numnod) * mk(1:node%numnod)
+!$omp end parallel workshare
       else
-        call allocate_delta_z(node%numnod, ele%numele)
+        call alloc_edge_vart_width(node%numnod, ele%numele, dz_plane)
         call int_edge_vart_width(node%numnod, ele%numele, edge,         &
      &                           num_int, g_FEM, jac_1d, rhs_dz)
-        delta_z(1:node%numnod)                                          &
+        dz_plane%delta_z_n(1:node%numnod)                               &
      &           = rhs_dz(1:node%numnod) * mk(1:node%numnod)
 !
         call int_edge_diff_vart_w(node, ele, edge, num_int,             &
-     &                            spf_1d, g_FEM, jac_1d, delta_dz)
-        delta_dz(1:node%numnod)                                         &
+     &      spf_1d, g_FEM, jac_1d, dz_plane%delta_z_n, rhs_dz)
+        dz_plane%delta_dz_n(1:node%numnod)                              &
      &            = rhs_dz(1:node%numnod) * mk(1:node%numnod)
 !
         call int_edge_d2_vart_w(node, ele, edge, num_int, spf_1d,       &
-     &                          g_FEM, jac_1d, rhs_dz)
-        d2_dz(1:node%numnod) = rhs_dz(1:node%numnod) * mk(1:node%numnod)
+     &      g_FEM, jac_1d, dz_plane%delta_z_n, dz_plane%delta_dz_n,     &
+     &      rhs_dz)
+!
+!$omp parallel workshare
+        dz_plane%d2_dz_n(1:node%numnod)                                 &
+     &       = rhs_dz(1:node%numnod) * mk(1:node%numnod)
+!$omp end parallel workshare
       end if
       deallocate(rhs_dz)
 !

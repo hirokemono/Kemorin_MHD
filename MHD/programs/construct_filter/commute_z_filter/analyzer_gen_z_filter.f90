@@ -158,8 +158,8 @@
 !      call cal_delta_z(CG_param_z, DJDS_param_z,                       &
 !     &  z_filter_mesh1%nod_comm, z_filter_mesh1%node,                  &
 !     &  z_filter_mesh1%ele, edge_z_filter1, spf_1d_z,                  &
-!     &  jacs_z1%g_FEM, jacs_z1%jac_1d_l,tbl_crs_z, mat_crs_z,          &
-!     &  SR_sig_f, SR_r_f)
+!     &  jacs_z1%g_FEM, jacs_z1%jac_1d_l, dz_plane1,                    &
+!     &  tbl_crs_z, mat_crs_z, SR_sig_f, SR_r_f)
 !
 !      call check_crs_connect                                           &
 !     &   (my_rank, z_filter_mesh1%node%numnod, tbl_crs_z)
@@ -232,8 +232,8 @@
        call set_matrix_4_border(z_filter_mesh1%node%numnod,             &
      &                          neib_z1, mat_crs_z)
        write(*,*) 's_const_commute_matrix'
-       call s_const_commute_matrix                                      &
-     &    (z_filter_mesh1%node%numnod, neib_z1, zfilter_wk1, mat_crs_z)
+       call s_const_commute_matrix(z_filter_mesh1%node%numnod,          &
+     &     neib_z1, zfilter_wk1, dz_plane1%delta_z_n, mat_crs_z)
        write(*,*) 's_switch_crs_matrix'
        call s_switch_crs_matrix(tbl_crs_z, mat_crs_z)
        write(*,*) 'check_crs_matrix_comps'

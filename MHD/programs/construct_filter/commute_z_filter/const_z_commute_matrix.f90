@@ -4,10 +4,11 @@
 !        programmed by H. Matsui on June, 2007
 !
 !!      subroutine s_const_commute_matrix(numnod, neib_z, zfilter_wk,   &
-!!     &                                  mat_crs)
+!!     &                                  delta_z, mat_crs)
 !!        integer (kind= kint), intent(in) :: numnod
 !!        type(neighbour_data_z), intent(in) :: neib_z
 !!        type(z_filter_work), intent(in) :: zfilter_wk
+!!        real(kind = kreal), intent(in) :: delta_z(numnod)
 !!        type(CRS_matrix), intent(inout) :: mat_crs
 !
       module const_z_commute_matrix
@@ -26,12 +27,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_const_commute_matrix(numnod, neib_z, zfilter_wk,     &
-     &                                  mat_crs)
+     &                                  delta_z, mat_crs)
 !
       use m_commute_filter_z
       use m_matrix_4_z_commute
       use m_z_filter_values
-      use m_int_edge_vart_width
 !
       use t_neighbour_index_z
       use t_neighbour_data_z
@@ -39,6 +39,7 @@
       integer (kind= kint), intent(in) :: numnod
       type(z_filter_work), intent(in) :: zfilter_wk
       type(neighbour_data_z), intent(in) :: neib_z
+      real(kind = kreal), intent(in) :: delta_z(numnod)
 !
       type(CRS_matrix), intent(inout) :: mat_crs
 !

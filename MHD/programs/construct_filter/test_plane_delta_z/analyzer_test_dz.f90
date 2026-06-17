@@ -54,14 +54,16 @@
 !
       use calypso_mpi
 !
+      use t_vart_edge_width
       use m_commute_filter_z
       use m_int_edge_data
-      use m_int_edge_vart_width
 
       use input_control_gen_z_filter
       use const_crs_connect_commute_z
       use cal_jacobian_linear_1d
       use cal_delta_z_4_z_filter
+!
+      type(edge_z_width), save :: dz_plane1
 !
       integer (kind= kint), parameter :: id_delta_z = 15
       integer (kind= kint) :: i, n_int
@@ -98,8 +100,8 @@
       call cal_delta_z(CG_param_z, DJDS_param_z,                        &
      &   z_filter_mesh2%nod_comm, z_filter_mesh2%node,                  &
      &   z_filter_mesh2%ele, edge_z_filter2, spf_1d_z,                  &
-     &   jacs_z2%g_FEM, jacs_z2%jac_1d_l, tbl_crs_z,                    &
-     &   mat_crs_z, SR_sig_f, SR_r_f)
+     &   jacs_z2%g_FEM, jacs_z2%jac_1d_l, dz_plane1,                    &
+     &   tbl_crs_z, mat_crs_z, SR_sig_f, SR_r_f)
       call dealloc_edge_shape_func(spf_1d_z)
 !
 !C===
@@ -112,8 +114,8 @@
       write(id_delta_z,*) 'inod, z, delta z, diff.'
       do i = 1, z_filter_mesh2%node%numnod
         write(id_delta_z,'(i15,1p20E25.15e3)')                          &
-     &        i, z_filter_mesh2%node%xx(i,3),                           &
-     &        delta_z(i), delta_dz(i), d2_dz(i)
+     &        i, z_filter_mesh2%node%xx(i,3), dz_plane1%delta_z_n(i),   &
+     &        dz_plane1%delta_dz_n(i), dz_plane1%d2_dz_n(i)
       end do
 !
       close(id_delta_z)

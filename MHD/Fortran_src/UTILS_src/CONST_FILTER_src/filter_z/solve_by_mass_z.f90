@@ -20,7 +20,6 @@
       module solve_by_mass_z
 !
       use m_precision
-      use m_int_edge_vart_width
       use m_consist_mass_crs
 !
       use t_geometry_data

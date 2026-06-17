@@ -19,9 +19,9 @@
       implicit none
 !
       type edge_z_width
-        real(kind = kreal), allocatable :: delta_z(:)
-        real(kind = kreal), allocatable :: delta_dz(:)
-        real(kind = kreal), allocatable :: d2_dz(:)
+        real(kind = kreal), allocatable :: delta_z_n(:)
+        real(kind = kreal), allocatable :: delta_dz_n(:)
+        real(kind = kreal), allocatable :: d2_dz_n(:)
 !
         real(kind = kreal), allocatable :: delta_z_e(:)
         real(kind = kreal), allocatable :: delta_dz_e(:)
@@ -39,14 +39,14 @@
       integer(kind = kint), intent(in) :: numnod, numele
       type(edge_z_width), intent(inout) :: dz_plane
 !
-      allocate(dz_plane%delta_z(numnod))
-      allocate(dz_plane%delta_dz(numnod))
-      allocate(dz_plane%d2_dz(numnod))
+      allocate(dz_plane%delta_z_n(numnod))
+      allocate(dz_plane%delta_dz_n(numnod))
+      allocate(dz_plane%d2_dz_n(numnod))
 !
       if(numnod .gt. 0) then
-        dz_plane%delta_z(1:numnod)  = 0.0d0
-        dz_plane%delta_dz(1:numnod) = 0.0d0
-        dz_plane%d2_dz(1:numnod) =    0.0d0
+        dz_plane%delta_z_n(1:numnod)  = 0.0d0
+        dz_plane%delta_dz_n(1:numnod) = 0.0d0
+        dz_plane%d2_dz_n(1:numnod) =    0.0d0
       end if
 !
       allocate(dz_plane%delta_z_e(numele))
@@ -67,9 +67,9 @@
 !
       type(edge_z_width), intent(inout) :: dz_plane
 !
-      deallocate(dz_plane%delta_z,  dz_plane%delta_z_e)
-      deallocate(dz_plane%delta_dz, dz_plane%delta_dz_e)
-      deallocate(dz_plane%d2_dz,    dz_plane%d2_dz_e)
+      deallocate(dz_plane%delta_z_n,  dz_plane%delta_z_e)
+      deallocate(dz_plane%delta_dz_n, dz_plane%delta_dz_e)
+      deallocate(dz_plane%d2_dz_n,    dz_plane%d2_dz_e)
 !
       end subroutine dealloc_edge_vart_width
 !
