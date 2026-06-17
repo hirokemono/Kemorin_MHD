@@ -29,10 +29,6 @@
       real(kind = kreal), dimension(:), allocatable :: delta_dz
       real(kind = kreal), dimension(:), allocatable :: d2_dz
 !
-      real(kind = kreal), dimension(:), allocatable :: delta_z_e
-      real(kind = kreal), dimension(:), allocatable :: delta_dz_e
-      real(kind = kreal), dimension(:), allocatable :: d2_dz_e
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -47,17 +43,9 @@
       allocate ( delta_dz(numnod) )
       allocate ( d2_dz(numnod) )
 !
-      allocate ( delta_z_e(numele) )
-      allocate ( delta_dz_e(numele) )
-      allocate ( d2_dz_e(numele) )
-!
       delta_z  = 0.0d0
       delta_dz = 0.0d0
       d2_dz = 0.0d0
-!
-      delta_z_e  = 0.0d0
-      delta_dz_e = 0.0d0
-      d2_dz_e = 0.0d0
 !
       end subroutine allocate_delta_z
 !

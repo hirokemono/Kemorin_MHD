@@ -48,7 +48,7 @@
         real (kind = kreal) :: delta_h(2)
         real (kind = kreal) :: diff_deltah(2)
 !
-        real (kind = kreal), allocatable :: delta_z_e(:)
+        real (kind = kreal), allocatable :: delta_z_ele(:)
         real (kind = kreal), allocatable :: diff_deltaz_e(:)
         real (kind = kreal), allocatable :: d2_deltaz_e(:)
 !
@@ -101,7 +101,7 @@
       allocate(cube_fil%diff_deltaz(nz_all) )
       allocate(cube_fil%d2_deltaz(nz_all) )
 !
-      allocate(cube_fil%delta_z_e(nz_all-1) )
+      allocate(cube_fil%delta_z_ele(nz_all-1) )
       allocate(cube_fil%diff_deltaz_e(nz_all-1) )
       allocate(cube_fil%d2_deltaz_e(nz_all-1) )
 !
@@ -124,7 +124,7 @@
       cube_fil%diff_deltaz = 0.0d0
       cube_fil%d2_deltaz = 0.0d0
 !
-      cube_fil%delta_z_e = 0.0d0
+      cube_fil%delta_z_ele = 0.0d0
       cube_fil%diff_deltaz_e = 0.0d0
       cube_fil%d2_deltaz_e = 0.0d0
 !
@@ -160,7 +160,7 @@
       deallocate(cube_fil%diff_deltaz)
       deallocate(cube_fil%d2_deltaz)
 !
-      deallocate(cube_fil%delta_z_e)
+      deallocate(cube_fil%delta_z_ele)
       deallocate(cube_fil%diff_deltaz_e)
       deallocate(cube_fil%d2_deltaz_e)
 !
@@ -283,7 +283,7 @@
          do i = 1, c_size%nz_all-1
            call skip_comment(id_filter, tmpchara, iend)
            if(iend .gt. 0) go to 99
-           read(tmpchara,*) itmp, itmp, itmp, cube_fil%delta_z_e(i),    &
+           read(tmpchara,*) itmp, itmp, itmp, cube_fil%delta_z_ele(i),  &
      &           cube_fil%diff_deltaz_e(i), cube_fil%d2_deltaz_e(i)
          end do
 !

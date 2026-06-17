@@ -259,9 +259,9 @@
           inod2 = edge%ie_edge(i,2)
           dz_plane%delta_z_e(i) =  node%xx(inod2,3) - node%xx(inod1,3)
           dz_plane%delta_dz_e(i) = ( delta_z(inod2) - delta_z(inod1) )  &
-     &                           / ( two*delta_z_e(i) )
+     &                           / ( two * dz_plane%delta_z_e(i) )
           dz_plane%d2_dz_e(i) =   ( delta_dz(inod2) - delta_dz(inod1) ) &
-     &                          / ( delta_z_e(i) )
+     &                          / ( dz_plane%delta_z_e(i) )
         end do
 !
       end subroutine cal_dz_test_grids_2

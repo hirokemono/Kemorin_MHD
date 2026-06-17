@@ -322,7 +322,7 @@
 !    output results
 !
        call write_filter_4_nod(z_filter_mesh1%node, z_filter_mesh1%ele, &
-     &                         edge_z_filter1, neib_z2)
+     &                         edge_z_filter1, dz_plane1, neib_z2)
 !
        call deallocate_filter_values
        call dealloc_work_4_integration(g_z_int)

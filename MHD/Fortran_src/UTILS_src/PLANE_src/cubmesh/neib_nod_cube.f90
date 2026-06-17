@@ -201,10 +201,10 @@
              FEM_elen%elen_ele%moms%f_y2(iele)                          &
      &                             = cube_fil%delta_h(2)**2
              FEM_elen%elen_ele%moms%f_z2(iele)                          &
-     &                             = cube_fil%delta_z_e(k_gl)**2
+     &                             = cube_fil%delta_z_ele(k_gl)**2
 !
              FEM_elen%elen_ele%diff%df_z2(iele,3)                       &
-     &                             = 2.0d0 * cube_fil%delta_z_e(k_gl)   &
+     &                             = 2.0d0 * cube_fil%delta_z_ele(k_gl) &
      &                              * cube_fil%diff_deltaz_e(k_gl)
              FEM_elen%elen_ele%diff2%df_z2(iele,3)                      &
                                 = 2.0d0 * cube_fil%d2_deltaz_e(k_gl)    &

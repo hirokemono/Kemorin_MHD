@@ -3,10 +3,12 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine write_filter_4_nod(node, ele, edge_z_filter, neib_z2)
+!!      subroutine write_filter_4_nod(node, ele, edge_z_filter,         &
+!!     &                              dz_plane, neib_z2)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(edge_data), intent(in) :: edge_z_filter
+!!        type(edge_z_width), intent(in) :: dz_plane
 !!        type(neighbour_data_z), intent(in) :: neib_z2
 !
       module write_z_filter_4_nod
@@ -23,9 +25,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_filter_4_nod(node, ele, edge_z_filter, neib_z2)
+      subroutine write_filter_4_nod(node, ele, edge_z_filter,           &
+     &                              dz_plane, neib_z2)
 !
       use t_neighbour_data_z
+      use t_vart_edge_width
       use m_int_commtative_filter
       use m_commute_filter_z
       use m_z_filter_values
@@ -35,6 +39,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(edge_data), intent(in) :: edge_z_filter
+      type(edge_z_width), intent(in) :: dz_plane
       type(neighbour_data_z), intent(in) :: neib_z2
 !
       integer (kind= kint), parameter :: id_filter_z = 15
@@ -120,7 +125,8 @@
           write(id_filter_z,'(3i16,1p3E25.15e3)')                       &
      &          edge_z_filter%iedge_global(iele),                       &
      &          edge_z_filter%ie_edge(iele,1:2),                        &
-     &          delta_z_e(iele), delta_dz_e(iele), d2_dz_e(iele)
+     &          dz_plane%delta_z_e(iele), dz_plane%delta_dz_e(iele),    &
+     &          dz_plane%d2_dz_e(iele)
         end do
 !
 !
