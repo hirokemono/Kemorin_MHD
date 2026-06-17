@@ -9,9 +9,11 @@
 !!@verbatim
 !!      subroutine int_edge_vart_width                                  &
 !!     &         (numele, edge, n_int, g_FEM, jac_1d)
-!!      subroutine cal_vart_width_by_ele(numnod, numele, edge, delta_z)
+!!      subroutine cal_vart_width_by_ele(numnod, numele, edge,          &
+!!     &                                 dz_ele, delta_z)
 !!        integer(kind = kint), intent(in) :: numnod, numele
 !!        type(edge_data), intent(in) :: edge
+!!        real(kind = kreal), intent(in) :: dz_ele(numele)
 !!        real(kind = kreal), intent(inout) :: delta_z(numnod)
 !!     subroutine int_edge_vart_width(numnod, numele, edge, n_int,      &
 !!    &                               g_FEM, jac_1d, rhs_dz)
@@ -60,14 +62,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_vart_width_by_ele(numnod, numele, edge, delta_z)
+      subroutine cal_vart_width_by_ele(numnod, numele, edge,            &
+     &                                 dz_ele, delta_z)
 !
       use t_edge_data
       use m_commute_filter_z
-      use m_int_edge_data
 !
       integer(kind = kint), intent(in) :: numnod, numele
       type(edge_data), intent(in) :: edge
+      real(kind = kreal), intent(in) :: dz_ele(numele)
 !
       real(kind = kreal), intent(inout) :: delta_z(numnod)
 !
@@ -80,12 +83,13 @@
         do k2 = 1, 2
           inod2 = edge%ie_edge(iele,k2)
           if (inod2 .eq. 1) then
-            delta_z(inod2) = delta_z(inod2) + dz(iele)
+            delta_z(inod2) = delta_z(inod2) + dz_ele(iele)
           else if (inod2 .eq. numnod) then
-            delta_z(inod2) = delta_z(inod2) + dz(iele)
+            delta_z(inod2) = delta_z(inod2) + dz_ele(iele)
           else
-            delta_z(inod2) = delta_z(inod2) + dz(iele)                  &
-     &            * dz(iele+(-1)**k2) / (dz(iele) + dz(iele+(-1)**k2) )
+            delta_z(inod2) = delta_z(inod2)                             &
+     &                      + dz_ele(iele) * dz_ele(iele+(-1)**k2)      &
+     &                       / (dz_ele(iele) + dz_ele(iele+(-1)**k2) )
           end if
         end do
       end do
@@ -102,7 +106,6 @@
       use t_jacobian_1d
 !
       use m_commute_filter_z
-      use m_int_edge_data
 !
       integer(kind = kint), intent(in) :: numnod, numele
       type(edge_data), intent(in) :: edge
@@ -143,7 +146,6 @@
       use t_shape_functions
       use t_fem_gauss_int_coefs
       use m_commute_filter_z
-      use m_int_edge_data
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -191,7 +193,6 @@
       use t_shape_functions
       use t_fem_gauss_int_coefs
       use m_commute_filter_z
-      use m_int_edge_data
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -242,7 +243,6 @@
       use t_shape_functions
       use t_fem_gauss_int_coefs
       use m_commute_filter_z
-      use m_int_edge_data
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -274,10 +274,6 @@
           end do
         end do
       end do
-!
-!      do inod1 = 1, node%numnod
-!        write(*,*) inod1, rhs_dz(inod1)
-!      end do
 !
       end subroutine int_edge_d2_vart_w2
 !

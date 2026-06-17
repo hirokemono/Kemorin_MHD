@@ -12,13 +12,10 @@
 !>@brief Construct grid spacing data for plane layer model
 !!
 !!@verbatim
-!!      subroutine cal_delta_z_analytical(ele, edge, g_FEM, jac_1d,     &
-!!     &                                  node, dz_plane)
+!!      subroutine cal_delta_z_analytical(ele, edge, node, dz_plane)
 !!        type(element_data), intent(in) :: ele
 !!        type(edge_data), intent(in) :: edge
 !!        type(node_data), intent(inout) :: node
-!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
-!!        type(jacobians_1d), intent(in) :: jac_1d
 !!        type(edge_z_width), intent(inout) :: dz_plane
 !!@endverbatim
 !
@@ -46,25 +43,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_delta_z_analytical(ele, edge, g_FEM, jac_1d,       &
-     &                                  node, dz_plane)
+      subroutine cal_delta_z_analytical(ele, edge, node, dz_plane)
 !
-      use int_edge_mass_mat_z_filter
       use m_spheric_constants
-      use t_fem_gauss_int_coefs
-      use t_jacobian_1d
 !
       type(element_data), intent(in) :: ele
       type(edge_data), intent(in) :: edge
 !
       type(node_data), intent(inout) :: node
-      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
-      type(jacobians_1d), intent(in) :: jac_1d
       type(edge_z_width), intent(inout) :: dz_plane
 !
 !
-      call int_edge_mass_matrix(node%numnod, ele%numele, edge,          &
-     &                          i_int_z_filter, g_FEM, jac_1d)
       call alloc_edge_vart_width(node%numnod, ele%numele, dz_plane)
 !
       if (iflag_grid .eq. igrid_Chebyshev) then

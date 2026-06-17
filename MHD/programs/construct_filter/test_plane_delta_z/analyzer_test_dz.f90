@@ -62,6 +62,7 @@
       use const_crs_connect_commute_z
       use cal_jacobian_linear_1d
       use cal_delta_z_4_z_filter
+      use int_edge_mass_mat_z_filter
 !
       type(edge_z_width), save :: dz_plane1
 !
@@ -94,7 +95,7 @@
       call allocate_int_edge_data                                       &
      &   (z_filter_mesh2%node%numnod, z_filter_mesh2%ele%numele)
       call set_spatial_difference(z_filter_mesh2%ele%numele,            &
-     &    n_int, jacs_z2%g_FEM, jacs_z2%jac_1d_l)
+     &    n_int, jacs_z2%g_FEM, jacs_z2%jac_1d_l, dz)
 !
 !
       call cal_delta_z(CG_param_z, DJDS_param_z,                        &

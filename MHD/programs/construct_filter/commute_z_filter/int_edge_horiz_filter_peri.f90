@@ -1,12 +1,22 @@
-!int_edge_horiz_filter_peri.f90
-!      module int_edge_horiz_filter_peri
+!>@file   int_edge_horiz_filter_peri.f90
+!!        module int_edge_horiz_filter_peri
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2013
 !
-!      Written by H. Matsui
-!
+!>@brief FEM integration for vertical filter
+!!
+!!@verbatim
 !!      subroutine int_edge_filter_peri(ndep_filter, numnod_h, hsize,   &
-!!     &     xmom_h, xmom_ht, gauss, g_int)
+!!     &          gauss, xmom_h, xmom_ht, sk_norm_n, g_int)
+!!        integer(kind = kint), intent(in) :: ndep_filter, numnod_h
+!!        real(kind = kreal), intent(in) :: hsize
 !!        type(gauss_points), intent(in) :: gauss
+!!        real(kind = kreal), intent(inout) :: xmom_h(ndep_filter,0:2)
+!!        real(kind = kreal), intent(inout) :: xmom_ht(0:3)
+!!        real(kind = kreal), intent(inout) :: sk_norm_n(0:nfilter6_1)
 !!        type(gauss_integrations), intent(inout) :: g_int
+!!@endverbatim
 !
       module int_edge_horiz_filter_peri
 !
@@ -22,13 +32,11 @@
 !   --------------------------------------------------------------------
 !
       subroutine int_edge_filter_peri(ndep_filter, numnod_h, hsize,     &
-     &          xmom_h, xmom_ht, gauss, g_int)
+     &          gauss, xmom_h, xmom_ht, sk_norm_n, g_int)
 !
       use m_constants
       use m_commute_filter_z
       use m_z_filter_values
-      use m_int_edge_data
-      use m_work_4_integration
       use set_filter_moments
 !
       integer(kind = kint), intent(in) :: ndep_filter, numnod_h
@@ -37,6 +45,7 @@
 !
       real(kind = kreal), intent(inout) :: xmom_h(ndep_filter,0:2)
       real(kind = kreal), intent(inout) :: xmom_ht(0:3)
+      real(kind = kreal), intent(inout) :: sk_norm_n(0:nfilter6_1)
       type(gauss_integrations), intent(inout) :: g_int
 !
       integer (kind = kint) :: jnod, kf, i, j, je, j0

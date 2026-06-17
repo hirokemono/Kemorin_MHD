@@ -62,7 +62,6 @@
 !
       use m_commute_filter_z
       use m_z_filter_values
-      use m_work_4_integration
       use m_matrix_4_z_commute
       use m_int_commtative_filter
       use m_int_edge_data
@@ -79,6 +78,7 @@
 
       use int_edge_norm_nod_z_filter
       use int_edge_moment_z_filter
+      use int_edge_mass_mat_z_filter
       use int_edge_horiz_filter_peri
       use int_edge_commute_z_filter
 
@@ -112,6 +112,8 @@
       type(edge_z_width), save :: dz_plane1
 !
       type(neighbour_data_z), save :: neib_z2
+!
+      real(kind=kreal), allocatable:: sk_norm_n(:)
 !
       real(kind = kreal) :: INITtime, PRECtime
       real(kind = kreal) :: COMPtime, COMMtime
@@ -149,12 +151,15 @@
       call allocate_int_edge_data                                       &
      &   (z_filter_mesh1%node%numnod, z_filter_mesh1%ele%numele)
       call set_spatial_difference(z_filter_mesh1%ele%numele,            &
-     &    i_int_z_filter, jacs_z1%g_FEM, jacs_z1%jac_1d_l)
+     &    i_int_z_filter, jacs_z1%g_FEM, jacs_z1%jac_1d_l, dz)
 !
-      if (my_rank.eq.0) write(*,*) 'cal_delta_z_analytical'
-       call cal_delta_z_analytical(z_filter_mesh1%ele, edge_z_filter1,  &
-     &                             jacs_z1%g_FEM, jacs_z1%jac_1d_l,     &
-     &                             z_filter_mesh1%node, dz_plane1)
+      call int_edge_mass_matrix                                         &
+     &   (z_filter_mesh1%node%numnod, z_filter_mesh1%ele%numele,        &
+     &    edge_z_filter1, i_int_z_filter,                               &
+     &    jacs_z1%g_FEM, jacs_z1%jac_1d_l, mk, mk_c)
+      if(my_rank.eq.0) write(*,*) 'cal_delta_z_analytical'
+      call cal_delta_z_analytical(z_filter_mesh1%ele, edge_z_filter1,   &
+     &                            z_filter_mesh1%node, dz_plane1)
 !      call cal_delta_z(CG_param_z, DJDS_param_z,                       &
 !     &  z_filter_mesh1%nod_comm, z_filter_mesh1%node,                  &
 !     &  z_filter_mesh1%ele, edge_z_filter1, spf_1d_z,                  &
@@ -215,13 +220,15 @@
       call construct_gauss_coefs(i_int_z_filter, gauss_z)
       call alloc_work_4_integration                                     &
      &  ((nfilter6_1 + 1), gauss_z%n_point, g_z_int)
-      call allocate_work_4_commute
+!
+      allocate(sk_norm_n(0:nfilter6_1))
+      sk_norm_n = 0.0d0
 !
       call allocate_matrix_4_commutation(z_filter_mesh1%node%numnod)
 !
       if (my_rank.eq.0) write(*,*) 'int_edge_norm_nod'
-       call int_edge_norm_nod(z_filter_mesh1%node, edge_z_filter1,      &
-      &                       gauss_z, neib_z1, g_z_int)
+       call int_edge_norm_nod(z_filter_mesh1%node, z_filter_mesh1%ele,  &
+      &    edge_z_filter1, gauss_z, neib_z1, dz, sk_norm_n, g_z_int)
 !       call check_nod_normalize_matrix                                 &
 !     &     (my_rank, z_filter_mesh1%node%numnod)
 !
@@ -300,15 +307,15 @@
 !
 !
        call int_edge_filter_peri(ndep_filter, totalnod_x, xsize,        &
-     &      xmom_h_x, xmom_ht_x, gauss_z, g_z_int)
+     &     gauss_z, xmom_h_x, xmom_ht_x, sk_norm_n, g_z_int)
        call int_edge_filter_peri(ndep_filter, totalnod_y, ysize,        &
-     &      xmom_h_y, xmom_ht_y, gauss_z, g_z_int)
+     &     gauss_z, xmom_h_y, xmom_ht_y, sk_norm_n, g_z_int)
 !
        if(my_rank.eq.0) write(*,*) 'int_edge_commutative_filter'
        call int_edge_commutative_filter                                 &
-     &    (z_filter_mesh1%node%numnod, z_filter_mesh1%ele%numele,       &
-     &     z_filter_mesh1%node%xx(1:z_filter_mesh1%node%numnod,3),      &
-     &     edge_z_filter1%ie_edge, gauss_z, neib_z2, g_z_int)
+     &    (z_filter_mesh1%node%numnod, z_filter_mesh1%node%xx(1,3),     &
+     &     z_filter_mesh1%ele%numele, edge_z_filter1%ie_edge, dz,       &
+     &     gauss_z, neib_z2, sk_norm_n, g_z_int)
 !       call check_int_commutative_filter                               &
 !     &    (my_rank, z_filter_mesh1%node%numnod)
 !
@@ -316,13 +323,15 @@
        call int_edge_moment                                             &
      &    (z_filter_mesh1%node%numnod, z_filter_mesh1%ele%numele,       &
      &     edge_z_filter1, i_int_z_filter, spf_1d_z,                    &
-     &     jacs_z1%g_FEM, jacs_z1%jac_1d_l)
+     &     jacs_z1%g_FEM, jacs_z1%jac_1d_l, mk)
        call dealloc_edge_shape_func(spf_1d_z)
 !
 !    output results
 !
        call write_filter_4_nod(z_filter_mesh1%node, z_filter_mesh1%ele, &
      &                         edge_z_filter1, dz_plane1, neib_z2)
+!
+       deallocate(sk_norm_n)
 !
        call deallocate_filter_values
        call dealloc_work_4_integration(g_z_int)

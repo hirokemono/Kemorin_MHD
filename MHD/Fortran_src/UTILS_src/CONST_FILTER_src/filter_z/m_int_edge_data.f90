@@ -18,9 +18,9 @@
       implicit none
 !
 !
-      real(kind=kreal), dimension(:), allocatable :: dz
-      real(kind=kreal), dimension(:), allocatable :: mk
-      real(kind=kreal), dimension(:,:), allocatable :: mk_c
+      real(kind = kreal), allocatable :: dz(:)
+      real(kind = kreal), allocatable :: mk(:)
+      real(kind = kreal), allocatable :: mk_c(:,:)
 !
 ! -----------------------------------------------------------------------
 !

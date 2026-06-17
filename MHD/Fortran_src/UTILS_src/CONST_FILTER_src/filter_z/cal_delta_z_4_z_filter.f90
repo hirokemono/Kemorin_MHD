@@ -138,7 +138,7 @@
       num_int = i_int_z_filter
 !
       call int_edge_mass_matrix(node%numnod, ele%numele, edge,          &
-     &                          num_int, g_FEM, jac_1d)
+     &    num_int, g_FEM, jac_1d, mk, mk_c)
 !      flag_mass = .FALSE.
 !
       allocate(rhs_dz(node%numnod))
@@ -146,18 +146,18 @@
 !
       if(flag_mass) then
         call allocate_consist_mass_crs(node%numnod, tbl_crs)
-        call set_consist_mass_mat(node%numnod)
+        call set_consist_mass_mat(node%numnod, mk_c)
 !
         call alloc_edge_vart_width(node%numnod, ele%numele, dz_plane)
         call int_edge_vart_width(node%numnod, ele%numele, edge,         &
       &                          num_int, g_FEM, jac_1d, rhs_dz)
 !
         rhs_mk_crs(1:node%numnod) = rhs_dz(1:node%numnod)
-        call set_consist_mass_mat(node%numnod)
+        call set_consist_mass_mat(node%numnod, mk_c)
 !
         write(*,*) mat_crs%METHOD_crs
         if(mat_crs%METHOD_crs .eq. 'LU') then
-          call solve_delta_z_etc_LU(node%numnod, rhs_dz,                &
+          call solve_delta_z_etc_LU(node%numnod, mk_c, rhs_dz,          &
      &                              dz_plane%delta_z_n)
         else
           write(*,*) 'solve_crs_by_mass_z'
@@ -179,7 +179,7 @@
         rhs_mk_crs(1:node%numnod) = rhs_dz(1:node%numnod)
 
         if(mat_crs%METHOD_crs .eq. 'LU') then
-          call solve_delta_z_etc_LU(node%numnod, rhs_dz,                &
+          call solve_delta_z_etc_LU(node%numnod, mk_c, rhs_dz,          &
      &                              dz_plane%delta_dz_n)
         else
           write(*,*) 'solve_crs_by_mass_z2'
@@ -204,7 +204,7 @@
         rhs_mk_crs(1:node%numnod) = rhs_dz(1:node%numnod)
 
         if(mat_crs%METHOD_crs .eq. 'LU') then
-          call solve_delta_z_etc_LU(node%numnod, rhs_dz,                &
+          call solve_delta_z_etc_LU(node%numnod, mk_c, rhs_dz,          &
      &                              dz_plane%d2_dz_n)
         else
           write(*,*) 'solve_crs_by_mass_z2'

@@ -3,8 +3,25 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine int_edge_moment                                      &
-!!     &         (numnod, numele, edge, n_int, spf_1d, g_FEM, jac_1d)
+!>@file   int_edge_moment_z_filter.f90
+!!        module int_edge_moment_z_filter
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
+!
+!>@brief FEM integration for vertical moments for filteres
+!!
+!!@verbatim
+!!      subroutine int_edge_moment(numnod, numele, edge, n_int, spf_1d, &
+!!     &                           g_FEM, jac_1d, mk_z)
+!!        integer(kind = kint), intent(in) :: numnod, numele
+!!        integer(kind = kint), intent(in) :: n_int
+!!        type(edge_data), intent(in) :: edge
+!!        type(edge_shape_function), intent(in) :: spf_1d
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+!!        type(jacobians_1d), intent(in) :: jac_1d
+!!        real(kind = kreal), intent(in) :: mk_z(numnod)
+!!@endverbatim
 !
       module int_edge_moment_z_filter
 !
@@ -19,24 +36,24 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine int_edge_moment                                        &
-     &         (numnod, numele, edge, n_int, spf_1d, g_FEM, jac_1d)
+      subroutine int_edge_moment(numnod, numele, edge, n_int, spf_1d,   &
+     &                           g_FEM, jac_1d, mk_z)
 !
       use t_edge_data
       use t_shape_functions
       use t_fem_gauss_int_coefs
       use t_jacobian_1d
 !
-      use m_int_edge_data
       use m_int_commtative_filter
       use m_commute_filter_z
 !
+      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: n_int
       type(edge_data), intent(in) :: edge
       type(edge_shape_function), intent(in) :: spf_1d
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_1d), intent(in) :: jac_1d
-      integer (kind= kint), intent(in) :: n_int
-      integer (kind= kint), intent(in) :: numnod, numele
+      real(kind = kreal), intent(in) :: mk_z(numnod)
 !
       integer (kind= kint) :: inod, inod1, inod2, iele, j1, j2
       integer (kind= kint) :: i, kf, ix
@@ -67,8 +84,8 @@
 !
       do inod = 1, numnod
        do kf = 0, 2
-           xmom_dt(inod,kf)  = xmom_dt(inod,kf)  * mk(inod)
-           xmom_dot(inod,kf) = xmom_dot(inod,kf) * mk(inod)
+           xmom_dt(inod,kf)  = xmom_dt(inod,kf)  * mk_z(inod)
+           xmom_dot(inod,kf) = xmom_dot(inod,kf) * mk_z(inod)
        end do
       end do
 !

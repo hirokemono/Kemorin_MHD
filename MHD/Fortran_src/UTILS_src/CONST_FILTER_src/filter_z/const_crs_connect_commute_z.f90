@@ -1,11 +1,21 @@
+!>@file   const_crs_connect_commute_z.f90
+!!        module const_crs_connect_commute_z
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
 !
-!      module const_crs_connect_commute_z
-!
-!     Written by Hiroaki Matsui
-!
-!      subroutine set_connect_2_n_filter(node)
-!      subroutine set_spatial_difference(numele, n_int, g_FEM, jac_1d)
-!      subroutine set_crs_connect_commute_z(node, tbl_crs)
+!>@brief FEM matrices for vertical grid spacing
+!!
+!!@verbatim
+!!      subroutine set_connect_2_n_filter(node, nneib_nod, ncomp_st)
+!!        type(node_data), intent(in) :: node
+!!        integer(kind = kint), intent(in)                              &
+!!     &                     :: nneib_nod(node%internal_node,2)
+!!        integer(kind = kint), intent(inout) :: ncomp_st(node%numnod)
+!!      subroutine set_crs_connect_commute_z(node, tbl_crs)
+!!        type(node_data), intent(inout) :: node
+!!        type(CRS_matrix_connect), intent(inout) :: tbl_crs
+!!@endverbatim
 !
       module const_crs_connect_commute_z
 !
@@ -50,36 +60,6 @@
       end do
 !
       end subroutine set_connect_2_n_filter
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine set_spatial_difference(numele, n_int, g_FEM, jac_1d)
-!
-      use m_commute_filter_z
-      use m_int_edge_data
-!
-      use t_fem_gauss_int_coefs
-      use t_jacobian_1d
-!
-      integer (kind = kint), intent(in) :: numele, n_int
-      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
-      type(jacobians_1d), intent(in) :: jac_1d
-      integer (kind = kint) :: iele, k, ix
-!
-!
-       do k = 1, n_int
-         ix = k + g_FEM%int_start1(n_int)
-         do iele = 1, numele
-           dz(iele) = dz(iele)                                          &
-     &               + jac_1d%xeg_edge(iele,ix,3) * g_FEM%owe(ix)
-         end do
-       end do
-       do iele = 1, numele
-         dz(iele) = half * dz(iele)
-       end do
-!
-      end subroutine set_spatial_difference
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

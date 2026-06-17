@@ -1,14 +1,23 @@
-!int_edge_norm_nod_z_filter.f90
-!      module int_edge_norm_nod_z_filter
+!>@file   int_edge_norm_nod_z_filter.f90
+!!        module int_edge_norm_nod_z_filter
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
 !
-!      Written by H. Matsui
-!
-!!      subroutine int_edge_norm_nod(node, edge, gauss, g_int)
+!>@brief FEM shape functgions for vertical filter
+!!
+!!@verbatim
+!!      subroutine int_edge_norm_nod(node, ele, edge, gauss, neib_z,    &
+!!     &                             dz_ele, sk_norm_n, g_int)
 !!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
 !!        type(edge_data), intent(in) :: edge
 !!        type(gauss_points), intent(in) :: gauss
 !!        type(neighbour_data_z), intent(in) :: neib_z
+!!        real(kind = kreal), intent(in) :: dz_ele
+!!        real(kind = kreal), intent(inout) :: sk_norm_n(0:nfilter6_1)
 !!        type(gauss_integrations), intent(inout) :: g_int
+!!@endverbatim
 !
       module int_edge_norm_nod_z_filter
 !
@@ -26,23 +35,25 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine int_edge_norm_nod(node, edge, gauss, neib_z, g_int)
+      subroutine int_edge_norm_nod(node, ele, edge, gauss, neib_z,      &
+     &                             dz_ele, sk_norm_n, g_int)
 !
       use m_constants
       use m_commute_filter_z
-      use m_work_4_integration
       use m_matrix_4_z_commute
-      use m_int_edge_data
 !
       use t_neighbour_data_z
 !
       use set_filter_moments
 !
       type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
       type(edge_data), intent(in) :: edge
       type(gauss_points), intent(in) :: gauss
       type(neighbour_data_z), intent(in) :: neib_z
+      real(kind = kreal), intent(in) :: dz_ele(ele%numele)
 !
+      real(kind = kreal), intent(inout) :: sk_norm_n(0:nfilter6_1)
       type(gauss_integrations), intent(inout) :: g_int
 !
       integer(kind = kint_gl) :: inod0, jele
@@ -84,8 +95,8 @@
 !
             do i = 1, gauss%n_point
               g_int%f_point(1,i)                                        &
-     &           = half * dz(jele) * g_int%f_point(1,i)                 &
-     &            * (one + (-1)**j * (g_int%x_point(i)-dble(2*j0+1))) 
+     &           = half * dz_ele(jele) * g_int%f_point(1,i)             &
+     &            * (one + (-1)**j * (g_int%x_point(i)-dble(2*j0+1)))
              do kf = 2, nfilter6_1+1
                g_int%f_point(kf,i) = half * g_int%f_point(kf-1,i)       &
      &            * ( zz2 + zz1 - two*zz0                               &

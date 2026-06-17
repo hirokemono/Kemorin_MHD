@@ -10,8 +10,9 @@
 !!      subroutine solve_z_commute_LU(numnod, mat_crs)
 !!        integer(kind = kint), intent(in) :: numnod
 !!        type(CRS_matrix), intent(inout) :: mat_crs
-!!      subroutine solve_delta_z_etc_LU(numnod, rhs_dz, X_lu)
+!!      subroutine solve_delta_z_etc_LU(numnod, mk_mat, rhs_dz, X_lu)
 !!        integer(kind = kint), intent(in) :: numnod
+!!        real(kind = kreal), intent(in) :: mk_mat(numnod,numnod)
 !!        real(kind = kreal), intent(in) :: rhs_dz(numnod)
 !!        real(kind = kreal), intent(inout) :: X_lu(numnod)
 !!@endverbatim
@@ -73,12 +74,12 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine solve_delta_z_etc_LU(numnod, rhs_dz, X_lu)
-!
-      use m_int_edge_data
+      subroutine solve_delta_z_etc_LU(numnod, mk_mat, rhs_dz, X_lu)
 !
       integer(kind = kint), intent(in) :: numnod
+      real(kind = kreal), intent(in) :: mk_mat(numnod,numnod)
       real(kind = kreal), intent(in) :: rhs_dz(numnod)
+!
       real(kind = kreal), intent(inout) :: X_lu(numnod)
 !
       integer(kind = kint) :: i, j
@@ -89,15 +90,15 @@
 !
          do i = 1, numnod
            do j = 1, numnod
-             a_nod(j,i) = mk_c(i,j)
+             a_nod(j,i) = mk_mat(i,j)
            end do
            b_nod(i) = rhs_dz(i)
          end do
 !
 !c decompose A = LU
-         call ludcmp(a_nod,ncomp_lu,ncomp_lu,indx,d_nod)
+         call ludcmp(a_nod, ncomp_lu, ncomp_lu, indx, d_nod)
 !c solve Ax=LUx=b
-         call lubksb(a_nod,ncomp_lu,ncomp_lu,indx,b_nod)
+         call lubksb(a_nod, ncomp_lu, ncomp_lu, indx, b_nod)
 !
          do i = 1, numnod
            X_lu(i) = b_nod(i)

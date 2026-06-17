@@ -1,17 +1,23 @@
-!int_edge_commute_z_filter.f90
-!      module int_edge_commute_z_filter
+!>@file   int_edge_commute_z_filter.f90
+!!        module int_edge_commute_z_filter
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
 !
-!      Written by H. Matsui
-!
-!
-!!      subroutine int_edge_commutative_filter(numnod, numele,          &
-!!     &          zz, ie_edge, gauss, neib_z2, g_int)
+!>@brief edge integration for commutrative filter
+!!
+!!@verbatim
+!!      subroutine int_edge_commutative_filter(numnod, zz, numele,      &
+!!     &          ie_edge, dz_ele, gauss, neib_z2, sk_norm_n, g_int)
 !!        integer(kind = kint), intent(in) :: numnod, numele
 !!        integer(kind = kint), intent(in) :: ie_edge(numele,2)
 !!        real(kind = kreal), intent(in) :: zz(numnod)
+!!        real(kind = kreal), intent(in) :: dz_ele(numele)
 !!        type(gauss_points), intent(in) :: gauss
 !!        type(neighbour_data_z), intent(in) :: neib_z2
+!!        real(kind = kreal), intent(inout) :: sk_norm_n(0:nfilter6_1)
 !!        type(gauss_integrations), intent(inout) :: g_int
+!!@endverbatim
 !
       module int_edge_commute_z_filter
 !
@@ -26,15 +32,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine int_edge_commutative_filter(numnod, numele,            &
-     &          zz, ie_edge, gauss, neib_z2, g_int)
+      subroutine int_edge_commutative_filter(numnod, zz, numele,        &
+     &          ie_edge, dz_ele, gauss, neib_z2, sk_norm_n, g_int)
 !
       use m_constants
       use m_commute_filter_z
       use m_int_commtative_filter
       use m_z_filter_values
-      use m_work_4_integration
-      use m_int_edge_data
 !
       use t_neighbour_data_z
       use set_filter_moments
@@ -42,9 +46,11 @@
       integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint), intent(in) :: ie_edge(numele,2)
       real(kind = kreal), intent(in) :: zz(numnod)
+      real(kind = kreal), intent(in) :: dz_ele(numele)
       type(gauss_points), intent(in) :: gauss
       type(neighbour_data_z), intent(in) :: neib_z2
 !
+      real(kind = kreal), intent(inout) :: sk_norm_n(0:nfilter6_1)
       type(gauss_integrations), intent(inout) :: g_int
 !
       integer (kind = kint) :: inod, jnod, kf
@@ -102,7 +108,7 @@
 !
 !
             do i = 1, gauss%n_point
-              g_int%f_point(1,i) = filter_0(i)  * quad * dz(jele)       &
+              g_int%f_point(1,i) = filter_0(i)  * quad * dz_ele(jele)   &
      &            * (one + (-1)**j * (g_int%x_point(i)-dble(2*j0+1)))   &
      &             * ( c_filter(je,inod)                                &
      &             * ( one - (g_int%x_point(i)-dble(2*j0+1)) )          &
