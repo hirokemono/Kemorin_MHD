@@ -3,8 +3,14 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine cal_delta_z_analytical                               &
-!!     &         (node, ele, edge, g_FEM, jac_1d)
+!!      subroutine cal_delta_z_analytical(ele, edge, g_FEM, jac_1d,     &
+!!     &                                  node, dz_plane)
+!!        type(element_data), intent(in) :: ele
+!!        type(edge_data), intent(in) :: edge
+!!        type(node_data), intent(inout) :: node
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+!!        type(jacobians_1d), intent(in) :: jac_1d
+!!        type(edge_z_width), intent(inout) :: dz_plane
 !
       module  const_delta_z_analytical
 !
@@ -17,6 +23,7 @@
 !
       use t_geometry_data
       use t_edge_data
+      use t_vart_edge_width
 !
       implicit none
 !
@@ -30,77 +37,81 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_delta_z_analytical                                 &
-     &         (node, ele, edge, g_FEM, jac_1d)
+      subroutine cal_delta_z_analytical(ele, edge, g_FEM, jac_1d,       &
+     &                                  node, dz_plane)
 !
       use int_edge_mass_mat_z_filter
       use m_spheric_constants
       use t_fem_gauss_int_coefs
       use t_jacobian_1d
 !
-      type(node_data), intent(inout) :: node
-      type(element_data), intent(inout) :: ele
-      type(edge_data), intent(inout) :: edge
+      type(element_data), intent(in) :: ele
+      type(edge_data), intent(in) :: edge
 !
+      type(node_data), intent(inout) :: node
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_1d), intent(in) :: jac_1d
+      type(edge_z_width), intent(inout) :: dz_plane
 !
 !
       call int_edge_mass_matrix(node%numnod, ele%numele, edge,          &
      &                          i_int_z_filter, g_FEM, jac_1d)
-      call allocate_delta_z(node%numnod, ele%numele)
+      call alloc_edge_vart_width(node%numnod, ele%numele, dz_plane)
 !
       if (iflag_grid .eq. igrid_Chebyshev) then
         if (my_rank.eq.0) write(*,*) 'cal_dz_chebyshev_grids'
-        call cal_dz_chebyshev_grids(node, ele, edge)
+        call cal_dz_chebyshev_grids(ele, edge, node, dz_plane)
       else if (iflag_grid .eq. igrid_half_Chebyshev) then
         if (my_rank.eq.0) write(*,*) 'cal_dz_half_chebyshev_grids'
-        call cal_dz_half_chebyshev_grids(node, ele, edge)
+        call cal_dz_half_chebyshev_grids(ele, edge, node, dz_plane)
       else if (iflag_grid.eq.-1) then
         if (my_rank.eq.0) write(*,*) 'cal_dz_test_grids'
-        call cal_dz_test_grids(node, ele)
+        call cal_dz_test_grids(ele, node, dz_plane)
       else if (iflag_grid.eq.-2) then
         if (my_rank.eq.0) write(*,*) 'cal_dz_test_grids_2'
-        call cal_dz_test_grids_2(node, ele, edge)
+        call cal_dz_test_grids_2(ele, edge, node, dz_plane)
       else
         if (my_rank.eq.0) write(*,*) 'cal_dz_liner_grids'
-        call cal_dz_liner_grids(node, ele)
+        call cal_dz_liner_grids(ele, node, dz_plane)
       end if
 !
       end subroutine cal_delta_z_analytical
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_dz_liner_grids(node, ele)
+      subroutine cal_dz_liner_grids(ele, node, dz_plane)
 !
+      type(element_data), intent(in) :: ele
       type(node_data), intent(inout) :: node
-      type(element_data), intent(inout) :: ele
+      type(edge_z_width), intent(inout) :: dz_plane
 !
       integer (kind = kint) :: i, nz
 !
 !
       nz = node%internal_node
       do i = 1, node%numnod
-        delta_z(i) =  zsize / dble(2*nz-1)
-        delta_dz(i) = zero
-        d2_dz(i) =    zero
+        dz_plane%delta_z(i) =  zsize / dble(2*nz-1)
+        dz_plane%delta_dz(i) = zero
+        dz_plane%d2_dz(i) =    zero
       end do
 !
       do i = 1, ele%numele
-        delta_z_e(i) =  zsize / dble(2*nz-1)
-        delta_dz_e(i) = zero
-        d2_dz_e(i) =    zero
+        dz_plane%delta_z_e(i) =  zsize / dble(2*nz-1)
+        dz_plane%delta_dz_e(i) = zero
+        dz_plane%d2_dz_e(i) =    zero
       end do
 !
       end subroutine cal_dz_liner_grids
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_dz_chebyshev_grids(node, ele, edge)
+      subroutine cal_dz_chebyshev_grids(ele, edge, node, dz_plane)
+!
+      type(element_data), intent(in) :: ele
+      type(edge_data), intent(in) :: edge
 !
       type(node_data), intent(inout) :: node
-      type(element_data), intent(inout) :: ele
-      type(edge_data), intent(inout) :: edge
+      type(edge_z_width), intent(inout) :: dz_plane
 !
       real (kind = kreal) :: pi
       integer (kind = kint) :: i, inod1, inod2, nz
@@ -110,34 +121,34 @@
 !
       nz = node%internal_node
         do i = 1, node%numnod
-          delta_z(i)                                                    &
+          dz_plane%delta_z(i)                                           &
      &          = ( 0.5d0 * zsize * pi / (two*dble(nz-1)) )             &
      &           * sin (pi* dble(i - 1) / dble(nz-1) )
           if ( i.eq.1 ) then
-           delta_dz(i) = 1.0d20
-           d2_dz(i) = -1.0d20
+           dz_plane%delta_dz(i) = 1.0d20
+           dz_plane%d2_dz(i) = -1.0d20
           else if ( i .eq. nz ) then
-           delta_dz(i) = -1.0d20
-           d2_dz(i) = -1.0d20
+           dz_plane%delta_dz(i) = -1.0d20
+           dz_plane%d2_dz(i) = -1.0d20
           else
-           delta_dz(i) =   pi / ( two * dble(nz-1)                      &
-     &         * tan(pi* dble(i - 1) / dble(nz-1)) )
-           d2_dz(i) = - pi / ( zsize * dble(nz-1)                       &
-     &         * sin(pi* dble(i - 1) / dble(nz-1))**3 )
+           dz_plane%delta_dz(i) =   pi / ( two * dble(nz-1)             &
+     &                         * tan(pi* dble(i - 1) / dble(nz-1)) )
+           dz_plane%d2_dz(i) = - pi / ( zsize * dble(nz-1)              &
+     &                        * sin(pi* dble(i - 1) / dble(nz-1))**3 )
           end if
         end do
 !
         do i = 1, ele%numele
           inod1 = edge%ie_edge(i,1)
           inod2 = edge%ie_edge(i,2)
-          delta_z_e(i)                                                  &
+          dz_plane%delta_z_e(i)                                         &
      &          = (0.5d0 * zsize * pi / (two*dble(nz-1)))               &
      &           * sin (pi*(dble(i)-0.5d0) / dble(nz-1) )
 
-          delta_dz_e(i)                                                 &
+          dz_plane%delta_dz_e(i)                                        &
      &          =  pi / ( two * dble(nz-1)                              &
      &           * tan(pi*(dble(i)-0.5d0) / dble(nz-1)) )
-          d2_dz_e(i) =  - pi / ( zsize * dble(nz-1)                     &
+          dz_plane%d2_dz_e(i) =  - pi / ( zsize * dble(nz-1)            &
      &         * sin(pi*(dble(i)-0.5d0) / dble(nz-1))**3 )
         end do
 !
@@ -145,11 +156,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_dz_half_chebyshev_grids(node, ele, edge)
+      subroutine cal_dz_half_chebyshev_grids(ele, edge, node, dz_plane)
+!
+      type(element_data), intent(in) :: ele
+      type(edge_data), intent(in) :: edge
 !
       type(node_data), intent(inout) :: node
-      type(element_data), intent(inout) :: ele
-      type(edge_data), intent(inout) :: edge
+      type(edge_z_width), intent(inout) :: dz_plane
 !
       real (kind = kreal) :: pi
       integer (kind = kint) :: i, inod1, inod2, nz
@@ -162,15 +175,15 @@
      &         * cos (pi* dble(i - 1) / dble(2*(nz-1)) )
         end do
         do i = 1, node%numnod
-          delta_z(i) = ( zsize * pi / two*dble(2*(nz-1)) )              &
+          dz_plane%delta_z(i) = ( zsize * pi / two*dble(2*(nz-1)) )     &
      &           * sin (pi* dble(i - 1) / dble(2*(nz-1)) )
           if ( i.eq.1 ) then
-           delta_dz(i) = 1.0d20
-           d2_dz(i) = -1.0d20
+            dz_plane%delta_dz(i) = 1.0d20
+            dz_plane%d2_dz(i) = -1.0d20
           else
-           delta_dz(i) =   pi / ( dble(4*(nz-1))                        &
+            dz_plane%delta_dz(i) =   pi / ( dble(4*(nz-1))              &
      &         * tan(pi* dble(i - 1) / dble(2*(nz-1))) )
-           d2_dz(i) = - pi / ( zsize * dble(4*(nz-1))                   &
+            dz_plane%d2_dz(i) = - pi / ( zsize * dble(4*(nz-1))         &
      &         * sin(pi* dble(i - 1) / dble(2*(nz-1)) )**3 )
           end if
         end do
@@ -178,45 +191,49 @@
         do i = 1, ele%numele
           inod1 = edge%ie_edge(i,1)
           inod2 = edge%ie_edge(i,2)
-          delta_z_e(i) =  node%xx(inod2,3) - node%xx(inod1,3)
-          delta_dz_e(i) = ( delta_z(inod2) - delta_z(inod1) )           &
-     &                   / ( two*delta_z_e(i) )
-          d2_dz_e(i) =   ( delta_dz(inod2) - delta_dz(inod1) )          &
-     &                   / ( delta_z_e(i) )
+          dz_plane%delta_z_e(i) =  node%xx(inod2,3) - node%xx(inod1,3)
+          dz_plane%delta_dz_e(i) = ( delta_z(inod2) - delta_z(inod1) )  &
+     &                          / ( two*delta_z_e(i) )
+          dz_plane%d2_dz_e(i) =   ( delta_dz(inod2) - delta_dz(inod1) ) &
+     &                          / ( delta_z_e(i) )
         end do
 !
       end subroutine cal_dz_half_chebyshev_grids
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_dz_test_grids(node, ele)
+      subroutine cal_dz_test_grids(ele, node, dz_plane)
+!
+      type(element_data), intent(in) :: ele
 !
       type(node_data), intent(inout) :: node
-      type(element_data), intent(inout) :: ele
+      type(edge_z_width), intent(inout) :: dz_plane
 !
       integer (kind = kint) :: i
 !
         do i = 1, node%numnod
-          delta_z(i) =  one
-          delta_dz(i) = zero
-          d2_dz(i) =    zero
+          dz_plane%delta_z(i) =  one
+          dz_plane%delta_dz(i) = zero
+          dz_plane%d2_dz(i) =    zero
         end do
 !
         do i = 1, ele%numele
-          delta_z_e(i) =  one
-          delta_dz_e(i) = zero
-          d2_dz_e(i) =    zero
+          dz_plane%delta_z_e(i) =  one
+          dz_plane%delta_dz_e(i) = zero
+          dz_plane%d2_dz_e(i) =    zero
         end do
 !
       end subroutine cal_dz_test_grids
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_dz_test_grids_2(node, ele, edge)
+      subroutine cal_dz_test_grids_2(ele, edge, node, dz_plane)
+!
+      type(element_data), intent(in) :: ele
+      type(edge_data), intent(in) :: edge
 !
       type(node_data), intent(inout) :: node
-      type(element_data), intent(inout) :: ele
-      type(edge_data), intent(inout) :: edge
+      type(edge_z_width), intent(inout) :: dz_plane
 !
       real (kind = kreal) :: pi
       integer (kind = kint) :: i, inod1, inod2, nz
@@ -229,22 +246,22 @@
      &         * cos (pi* dble(i - 1) / dble(nz-1) ) 
         end do
         do i = 1, node%numnod
-          delta_z(i)                                                    &
+          dz_plane%delta_z(i)                                           &
      &          = 0.5*pi * sin(pi* dble(i - 1) / dble(nz-1))
-          delta_dz(i) =   pi / ( two * dble(nz-1)                       &
+          dz_plane%delta_dz(i) =   pi / ( two * dble(nz-1)              &
      &         * tan(pi* dble(i - 1) / dble(nz-1)) )
-          d2_dz(i) = - pi / ( dble(nz-1)**2                             &
+          dz_plane%d2_dz(i) = - pi / ( dble(nz-1)**2                    &
      &         * sin(pi* dble(i - 1) / dble(nz-1))**3 )
         end do
 !
         do i = 1, ele%numele
           inod1 = edge%ie_edge(i,1)
           inod2 = edge%ie_edge(i,2)
-          delta_z_e(i) =  node%xx(inod2,3) - node%xx(inod1,3)
-          delta_dz_e(i) = ( delta_z(inod2) - delta_z(inod1) )           &
-     &                   / ( two*delta_z_e(i) )
-          d2_dz_e(i) =   ( delta_dz(inod2) - delta_dz(inod1) )          &
-     &                   / ( delta_z_e(i) )
+          dz_plane%delta_z_e(i) =  node%xx(inod2,3) - node%xx(inod1,3)
+          dz_plane%delta_dz_e(i) = ( delta_z(inod2) - delta_z(inod1) )  &
+     &                           / ( two*delta_z_e(i) )
+          dz_plane%d2_dz_e(i) =   ( delta_dz(inod2) - delta_dz(inod1) ) &
+     &                          / ( delta_z_e(i) )
         end do
 !
       end subroutine cal_dz_test_grids_2

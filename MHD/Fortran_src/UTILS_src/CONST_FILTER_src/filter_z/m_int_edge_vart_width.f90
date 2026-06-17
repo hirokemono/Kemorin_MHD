@@ -23,7 +23,7 @@
 !
       implicit none
 !
-      integer (kind = kint) :: iflag_mass = 1
+      logical :: flag_mass = .TRUE.
 !
       real(kind = kreal), dimension(:), allocatable :: delta_z
       real(kind = kreal), dimension(:), allocatable :: delta_dz
@@ -32,8 +32,6 @@
       real(kind = kreal), dimension(:), allocatable :: delta_z_e
       real(kind = kreal), dimension(:), allocatable :: delta_dz_e
       real(kind = kreal), dimension(:), allocatable :: d2_dz_e
-!
-      real(kind = kreal), dimension(:), allocatable :: rhs_dz
 !
 ! ----------------------------------------------------------------------
 !
@@ -53,10 +51,6 @@
       allocate ( delta_dz_e(numele) )
       allocate ( d2_dz_e(numele) )
 !
-      allocate( rhs_dz(numnod) )
-!
-      rhs_dz = 0.0d0
-
       delta_z  = 0.0d0
       delta_dz = 0.0d0
       d2_dz = 0.0d0
@@ -69,8 +63,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-     subroutine int_edge_vart_width                                     &
-    &         (numele, edge, n_int, g_FEM, jac_1d)
+     subroutine int_edge_vart_width(numnod, numele, edge, n_int,        &
+    &                               g_FEM, jac_1d, rhs_dz)
 !
       use t_edge_data
       use t_fem_gauss_int_coefs
@@ -79,11 +73,13 @@
       use m_commute_filter_z
       use m_int_edge_data
 !
-      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: numnod, numele
       type(edge_data), intent(in) :: edge
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_1d), intent(in) :: jac_1d
       integer (kind = kint), intent(in) :: n_int
+!
+      real(kind = kreal), intent(inout) :: rhs_dz(numnod)
 !
       integer (kind = kint) ::  inod2, iele, k2, i, ix
 !
@@ -104,76 +100,6 @@
       end do
 !
       end subroutine int_edge_vart_width
-!
-! ----------------------------------------------------------------------
-!
-     subroutine set_rhs_vart_width(numnod)
-!
-      use m_consist_mass_crs
-!
-      integer(kind = kint), intent(in) :: numnod
-!
-      integer (kind = kint) :: inod
-!
-!
-      do inod = 1, numnod
-        rhs_mk_crs(inod) = rhs_dz(inod)
-      end do
-!
-      end subroutine set_rhs_vart_width
-!
-! ----------------------------------------------------------------------
-!
-     subroutine cal_sol_vart_width(numnod)
-!
-      use m_commute_filter_z
-      use m_int_edge_data
-!
-      integer(kind = kint), intent(in) :: numnod
-!
-      integer (kind = kint) :: inod
-!
-!
-      do inod = 1, numnod
-        delta_z(inod) = rhs_dz(inod) * mk(inod)
-      end do
-!
-      end subroutine cal_sol_vart_width
-!
-! ----------------------------------------------------------------------
-!
-     subroutine cal_sol_diff_vart_width(numnod)
-!
-      use m_commute_filter_z
-      use m_int_edge_data
-!
-      integer(kind = kint), intent(in) :: numnod
-!
-      integer (kind = kint) :: inod
-!
-!
-      do inod = 1, numnod
-        delta_dz(inod) = rhs_dz(inod) * mk(inod)
-      end do
-!
-      end subroutine cal_sol_diff_vart_width
-!
-! ----------------------------------------------------------------------
-!
-     subroutine cal_sol_d2_vart_width(numnod)
-!
-      use m_commute_filter_z
-      use m_int_edge_data
-!
-      integer(kind = kint), intent(in) :: numnod
-      integer (kind = kint) :: inod
-!
-!
-      do inod = 1, numnod
-        d2_dz(inod) = rhs_dz(inod) * mk(inod)
-      end do
-!
-      end subroutine cal_sol_d2_vart_width
 !
 ! ----------------------------------------------------------------------
 !
@@ -209,8 +135,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_edge_diff_vart_w                                   &
-     &         (ele, edge, n_int, spf_1d, g_FEM, jac_1d)
+      subroutine int_edge_diff_vart_w(node, ele, edge, n_int,           &
+     &                                spf_1d, g_FEM, jac_1d, rhs_dz)
 !
       use t_geometry_data
       use t_edge_data
@@ -220,12 +146,15 @@
       use m_commute_filter_z
       use m_int_edge_data
 !
+      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(edge_data), intent(in) :: edge
       type(edge_shape_function), intent(in) :: spf_1d
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_1d), intent(in) :: jac_1d
       integer (kind = kint), intent(in) :: n_int
+!
+      real(kind = kreal), intent(inout) :: rhs_dz(node%numnod)
 !
       integer (kind = kint) :: inod1, inod2, iele, k1, k2, i, ix
 !
@@ -252,8 +181,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_edge_d2_vart_w                                     &
-     &         (node, ele, edge, n_int, spf_1d, g_FEM, jac_1d)
+      subroutine int_edge_d2_vart_w(node, ele, edge, n_int, spf_1d,     &
+     &                              g_FEM, jac_1d, rhs_dz)
 !
       use calypso_mpi
       use t_geometry_data
@@ -271,6 +200,8 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_1d), intent(in) :: jac_1d
       integer (kind = kint), intent(in) :: n_int
+!
+      real(kind = kreal), intent(inout) :: rhs_dz(node%numnod)
 !
       integer (kind = kint) :: inod1, inod2, iele, k1, k2, i, ix
 !
@@ -300,8 +231,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_edge_d2_vart_w2                                    &
-     &         (ele, edge, n_int, spf_1d, g_FEM, jac_1d)
+      subroutine int_edge_d2_vart_w2(node, ele, edge, n_int, spf_1d,    &
+     &                               g_FEM, jac_1d, rhs_dz)
 !
       use calypso_mpi
       use t_geometry_data
@@ -312,12 +243,15 @@
       use m_commute_filter_z
       use m_int_edge_data
 !
+      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(edge_data), intent(in) :: edge
       type(edge_shape_function), intent(in) :: spf_1d
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_1d), intent(in) :: jac_1d
       integer (kind = kint), intent(in) :: n_int
+!
+      real(kind = kreal), intent(inout) :: rhs_dz(node%numnod)
 !
       integer (kind = kint) :: inod1, inod2, iele, k1, k2, i, ix
 !

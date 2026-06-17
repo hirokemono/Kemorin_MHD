@@ -1,13 +1,20 @@
+!>@file   calcs_by_LUsolver.f90
+!!        module calcs_by_LUsolver
+!!
+!!@author H. Matsui
+!!@date Programmed in ???
 !
-!      module calcs_by_LUsolver
-!
-!      Written by H. Matsui
-!
-!      subroutine solve_z_commute_LU(numnod)
-!
-!      subroutine solve_delta_z_LU(numnod)
-!      subroutine solve_delta_dz_LU(numnod)
-!      subroutine solve_delta_d2z_LU(numnod)
+!>@brief Solve vertical differenciate by LU decompoistion
+!!
+!!@verbatim
+!!      subroutine solve_z_commute_LU(numnod, mat_crs)
+!!        integer(kind = kint), intent(in) :: numnod
+!!        type(CRS_matrix), intent(inout) :: mat_crs
+!!      subroutine solve_delta_z_etc_LU(numnod, rhs_dz, X_lu)
+!!        integer(kind = kint), intent(in) :: numnod
+!!        real(kind = kreal), intent(in) :: rhs_dz(numnod)
+!!        real(kind = kreal), intent(inout) :: X_lu(numnod)
+!!@endverbatim
 !
       module calcs_by_LUsolver
 !
@@ -17,8 +24,6 @@
       use m_ludcmp
 !
       implicit none
-!
-      private :: solve_delta_z_etc_LU
 !
 !  ---------------------------------------------------------------------
 !
@@ -66,49 +71,14 @@
       end subroutine solve_z_commute_LU
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine solve_delta_z_LU(numnod)
-!
-      use m_int_edge_vart_width
-!
-      integer(kind = kint), intent(in) :: numnod
-!
-      call solve_delta_z_etc_LU(numnod, delta_z)
-!
-      end subroutine solve_delta_z_LU
-!
 !  ---------------------------------------------------------------------
 !
-      subroutine solve_delta_dz_LU(numnod)
-!
-      use m_int_edge_vart_width
-!
-      integer(kind = kint), intent(in) :: numnod
-!
-      call solve_delta_z_etc_LU(numnod, delta_dz)
-!
-      end subroutine solve_delta_dz_LU
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine solve_delta_d2z_LU(numnod)
-!
-      use m_int_edge_vart_width
-!
-      integer(kind = kint), intent(in) :: numnod
-!
-      call solve_delta_z_etc_LU(numnod, d2_dz)
-!
-      end subroutine solve_delta_d2z_LU
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine solve_delta_z_etc_LU(numnod, X_lu)
+      subroutine solve_delta_z_etc_LU(numnod, rhs_dz, X_lu)
 !
       use m_int_edge_data
-      use m_int_edge_vart_width
 !
       integer(kind = kint), intent(in) :: numnod
+      real(kind = kreal), intent(in) :: rhs_dz(numnod)
       real(kind = kreal), intent(inout) :: X_lu(numnod)
 !
       integer(kind = kint) :: i, j

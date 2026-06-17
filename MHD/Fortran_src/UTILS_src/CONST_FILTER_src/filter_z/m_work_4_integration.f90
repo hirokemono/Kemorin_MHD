@@ -40,11 +40,11 @@
 !
        num_idx = 2*(nfilter2_1+3)*totalele*nfilter2_1
 !
-       allocate( xi_norm0(0:nfilter6_1) )
-       allocate( sk_norm(num_idx,2,2) )
+       allocate(xi_norm0(0:nfilter6_1))
+       allocate(sk_norm(num_idx,2,2))
 !
-       allocate( sk_norm_n(0:nfilter6_1) )
-       allocate( c_momentum(0:nfilter2_3,nfilter2_3) )
+       allocate(sk_norm_n(0:nfilter6_1))
+       allocate(c_momentum(0:nfilter2_3,nfilter2_3))
 !
        xi_norm0 = 0.0d0
        sk_norm = 0.0d0

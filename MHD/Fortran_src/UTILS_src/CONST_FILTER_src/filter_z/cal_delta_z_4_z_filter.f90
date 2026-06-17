@@ -37,6 +37,7 @@
       use t_fem_gauss_int_coefs
       use t_jacobian_1d
       use t_solver_SR
+      use t_work_time
 !
       implicit none
 !
@@ -57,10 +58,10 @@
       call append_elapsed_times                                         &
      &   (num_append, ist_elapsed_Zfilter, ied_elapsed_Zfilter)
 !
-      elps1%labels(ist_elapsed_Zfilter+1) = 'Solver initialization time'
-      elps1%labels(ist_elapsed_Zfilter+2) = 'Solver precondition time  '
-      elps1%labels(ist_elapsed_Zfilter+3) = 'Solver iteration time     '
-      elps1%labels(ist_elapsed_Zfilter+4) = 'Solver communication time '
+      elps1%labels(ist_elapsed_Zfilter+1)= 'Solver initialization time'
+      elps1%labels(ist_elapsed_Zfilter+2)= 'Solver precondition time  '
+      elps1%labels(ist_elapsed_Zfilter+3)= 'Solver iteration time     '
+      elps1%labels(ist_elapsed_Zfilter+4)= 'Solver communication time '
 !
       flag_Zfilte_time = .TRUE.
 !
@@ -68,11 +69,31 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine add_z_solver_elapsed(INITtime, PRECtime,               &
+     &                                COMPtime, COMMtime, elps)
+!
+      real(kind = kreal), intent(in) :: INITtime, PRECtime
+      real(kind = kreal), intent(in) :: COMPtime, COMMtime
+!
+      type(elapsed_time_data), intent(inout) :: elps
+!
+      elps%elapsed(ist_elapsed_Zfilter+1)                               &
+     &          = elps%elapsed(ist_elapsed_Zfilter+1) + INITtime
+      elps%elapsed(ist_elapsed_Zfilter+2)                               &
+     &          = elps%elapsed(ist_elapsed_Zfilter+2) + PRECtime
+      elps%elapsed(ist_elapsed_Zfilter+3)                               &
+     &          = elps%elapsed(ist_elapsed_Zfilter+3) + COMPtime
+      elps%elapsed(ist_elapsed_Zfilter+4)                               &
+     &          = elps%elapsed(ist_elapsed_Zfilter+4) + COMMtime
+      end subroutine add_z_solver_elapsed
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
       subroutine cal_delta_z                                            &
      &         (CG_param, DJDS_param, nod_comm, node, ele, edge,        &
      &          spf_1d, g_FEM, jac_1d, tbl_crs, mat_crs, SR_sig, SR_r)
 !
-      use m_int_edge_vart_width
       use m_int_edge_data
       use m_commute_filter_z
 !
@@ -96,6 +117,8 @@
       type(send_recv_status), intent(inout) :: SR_sig
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
+      real(kind = kreal), allocatable :: rhs_dz(:)
+!
       real(kind = kreal) :: INITtime, PRECtime
       real(kind = kreal) :: COMPtime, COMMtime
       integer(kind = kint) :: num_int
@@ -105,121 +128,101 @@
 !
       call int_edge_mass_matrix(node%numnod, ele%numele, edge,          &
      &                          num_int, g_FEM, jac_1d)
-!      iflag_mass = 0
+!      flag_mass = .FALSE.
 !
-      if ( iflag_mass .eq. 1) then
-       call allocate_consist_mass_crs(node%numnod, tbl_crs)
-       call set_consist_mass_mat(node%numnod)
+      allocate(rhs_dz(node%numnod))
+      rhs_dz(1:node%numnod) = 0.0d0
 !
-       call allocate_delta_z(node%numnod, ele%numele)
-       call int_edge_vart_width                                         &
-     &    (ele%numele, edge, num_int, g_FEM, jac_1d)
+      if(flag_mass) then
+        call allocate_consist_mass_crs(node%numnod, tbl_crs)
+        call set_consist_mass_mat(node%numnod)
 !
-       call set_rhs_vart_width(node%numnod)
-       call set_consist_mass_mat(node%numnod)
+        call allocate_delta_z(node%numnod, ele%numele)
+        call int_edge_vart_width(node%numnod, ele%numele, edge,         &
+      &                          num_int, g_FEM, jac_1d, rhs_dz)
 !
-       write(*,*) mat_crs%METHOD_crs
-       if ( mat_crs%METHOD_crs .eq. 'LU' ) then
-         call solve_delta_z_LU(node%numnod)
-       else
-         write(*,*) 'solve_crs_by_mass_z'
-         call solve_crs_by_mass_z(CG_param, DJDS_param, nod_comm,       &
-     &       node, tbl_crs, mat_crs, SR_sig, SR_r,                      &
-     &       INITtime, PRECtime, COMPtime, COMMtime)
+        rhs_mk_crs(1:node%numnod) = rhs_dz(1:node%numnod)
+        call set_consist_mass_mat(node%numnod)
 !
-         if(flag_Zfilte_time) then
-           elps1%elapsed(ist_elapsed_Zfilter+1)                         &
-     &          = elps1%elapsed(ist_elapsed_Zfilter+1) + INITtime
-           elps1%elapsed(ist_elapsed_Zfilter+2)                         &
-     &          = elps1%elapsed(ist_elapsed_Zfilter+2) + PRECtime
-           elps1%elapsed(ist_elapsed_Zfilter+3)                         &
-     &          = elps1%elapsed(ist_elapsed_Zfilter+3) + COMPtime
-           elps1%elapsed(ist_elapsed_Zfilter+4)                         &
-     &          = elps1%elapsed(ist_elapsed_Zfilter+4) + COMMtime
-         end if
+        write(*,*) mat_crs%METHOD_crs
+        if(mat_crs%METHOD_crs .eq. 'LU') then
+          call solve_delta_z_etc_LU(node%numnod, rhs_dz, delta_z)
+        else
+          write(*,*) 'solve_crs_by_mass_z'
+          call solve_crs_by_mass_z(CG_param, DJDS_param, nod_comm,      &
+     &        node, tbl_crs, mat_crs, SR_sig, SR_r,                     &
+     &        INITtime, PRECtime, COMPtime, COMMtime)
+          if(flag_Zfilte_time) call add_z_solver_elapsed                &
+     &                            (INITtime, PRECtime,                  &
+     &                             COMPtime, COMMtime, elps1)
 !
 !$omp parallel workshare
-         delta_z(1:node%numnod) = sol_mk_crs(1:node%numnod)
-!$omp end parallel workshare
-       end if
-!
-       write(*,*) 'int_edge_diff_vart_w'
-       call int_edge_diff_vart_w                                        &
-     &    (ele, edge, num_int, spf_1d, g_FEM, jac_1d)
-       write(*,*) 'set_rhs_vart_width'
-       call set_rhs_vart_width(node%numnod)
-
-       if ( mat_crs%METHOD_crs .eq. 'LU' ) then
-         call solve_delta_dz_LU(node%numnod)
-       else
-         write(*,*) 'solve_crs_by_mass_z2'
-         call solve_crs_by_mass_z2(CG_param, DJDS_param, nod_comm,      &
-     &       node, tbl_crs, mat_crs, SR_sig, SR_r,                      &
-     &       INITtime, PRECtime, COMPtime, COMMtime)
-!
-         if(flag_Zfilte_time) then
-           elps1%elapsed(ist_elapsed_Zfilter+1)                         &
-     &          = elps1%elapsed(ist_elapsed_Zfilter+1) + INITtime
-           elps1%elapsed(ist_elapsed_Zfilter+2)                         &
-     &          = elps1%elapsed(ist_elapsed_Zfilter+2) + PRECtime
-           elps1%elapsed(ist_elapsed_Zfilter+3)                         &
-     &          = elps1%elapsed(ist_elapsed_Zfilter+3) + COMPtime
-           elps1%elapsed(ist_elapsed_Zfilter+4)                         &
-     &          = elps1%elapsed(ist_elapsed_Zfilter+4) + COMMtime
-         end if
-!
-!$omp parallel workshare
-         delta_dz(1:node%numnod) = sol_mk_crs(1:node%numnod)
+          delta_z(1:node%numnod) = sol_mk_crs(1:node%numnod)
 !$omp end parallel workshare
         end if
 !
-       call int_edge_d2_vart_w                                          &
-     &    (node, ele, edge, num_int, spf_1d, g_FEM, jac_1d)
-!       call int_edge_d2_vart_w2                                        &
-!     &     (ele, edge, num_int, spf_1d, g_FEM, jac_1d)
-       call set_rhs_vart_width(node%numnod)
+        write(*,*) 'int_edge_diff_vart_w'
+        call int_edge_diff_vart_w(node, ele, edge, num_int,             &
+     &                            spf_1d, g_FEM, jac_1d, delta_dz)
+        rhs_mk_crs(1:node%numnod) = rhs_dz(1:node%numnod)
 
-       if ( mat_crs%METHOD_crs .eq. 'LU' ) then
-          call solve_delta_d2z_LU(node%numnod)
-       else
-         write(*,*) 'solve_crs_by_mass_z2'
-         call solve_crs_by_mass_z2(CG_param, DJDS_param, nod_comm,      &
-     &       node, tbl_crs, mat_crs, SR_sig, SR_r,                      &
-     &       INITtime, PRECtime, COMPtime, COMMtime)
-!
-         if(flag_Zfilte_time) then
-           elps1%elapsed(ist_elapsed_Zfilter+1)                         &
-     &          = elps1%elapsed(ist_elapsed_Zfilter+1) + INITtime
-           elps1%elapsed(ist_elapsed_Zfilter+2)                         &
-     &          = elps1%elapsed(ist_elapsed_Zfilter+2) + PRECtime
-           elps1%elapsed(ist_elapsed_Zfilter+3)                         &
-     &          = elps1%elapsed(ist_elapsed_Zfilter+3) + COMPtime
-           elps1%elapsed(ist_elapsed_Zfilter+4)                         &
-     &          = elps1%elapsed(ist_elapsed_Zfilter+4) + COMMtime
-         end if
+        if(mat_crs%METHOD_crs .eq. 'LU') then
+          call solve_delta_z_etc_LU(node%numnod, rhs_dz, delta_dz)
+        else
+          write(*,*) 'solve_crs_by_mass_z2'
+          call solve_crs_by_mass_z2(CG_param, DJDS_param, nod_comm,     &
+     &        node, tbl_crs, mat_crs, SR_sig, SR_r,                     &
+     &        INITtime, PRECtime, COMPtime, COMMtime)
+          if(flag_Zfilte_time) call add_z_solver_elapsed                &
+     &                            (INITtime, PRECtime,                  &
+     &                             COMPtime, COMMtime, elps1)
 !
 !$omp parallel workshare
-         d2_dz(1:node%numnod) = sol_mk_crs(1:node%numnod)
+          delta_dz(1:node%numnod) = sol_mk_crs(1:node%numnod)
 !$omp end parallel workshare
-       end if
+        end if
 !
-       call cal_sol_d2_vart_width(node%numnod)
+        call int_edge_d2_vart_w(node, ele, edge, num_int, spf_1d,       &
+      &                         g_FEM, jac_1d, rhs_dz)
+!        call int_edge_d2_vart_w2(node, ele, edge, num_int, spf_1d,     &
+!     &                           g_FEM, jac_1d, rhs_dz)
+        rhs_mk_crs(1:node%numnod) = rhs_dz(1:node%numnod)
+
+        if(mat_crs%METHOD_crs .eq. 'LU') then
+          call solve_delta_z_etc_LU(node%numnod, rhs_dz, d2_dz)
+        else
+          write(*,*) 'solve_crs_by_mass_z2'
+          call solve_crs_by_mass_z2(CG_param, DJDS_param, nod_comm,     &
+     &        node, tbl_crs, mat_crs, SR_sig, SR_r,                     &
+     &        INITtime, PRECtime, COMPtime, COMMtime)
 !
+          if(flag_Zfilte_time) call add_z_solver_elapsed                &
+     &                            (INITtime, PRECtime,                  &
+     &                             COMPtime, COMMtime, elps1)
+!
+!$omp parallel workshare
+          d2_dz(1:node%numnod) = sol_mk_crs(1:node%numnod)
+!$omp end parallel workshare
+        end if
+!
+        d2_dz(1:node%numnod) = rhs_dz(1:node%numnod) * mk(1:node%numnod)
       else
         call allocate_delta_z(node%numnod, ele%numele)
-        call int_edge_vart_width                                        &
-     &     (ele%numele, edge, num_int, g_FEM, jac_1d)
-        call cal_sol_vart_width(node%numnod)
+        call int_edge_vart_width(node%numnod, ele%numele, edge,         &
+     &                           num_int, g_FEM, jac_1d, rhs_dz)
+        delta_z(1:node%numnod)                                          &
+     &           = rhs_dz(1:node%numnod) * mk(1:node%numnod)
 !
-        call int_edge_diff_vart_w                                       &
-     &     (ele, edge, num_int, spf_1d, g_FEM, jac_1d)
-        call cal_sol_diff_vart_width(node%numnod)
+        call int_edge_diff_vart_w(node, ele, edge, num_int,             &
+     &                            spf_1d, g_FEM, jac_1d, delta_dz)
+        delta_dz(1:node%numnod)                                         &
+     &            = rhs_dz(1:node%numnod) * mk(1:node%numnod)
 !
-        call int_edge_d2_vart_w                                         &
-     &     (node, ele, edge, num_int, spf_1d, g_FEM, jac_1d)
-        call cal_sol_d2_vart_width(node%numnod)
+        call int_edge_d2_vart_w(node, ele, edge, num_int, spf_1d,       &
+     &                          g_FEM, jac_1d, rhs_dz)
+        d2_dz(1:node%numnod) = rhs_dz(1:node%numnod) * mk(1:node%numnod)
       end if
-!
+      deallocate(rhs_dz)
 !
       end subroutine cal_delta_z
 !

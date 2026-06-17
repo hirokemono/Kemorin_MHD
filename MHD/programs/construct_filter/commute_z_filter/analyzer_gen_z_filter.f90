@@ -70,6 +70,7 @@
 !
       use t_neighbour_data_z
       use t_neighbour_index_z
+      use t_vart_edge_width
 !
       use const_delta_z_analytical
 
@@ -108,6 +109,7 @@
 !
       type(neighbour_data_z), save :: neib_z1
       type(z_filter_work), save :: zfilter_wk1
+      type(edge_z_width), save :: dz_plane1
 !
       type(neighbour_data_z), save :: neib_z2
 !
@@ -150,9 +152,9 @@
      &    i_int_z_filter, jacs_z1%g_FEM, jacs_z1%jac_1d_l)
 !
       if (my_rank.eq.0) write(*,*) 'cal_delta_z_analytical'
-       call cal_delta_z_analytical                                      &
-     &    (z_filter_mesh1%node, z_filter_mesh1%ele,                     &
-     &     edge_z_filter1, jacs_z1%g_FEM, jacs_z1%jac_1d_l)
+       call cal_delta_z_analytical(z_filter_mesh1%ele, edge_z_filter1,  &
+     &                             jacs_z1%g_FEM, jacs_z1%jac_1d_l,     &
+     &                             z_filter_mesh1%node, dz_plane1)
 !      call cal_delta_z(CG_param_z, DJDS_param_z,                       &
 !     &  z_filter_mesh1%nod_comm, z_filter_mesh1%node,                  &
 !     &  z_filter_mesh1%ele, edge_z_filter1, spf_1d_z,                  &
