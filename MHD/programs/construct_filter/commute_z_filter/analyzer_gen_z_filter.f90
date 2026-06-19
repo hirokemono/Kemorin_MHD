@@ -50,6 +50,8 @@
 !>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), save :: SR_r_f
 !
+      logical :: flag_analytical = .TRUE.
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -63,12 +65,12 @@
       use m_commute_filter_z
       use m_z_filter_values
       use m_int_commtative_filter
-      use m_int_edge_data
       use m_matrix_4_LU
 !
       use t_neighbour_data_z
       use t_neighbour_index_z
       use t_vart_edge_width
+      use t_z_int_edge_data
 !
       use const_delta_z_analytical
 
@@ -77,7 +79,6 @@
 
       use int_edge_norm_nod_z_filter
       use int_edge_moment_z_filter
-      use int_edge_mass_mat_z_filter
       use int_edge_horiz_filter_peri
       use int_edge_commute_z_filter
 
@@ -107,6 +108,7 @@
       type(DJDS_MATRIX) :: djds_mat_z
 !
       type(neighbour_data_z), save :: neib_z1
+      type(z_int_edge_data), save :: z_int_edge1
       type(z_filter_work), save :: zfilter_wk1
       type(edge_z_width), save :: dz_plane1
 !
@@ -147,28 +149,25 @@
 !
 !
 !
-      if (my_rank.eq.0) write(*,*) 'allocate_int_edge_data'
-      call allocate_int_edge_data                                       &
-     &   (z_filter_mesh1%node%numnod, z_filter_mesh1%ele%numele)
-      call set_spatial_difference(z_filter_mesh1%ele%numele,            &
-     &    i_int_z_filter, jacs_z1%g_FEM, jacs_z1%jac_1d_l, dz)
+      if(my_rank .eq. 0) write(*,*) 'init_int_z_edge_data'
+      call init_int_z_edge_data                                         &
+     &   (z_filter_mesh1%node, z_filter_mesh1%ele, edge_z_filter1,      &
+     &    i_int_z_filter, jacs_z1%g_FEM, jacs_z1%jac_1d_l, z_int_edge1)
 !
-      call int_edge_mass_matrix                                         &
-     &   (z_filter_mesh1%node%numnod, z_filter_mesh1%ele%numele,        &
-     &    edge_z_filter1, i_int_z_filter,                               &
-     &    jacs_z1%g_FEM, jacs_z1%jac_1d_l, mk, mk_c)
       if(my_rank.eq.0) write(*,*) 'cal_delta_z_analytical'
-      call cal_delta_z_analytical(z_filter_mesh1%ele, edge_z_filter1,   &
-     &                            z_filter_mesh1%node, dz_plane1)
-!      call cal_delta_z(CG_param_z, DJDS_param_z,                       &
-!     &  z_filter_mesh1%nod_comm, z_filter_mesh1%node,                  &
-!     &  z_filter_mesh1%ele, edge_z_filter1, spf_1d_z,                  &
-!     &  jacs_z1%g_FEM, jacs_z1%jac_1d_l, dz_plane1,                    &
-!     &  tbl_crs_z, mat_crs_z, SR_sig_f, SR_r_f)
+      if(flag_analytical) then
+        call cal_delta_z_analytical(z_filter_mesh1%ele, edge_z_filter1, &
+     &                              z_filter_mesh1%node, dz_plane1)
+      else
+        call cal_delta_z(CG_param_z, DJDS_param_z,                      &
+     &      z_filter_mesh1%nod_comm, z_filter_mesh1%node,               &
+     &      z_filter_mesh1%ele, edge_z_filter1, spf_1d_z,               &
+     &      jacs_z1%g_FEM, jacs_z1%jac_1d_l, z_int_edge1, dz_plane1,    &
+     &      tbl_crs_z, mat_crs_z, SR_sig_f, SR_r_f)
 !
-!      call check_crs_connect                                           &
-!     &   (my_rank, z_filter_mesh1%node%numnod, tbl_crs_z)
-!      call check_communication_data
+        call check_crs_connect                                           &
+     &     (my_rank, z_filter_mesh1%node%numnod, tbl_crs_z)
+      end if
 !
 !    set information for filtering for node
 !
@@ -231,8 +230,8 @@
 !
       if (my_rank.eq.0) write(*,*) 'int_edge_norm_nod'
        call int_edge_norm_nod(z_filter_mesh1%node, z_filter_mesh1%ele,  &
-      &                       edge_z_filter1, gauss_z, neib_z1, dz,     &
-      &                       g_z_int, sk_norm_n, d_norm_nod)
+      &    edge_z_filter1, gauss_z, neib_z1, z_int_edge1%dz_ele,        &
+      &    g_z_int, sk_norm_n, d_norm_nod)
 !       call check_nod_normalize_matrix                                 &
 !     &    (my_rank, z_filter_mesh1%node%numnod, d_norm_nod)
 !
@@ -247,6 +246,7 @@
      &     neib_z1, zfilter_wk1, dz_plane1%delta_z_n, d_norm_nod,       &
      &     mat_crs_z)
        deallocate(d_norm_nod)
+       call dealloc_z_int_edge_data(z_int_edge1)
 !
        write(*,*) 's_switch_crs_matrix'
        call s_switch_crs_matrix(tbl_crs_z, mat_crs_z)
@@ -321,8 +321,8 @@
        if(my_rank.eq.0) write(*,*) 'int_edge_commutative_filter'
        call int_edge_commutative_filter                                 &
      &    (z_filter_mesh1%node%numnod, z_filter_mesh1%node%xx(1,3),     &
-     &     z_filter_mesh1%ele%numele, edge_z_filter1%ie_edge, dz,       &
-     &     gauss_z, neib_z2, sk_norm_n, g_z_int)
+     &     z_filter_mesh1%ele%numele, edge_z_filter1%ie_edge,           &
+     &     z_int_edge1%dz_ele, gauss_z, neib_z2, sk_norm_n, g_z_int)
 !       call check_int_commutative_filter                               &
 !     &    (my_rank, z_filter_mesh1%node%numnod)
 !
@@ -330,7 +330,7 @@
        call int_edge_moment                                             &
      &    (z_filter_mesh1%node%numnod, z_filter_mesh1%ele%numele,       &
      &     edge_z_filter1, i_int_z_filter, spf_1d_z,                    &
-     &     jacs_z1%g_FEM, jacs_z1%jac_1d_l, mk)
+     &     jacs_z1%g_FEM, jacs_z1%jac_1d_l, z_int_edge1%mk_z)
        call dealloc_edge_shape_func(spf_1d_z)
 !
 !    output results

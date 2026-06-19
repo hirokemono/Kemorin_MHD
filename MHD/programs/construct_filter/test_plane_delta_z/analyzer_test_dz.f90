@@ -55,16 +55,16 @@
       use calypso_mpi
 !
       use t_vart_edge_width
+      use t_z_int_edge_data
       use m_commute_filter_z
-      use m_int_edge_data
 
       use input_control_gen_z_filter
       use const_crs_connect_commute_z
       use cal_jacobian_linear_1d
       use cal_delta_z_4_z_filter
-      use int_edge_mass_mat_z_filter
 !
-      type(edge_z_width), save :: dz_plane1
+      type(edge_z_width), save :: dz_plane2
+      type(z_int_edge_data), save :: z_int_edge2
 !
       integer (kind= kint), parameter :: id_delta_z = 15
       integer (kind= kint) :: i, n_int
@@ -91,32 +91,32 @@
       if (my_rank.eq.0) write(*,*) 'set_crs_connect_commute_z'
       call set_crs_connect_commute_z(z_filter_mesh2%node, tbl_crs_z)
 !
-      if (my_rank.eq.0) write(*,*) 'allocate_int_edge_data'
-      call allocate_int_edge_data                                       &
-     &   (z_filter_mesh2%node%numnod, z_filter_mesh2%ele%numele)
-      call set_spatial_difference(z_filter_mesh2%ele%numele,            &
-     &    n_int, jacs_z2%g_FEM, jacs_z2%jac_1d_l, dz)
+      if (my_rank.eq.0) write(*,*) 'init_int_z_edge_data'
+      call init_int_z_edge_data                                         &
+     &   (z_filter_mesh2%node, z_filter_mesh2%ele, edge_z_filter2,      &
+     &    n_int, jacs_z2%g_FEM, jacs_z2%jac_1d_l, z_int_edge2)
 !
 !
       call cal_delta_z(CG_param_z, DJDS_param_z,                        &
-     &   z_filter_mesh2%nod_comm, z_filter_mesh2%node,                  &
-     &   z_filter_mesh2%ele, edge_z_filter2, spf_1d_z,                  &
-     &   jacs_z2%g_FEM, jacs_z2%jac_1d_l, dz_plane1,                    &
-     &   tbl_crs_z, mat_crs_z, SR_sig_f, SR_r_f)
+     &    z_filter_mesh2%nod_comm, z_filter_mesh2%node,                 &
+     &    z_filter_mesh2%ele, edge_z_filter2, spf_1d_z,                 &
+     &    jacs_z2%g_FEM, jacs_z2%jac_1d_l, z_int_edge2, dz_plane2,      &
+     &    tbl_crs_z, mat_crs_z, SR_sig_f, SR_r_f)
       call dealloc_edge_shape_func(spf_1d_z)
+      call dealloc_z_int_edge_data(z_int_edge2)
 !
 !C===
 !
 !       call dealloc_crs_mat_data(mat_crs_z)
 !       call dealloc_crs_connect(tbl_crs_z)
 !
-       open (id_delta_z,file='delta_z.0.dat')
+      open (id_delta_z,file='delta_z.0.dat')
 !
       write(id_delta_z,*) 'inod, z, delta z, diff.'
       do i = 1, z_filter_mesh2%node%numnod
         write(id_delta_z,'(i15,1p20E25.15e3)')                          &
-     &        i, z_filter_mesh2%node%xx(i,3), dz_plane1%delta_z_n(i),   &
-     &        dz_plane1%delta_dz_n(i), dz_plane1%d2_dz_n(i)
+     &        i, z_filter_mesh2%node%xx(i,3), dz_plane2%delta_z_n(i),   &
+     &        dz_plane2%delta_dz_n(i), dz_plane2%d2_dz_n(i)
       end do
 !
       close(id_delta_z)
