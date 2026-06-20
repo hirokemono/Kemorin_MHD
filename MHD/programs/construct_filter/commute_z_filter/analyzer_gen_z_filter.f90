@@ -65,7 +65,6 @@
       use m_commute_filter_z
       use m_z_filter_values
       use m_int_commtative_filter
-      use m_matrix_4_LU
 !
       use t_neighbour_data_z
       use t_neighbour_index_z

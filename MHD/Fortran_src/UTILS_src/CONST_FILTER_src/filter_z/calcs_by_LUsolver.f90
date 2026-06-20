@@ -21,7 +21,7 @@
 !
       use m_precision
 !
-      use m_matrix_4_LU
+      use t_matrix_4_LU
       use m_ludcmp
 !
       implicit none
@@ -40,34 +40,19 @@
       integer(kind = kint), intent(in) :: numnod
       type(CRS_matrix), intent(inout) :: mat_crs
 !
-      integer(kind = kint) :: inod, i, j, ji
+      type(matrix_4_LU) :: LU_mat
+      integer(kind = kint) :: inod, ist, jst
 !
-       ncomp_lu = ncomp_mat
-       call allocate_matrix_4_LU
+      call alloc_matrix_4_LU(ncomp_mat, LU_mat)
 !
-       do inod = 1, numnod
+      do inod = 1, numnod
+        jst = (inod-1) * ncomp_mat
+        ist = jst * ncomp_mat
+        call solve_by_LU_decomp(ncomp_mat, mat_crs%A_crs(ist+1),        &
+     &      mat_crs%B_crs(jst+1), mat_crs%X_crs(jst+1), LU_mat)
+      end do
 !
-         do i = 1, ncomp_mat
-           do j = 1, ncomp_mat
-             ji = j + (i-1)*ncomp_mat + (inod-1)*ncomp_mat*ncomp_mat
-             a_nod(j,i) = mat_crs%D_crs(ji)
-           end do
-           b_nod(i) = mat_crs%B_crs( ncomp_lu*(inod-1)+i )
-         end do
-!
-!c decompose A = LU
-         call ludcmp(a_nod,ncomp_lu,ncomp_lu,indx,d_nod)
-!c solve Ax=LUx=b
-         call lubksb(a_nod,ncomp_lu,ncomp_lu,indx,b_nod)
-!
-         do i = 1, ncomp_mat
-           mat_crs%X_crs( ncomp_mat*(inod-1)+i ) = b_nod(i)
-           d_nod = d_nod*a_nod(i,i)
-         end do
-!
-         write(*,*) 'det A', inod, d_nod
-!
-       end do
+      call dealloc_matrix_4_LU(LU_mat)
 !
       end subroutine solve_z_commute_LU
 !
@@ -82,32 +67,11 @@
 !
       real(kind = kreal), intent(inout) :: X_lu(numnod)
 !
-      integer(kind = kint) :: i, j
+      type(matrix_4_LU) :: LU_mat
 !
-         ncomp_lu = numnod
-!
-         call allocate_matrix_4_LU
-!
-         do i = 1, numnod
-           do j = 1, numnod
-             a_nod(j,i) = mk_mat(i,j)
-           end do
-           b_nod(i) = rhs_dz(i)
-         end do
-!
-!c decompose A = LU
-         call ludcmp(a_nod, ncomp_lu, ncomp_lu, indx, d_nod)
-!c solve Ax=LUx=b
-         call lubksb(a_nod, ncomp_lu, ncomp_lu, indx, b_nod)
-!
-         do i = 1, numnod
-           X_lu(i) = b_nod(i)
-           d_nod = d_nod*a_nod(i,i)
-         end do
-!
-         write(*,*) 'det A', d_nod
-!
-         call deallocate_matrix_4_LU
+      call alloc_matrix_4_LU(numnod, LU_mat)
+      call solve_by_LU_decomp(numnod, mk_mat, rhs_dz, X_lu, LU_mat)
+      call dealloc_matrix_4_LU(LU_mat)
 !
       end subroutine solve_delta_z_etc_LU
 !

@@ -144,15 +144,15 @@
 !
       if(flag_mass) then
         call alloc_consist_mass_crs(node%numnod, tbl_crs, zmass)
-        call set_consist_mass_mat(node%numnod, tbl_crs,                 &
-     &                            z_int_edge%mk_ele, zmass)
+        call set_consist_mass_mat(node%numnod, z_int_edge%mk_ele,       &
+     &                            zmass)
 !
         call alloc_edge_vart_width(node%numnod, ele%numele, dz_plane)
         call int_edge_vart_width(node%numnod, ele%numele, edge,         &
      &                           i_int_z_filter, g_FEM, jac_1d, rhs_dz)
 !
-        call set_consist_mass_mat(node%numnod, tbl_crs,                 &
-     &                            z_int_edge%mk_ele, zmass)
+        call set_consist_mass_mat(node%numnod, z_int_edge%mk_ele,       &
+     &                            zmass)
 !
         write(*,*) mat_crs%METHOD_crs
         if(mat_crs%METHOD_crs .eq. 'LU') then

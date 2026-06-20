@@ -54,6 +54,12 @@
 !
       use m_precision
 !
+      use t_geometry_data
+      use t_edge_data
+      use t_jacobian_1d
+      use t_shape_functions
+      use t_fem_gauss_int_coefs
+!
       implicit none
 !
 ! ----------------------------------------------------------------------
@@ -64,9 +70,6 @@
 !
       subroutine cal_vart_width_by_ele(numnod, numele, edge,            &
      &                                 dz_ele, delta_z)
-!
-      use t_edge_data
-      use m_commute_filter_z
 !
       integer(kind = kint), intent(in) :: numnod, numele
       type(edge_data), intent(in) :: edge
@@ -101,12 +104,6 @@
      subroutine int_edge_vart_width(numnod, numele, edge, n_int,        &
     &                               g_FEM, jac_1d, rhs_dz)
 !
-      use t_edge_data
-      use t_fem_gauss_int_coefs
-      use t_jacobian_1d
-!
-      use m_commute_filter_z
-!
       integer(kind = kint), intent(in) :: numnod, numele
       type(edge_data), intent(in) :: edge
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
@@ -139,13 +136,6 @@
 !
       subroutine int_edge_diff_vart_w(node, ele, edge, n_int, spf_1d,   &
      &                                g_FEM, jac_1d, delta_z, rhs_dz)
-!
-      use t_geometry_data
-      use t_edge_data
-      use t_jacobian_1d
-      use t_shape_functions
-      use t_fem_gauss_int_coefs
-      use m_commute_filter_z
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -185,14 +175,6 @@
 !
       subroutine int_edge_d2_vart_w(node, ele, edge, n_int, spf_1d,     &
      &          g_FEM, jac_1d, delta_z, delta_dz, rhs_dz)
-!
-      use calypso_mpi
-      use t_geometry_data
-      use t_edge_data
-      use t_jacobian_1d
-      use t_shape_functions
-      use t_fem_gauss_int_coefs
-      use m_commute_filter_z
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -236,13 +218,6 @@
 !
       subroutine int_edge_d2_vart_w2(node, ele, edge, n_int, spf_1d,    &
      &                               g_FEM, jac_1d, delta_dz, rhs_dz)
-!
-      use t_geometry_data
-      use t_edge_data
-      use t_jacobian_1d
-      use t_shape_functions
-      use t_fem_gauss_int_coefs
-      use m_commute_filter_z
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele

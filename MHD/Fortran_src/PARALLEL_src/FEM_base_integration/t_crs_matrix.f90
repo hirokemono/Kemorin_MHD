@@ -15,6 +15,7 @@
 !!
 !!      subroutine dealloc_crs_mat_data(mat_crs)
 !!      subroutine check_crs_matrix_comps(id_rank, tbl_crs, mat_crs)
+!!@endverbatim
 !
       module t_crs_matrix
 !
@@ -28,7 +29,7 @@
 !>  Total size of non-0 component of matrix
         integer (kind = kint) :: ntot_A
 !>  CRS matrix
-        real(kind=kreal), pointer ::  A_crs(:)
+        real(kind=kreal), allocatable ::  A_crs(:)
 !>  Diagonal component
         real(kind=kreal), pointer ::  D_crs(:)
 !>  lower left component
@@ -83,7 +84,7 @@
       subroutine alloc_crs_mat_data(tbl_crs, mat_crs)
 !
       type(CRS_matrix_connect), intent(in) :: tbl_crs
-      type(CRS_matrix), intent(inout) :: mat_crs
+      type(CRS_matrix), intent(inout), target :: mat_crs
 !
       integer(kind = kint) :: NB
 !
@@ -115,9 +116,9 @@
 !
       type(CRS_matrix), intent(inout) :: mat_crs
 !
-      nullify (mat_crs%D_crs, mat_crs%AL_crs, mat_crs%AU_crs)
-      deallocate (mat_crs%A_crs)
-      deallocate (mat_crs%B_crs, mat_crs%X_crs)
+      nullify(mat_crs%D_crs, mat_crs%AL_crs, mat_crs%AU_crs)
+      deallocate(mat_crs%A_crs)
+      deallocate(mat_crs%B_crs, mat_crs%X_crs)
 !
       end subroutine dealloc_crs_mat_data
 !

@@ -7,10 +7,9 @@
 !>@brief Copy matrices for solver
 !!
 !!@verbatim
-!!      subroutine set_consist_mass_mat(numnod, tbl_crs, mk_mat, zmass)
+!!      subroutine set_consist_mass_mat(numnod, mk_mat, zmass)
 !!        integer(kind = kint), intent(in) :: numnod
 !!        real(kind = kreal), intent(in) :: mk_mat(numnod,numnod)
-!!        type(CRS_matrix_connect), intent(in) :: tbl_crs
 !!        type(consist_z_mass_crs), intent(inout) :: zmass
 !!      subroutine set_matrix_4_border(numnod, neib_z, mat_crs)
 !!        integer (kind = kint), intent(in) :: numnod
@@ -23,7 +22,6 @@
       use m_precision
       use m_constants
 !
-      use t_crs_connect
       use t_crs_matrix
 !
       implicit none
@@ -34,13 +32,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_consist_mass_mat(numnod, tbl_crs, mk_mat, zmass)
+      subroutine set_consist_mass_mat(numnod, mk_mat, zmass)
 !
       use t_consist_z_mass_crs
 !
       integer(kind = kint), intent(in) :: numnod
       real(kind = kreal), intent(in) :: mk_mat(numnod,numnod)
-      type(CRS_matrix_connect), intent(in) :: tbl_crs
 !
       type(consist_z_mass_crs), intent(inout) :: zmass
 !
