@@ -1,8 +1,12 @@
-!write_z_filter_4_nod.f90
-!      module write_z_filter_4_nod
+!>@file   write_z_filter_4_nod.f90
+!!        module write_z_filter_4_nod
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2007
 !
-!      Written by H. Matsui
-!
+!>@brief FEM shape functgions for vertical filter
+!!
+!!@verbatim
 !!      subroutine write_filter_4_nod(node, ele, edge_z_filter,         &
 !!     &                              dz_plane, neib_z2)
 !!        type(node_data), intent(in) :: node
@@ -10,6 +14,7 @@
 !!        type(edge_data), intent(in) :: edge_z_filter
 !!        type(edge_z_width), intent(in) :: dz_plane
 !!        type(neighbour_data_z), intent(in) :: neib_z2
+!!@endverbatim
 !
       module write_z_filter_4_nod
 !
@@ -29,7 +34,7 @@
      &                              dz_plane, neib_z2)
 !
       use t_neighbour_data_z
-      use t_vart_edge_width
+      use t_vert_edge_width
       use m_int_commtative_filter
       use m_commute_filter_z
       use m_z_filter_values

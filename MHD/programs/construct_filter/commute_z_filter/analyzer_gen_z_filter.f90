@@ -68,7 +68,7 @@
 !
       use t_neighbour_data_z
       use t_neighbour_index_z
-      use t_vart_edge_width
+      use t_vert_edge_width
       use t_z_int_edge_data
 !
       use const_delta_z_analytical

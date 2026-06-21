@@ -29,7 +29,7 @@
 !
       use t_geometry_data
       use t_edge_data
-      use t_vart_edge_width
+      use t_vert_edge_width
 !
       implicit none
 !
@@ -54,7 +54,7 @@
       type(edge_z_width), intent(inout) :: dz_plane
 !
 !
-      call alloc_edge_vart_width(node%numnod, ele%numele, dz_plane)
+      call alloc_edge_vert_width(node%numnod, ele%numele, dz_plane)
 !
       if (iflag_grid .eq. igrid_Chebyshev) then
         if (my_rank.eq.0) write(*,*) 'cal_dz_chebyshev_grids'

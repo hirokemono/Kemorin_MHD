@@ -1,5 +1,5 @@
-!>@file   t_vart_edge_width.f90
-!!        module t_vart_edge_width
+!>@file   t_vert_edge_width.f90
+!!        module t_vert_edge_width
 !!
 !!@author H. Matsui
 !!@date Programmed in Aug., 2007
@@ -7,12 +7,12 @@
 !>@brief FEM shape functgions for vertical filter
 !!
 !!@verbatim
-!!      subroutine alloc_edge_vart_width(numnod, numele, dz_plane)
-!!      subroutine dealloc_edge_vart_width(dz_plane)
+!!      subroutine alloc_edge_vert_width(numnod, numele, dz_plane)
+!!      subroutine dealloc_edge_vert_width(dz_plane)
 !!        type(edge_z_width), intent(inout) :: dz_plane
 !!@endverbatim
 !!
-      module t_vart_edge_width
+      module t_vert_edge_width
 !
       use m_precision
 !
@@ -34,7 +34,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_edge_vart_width(numnod, numele, dz_plane)
+      subroutine alloc_edge_vert_width(numnod, numele, dz_plane)
 !
       integer(kind = kint), intent(in) :: numnod, numele
       type(edge_z_width), intent(inout) :: dz_plane
@@ -59,11 +59,11 @@
         dz_plane%d2_dz_e(1:numele) =    0.0d0
       end if
 !
-      end subroutine alloc_edge_vart_width
+      end subroutine alloc_edge_vert_width
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine dealloc_edge_vart_width(dz_plane)
+      subroutine dealloc_edge_vert_width(dz_plane)
 !
       type(edge_z_width), intent(inout) :: dz_plane
 !
@@ -71,8 +71,8 @@
       deallocate(dz_plane%delta_dz_n, dz_plane%delta_dz_e)
       deallocate(dz_plane%d2_dz_n,    dz_plane%d2_dz_e)
 !
-      end subroutine dealloc_edge_vart_width
+      end subroutine dealloc_edge_vert_width
 !
 ! ----------------------------------------------------------------------
 !
-      end module t_vart_edge_width
+      end module t_vert_edge_width

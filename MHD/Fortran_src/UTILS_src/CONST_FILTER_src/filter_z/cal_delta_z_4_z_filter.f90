@@ -103,7 +103,7 @@
      &          nod_comm, node, ele, edge, spf_1d, g_FEM, jac_1d,       &
      &          z_int_edge, dz_plane, tbl_crs, mat_crs, SR_sig, SR_r)
 !
-      use t_vart_edge_width
+      use t_vert_edge_width
       use t_consist_z_mass_crs
       use t_z_int_edge_data
       use m_commute_filter_z
@@ -147,8 +147,8 @@
         call set_consist_mass_mat(node%numnod, z_int_edge%mk_ele,       &
      &                            zmass)
 !
-        call alloc_edge_vart_width(node%numnod, ele%numele, dz_plane)
-        call int_edge_vart_width(node%numnod, ele%numele, edge,         &
+        call alloc_edge_vert_width(node%numnod, ele%numele, dz_plane)
+        call int_edge_vert_width(node%numnod, ele%numele, edge,         &
      &                           i_int_z_filter, g_FEM, jac_1d, rhs_dz)
 !
         call set_consist_mass_mat(node%numnod, z_int_edge%mk_ele,       &
@@ -169,8 +169,8 @@
      &                             COMPtime, COMMtime, elps1)
         end if
 !
-        write(*,*) 'int_edge_diff_vart_w'
-        call int_edge_diff_vart_w(node, ele, edge, i_int_z_filter,      &
+        write(*,*) 'int_edge_diff_vert_w'
+        call int_edge_diff_vert_w(node, ele, edge, i_int_z_filter,      &
      &      spf_1d, g_FEM, jac_1d, dz_plane%delta_z_n, rhs_dz)
 
         if(mat_crs%METHOD_crs .eq. 'LU') then
@@ -187,10 +187,10 @@
      &                             COMPtime, COMMtime, elps1)
         end if
 !
-        call int_edge_d2_vart_w                                         &
+        call int_edge_d2_vert_w                                         &
       &    (node, ele, edge, i_int_z_filter, spf_1d, g_FEM, jac_1d,     &
       &     dz_plane%delta_z_n, dz_plane%delta_dz_n, rhs_dz)
-!        call int_edge_d2_vart_w2(node, ele, edge, i_int_z_filter,      &
+!        call int_edge_d2_vert_w2(node, ele, edge, i_int_z_filter,      &
 !     &      spf_1d, g_FEM, jac_1d, dz_plane%delta_dz_n, rhs_dz)
 
         if(mat_crs%METHOD_crs .eq. 'LU') then
@@ -214,18 +214,18 @@
      &       = rhs_dz(1:node%numnod) * z_int_edge%mk_z(1:node%numnod)
 !$omp end parallel workshare
       else
-        call alloc_edge_vart_width(node%numnod, ele%numele, dz_plane)
-        call int_edge_vart_width(node%numnod, ele%numele, edge,         &
+        call alloc_edge_vert_width(node%numnod, ele%numele, dz_plane)
+        call int_edge_vert_width(node%numnod, ele%numele, edge,         &
      &                           i_int_z_filter, g_FEM, jac_1d, rhs_dz)
         dz_plane%delta_z_n(1:node%numnod)                               &
      &      = rhs_dz(1:node%numnod) * z_int_edge%mk_z(1:node%numnod)
 !
-        call int_edge_diff_vart_w(node, ele, edge, i_int_z_filter,      &
+        call int_edge_diff_vert_w(node, ele, edge, i_int_z_filter,      &
      &      spf_1d, g_FEM, jac_1d, dz_plane%delta_z_n, rhs_dz)
         dz_plane%delta_dz_n(1:node%numnod)                              &
      &      = rhs_dz(1:node%numnod) * z_int_edge%mk_z(1:node%numnod)
 !
-        call int_edge_d2_vart_w                                         &
+        call int_edge_d2_vert_w                                         &
      &     (node, ele, edge, i_int_z_filter, spf_1d, g_FEM, jac_1d,     &
      &      dz_plane%delta_z_n, dz_plane%delta_dz_n, rhs_dz)
 !

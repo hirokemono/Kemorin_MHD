@@ -54,7 +54,7 @@
 !
       use calypso_mpi
 !
-      use t_vart_edge_width
+      use t_vert_edge_width
       use t_z_int_edge_data
       use m_commute_filter_z
 
