@@ -64,7 +64,7 @@
       use cal_jacobian_linear_1d
       use cal_delta_z_4_z_filter
 !
-      type(vart_fileter_params), save :: z_commute2
+      type(vart_filter_moments), save :: z_commute2
       type(edge_z_width), save :: dz_plane2
       type(z_int_edge_data), save :: z_int_edge2
 !

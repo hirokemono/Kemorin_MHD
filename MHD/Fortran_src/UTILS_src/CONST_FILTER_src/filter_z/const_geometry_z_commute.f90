@@ -14,7 +14,7 @@
 !!        type(element_data), intent(inout) :: ele
 !!        type(surface_data), intent(inout) :: surf
 !!        type(edge_data), intent(inout) :: edge_z_filter
-!!        type(vart_fileter_params), intent(inout) :: z_commute
+!!        type(vart_filter_moments), intent(inout) :: z_commute
 !!@endverbatim
 !!
       module const_geometry_z_commute
@@ -53,7 +53,7 @@
       type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge_z_filter
-      type(vart_fileter_params), intent(inout) :: z_commute
+      type(vart_filter_moments), intent(inout) :: z_commute
 !
 !
       ncomp_mat = z_commute%ncomp_norm + 2

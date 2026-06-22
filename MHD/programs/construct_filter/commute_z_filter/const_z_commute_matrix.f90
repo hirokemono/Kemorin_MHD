@@ -11,7 +11,7 @@
 !!     &          z_commute, zfilter_wk, delta_z, d_norm_nod, mat_crs)
 !!        integer (kind= kint), intent(in) :: numnod
 !!        type(neighbour_data_z), intent(in) :: neib_z
-!!        type(vart_fileter_params), intent(in) :: z_commute
+!!        type(vart_filter_moments), intent(in) :: z_commute
 !!        type(z_filter_work), intent(in) :: zfilter_wk
 !!        real(kind = kreal), intent(in) :: delta_z(numnod)
 !!        real(kind = kreal), intent(in)                                &
@@ -46,7 +46,7 @@
 !
       integer (kind= kint), intent(in) :: numnod
       type(neighbour_data_z), intent(in) :: neib_z
-      type(vart_fileter_params), intent(in) :: z_commute
+      type(vart_filter_moments), intent(in) :: z_commute
       type(z_filter_work), intent(in) :: zfilter_wk
       real(kind = kreal), intent(in) :: delta_z(numnod)
       real(kind = kreal), intent(in)                                    &

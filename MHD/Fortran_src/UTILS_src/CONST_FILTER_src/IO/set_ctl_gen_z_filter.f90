@@ -44,7 +44,7 @@
 !
       type(ctl_data_gen_z_filter), intent(in) :: z_filter_ctl
 !
-      type(vart_fileter_params), intent(inout) :: z_commute
+      type(vart_filter_moments), intent(inout) :: z_commute
       type(CRS_matrix), intent(inout) :: mat_crs
       type(CG_poarameter), intent(inout) :: CG_param
       type(DJDS_poarameter), intent(inout) :: DJDS_param
@@ -89,7 +89,7 @@
       type(ctl_data_4_plane_model), intent(in) :: cube_c
       type(ctl_data_gen_filter), intent(in) :: gen_f_ctl
 !
-      type(vart_fileter_params), intent(inout) :: z_commute
+      type(vart_filter_moments), intent(inout) :: z_commute
       type(CRS_matrix), intent(inout) :: mat_crs
       type(CG_poarameter), intent(inout) :: CG_param
       type(DJDS_poarameter), intent(inout) :: DJDS_param

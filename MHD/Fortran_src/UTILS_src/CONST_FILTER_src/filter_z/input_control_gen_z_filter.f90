@@ -15,7 +15,7 @@
 !!        type(element_data), intent(inout) :: ele
 !!        type(surface_data), intent(inout) :: surf
 !!        type(edge_data), intent(inout) :: edge
-!!        type(vart_fileter_params), intent(inout) :: z_commute
+!!        type(vart_filter_moments), intent(inout) :: z_commute
 !!        type(CRS_matrix), intent(inout) :: mat_crs
 !!        type(CG_poarameter), intent(inout) :: CG_param
 !!        type(DJDS_poarameter), intent(inout) :: DJDS_param
@@ -64,7 +64,7 @@
       type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
-      type(vart_fileter_params), intent(inout) :: z_commute
+      type(vart_filter_moments), intent(inout) :: z_commute
       type(CRS_matrix), intent(inout) :: mat_crs
       type(CG_poarameter), intent(inout) :: CG_param
       type(DJDS_poarameter), intent(inout) :: DJDS_param

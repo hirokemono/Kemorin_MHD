@@ -12,7 +12,7 @@
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(edge_data), intent(in) :: edge_z_filter
-!!        type(vart_fileter_params), intent(in) :: z_commute
+!!        type(vart_filter_moments), intent(in) :: z_commute
 !!        type(edge_z_width), intent(in) :: dz_plane
 !!        type(neighbour_data_z), intent(in) :: neib_z2
 !!@endverbatim
@@ -45,7 +45,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(edge_data), intent(in) :: edge_z_filter
-      type(vart_fileter_params), intent(in) :: z_commute
+      type(vart_filter_moments), intent(in) :: z_commute
       type(edge_z_width), intent(in) :: dz_plane
       type(neighbour_data_z), intent(in) :: neib_z2
 !

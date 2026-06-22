@@ -10,11 +10,11 @@
 !!      subroutine alloc_z_filter_mom_params(n_comp, z_commute)
 !!      subroutine dealloc_z_filter_mom_params(z_commute)
 !!        integer(kind = kint), intent(in) :: n_comp
-!!        type(vart_fileter_params), intent(inout) :: z_commute
+!!        type(vart_filter_moments), intent(inout) :: z_commute
 !!
 !!      subroutine write_vart_filter_moments(id_file, z_commute)
 !!        integer(kind = kint), intent(in) :: id_file
-!!        type(vart_fileter_params), intent(in) :: z_commute
+!!        type(vart_filter_moments), intent(in) :: z_commute
 !!@endverbatim
 !!
       module t_commute_filter_z
@@ -23,12 +23,12 @@
 !
       implicit none
 !
-      type vart_fileter_params
+      type vart_filter_moments
         integer (kind = kint) :: ncomp_norm
         character(len=kchara), allocatable :: z_filter_mom_type(:)
         integer (kind = kint), allocatable :: kcomp_norm_z(:)
         real(kind = kreal), allocatable :: f_mom_z(:)
-      end type vart_fileter_params
+      end type vart_filter_moments
 !
 !  ---------------------------------------------------------------------
 !
@@ -39,7 +39,7 @@
       subroutine alloc_z_filter_mom_params(n_comp, z_commute)
 !
       integer(kind = kint), intent(in) :: n_comp
-      type(vart_fileter_params), intent(inout) :: z_commute
+      type(vart_filter_moments), intent(inout) :: z_commute
 !
 !
       z_commute%ncomp_norm = n_comp
@@ -57,7 +57,7 @@
 !
       subroutine dealloc_z_filter_mom_params(z_commute)
 !
-      type(vart_fileter_params), intent(inout) :: z_commute
+      type(vart_filter_moments), intent(inout) :: z_commute
 !
 !
       deallocate(z_commute%kcomp_norm_z)
@@ -72,7 +72,7 @@
       subroutine write_vart_filter_moments(id_file, z_commute)
 !
       integer(kind = kint), intent(in) :: id_file
-      type(vart_fileter_params), intent(in) :: z_commute
+      type(vart_filter_moments), intent(in) :: z_commute
 !
       integer(kind = kint) :: i
 !

@@ -107,7 +107,7 @@
       type(DJDS_ordering_table) :: djds_tbl_z
       type(DJDS_MATRIX) :: djds_mat_z
 !
-      type(vart_fileter_params), save :: z_commute1
+      type(vart_filter_moments), save :: z_commute1
       type(neighbour_data_z), save :: neib_z1
       type(z_int_edge_data), save :: z_int_edge1
       type(z_filter_work), save :: zfilter_wk1
