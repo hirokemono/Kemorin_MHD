@@ -104,7 +104,6 @@
 !
       node%internal_node = totalnod
       node%numnod =  node%internal_node
-      totalele = node%internal_node - 1
 !      nod_comm%num_neib = 2
 !
       nmat_ele = totalele*nfilter2_1
@@ -117,6 +116,7 @@
       edge_z_filter%numedge = ele%numele
       edge_z_filter%nnod_4_edge = 2
 !
+      totalele = node%internal_node - 1
       nfilter2_1 = 2*numfilter+1
       nfilter2_2 = 2*numfilter+2
       nfilter2_3 = 2*numfilter+3

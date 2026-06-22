@@ -40,7 +40,7 @@
       subroutine set_connect_2_n_filter(node, nneib_nod, ncomp_st)
 !
       use t_geometry_data
-      use m_commute_filter_z
+!      use m_commute_filter_z
 !
       type(node_data), intent(in) :: node
       integer(kind = kint), intent(in)                                  &

@@ -181,8 +181,8 @@
 !
 !    set information for filtering for element
 !
-      call alloc_z_neib_index(z_filter_mesh1%node%numnod, nfilter2_1,   &
-     &                        zfilter_wk1)
+      call alloc_z_neib_index(z_filter_mesh1%node%numnod,               &
+     &    totalele, nfilter2_1, zfilter_wk1)
       if(my_rank .eq. 0) write(*,*) 'set_connect_2_n_filter'
       call set_connect_2_n_filter(z_filter_mesh1%node,                  &
      &    neib_z1%nneib_nod, zfilter_wk1%ncomp_z_st)
@@ -196,8 +196,9 @@
 !
       if (my_rank.eq.0) write(*,*) 'set_difference_of_position'
       call set_difference_of_position                                   &
-     &   (z_filter_mesh1%node, edge_z_filter1,                          &
-     &    neib_z1%nneib_ele, neib_z1%ineib_ele, zfilter_wk1%alpha)
+     &   (z_filter_mesh1%node, edge_z_filter1, zfilter_wk1%totalele,    &
+     &    nfilter2_1, neib_z1%nneib_ele, neib_z1%ineib_ele,             &
+     &    zfilter_wk1%alpha)
 !      call check_difference_of_position(my_rank, totalele, neib_z1,    &
 !     &                                  zfilter_wk1)
 !
@@ -241,7 +242,7 @@
        call alloc_crs_mat_data(tbl_crs_z, mat_crs_z)
 !
        call set_matrix_4_border(z_filter_mesh1%node%numnod,             &
-     &                          neib_z1, mat_crs_z)
+     &     ncomp_mat, neib_z1, mat_crs_z)
        write(*,*) 's_const_commute_matrix'
        call s_const_commute_matrix(z_filter_mesh1%node%numnod,          &
      &     neib_z1, z_commute1, zfilter_wk1, dz_plane1%delta_z_n,       &
@@ -261,8 +262,9 @@
 !C
 !C-- solve matrix
       write(*,*) 'METHOD_crs: ', mat_crs_z%METHOD_crs
-      if ( mat_crs_z%METHOD_crs .eq. 'LU' ) then
-        call solve_z_commute_LU(z_filter_mesh1%node%numnod, mat_crs_z)
+      if(mat_crs_z%METHOD_crs .eq. 'LU') then
+        call solve_z_commute_LU(z_filter_mesh1%node%numnod, ncomp_mat,  &
+     &                          mat_crs_z)
       else
         call transfer_crs_2_djds_matrix                                 &
      &     (z_filter_mesh1%node, z_filter_mesh1%nod_comm,               &

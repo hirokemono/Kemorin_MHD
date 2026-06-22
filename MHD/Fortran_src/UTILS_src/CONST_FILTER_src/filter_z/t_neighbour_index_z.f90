@@ -7,9 +7,10 @@
 !>@brief Neighboring data to construct vertical filter
 !!
 !!@verbatim
-!!      subroutine alloc_z_neib_index(numnod, nfilter, zfilter_wk)
+!!      subroutine alloc_z_neib_index(numnod, totalele, nfilter,        &
+!!     &                              zfilter_wk)
 !!      subroutine dealloc_z_neib_index(zfilter_wk)
-!!        integer(kind = kint), intent(in) :: numnod
+!!        integer(kind = kint), intent(in) :: numnod, totalele
 !!        integer(kind = kint), intent(in) :: nfilter
 !!        type(z_filter_work), intent(inout) :: zfilter_wk
 !!      subroutine check_z_neib_index(id_rank, numnod, zfilter_wk)
@@ -39,6 +40,17 @@
 !!        integer(kind = kint), intent(in) :: nneib_ele(totalele,2)
 !!        integer(kind = kint), intent(inout)                           &
 !!     &                     :: jdx(totalele,nfilter2_1,3)
+!!
+!!      subroutine set_difference_of_position(node, edge,               &
+!!     &          totalele, nfilter2_1, nneib_ele, ineib_ele, alpha)
+!!        type(node_data), intent(in) :: node
+!!        type(edge_data), intent(in) :: edge
+!!      integer(kind = kint), intent(in) :: totalele, nfilter2_1
+!!        integer(kind = kint), intent(in) :: nneib_ele(totalele,2)
+!!        integer(kind = kint), intent(in)                              &
+!!     &                     :: ineib_ele(totalele,nfilter2_1,2)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                   :: alpha(totalele,0:nfilter2_1,2)
 !!@endverbatim
 !!
       module t_neighbour_index_z
@@ -50,6 +62,7 @@
       type z_filter_work
         integer(kind = kint), allocatable :: ncomp_z_st(:)
 !
+        integer(kind = kint) :: totalele
         integer(kind = kint) :: nfil_jdx
         integer(kind = kint), allocatable :: jdx_z(:,:,:)
         real(kind = kreal), allocatable :: alpha(:,:,:)
@@ -61,15 +74,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_z_neib_index(numnod, nfilter, zfilter_wk)
+      subroutine alloc_z_neib_index(numnod, totalele, nfilter,          &
+     &                              zfilter_wk)
 !
-      use m_commute_filter_z
-!
-      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: numnod, totalele
       integer(kind = kint), intent(in) :: nfilter
       type(z_filter_work), intent(inout) :: zfilter_wk
 !
 !
+      zfilter_wk%totalele = totalele
       zfilter_wk%nfil_jdx = nfilter
       allocate(zfilter_wk%ncomp_z_st(numnod))
       allocate(zfilter_wk%jdx_z(totalele,zfilter_wk%nfil_jdx,3))
@@ -183,16 +196,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_difference_of_position(node, edge,                 &
-     &          nneib_ele, ineib_ele, alpha)
+     &          totalele, nfilter2_1, nneib_ele, ineib_ele, alpha)
 !
       use t_geometry_data
       use t_edge_data
 !
-      use m_commute_filter_z
-!
       type(node_data), intent(in) :: node
       type(edge_data), intent(in) :: edge
-!      integer(kind = kint), intent(in) :: totalele, nfilter2_1
+      integer(kind = kint), intent(in) :: totalele, nfilter2_1
       integer(kind = kint), intent(in) :: nneib_ele(totalele,2)
       integer(kind = kint), intent(in)                                  &
      &                     :: ineib_ele(totalele,nfilter2_1,2)

@@ -94,7 +94,6 @@
       type(CG_poarameter), intent(inout) :: CG_param
       type(DJDS_poarameter), intent(inout) :: DJDS_param
 !
-      integer(kind = kint) :: i
       real(kind = kreal) :: pi
       character(len = kchara) :: tmpchara
 !

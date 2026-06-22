@@ -105,8 +105,6 @@
       subroutine set_spatial_difference(numele, n_int, g_FEM, jac_1d,   &
      &                                  dz_ele)
 !
-      use m_commute_filter_z
-!
       use t_fem_gauss_int_coefs
       use t_jacobian_1d
 !
@@ -139,8 +137,6 @@
       use t_edge_data
       use t_fem_gauss_int_coefs
       use t_jacobian_1d
-!
-      use m_commute_filter_z
 !
       integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint), intent(in) :: n_int

@@ -11,8 +11,9 @@
 !!        integer(kind = kint), intent(in) :: numnod
 !!        real(kind = kreal), intent(in) :: mk_mat(numnod,numnod)
 !!        type(consist_z_mass_crs), intent(inout) :: zmass
-!!      subroutine set_matrix_4_border(numnod, neib_z, mat_crs)
-!!        integer (kind = kint), intent(in) :: numnod
+!!      subroutine set_matrix_4_border(numnod, ncomp_mat, neib_z,       &
+!!     &                               mat_crs)
+!!        integer (kind = kint), intent(in) :: numnod, ncomp_mat
 !!        type(neighbour_data_z), intent(in) :: neib_z
 !!        type(CRS_matrix), intent(inout) :: mat_crs
 !!@endverbatim
@@ -58,12 +59,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_matrix_4_border(numnod, neib_z, mat_crs)
+      subroutine set_matrix_4_border(numnod, ncomp_mat, neib_z,         &
+     &                               mat_crs)
 !
       use t_neighbour_data_z
-      use m_commute_filter_z
 !
-      integer (kind = kint), intent(in) :: numnod
+      integer (kind = kint), intent(in) :: numnod, ncomp_mat
       type(neighbour_data_z), intent(in) :: neib_z
 !
       type(CRS_matrix), intent(inout) :: mat_crs

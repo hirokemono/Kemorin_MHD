@@ -7,8 +7,8 @@
 !>@brief Solve vertical differenciate by LU decompoistion
 !!
 !!@verbatim
-!!      subroutine solve_z_commute_LU(numnod, mat_crs)
-!!        integer(kind = kint), intent(in) :: numnod
+!!      subroutine solve_z_commute_LU(numnod, ncomp_mat, mat_crs)
+!!        integer(kind = kint), intent(in) :: numnod, ncomp_mat
 !!        type(CRS_matrix), intent(inout) :: mat_crs
 !!      subroutine solve_delta_z_etc_LU(numnod, mk_mat, rhs_dz, X_lu)
 !!        integer(kind = kint), intent(in) :: numnod
@@ -32,12 +32,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine solve_z_commute_LU(numnod, mat_crs)
+      subroutine solve_z_commute_LU(numnod, ncomp_mat, mat_crs)
 !
-      use m_commute_filter_z
       use t_crs_matrix
 !
-      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: numnod, ncomp_mat
       type(CRS_matrix), intent(inout) :: mat_crs
 !
       type(matrix_4_LU) :: LU_mat
