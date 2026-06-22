@@ -1,19 +1,25 @@
+!>@file   set_ctl_gen_z_filter.f90
+!!        module set_ctl_gen_z_filter
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2006
 !
-!      module set_ctl_gen_z_filter
-!
-!     Written by H. Matsui on July, 2006
-!
-!!      subroutine set_ctl_params_4_gen_z_filter                        &
-!!     &         (z_filter_ctl, mat_crs, CG_param, DJDS_param)
+!>@brief Set commutive filter parameters in vertical direction
+!!
+!!@verbatim
+!!      subroutine set_ctl_params_4_gen_z_filter(z_filter_ctl,          &
+!!     &          z_commute, mat_crs, CG_param, DJDS_param)
 !!        type(ctl_data_gen_z_filter), intent(in) :: z_filter_ctl
 !!        type(CRS_matrix), intent(inout) :: mat_crs
 !!        type(CG_poarameter), intent(inout) :: CG_param
 !!        type(DJDS_poarameter), intent(inout) :: DJDS_param
+!!@endverbatim
 !
       module set_ctl_gen_z_filter
 !
       use m_precision
       use t_ctl_data_gen_z_filter
+      use t_commute_filter_z
       use t_crs_matrix
       use t_iccg_parameter
 !
@@ -27,8 +33,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_4_gen_z_filter                          &
-     &         (z_filter_ctl, mat_crs, CG_param, DJDS_param)
+      subroutine set_ctl_params_4_gen_z_filter(z_filter_ctl,            &
+     &          z_commute, mat_crs, CG_param, DJDS_param)
 !
       use m_constants
       use m_machine_parameter
@@ -38,6 +44,7 @@
 !
       type(ctl_data_gen_z_filter), intent(in) :: z_filter_ctl
 !
+      type(vart_fileter_params), intent(inout) :: z_commute
       type(CRS_matrix), intent(inout) :: mat_crs
       type(CG_poarameter), intent(inout) :: CG_param
       type(DJDS_poarameter), intent(inout) :: DJDS_param
@@ -60,14 +67,14 @@
 !
       call set_ctl_parameters_z_filter                                  &
      &   (z_filter_ctl%cube_c, z_filter_ctl%gen_f_ctl,                  &
-     &    mat_crs, CG_param, DJDS_param)
+     &    z_commute, mat_crs, CG_param, DJDS_param)
 !
       end subroutine set_ctl_params_4_gen_z_filter
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_parameters_z_filter                            &
-     &         (cube_c, gen_f_ctl, mat_crs, CG_param, DJDS_param)
+      subroutine set_ctl_parameters_z_filter(cube_c, gen_f_ctl,         &
+     &          z_commute, mat_crs, CG_param, DJDS_param)
 !
       use m_constants
       use m_machine_parameter
@@ -82,6 +89,7 @@
       type(ctl_data_4_plane_model), intent(in) :: cube_c
       type(ctl_data_gen_filter), intent(in) :: gen_f_ctl
 !
+      type(vart_fileter_params), intent(inout) :: z_commute
       type(CRS_matrix), intent(inout) :: mat_crs
       type(CG_poarameter), intent(inout) :: CG_param
       type(DJDS_poarameter), intent(inout) :: DJDS_param
@@ -184,22 +192,18 @@
       end if
 !
 !
-      ncomp_norm = gen_f_ctl%ref_filter_mom_ctl%num
-      call allocate_z_filter_mom_params
+      call alloc_z_filter_mom_params(gen_f_ctl%ref_filter_mom_ctl%num,  &
+     &                               z_commute)
 !
-      if (ncomp_norm.gt.0) then
-        kcomp_norm(1:ncomp_norm)                                        &
-     &              = gen_f_ctl%ref_filter_mom_ctl%ivec(1:ncomp_norm)
-        f_mom(1:ncomp_norm)                                             &
-     &              = gen_f_ctl%ref_filter_mom_ctl%vect(1:ncomp_norm)
-        filter_moment_type(1:ncomp_norm)                                &
-     &              = gen_f_ctl%ref_filter_mom_ctl%c_tbl(1:ncomp_norm)
-        write(*,*) 'kcomp_norm(i), f_mom(i), filter_moment_type(i)'
-        do i = 1, ncomp_norm
-          write(*,*) i, kcomp_norm(i), f_mom(i),                        &
-     &              trim(filter_moment_type(i))
-        end do
+      if(z_commute%ncomp_norm .gt. .0) then
+        z_commute%kcomp_norm_z(1:z_commute%ncomp_norm)                  &
+     &     = gen_f_ctl%ref_filter_mom_ctl%ivec(1:z_commute%ncomp_norm)
+        z_commute%f_mom_z(1:z_commute%ncomp_norm)                       &
+     &     = gen_f_ctl%ref_filter_mom_ctl%vect(1:z_commute%ncomp_norm)
+        z_commute%z_filter_mom_type(1:z_commute%ncomp_norm)             &
+     &     = gen_f_ctl%ref_filter_mom_ctl%c_tbl(1:z_commute%ncomp_norm)
       end if
+      call write_vart_filter_moments(isix, z_commute)
 !
 !     set solver information
 !

@@ -9,12 +9,13 @@
 !!@verbatim
 !!      subroutine s_input_control_4_z_commute                          &
 !!     &         (nod_comm, node, ele, surf, edge,                      &
-!!     &          mat_crs, CG_param, DJDS_param)
+!!     &          z_commute, mat_crs, CG_param, DJDS_param)
 !!        type(communication_table), intent(inout) :: nod_comm
 !!        type(node_data), intent(inout) :: node
 !!        type(element_data), intent(inout) :: ele
 !!        type(surface_data), intent(inout) :: surf
 !!        type(edge_data), intent(inout) :: edge
+!!        type(vart_fileter_params), intent(inout) :: z_commute
 !!        type(CRS_matrix), intent(inout) :: mat_crs
 !!        type(CG_poarameter), intent(inout) :: CG_param
 !!        type(DJDS_poarameter), intent(inout) :: DJDS_param
@@ -49,11 +50,12 @@
 !
       subroutine s_input_control_4_z_commute                            &
      &         (nod_comm, node, ele, surf, edge,                        &
-     &          mat_crs, CG_param, DJDS_param)
+     &          z_commute, mat_crs, CG_param, DJDS_param)
 !
       use m_machine_parameter
       use calypso_mpi
 !
+      use t_commute_filter_z
       use set_ctl_gen_z_filter
       use const_geometry_z_commute
 !
@@ -62,6 +64,7 @@
       type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
+      type(vart_fileter_params), intent(inout) :: z_commute
       type(CRS_matrix), intent(inout) :: mat_crs
       type(CG_poarameter), intent(inout) :: CG_param
       type(DJDS_poarameter), intent(inout) :: DJDS_param
@@ -79,13 +82,14 @@
       end if
 !
       call set_ctl_params_4_gen_z_filter                                &
-     &   (z_filter_ctl1, mat_crs, CG_param, DJDS_param)
+     &   (z_filter_ctl1, z_commute, mat_crs, CG_param, DJDS_param)
       call dealloc_ctl_data_gen_z_filter(z_filter_ctl1)
 !
 !  --  set geometry
 !
       if (iflag_debug.eq.1) write(*,*) 'set_geometry_z_commute'
-      call set_geometry_z_commute(nod_comm, node, ele, surf, edge)
+      call set_geometry_z_commute(nod_comm, node, ele, surf, edge,      &
+     &                            z_commute)
 !
       end subroutine s_input_control_4_z_commute
 !

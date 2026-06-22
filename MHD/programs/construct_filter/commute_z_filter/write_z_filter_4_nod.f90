@@ -8,10 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine write_filter_4_nod(node, ele, edge_z_filter,         &
-!!     &                              dz_plane, neib_z2)
+!!     &                              z_commute, dz_plane, neib_z2)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(edge_data), intent(in) :: edge_z_filter
+!!        type(vart_fileter_params), intent(in) :: z_commute
 !!        type(edge_z_width), intent(in) :: dz_plane
 !!        type(neighbour_data_z), intent(in) :: neib_z2
 !!@endverbatim
@@ -31,8 +32,9 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_filter_4_nod(node, ele, edge_z_filter,           &
-     &                              dz_plane, neib_z2)
+     &                              z_commute, dz_plane, neib_z2)
 !
+      use t_commute_filter_z
       use t_neighbour_data_z
       use t_vert_edge_width
       use m_int_commtative_filter
@@ -43,6 +45,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(edge_data), intent(in) :: edge_z_filter
+      type(vart_fileter_params), intent(in) :: z_commute
       type(edge_z_width), intent(in) :: dz_plane
       type(neighbour_data_z), intent(in) :: neib_z2
 !
@@ -85,12 +88,11 @@
         write(id_filter_z,*) f_width, f_width_h
 !
 !
-      do i = 1, ncomp_norm
-       do j = 0, 2
-        if ( kcomp_norm(i) .eq. j) then
-          xmom_ht_z(j) = f_mom(i)
-        end if
-       end do
+      do i = 1, z_commute%ncomp_norm
+        do j = 0, 2
+          if(z_commute%kcomp_norm_z(i) .eq. j)                          &
+     &                             xmom_ht_z(j) = z_commute%f_mom_z(i)
+        end do
       end do
 !
         write(id_filter_z,*) '! origianl moments for three directions'

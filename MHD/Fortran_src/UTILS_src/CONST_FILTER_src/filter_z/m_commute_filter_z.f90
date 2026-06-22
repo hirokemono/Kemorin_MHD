@@ -7,8 +7,6 @@
 !>@brief commutive filter in vertical direction
 !!
 !!@verbatim
-!!        subroutine allocate_z_filter_mom_params
-!!        subroutine deallocate_z_filter_mom_params
 !!@endverbatim
 !!
       module m_commute_filter_z
@@ -42,40 +40,6 @@
       integer (kind = kint) :: nfilter2_1
       integer (kind = kint) :: nfilter6_1
 !
-      integer (kind = kint) :: ncomp_norm
       integer (kind = kint) :: ncomp_mat
-!
-      real(kind = kreal), allocatable :: f_mom(:)
-      integer (kind = kint), allocatable :: kcomp_norm(:)
-      character(len=kchara), allocatable :: filter_moment_type(:)
-!
-!  ---------------------------------------------------------------------
-!
-      contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_z_filter_mom_params
-!
-      allocate( kcomp_norm(ncomp_norm) )
-      allocate( f_mom(ncomp_norm) )
-      allocate( filter_moment_type(ncomp_norm) )
-!
-      kcomp_norm = 0
-      f_mom = 0.0d0
-!
-      end subroutine allocate_z_filter_mom_params
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_z_filter_mom_params
-!
-      deallocate( kcomp_norm )
-      deallocate( f_mom )
-      deallocate( filter_moment_type )
-!
-      end subroutine deallocate_z_filter_mom_params
-!
-!  ---------------------------------------------------------------------
 !
       end module m_commute_filter_z

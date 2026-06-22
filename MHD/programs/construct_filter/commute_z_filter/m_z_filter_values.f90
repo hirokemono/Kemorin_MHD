@@ -7,8 +7,8 @@
 !>@brief commutive filter data in vertical direction
 !!
 !!@verbatim
-!!      subroutine allocate_z_filter_mom_params
-!!      subroutine deallocate_z_filter_mom_params
+!!      subroutine allocate_filter_values
+!!      subroutine deallocate_filter_values
 !!      subroutine check_integrated_values(id_rank)
 !!@endverbatim
       module m_z_filter_values

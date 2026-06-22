@@ -66,6 +66,7 @@
       use m_z_filter_values
       use m_int_commtative_filter
 !
+      use t_commute_filter_z
       use t_neighbour_data_z
       use t_neighbour_index_z
       use t_vert_edge_width
@@ -106,6 +107,7 @@
       type(DJDS_ordering_table) :: djds_tbl_z
       type(DJDS_MATRIX) :: djds_mat_z
 !
+      type(vart_fileter_params), save :: z_commute1
       type(neighbour_data_z), save :: neib_z1
       type(z_int_edge_data), save :: z_int_edge1
       type(z_filter_work), save :: zfilter_wk1
@@ -126,8 +128,8 @@
 !C-- read CNTL DATA
       call s_input_control_4_z_commute                                  &
      &  (z_filter_mesh1%nod_comm, z_filter_mesh1%node,                  &
-     &   z_filter_mesh1%ele, surf_z_filter1, edge_z_filter1, mat_crs_z, &
-     &   CG_param_z, DJDS_param_z)
+     &   z_filter_mesh1%ele, surf_z_filter1, edge_z_filter1,            &
+     &   z_commute1, mat_crs_z, CG_param_z, DJDS_param_z)
 !
 !C
 !C     set gauss points
@@ -242,8 +244,8 @@
      &                          neib_z1, mat_crs_z)
        write(*,*) 's_const_commute_matrix'
        call s_const_commute_matrix(z_filter_mesh1%node%numnod,          &
-     &     neib_z1, zfilter_wk1, dz_plane1%delta_z_n, d_norm_nod,       &
-     &     mat_crs_z)
+     &     neib_z1, z_commute1, zfilter_wk1, dz_plane1%delta_z_n,       &
+     &     d_norm_nod, mat_crs_z)
        deallocate(d_norm_nod)
        call dealloc_z_int_edge_data(z_int_edge1)
 !
@@ -335,7 +337,7 @@
 !    output results
 !
        call write_filter_4_nod(z_filter_mesh1%node, z_filter_mesh1%ele, &
-     &                         edge_z_filter1, dz_plane1, neib_z2)
+     &     edge_z_filter1, z_commute1, dz_plane1, neib_z2)
 !
        deallocate(sk_norm_n)
 !

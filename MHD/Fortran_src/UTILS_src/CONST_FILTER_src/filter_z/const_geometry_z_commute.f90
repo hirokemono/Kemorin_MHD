@@ -8,12 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine set_geometry_z_commute                               &
-!!     &         (nod_comm, node, ele, surf, edge_z_filter)
+!!     &         (nod_comm, node, ele, surf, edge_z_filter, z_commute)
 !!        type(communication_table), intent(inout) :: nod_comm
 !!        type(node_data), intent(inout) :: node
 !!        type(element_data), intent(inout) :: ele
 !!        type(surface_data), intent(inout) :: surf
 !!        type(edge_data), intent(inout) :: edge_z_filter
+!!        type(vart_fileter_params), intent(inout) :: z_commute
 !!@endverbatim
 !!
       module const_geometry_z_commute
@@ -27,6 +28,7 @@
       use t_geometry_data
       use t_surface_data
       use t_edge_data
+      use t_commute_filter_z
 !
       implicit none
 !
@@ -42,7 +44,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_geometry_z_commute                                 &
-     &         (nod_comm, node, ele, surf, edge_z_filter)
+     &         (nod_comm, node, ele, surf, edge_z_filter, z_commute)
 !
       use m_spheric_constants
 !
@@ -51,12 +53,11 @@
       type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge_z_filter
+      type(vart_fileter_params), intent(inout) :: z_commute
 !
 !
-      ncomp_mat = ncomp_norm + 2
-      if (numfilter .eq. 1) then
-        ncomp_mat = ncomp_norm
-      end if
+      ncomp_mat = z_commute%ncomp_norm + 2
+      if (numfilter .eq. 1)  ncomp_mat = z_commute%ncomp_norm
 !
       call set_numnod_z_commute(node, ele, surf, edge_z_filter)
 !
