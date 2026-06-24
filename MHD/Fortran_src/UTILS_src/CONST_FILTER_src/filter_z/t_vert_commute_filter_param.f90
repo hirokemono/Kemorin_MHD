@@ -27,7 +27,17 @@
       implicit none
 !
 !
+      character(len = kchara), parameter :: hd_tophat =   'Tophat'
+      character(len = kchara), parameter :: hd_Linear =   'Linear'
+      character(len = kchara), parameter :: hd_Gaussian = 'Gaussian'
+!
+      integer(kind = kint), parameter :: id_tophat =   0
+      integer(kind = kint), parameter :: id_Linear =   1
+      integer(kind = kint), parameter :: id_Gaussian = 2
+!
       type vert_commute_filter_param
+!>        File prefix for vertical filter file
+        character(len=kchara) :: filter_z_file_prefix = 'filter_node_l.0'
 !>        Vertical grid type
         integer (kind = kint) :: iflag_zgrid
 !
@@ -48,10 +58,22 @@
         real(kind = kreal) :: zsize
 !
 !>        number of filter
-        integer (kind = kint) :: numfilter
+        integer(kind = kint) :: numfilter
 !
-        integer (kind = kint) :: nfilter2_3
-        integer (kind = kint) :: nfilter2_1
+        integer(kind = kint) :: num_filter_h
+        character(len=kchara) :: type_filter_h
+        integer(kind = kint) :: iflag_filter_h
+        real(kind = kreal) :: f_width_h
+!
+        integer(kind = kint) :: num_filter_z
+        character(len=kchara) :: type_filter_z
+        integer(kind = kint) :: iflag_filter_z
+        real(kind = kreal) :: f_width_z
+!
+        integer (kind = kint) :: i_int_z_filter
+!
+        integer(kind = kint) :: nfilter2_3
+        integer(kind = kint) :: nfilter2_1
       end type vert_commute_filter_param
 !
 !  ---------------------------------------------------------------------
@@ -107,6 +129,44 @@
       read(id_file,*) zfil_param%iflag_zgrid
 !
       end subroutine read_vert_plane_filter_param
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function set_z_filter_type_id(type_filter)
+!
+      use skip_comment_f
+!
+      character(len = kchara), intent(in) :: type_filter
+!
+      if      (cmp_no_case(type_filter, hd_tophat)) then
+       set_z_filter_type_id = id_tophat
+      else if (cmp_no_case(type_filter, hd_Linear)) then
+       set_z_filter_type_id = id_Linear
+!      else if (cmp_no_case(type_filter, hd_Gaussian)) then
+      else
+       set_z_filter_type_id = id_Gaussian
+      end if
+!
+      end function set_z_filter_type_id
+!
+!  ---------------------------------------------------------------------
+!
+      character(len = kchara) function                                  &
+     &                       set_z_filter_type_name(id_filter)
+!
+      integer(kind = kint), intent(in) :: id_filter
+!
+      if      (id_filter .eq. id_tophat) then
+       set_z_filter_type_name = hd_tophat
+      else if(id_filter .eq. id_Linear) then
+       set_z_filter_type_name = hd_Linear
+!      else if(id_filter .eq. id_Gaussian) then
+      else
+       set_z_filter_type_name = hd_Gaussian
+      end if
+!
+      end function set_z_filter_type_name
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

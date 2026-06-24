@@ -54,13 +54,11 @@
       type(DJDS_poarameter), intent(inout) :: DJDS_param
 !
 !
+      zfil_param%filter_z_file_prefix = 'filter_node_l.0'
       if (z_filter_ctl%z_filter_head_ctl%iflag .ne. 0) then
-        filter_z_file_head = z_filter_ctl%z_filter_head_ctl%charavalue
-      else
-        filter_z_file_head = 'filter_node_l.0'
+        zfil_param%filter_z_file_prefix                                 &
+    &          = z_filter_ctl%z_filter_head_ctl%charavalue
       end if
-      filter_z_file_name = add_dat_extension(filter_z_file_head)
-      write(*,*) 'filter_z_file_name ', filter_z_file_name
 !
       if(z_filter_ctl%ip_smp_z_ctl%iflag .ne. 0) then
         np_smp = z_filter_ctl%ip_smp_z_ctl%intvalue
@@ -145,49 +143,42 @@
 !
 !   set number of integration points
 !
+      zfil_param%i_int_z_filter = 6
       if(gen_f_ctl%num_int_points_ctl%iflag .ne. 0) then
-        i_int_z_filter = gen_f_ctl%num_int_points_ctl%intvalue
-      else
-        i_int_z_filter = 6
+        zfil_param%i_int_z_filter                                       &
+     &     = gen_f_ctl%num_int_points_ctl%intvalue
       end if
-      write(*,*) 'i_int_z_filter', i_int_z_filter
+      write(*,*) 'i_int_z_filter', zfil_param%i_int_z_filter
 !
 !   set filter types
 !
       if(gen_f_ctl%reference_filter_ctl%icou .ne. 0) then
-        num_filter_z = gen_f_ctl%reference_filter_ctl%num
+        zfil_param%num_filter_z = gen_f_ctl%reference_filter_ctl%num
       else
-        num_filter_z = 1
+        zfil_param%num_filter_z = 1
       end if
       if(gen_f_ctl%horizontal_filter_ctl%icou .ne. 0) then
-        num_filter_h = gen_f_ctl%horizontal_filter_ctl%num
+        zfil_param%num_filter_h = gen_f_ctl%horizontal_filter_ctl%num
       else
-        num_filter_h = 1
+        zfil_param%num_filter_h = 1
       end if
 !
-      type_filter_z = gen_f_ctl%reference_filter_ctl%c_tbl(1)
-      type_filter_h = gen_f_ctl%horizontal_filter_ctl%c_tbl(1)
-      f_width =   gen_f_ctl%reference_filter_ctl%vect(1)
-      f_width_h = gen_f_ctl%horizontal_filter_ctl%vect(1)
+      zfil_param%type_filter_z                                          &
+     &        = gen_f_ctl%reference_filter_ctl%c_tbl(1)
+      zfil_param%iflag_filter_z                                         &
+     &        = set_z_filter_type_id(zfil_param%type_filter_z)
+      zfil_param%f_width_z = gen_f_ctl%reference_filter_ctl%vect(1)
 !
-      if      (cmp_no_case(type_filter_z, 'tophat')) then
-       iflag_filter = 0
-      else if (cmp_no_case(type_filter_z, 'linear')) then
-       iflag_filter = 1
-      else if (cmp_no_case(type_filter_z, 'gaussian')) then
-       iflag_filter = 2
-      end if
+      zfil_param%type_filter_h                                          &
+     &        = gen_f_ctl%horizontal_filter_ctl%c_tbl(1)
+      zfil_param%iflag_filter_h                                         &
+     &        = set_z_filter_type_id(zfil_param%type_filter_h)
+      zfil_param%f_width_h = gen_f_ctl%horizontal_filter_ctl%vect(1)
 !
-      if      (cmp_no_case(type_filter_h, 'tophat')) then
-       iflag_filter_h = 0
-      else if (cmp_no_case(type_filter_h, 'linear')) then
-       iflag_filter_h = 1
-      else if (cmp_no_case(type_filter_h, 'gaussian')) then
-       iflag_filter_h = 2
-     end if
 !
-      write(*,*) 'iflag_filter', iflag_filter, iflag_filter_h
-      write(*,*) 'width', f_width, f_width_h
+      write(*,*) 'iflag_filter_z', zfil_param%iflag_filter_z,           &
+     &                             zfil_param%iflag_filter_h
+      write(*,*) 'width', zfil_param%f_width_z, zfil_param%f_width_h
 !
       if(gen_f_ctl%num_ele_4_filter_ctl%iflag .ne. 0) then
         zfil_param%numfilter = gen_f_ctl%num_ele_4_filter_ctl%intvalue

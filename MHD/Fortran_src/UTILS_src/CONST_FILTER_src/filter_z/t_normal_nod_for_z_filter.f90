@@ -163,18 +163,18 @@
           do j = 1, 2
             jj = je + j - 1
 !
-            if ( iflag_filter .eq. 0) then
+            if(zfil_param%iflag_filter_z .eq. id_tophat) then
               call filter_moment_tophat                                 &
      &           (nrm_z_fil%nfilter6_1, gauss%n_point,                  &
-     &            f_width, g_int%f_point, g_int%x_point)
-            else if (iflag_filter .eq. 1) then
+     &            zfil_param%f_width_z, g_int%f_point, g_int%x_point)
+            else if(zfil_param%iflag_filter_z .eq. id_Linear) then
               call filter_moment_linear                                 &
      &           (nrm_z_fil%nfilter6_1, gauss%n_point,                  &
-     &            f_width, g_int%f_point, g_int%x_point)
+     &            zfil_param%f_width_z, g_int%f_point, g_int%x_point)
             else
               call filter_moment_gaussian                               &
      &           (nrm_z_fil%nfilter6_1, gauss%n_point,                  &
-     &            f_width, g_int%f_point, g_int%x_point)
+     &            zfil_param%f_width_z, g_int%f_point, g_int%x_point)
             end if
 !
             do i = 1, gauss%n_point

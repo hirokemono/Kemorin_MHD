@@ -7,14 +7,15 @@
 !>@brief edge integration for commutrative filter
 !!
 !!@verbatim
-!!      subroutine int_edge_commutative_filter                          &
-!!     &         (numnod, zz, numele, ie_edge, dz_ele, gauss, neib_z2,  &
+!!      subroutine int_edge_commutative_filter(numnod, zz, numele,      &
+!!     &          ie_edge, dz_ele, gauss, zfil_param, neib_z2,          &
 !!     &          nfilter6_1, sk_norm_n, g_int)
 !!        integer(kind = kint), intent(in) :: numnod, numele
 !!        integer(kind = kint), intent(in) :: ie_edge(numele,2)
 !!        real(kind = kreal), intent(in) :: zz(numnod)
 !!        real(kind = kreal), intent(in) :: dz_ele(numele)
 !!        type(gauss_points), intent(in) :: gauss
+!!        type(vert_commute_filter_param), intent(in) :: zfil_param
 !!        type(neighbour_data_z), intent(in) :: neib_z2
 !!        integer(kind = kint), intent(in) :: nfilter6_1
 !!        real(kind = kreal), intent(inout) :: sk_norm_n(0:nfilter6_1)
@@ -34,8 +35,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine int_edge_commutative_filter                            &
-     &         (numnod, zz, numele, ie_edge, dz_ele, gauss, neib_z2,    &
+      subroutine int_edge_commutative_filter(numnod, zz, numele,        &
+     &          ie_edge, dz_ele, gauss, zfil_param, neib_z2,            &
      &          nfilter6_1, sk_norm_n, g_int)
 !
       use m_constants
@@ -43,6 +44,7 @@
       use m_int_commtative_filter
       use m_z_filter_values
 !
+      use t_vert_commute_filter_param
       use t_neighbour_data_z
       use set_filter_moments
 !
@@ -51,6 +53,7 @@
       real(kind = kreal), intent(in) :: zz(numnod)
       real(kind = kreal), intent(in) :: dz_ele(numele)
       type(gauss_points), intent(in) :: gauss
+      type(vert_commute_filter_param), intent(in) :: zfil_param
       type(neighbour_data_z), intent(in) :: neib_z2
       integer(kind = kint), intent(in) :: nfilter6_1
 !
@@ -82,15 +85,15 @@
           do j = 1, 2
             jnod = je + j - 1
 !
-            if ( iflag_filter .eq. 0) then
+            if(zfil_param%iflag_filter_z .eq. id_tophat) then
               call filter_moment_tophat(izero, gauss%n_point,           &
-     &            f_width, filter_0, g_int%x_point)
-            else if (iflag_filter .eq. 1) then
+     &            zfil_param%f_width_z, filter_0, g_int%x_point)
+            else if(zfil_param%iflag_filter_z .eq. id_Linear) then
               call filter_moment_linear(izero, gauss%n_point,           &
-     &            f_width, filter_0, g_int%x_point)
+     &            zfil_param%f_width_z, filter_0, g_int%x_point)
             else
               call filter_moment_gaussian(izero, gauss%n_point,         &
-     &            f_width, filter_0, g_int%x_point)
+     &            zfil_param%f_width_z, filter_0, g_int%x_point)
             end if
 !
             do i = 1, gauss%n_point
@@ -138,14 +141,14 @@
 !
 !
       do kf = 0, 2
-       do inod = 1, numnod
-        do jnod = 1, ncomp_mat
-          xmom_int_t(inod,kf) = xmom_int_t(inod,kf)                     &
+        do inod = 1, numnod
+          do jnod = 1, ncomp_mat
+            xmom_int_t(inod,kf) = xmom_int_t(inod,kf)                   &
      &                          + xmom_int(inod,jnod,kf)
-          xmom_int_to(inod,kf) = xmom_int_to(inod,kf)                   &
+            xmom_int_to(inod,kf) = xmom_int_to(inod,kf)                 &
      &                          + xmom_int_org(inod,jnod,kf)
+          end do
         end do
-       end do
       end do
 !
       end subroutine int_edge_commutative_filter

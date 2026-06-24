@@ -139,7 +139,7 @@
 !
       if (my_rank.eq.0) write(*,*) 'const_jacobian_linear_1d'
       call const_jacobian_linear_1d                                     &
-     &   (i_int_z_filter, z_filter_mesh1%node,                          &
+     &   (zfil_param1%i_int_z_filter, z_filter_mesh1%node,              &
      &    surf_z_filter1, edge_z_filter1, spf_1d_z, jacs_z1)
 !
 !   construct FEM mesh for x direction
@@ -153,7 +153,8 @@
       if(my_rank .eq. 0) write(*,*) 'init_int_z_edge_data'
       call init_int_z_edge_data                                         &
      &   (z_filter_mesh1%node, z_filter_mesh1%ele, edge_z_filter1,      &
-     &    i_int_z_filter, jacs_z1%g_FEM, jacs_z1%jac_1d_l, z_int_edge1)
+     &    zfil_param1%i_int_z_filter, jacs_z1%g_FEM, jacs_z1%jac_1d_l,  &
+     &    z_int_edge1)
 !
       if(my_rank.eq.0) write(*,*) 'cal_delta_z_analytical'
       if(flag_analytical) then
@@ -165,8 +166,9 @@
         call cal_delta_z(CG_param_z, DJDS_param_z,                      &
      &      z_filter_mesh1%nod_comm, z_filter_mesh1%node,               &
      &      z_filter_mesh1%ele, edge_z_filter1, spf_1d_z,               &
-     &      jacs_z1%g_FEM, jacs_z1%jac_1d_l, z_int_edge1, dz_plane1,    &
-     &      tbl_crs_z, mat_crs_z, SR_sig_f, SR_r_f)
+     &      jacs_z1%g_FEM, jacs_z1%jac_1d_l, z_int_edge1,               &
+     &      zfil_param1%i_int_z_filter, dz_plane1, tbl_crs_z,           &
+     &      mat_crs_z,SR_sig_f, SR_r_f)
 !
         call check_crs_connect                                           &
      &     (my_rank, z_filter_mesh1%node%numnod, tbl_crs_z)
@@ -177,8 +179,7 @@
       call init_z_neighbour                                             &
      &   (z_filter_mesh1%node%internal_node, zfil_param1%totalele,      &
      &    (2*zfil_param1%numfilter+2), (zfil_param1%nfilter2_1),        &
-     &    (zfil_param1%numfilter+1),       &
-     &    zfil_param1%numfilter, neib_z1)
+     &    (zfil_param1%numfilter+1), zfil_param1%numfilter, neib_z1)
 !      write(50+my_rank,*) 'neib_z1'
 !      call check_z_neighbour(my_rank,                                  &
 !     &    z_filter_mesh1%node%internal_node, zfil_param1%totalele,     &
@@ -216,19 +217,19 @@
       if (my_rank.eq.0) write(*,*) 'allocate_filter_values'
       call allocate_filter_values(nrm_z_fil1%nfilter6_1)
 !
-      if(iflag_filter .eq. 0) then
+      if(zfil_param1%iflag_filter_z .eq. id_tophat) then
         call int_tophat_moment_infty(nrm_z_fil1%nfilter6_1,             &
-     &                               f_mom_full, f_width)
-      else if (iflag_filter .eq. 1) then
+     &                               f_mom_full, zfil_param1%f_width_z)
+      else if(zfil_param1%iflag_filter_z .eq. id_Linear) then
         call int_linear_moment_infty(nrm_z_fil1%nfilter6_1,             &
-     &                               f_mom_full, f_width)
+     &                               f_mom_full, zfil_param1%f_width_z)
       else
         call int_gaussian_moment_infty(nrm_z_fil1%nfilter6_1,           &
-     &                                 f_mom_full, f_width)
+     &                               f_mom_full, zfil_param1%f_width_z)
       end if
 !
       if (my_rank.eq.0) write(*,*) 'construct_gauss_coefs'
-      call construct_gauss_coefs(i_int_z_filter, gauss_z)
+      call construct_gauss_coefs(zfil_param1%i_int_z_filter, gauss_z)
       call alloc_work_4_integration                                     &
      &  ((nrm_z_fil1%nfilter6_1 + 1), gauss_z%n_point, g_z_int)
 !
@@ -318,12 +319,12 @@
        call dealloc_crs_mat_data(mat_crs_z)
 !
 !
-       call int_edge_filter_peri                                        &
-     &    (ndep_filter, zfil_param1%totalnod_x, zfil_param1%xsize,      &
+       call int_edge_filter_peri(ndep_filter, zfil_param1,              &
+     &     zfil_param1%totalnod_x, zfil_param1%xsize,                   &
      &     nrm_z_fil1%nfilter6_1, gauss_z, xmom_h_x, xmom_ht_x,         &
      &     nrm_z_fil1%sk_norm_n, g_z_int)
-       call int_edge_filter_peri                                        &
-     &    (ndep_filter, zfil_param1%totalnod_y, zfil_param1%ysize,      &
+       call int_edge_filter_peri(ndep_filter, zfil_param1,              &
+     &     zfil_param1%totalnod_y, zfil_param1%ysize,                   &
      &     nrm_z_fil1%nfilter6_1, gauss_z, xmom_h_y, xmom_ht_y,         &
      &     nrm_z_fil1%sk_norm_n, g_z_int)
 !
@@ -331,7 +332,7 @@
        call int_edge_commutative_filter                                 &
      &    (z_filter_mesh1%node%numnod, z_filter_mesh1%node%xx(1,3),     &
      &     z_filter_mesh1%ele%numele, edge_z_filter1%ie_edge,           &
-     &     z_int_edge1%dz_ele, gauss_z, neib_z2,                        &
+     &     z_int_edge1%dz_ele, gauss_z, zfil_param1, neib_z2,           &
      &     nrm_z_fil1%nfilter6_1, nrm_z_fil1%sk_norm_n, g_z_int)
 !       call check_int_commutative_filter                               &
 !     &    (my_rank, z_filter_mesh1%node%numnod)
@@ -339,7 +340,7 @@
        if(my_rank.eq.0) write(*,*) 'int_edge_moment'
        call int_edge_moment                                             &
      &    (z_filter_mesh1%node%numnod, z_filter_mesh1%ele%numele,       &
-     &     edge_z_filter1, i_int_z_filter, spf_1d_z,                    &
+     &     edge_z_filter1, zfil_param1%i_int_z_filter, spf_1d_z,        &
      &     jacs_z1%g_FEM, jacs_z1%jac_1d_l, z_int_edge1%mk_z)
        call dealloc_edge_shape_func(spf_1d_z)
 !

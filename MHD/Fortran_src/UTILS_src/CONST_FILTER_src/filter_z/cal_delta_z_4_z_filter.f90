@@ -10,7 +10,8 @@
 !!      subroutine elapsed_label_4_Zfilter
 !!      subroutine cal_delta_z(CG_param, DJDS_param,                    &
 !!     &          nod_comm, node, ele, edge, spf_1d, g_FEM, jac_1d,     &
-!!     &          z_int_edge, dz_plane, tbl_crs, mat_crs, SR_sig, SR_r)
+!!     &          z_int_edge, n_int, dz_plane, tbl_crs, mat_crs,        &
+!!     &          SR_sig, SR_r)
 !!        type(CG_poarameter), intent(inout) :: CG_param
 !!        type(DJDS_poarameter), intent(in) :: DJDS_param
 !!        type(communication_table), intent(in) :: nod_comm
@@ -21,6 +22,7 @@
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_1d), intent(in) :: jac_1d
 !!        type(z_int_edge_data), intent(in) :: z_int_edge
+!!        integer(kind = kint), intent(in) :: n_int
 !!        type(edge_z_width), intent(inout) :: dz_plane
 !!        type(CRS_matrix_connect), intent(inout) :: tbl_crs
 !!        type(CRS_matrix), intent(inout) :: mat_crs
@@ -101,12 +103,12 @@
 !
       subroutine cal_delta_z(CG_param, DJDS_param,                      &
      &          nod_comm, node, ele, edge, spf_1d, g_FEM, jac_1d,       &
-     &          z_int_edge, dz_plane, tbl_crs, mat_crs, SR_sig, SR_r)
+     &          z_int_edge, n_int, dz_plane, tbl_crs, mat_crs,          &
+     &          SR_sig, SR_r)
 !
       use t_vert_edge_width
       use t_consist_z_mass_crs
       use t_z_int_edge_data
-      use m_commute_filter_z
 !
       use calcs_by_LUsolver
       use solve_by_mass_z
@@ -123,6 +125,7 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_1d), intent(in) :: jac_1d
       type(z_int_edge_data), intent(in) :: z_int_edge
+      integer(kind = kint), intent(in) :: n_int
 !
       type(edge_z_width), intent(inout) :: dz_plane
       type(CRS_matrix_connect), intent(inout) :: tbl_crs
@@ -149,7 +152,7 @@
 !
         call alloc_edge_vert_width(node%numnod, ele%numele, dz_plane)
         call int_edge_vert_width(node%numnod, ele%numele, edge,         &
-     &                           i_int_z_filter, g_FEM, jac_1d, rhs_dz)
+     &                           n_int, g_FEM, jac_1d, rhs_dz)
 !
         call set_consist_mass_mat(node%numnod, z_int_edge%mk_ele,       &
      &                            zmass)
@@ -170,7 +173,7 @@
         end if
 !
         write(*,*) 'int_edge_diff_vert_w'
-        call int_edge_diff_vert_w(node, ele, edge, i_int_z_filter,      &
+        call int_edge_diff_vert_w(node, ele, edge, n_int,               &
      &      spf_1d, g_FEM, jac_1d, dz_plane%delta_z_n, rhs_dz)
 
         if(mat_crs%METHOD_crs .eq. 'LU') then
@@ -180,7 +183,7 @@
           write(*,*) 'solve_crs_by_mass_z2'
           call solve_crs_by_mass_z2                                     &
      &       (CG_param, DJDS_param, nod_comm, node, tbl_crs, mat_crs,   &
-     &        SR_sig, SR_r, rhs_dz, dz_plane%delta_dz_n, &
+     &        SR_sig, SR_r, rhs_dz, dz_plane%delta_dz_n,                &
      &        INITtime, PRECtime, COMPtime, COMMtime)
           if(flag_Zfilte_time) call add_z_solver_elapsed                &
      &                            (INITtime, PRECtime,                  &
@@ -188,9 +191,9 @@
         end if
 !
         call int_edge_d2_vert_w                                         &
-      &    (node, ele, edge, i_int_z_filter, spf_1d, g_FEM, jac_1d,     &
+      &    (node, ele, edge, n_int, spf_1d, g_FEM, jac_1d,              &
       &     dz_plane%delta_z_n, dz_plane%delta_dz_n, rhs_dz)
-!        call int_edge_d2_vert_w2(node, ele, edge, i_int_z_filter,      &
+!        call int_edge_d2_vert_w2(node, ele, edge, n_int,               &
 !     &      spf_1d, g_FEM, jac_1d, dz_plane%delta_dz_n, rhs_dz)
 
         if(mat_crs%METHOD_crs .eq. 'LU') then
@@ -216,17 +219,17 @@
       else
         call alloc_edge_vert_width(node%numnod, ele%numele, dz_plane)
         call int_edge_vert_width(node%numnod, ele%numele, edge,         &
-     &                           i_int_z_filter, g_FEM, jac_1d, rhs_dz)
+     &                           n_int, g_FEM, jac_1d, rhs_dz)
         dz_plane%delta_z_n(1:node%numnod)                               &
      &      = rhs_dz(1:node%numnod) * z_int_edge%mk_z(1:node%numnod)
 !
-        call int_edge_diff_vert_w(node, ele, edge, i_int_z_filter,      &
+        call int_edge_diff_vert_w(node, ele, edge, n_int,               &
      &      spf_1d, g_FEM, jac_1d, dz_plane%delta_z_n, rhs_dz)
         dz_plane%delta_dz_n(1:node%numnod)                              &
      &      = rhs_dz(1:node%numnod) * z_int_edge%mk_z(1:node%numnod)
 !
         call int_edge_d2_vert_w                                         &
-     &     (node, ele, edge, i_int_z_filter, spf_1d, g_FEM, jac_1d,     &
+     &     (node, ele, edge, n_int, spf_1d, g_FEM, jac_1d,              &
      &      dz_plane%delta_z_n, dz_plane%delta_dz_n, rhs_dz)
 !
 !$omp parallel workshare

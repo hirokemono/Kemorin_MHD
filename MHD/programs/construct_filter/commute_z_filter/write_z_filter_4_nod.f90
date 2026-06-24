@@ -43,6 +43,7 @@
       use m_commute_filter_z
       use m_z_filter_values
       use const_geometry_z_commute
+      use set_parallel_file_name
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -52,33 +53,32 @@
       type(edge_z_width), intent(in) :: dz_plane
       type(neighbour_data_z), intent(in) :: neib_z2
 !
-      integer (kind= kint), parameter :: id_filter_z = 15
-      integer (kind= kint) :: i, inod, iele, j, k, kf
+      integer(kind = kint), parameter :: id_filter_z = 15
+      integer(kind = kint) :: i, inod, iele, j, k, kf
+      character(len = kchara) :: file_name
 !
 !
-      open(id_filter_z,file=filter_z_file_name)
+      file_name = add_dat_extension(zfil_param%filter_z_file_prefix)
+      write(*,*) 'vertial filter file name:  ', file_name
+      open(id_filter_z,file=file_name)
       call write_vert_plane_filter_param(id_filter_z, zfil_param)
         write(id_filter_z,*) '! width of nodes for filtering'
         write(id_filter_z,*) ncomp_mat, ncomp_mat, ncomp_mat
 !
-        write(id_filter_z,*) '! filter_type for horizontal direction'
-        if ( iflag_filter_h.eq.0 ) then
-          write(id_filter_z,*) 'Top_hat'
-        else if ( iflag_filter_h.eq.1 ) then
-          write(id_filter_z,*) 'Linear'
-        else if ( iflag_filter_h.eq.2 ) then
-          write(id_filter_z,*) 'Gaussian'
-        end if
-        write(id_filter_z,*) '! filter_type for z direction'
-        if ( iflag_filter.eq.0 ) then
-          write(id_filter_z,*) 'Top_hat'
-        else if ( iflag_filter.eq.1 ) then
-          write(id_filter_z,*) 'Linear'
-        else if ( iflag_filter.eq.2 ) then
-          write(id_filter_z,*) 'Gaussian'
-        end if
-        write(id_filter_z,*) '! Filter width( vertical, horizontal)'
-        write(id_filter_z,*) f_width, f_width_h
+        write(id_filter_z,'(a)')                                        &
+       &       '! filter_type for horizontal direction'
+        write(id_filter_z,'(a)')                                        &
+       &       trim(set_z_filter_type_name(zfil_param%iflag_filter_h))
+!
+        write(id_filter_z,'(a)')                                        &
+       &       '! filter_type for vertical direction'
+        write(id_filter_z,'(a)')                                        &
+       &       trim(set_z_filter_type_name(zfil_param%iflag_filter_z))
+!
+        write(id_filter_z,'(a)')                                        &
+       &        '! Filter width( vertical, horizontal)'
+        write(id_filter_z,'(1p2e25.15e3)') zfil_param%f_width_z,        &
+       &                                   zfil_param%f_width_h
 !
 !
       do i = 1, z_commute%ncomp_norm

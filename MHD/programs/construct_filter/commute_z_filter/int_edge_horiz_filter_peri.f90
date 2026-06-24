@@ -8,7 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine int_edge_filter_peri(ndep_filter, numnod_h, hsize,   &
+!!     &         (ndep_filter, zfil_param, numnod_h, hsize,             &
 !!     &          nfilter6_1, gauss, xmom_h, xmom_ht, sk_norm_n, g_int)
+!!        type(vert_commute_filter_param), intent(in) :: zfil_param
 !!        integer(kind = kint), intent(in) :: ndep_filter, numnod_h
 !!        integer(kind = kint), intent(in) :: nfilter6_1
 !!        real(kind = kreal), intent(in) :: hsize
@@ -23,6 +25,7 @@
 !
       use m_precision
       use t_gauss_points
+      use t_vert_commute_filter_param
 !
       implicit none
 !
@@ -32,7 +35,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine int_edge_filter_peri(ndep_filter, numnod_h, hsize,     &
+      subroutine int_edge_filter_peri                                   &
+     &         (ndep_filter, zfil_param, numnod_h, hsize,               &
      &          nfilter6_1, gauss, xmom_h, xmom_ht, sk_norm_n, g_int)
 !
       use m_constants
@@ -40,6 +44,7 @@
       use m_z_filter_values
       use set_filter_moments
 !
+      type(vert_commute_filter_param), intent(in) :: zfil_param
       integer(kind = kint), intent(in) :: ndep_filter, numnod_h
       integer(kind = kint), intent(in) :: nfilter6_1
       real(kind = kreal), intent(in) :: hsize
@@ -56,8 +61,8 @@
       real(kind = kreal) :: filter_0(gauss%n_point)
 !
 !
-      write(*,*) 'iflag_filter_h', iflag_filter_h
-      write(*,*) 'f_width_h', f_width_h
+      write(*,*) 'iflag_filter_h', zfil_param%iflag_filter_h
+      write(*,*) 'f_width_h',      zfil_param%f_width_h
 !
         do je = 1, ncomp_mat-1
           j0 = je - (ncomp_mat-1)/2 - 1
@@ -73,15 +78,15 @@
           do j = 1, 2
             jnod = je + j - 1
 !
-            if ( iflag_filter_h .eq. 0) then
+            if(zfil_param%iflag_filter_h .eq. id_tophat) then
               call filter_moment_tophat(izero, gauss%n_point,           &
-     &            f_width_h, filter_0, g_int%x_point)
-            else if (iflag_filter_h .eq. 1) then
+     &            zfil_param%f_width_h, filter_0, g_int%x_point)
+            else if(zfil_param%iflag_filter_h .eq. id_Linear) then
               call filter_moment_linear(izero, gauss%n_point,           &
-     &            f_width_h, filter_0, g_int%x_point)
+     &            zfil_param%f_width_h, filter_0, g_int%x_point)
             else
               call filter_moment_gaussian(izero, gauss%n_point,         &
-     &            f_width_h, filter_0, g_int%x_point)
+     &            zfil_param%f_width_h, filter_0, g_int%x_point)
             end if
 !
             do i = 1, gauss%n_point

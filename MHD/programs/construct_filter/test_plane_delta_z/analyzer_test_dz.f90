@@ -89,7 +89,7 @@
 !
       if (my_rank.eq.0) write(*,*) 'const_jacobian_linear_1d'
       call const_jacobian_linear_1d                                     &
-     &   (i_int_z_filter, z_filter_mesh2%node,                          &
+     &   (zfil_param2%i_int_z_filter, z_filter_mesh2%node,              &
      &    surf_z_filter2, edge_z_filter2, spf_1d_z, jacs_z2)
 !
       if (my_rank.eq.0) write(*,*) 'set_crs_connect_commute_z'
@@ -98,14 +98,16 @@
       if (my_rank.eq.0) write(*,*) 'init_int_z_edge_data'
       call init_int_z_edge_data                                         &
      &   (z_filter_mesh2%node, z_filter_mesh2%ele, edge_z_filter2,      &
-     &    i_int_z_filter, jacs_z2%g_FEM, jacs_z2%jac_1d_l, z_int_edge2)
+     &    zfil_param2%i_int_z_filter, jacs_z2%g_FEM, jacs_z2%jac_1d_l,  &
+     &    z_int_edge2)
 !
 !
       call cal_delta_z(CG_param_z, DJDS_param_z,                        &
      &    z_filter_mesh2%nod_comm, z_filter_mesh2%node,                 &
      &    z_filter_mesh2%ele, edge_z_filter2, spf_1d_z,                 &
-     &    jacs_z2%g_FEM, jacs_z2%jac_1d_l, z_int_edge2, dz_plane2,      &
-     &    tbl_crs_z, mat_crs_z, SR_sig_f, SR_r_f)
+     &    jacs_z2%g_FEM, jacs_z2%jac_1d_l, z_int_edge2,                 &
+     &    zfil_param2%i_int_z_filter, dz_plane2, tbl_crs_z,             &
+     &    mat_crs_z, SR_sig_f, SR_r_f)
       call dealloc_edge_shape_func(spf_1d_z)
       call dealloc_z_int_edge_data(z_int_edge2)
 !
