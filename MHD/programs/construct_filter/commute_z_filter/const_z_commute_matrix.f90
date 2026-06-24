@@ -8,14 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine s_const_commute_matrix(numnod, neib_z,               &
-!!     &          z_commute, zfilter_wk, delta_z, d_norm_nod, mat_crs)
+!!     &          z_commute, zfilter_wk, delta_z, nrm_z_fil, mat_crs)
 !!        integer (kind= kint), intent(in) :: numnod
 !!        type(neighbour_data_z), intent(in) :: neib_z
 !!        type(vart_filter_moments), intent(in) :: z_commute
 !!        type(z_filter_work), intent(in) :: zfilter_wk
+!!        type(normal_nod_for_z_filter), intent(in) :: nrm_z_fil
 !!        real(kind = kreal), intent(in) :: delta_z(numnod)
-!!        real(kind = kreal), intent(in)                                &
-!!     &           :: d_norm_nod(numnod,nfilter2_3,0:nfilter2_3)
 !!        type(CRS_matrix), intent(inout) :: mat_crs
 !!@endverbatim
 !
@@ -35,7 +34,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_const_commute_matrix(numnod, neib_z,                 &
-     &          z_commute, zfilter_wk, delta_z, d_norm_nod, mat_crs)
+     &          z_commute, zfilter_wk, delta_z, nrm_z_fil, mat_crs)
 !
       use m_commute_filter_z
       use m_z_filter_values
@@ -43,14 +42,14 @@
       use t_commute_filter_z
       use t_neighbour_index_z
       use t_neighbour_data_z
+      use t_normal_nod_for_z_filter
 !
-      integer (kind= kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: numnod
       type(neighbour_data_z), intent(in) :: neib_z
       type(vart_filter_moments), intent(in) :: z_commute
       type(z_filter_work), intent(in) :: zfilter_wk
+      type(normal_nod_for_z_filter), intent(in) :: nrm_z_fil
       real(kind = kreal), intent(in) :: delta_z(numnod)
-      real(kind = kreal), intent(in)                                    &
-     &           :: d_norm_nod(numnod,nfilter2_3,0:nfilter2_3)
 !
       type(CRS_matrix), intent(inout) :: mat_crs
 !
@@ -91,7 +90,7 @@
           do inod = 1, numnod
             jj = zfilter_wk%ncomp_z_st(inod) + k1 - 1
             k21 = k2 + (k1-1)*ncomp_mat + (inod-1)*ncomp_mat*ncomp_mat
-            mat_crs%D_crs(k21) = d_norm_nod(inod,jj,kfact)
+            mat_crs%D_crs(k21) = nrm_z_fil%d_norm_nod(inod,jj,kfact)
           end do
         end do
       end do

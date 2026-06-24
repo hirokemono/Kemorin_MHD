@@ -29,13 +29,6 @@
       integer (kind = kint) :: iflag_filter, iflag_filter_h
       real(kind = kreal) :: f_width, f_width_h
 !
-      integer (kind = kint) :: nmat_nod
-!
-      integer (kind = kint) :: nfilter2_4
-      integer (kind = kint) :: nfilter2_3
-      integer (kind = kint) :: nfilter2_2
-      integer (kind = kint) :: nfilter2_1
-!
       integer (kind = kint) :: ncomp_mat
 !
       end module m_commute_filter_z

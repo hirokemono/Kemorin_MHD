@@ -41,11 +41,8 @@
 !>        domain size in z-direction
         real(kind = kreal) :: zsize
 !
-        integer (kind = kint) :: nfilter2_4
         integer (kind = kint) :: nfilter2_3
-        integer (kind = kint) :: nfilter2_2
         integer (kind = kint) :: nfilter2_1
-        integer (kind = kint) :: nfilter6_1
       end type vert_commute_filter_param
 !
 !  ---------------------------------------------------------------------
@@ -102,11 +99,7 @@
 !      zfil_param%totalele =   internal_node - 1
 !
       zfil_param%nfilter2_1 = 2*numfilter + 1
-      zfil_param%nfilter2_2 = 2*numfilter + 2
       zfil_param%nfilter2_3 = 2*numfilter + 3
-      zfil_param%nfilter2_4 = 2*numfilter + 4
-!
-      zfil_param%nfilter6_1 = 6*numfilter + 1
 !
       end subroutine set_vert_plane_filter_param
 !

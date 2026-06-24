@@ -114,8 +114,6 @@
       node%numnod =        zfil_param%totalnod_z
 !      nod_comm%num_neib = 2
 !
-      nmat_nod = node%internal_node * nfilter2_3
-!
       ele%numele = node%numnod - 1
 !
       ele%first_ele_type = 331
@@ -124,10 +122,6 @@
       edge_z_filter%nnod_4_edge = 2
 !
       totalele = node%internal_node - 1
-      nfilter2_1 = 2*numfilter+1
-      nfilter2_2 = 2*numfilter+2
-      nfilter2_3 = 2*numfilter+3
-      nfilter2_4 = 2*numfilter+4
 !
       end subroutine  set_numnod_z_commute
 !

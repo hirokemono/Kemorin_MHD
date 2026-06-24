@@ -7,10 +7,12 @@
 !>@brief FEM matrices for vertical grid spacing
 !!
 !!@verbatim
-!!      subroutine set_connect_2_n_filter(node, nneib_nod, ncomp_st)
+!!      subroutine set_connect_2_n_filter(node, nneib_nod, nfilter2_3,  &
+!!     &                                  ncomp_st)
 !!        type(node_data), intent(in) :: node
 !!        integer(kind = kint), intent(in)                              &
 !!     &                     :: nneib_nod(node%internal_node,2)
+!!        integer(kind = kint), intent(in) :: nfilter2_3
 !!        integer(kind = kint), intent(inout) :: ncomp_st(node%numnod)
 !!      subroutine set_crs_connect_commute_z(node, tbl_crs)
 !!        type(node_data), intent(inout) :: node
@@ -37,14 +39,15 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_connect_2_n_filter(node, nneib_nod, ncomp_st)
+      subroutine set_connect_2_n_filter(node, nneib_nod, nfilter2_3,    &
+     &                                  ncomp_st)
 !
       use t_geometry_data
-!      use m_commute_filter_z
 !
       type(node_data), intent(in) :: node
       integer(kind = kint), intent(in)                                  &
      &                     :: nneib_nod(node%internal_node,2)
+      integer(kind = kint), intent(in) :: nfilter2_3
 !
       integer(kind = kint), intent(inout) :: ncomp_st(node%numnod)
 !
@@ -56,7 +59,7 @@
         i = node%inod_global(inod)
         ncomp_st(inod) = max(1, 1+nneib_nod(i,1) - (ncomp_mat-1)/2 )
         ncomp_st(inod) = min(ncomp_st(inod)+ncomp_mat-1, nfilter2_3)    &
-                  - ncomp_mat + 1
+                        - ncomp_mat + 1
       end do
 !
       end subroutine set_connect_2_n_filter

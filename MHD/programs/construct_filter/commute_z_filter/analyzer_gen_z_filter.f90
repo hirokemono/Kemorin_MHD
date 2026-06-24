@@ -72,13 +72,13 @@
       use t_neighbour_index_z
       use t_vert_edge_width
       use t_z_int_edge_data
+      use t_normal_nod_for_z_filter
 !
       use const_delta_z_analytical
 
       use const_crs_connect_commute_z
       use solve_precond_DJDS
 
-      use int_edge_norm_nod_z_filter
       use int_edge_moment_z_filter
       use int_edge_horiz_filter_peri
       use int_edge_commute_z_filter
@@ -114,11 +114,9 @@
       type(z_int_edge_data), save :: z_int_edge1
       type(z_filter_work), save :: zfilter_wk1
       type(edge_z_width), save :: dz_plane1
+      type(normal_nod_for_z_filter), save :: nrm_z_fil1
 !
       type(neighbour_data_z), save :: neib_z2
-!
-      real(kind = kreal), allocatable:: sk_norm_n(:)
-      real(kind = kreal), allocatable:: d_norm_nod(:,:,:)
 !
       real(kind = kreal) :: INITtime, PRECtime
       real(kind = kreal) :: COMPtime, COMMtime
@@ -146,7 +144,7 @@
 !
 !   construct FEM mesh for x direction
 !
-      mat_crs_z%NB_crs = nfilter2_3
+      mat_crs_z%NB_crs = zfil_param1%nfilter2_3
       if (my_rank.eq.0) write(*,*) 'set_crs_connect_commute_z'
       call set_crs_connect_commute_z(z_filter_mesh1%node, tbl_crs_z)
 !
@@ -177,7 +175,8 @@
 !
       call init_z_neighbour                                             &
      &   (z_filter_mesh1%node%internal_node, totalele,                  &
-     &    nfilter2_2, nfilter2_1, (numfilter+1), numfilter, neib_z1)
+     &    (2*numfilter+2), zfil_param1%nfilter2_1, (numfilter+1),       &
+     &    numfilter, neib_z1)
 !      write(50+my_rank,*) 'neib_z1'
 !      call check_z_neighbour(my_rank,                                  &
 !     &    z_filter_mesh1%node%internal_node, totalele, neib_z1)
@@ -185,14 +184,15 @@
 !    set information for filtering for element
 !
       call alloc_z_neib_index(z_filter_mesh1%node%numnod,               &
-     &    totalele, nfilter2_1, zfilter_wk1)
+     &    totalele, zfil_param1%nfilter2_1, zfilter_wk1)
       if(my_rank .eq. 0) write(*,*) 'set_connect_2_n_filter'
       call set_connect_2_n_filter(z_filter_mesh1%node,                  &
-     &    neib_z1%nneib_nod, zfilter_wk1%ncomp_z_st)
+     &    neib_z1%nneib_nod, zfil_param1%nfilter2_3,                    &
+     &    zfilter_wk1%ncomp_z_st)
       if (my_rank.eq.0) write(*,*) 's_set_neib_connect_z'
-      call s_set_neib_connect_z(totalele, nfilter2_1,                   &
+      call s_set_neib_connect_z(totalele, zfil_param1%nfilter2_1,       &
      &                          neib_z1%nneib_ele, zfilter_wk1%jdx_z)
-!      call check_z_neib_index(my_rank, z_filter_mesh1%node%numnod,       &
+!      call check_z_neib_index(my_rank, z_filter_mesh1%node%numnod,     &
 !     &                        totalele, zfilter_wk1)
 !
 !     det dz / dxi
@@ -200,47 +200,41 @@
       if (my_rank.eq.0) write(*,*) 'set_difference_of_position'
       call set_difference_of_position                                   &
      &   (z_filter_mesh1%node, edge_z_filter1, zfilter_wk1%totalele,    &
-     &    nfilter2_1, neib_z1%nneib_ele, neib_z1%ineib_ele,             &
+     &    zfil_param1%nfilter2_1, neib_z1%nneib_ele, neib_z1%ineib_ele, &
      &    zfilter_wk1%alpha)
 !      call check_difference_of_position(my_rank, totalele, neib_z1,    &
 !     &                                  zfilter_wk1)
 !
 !   set moments of filter
 !
+      call alloc_normal_nod_z_filter(z_filter_mesh1%node,               &
+     &    zfil_param1%nfilter2_3, numfilter, nrm_z_fil1)
       if (my_rank.eq.0) write(*,*) 'allocate_filter_values'
-      call allocate_filter_values(zfil_param1%nfilter6_1)
+      call allocate_filter_values(nrm_z_fil1%nfilter6_1)
 !
       if(iflag_filter .eq. 0) then
-        call int_tophat_moment_infty(zfil_param1%nfilter6_1,            &
-     &                               f_mom_full,f_width)
+        call int_tophat_moment_infty(nrm_z_fil1%nfilter6_1,             &
+     &                               f_mom_full, f_width)
       else if (iflag_filter .eq. 1) then
-        call int_linear_moment_infty(zfil_param1%nfilter6_1,            &
-     &                               f_mom_full,f_width)
+        call int_linear_moment_infty(nrm_z_fil1%nfilter6_1,             &
+     &                               f_mom_full, f_width)
       else
-        call int_gaussian_moment_infty(zfil_param1%nfilter6_1,          &
-     &                                 f_mom_full,f_width)
+        call int_gaussian_moment_infty(nrm_z_fil1%nfilter6_1,           &
+     &                                 f_mom_full, f_width)
       end if
 !
       if (my_rank.eq.0) write(*,*) 'construct_gauss_coefs'
       call construct_gauss_coefs(i_int_z_filter, gauss_z)
       call alloc_work_4_integration                                     &
-     &  ((zfil_param1%nfilter6_1 + 1), gauss_z%n_point, g_z_int)
-!
-      allocate(sk_norm_n(0:zfil_param1%nfilter6_1))
-      sk_norm_n = 0.0d0
-!
-      allocate(d_norm_nod(z_filter_mesh1%node%numnod,                   &
-     &                    nfilter2_3, 0:nfilter2_3))
-      d_norm_nod(1:z_filter_mesh1%node%numnod,                          &
-     &           1:nfilter2_3,0:nfilter2_3) =   0.0d0
+     &  ((nrm_z_fil1%nfilter6_1 + 1), gauss_z%n_point, g_z_int)
 !
       if (my_rank.eq.0) write(*,*) 'int_edge_norm_nod'
        call int_edge_norm_nod                                           &
       &  (z_filter_mesh1%node, z_filter_mesh1%ele, edge_z_filter1,      &
-      &   gauss_z, neib_z1, zfil_param1%nfilter6_1, z_int_edge1%dz_ele, &
-      &   g_z_int, sk_norm_n, d_norm_nod)
+      &   gauss_z, neib_z1, zfil_param1, z_int_edge1%dz_ele,            &
+      &   g_z_int, nrm_z_fil1)
 !       call check_nod_normalize_matrix                                 &
-!     &    (my_rank, z_filter_mesh1%node%numnod, d_norm_nod)
+!     &    (my_rank, z_filter_mesh1%node, nrm_z_fil1)
 !
        write(*,*) 'alloc_crs_mat_data'
        mat_crs_z%NB_crs = ncomp_mat
@@ -249,10 +243,9 @@
        call set_matrix_4_border(z_filter_mesh1%node%numnod,             &
      &     ncomp_mat, neib_z1, mat_crs_z)
        write(*,*) 's_const_commute_matrix'
-       call s_const_commute_matrix(z_filter_mesh1%node%numnod,          &
-     &     neib_z1, z_commute1, zfilter_wk1, dz_plane1%delta_z_n,       &
-     &     d_norm_nod, mat_crs_z)
-       deallocate(d_norm_nod)
+       call s_const_commute_matrix(z_filter_mesh1%node%numnod, neib_z1, &
+     &     z_commute1, zfilter_wk1, dz_plane1%delta_z_n, nrm_z_fil1,    &
+     &     mat_crs_z)
        call dealloc_z_int_edge_data(z_int_edge1)
 !
        write(*,*) 's_switch_crs_matrix'
@@ -323,19 +316,19 @@
 !
        call int_edge_filter_peri                                        &
      &    (ndep_filter, zfil_param1%totalnod_x, zfil_param1%xsize,      &
-     &     zfil_param1%nfilter6_1, gauss_z, xmom_h_x, xmom_ht_x,        &
-     &     sk_norm_n, g_z_int)
+     &     nrm_z_fil1%nfilter6_1, gauss_z, xmom_h_x, xmom_ht_x,         &
+     &     nrm_z_fil1%sk_norm_n, g_z_int)
        call int_edge_filter_peri                                        &
      &    (ndep_filter, zfil_param1%totalnod_y, zfil_param1%ysize,      &
-     &     zfil_param1%nfilter6_1, gauss_z, xmom_h_y, xmom_ht_y,        &
-     &     sk_norm_n, g_z_int)
+     &     nrm_z_fil1%nfilter6_1, gauss_z, xmom_h_y, xmom_ht_y,         &
+     &     nrm_z_fil1%sk_norm_n, g_z_int)
 !
        if(my_rank.eq.0) write(*,*) 'int_edge_commutative_filter'
        call int_edge_commutative_filter                                 &
      &    (z_filter_mesh1%node%numnod, z_filter_mesh1%node%xx(1,3),     &
      &     z_filter_mesh1%ele%numele, edge_z_filter1%ie_edge,           &
      &     z_int_edge1%dz_ele, gauss_z, neib_z2,                        &
-     &     zfil_param1%nfilter6_1, sk_norm_n, g_z_int)
+     &     nrm_z_fil1%nfilter6_1, nrm_z_fil1%sk_norm_n, g_z_int)
 !       call check_int_commutative_filter                               &
 !     &    (my_rank, z_filter_mesh1%node%numnod)
 !
@@ -351,7 +344,7 @@
        call write_filter_4_nod(z_filter_mesh1%node, z_filter_mesh1%ele, &
      &     edge_z_filter1, zfil_param1, z_commute1, dz_plane1, neib_z2)
 !
-       deallocate(sk_norm_n)
+       call dealloc_normal_nod_z_filter(nrm_z_fil1)
 !
        call deallocate_filter_values
        call dealloc_work_4_integration(g_z_int)
@@ -379,29 +372,5 @@
         end subroutine analyze_gen_z_filter
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine check_nod_normalize_matrix(id_rank,                    &
-     &                                      numnod, d_norm_nod)
-!
-      use m_commute_filter_z
-!
-      integer, intent(in) :: id_rank
-      integer(kind = kint), intent(in) :: numnod
-      real(kind = kreal), intent(in)                                    &
-     &           :: d_norm_nod(numnod,nfilter2_3,0:nfilter2_3)
-      integer(kind = kint) :: i, k
-!
-!
-      do k = 0, nfilter2_3
-        do i = 1, numnod
-        write(id_rank+60,*) 'd_norm_nod (node_id,order) = ', i, k
-        write(id_rank+60,'(1p5e16.8)') d_norm_nod(i,1:nfilter2_3,k)
-        end do
-      end do
-!
-      end subroutine check_nod_normalize_matrix
-!
-! -----------------------------------------------------------------------
 !
       end module analyzer_gen_z_filter
