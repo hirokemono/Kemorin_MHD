@@ -40,7 +40,6 @@
      &          nfilter6_1, gauss, xmom_h, xmom_ht, sk_norm_n, g_int)
 !
       use m_constants
-      use m_commute_filter_z
       use m_z_filter_values
       use set_filter_moments
 !
@@ -64,8 +63,8 @@
       write(*,*) 'iflag_filter_h', zfil_param%iflag_filter_h
       write(*,*) 'f_width_h',      zfil_param%f_width_h
 !
-        do je = 1, ncomp_mat-1
-          j0 = je - (ncomp_mat-1)/2 - 1
+        do je = 1, zfil_param%ncomp_mat-1
+          j0 = je - (zfil_param%ncomp_mat-1)/2 - 1
           zs = dble(2*(j0)  )
           ze = dble(2*(j0+1))
           zz1 = 2.0d0*dble(j0  ) * hsize
@@ -109,7 +108,7 @@
         end do
 !
       do kf = 0, 2
-        do jnod = 1, ncomp_mat
+        do jnod = 1, zfil_param%ncomp_mat
           xmom_ht(kf) = xmom_ht(kf) + xmom_h(jnod,kf)
         end do
       end do

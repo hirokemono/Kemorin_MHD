@@ -7,9 +7,9 @@
 !>@brief FEM matrix to construct vertical filter
 !!
 !!@verbatim
-!!      subroutine s_const_commute_matrix(numnod, neib_z,               &
+!!      subroutine s_const_commute_matrix(numnod, neib_z, ncomp_mat,    &
 !!     &          z_commute, zfilter_wk, delta_z, nrm_z_fil, mat_crs)
-!!        integer (kind= kint), intent(in) :: numnod
+!!        integer (kind= kint), intent(in) :: numnod, ncomp_mat
 !!        type(neighbour_data_z), intent(in) :: neib_z
 !!        type(vart_filter_moments), intent(in) :: z_commute
 !!        type(z_filter_work), intent(in) :: zfilter_wk
@@ -33,10 +33,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_const_commute_matrix(numnod, neib_z,                 &
+      subroutine s_const_commute_matrix(numnod, neib_z, ncomp_mat,      &
      &          z_commute, zfilter_wk, delta_z, nrm_z_fil, mat_crs)
 !
-      use m_commute_filter_z
       use m_z_filter_values
 !
       use t_commute_filter_z
@@ -44,7 +43,7 @@
       use t_neighbour_data_z
       use t_normal_nod_for_z_filter
 !
-      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: numnod, ncomp_mat
       type(neighbour_data_z), intent(in) :: neib_z
       type(vart_filter_moments), intent(in) :: z_commute
       type(z_filter_work), intent(in) :: zfilter_wk

@@ -62,7 +62,6 @@
 !
       use calypso_mpi
 !
-      use m_commute_filter_z
       use m_z_filter_values
       use m_int_commtative_filter
 !
@@ -192,7 +191,7 @@
       if(my_rank .eq. 0) write(*,*) 'set_connect_2_n_filter'
       call set_connect_2_n_filter(z_filter_mesh1%node,                  &
      &    neib_z1%nneib_nod, zfil_param1%nfilter2_3,                    &
-     &    zfilter_wk1%ncomp_z_st)
+     &    zfil_param1%ncomp_mat, zfilter_wk1%ncomp_z_st)
       if (my_rank.eq.0) write(*,*) 's_set_neib_connect_z'
       call s_set_neib_connect_z                                         &
      &   (zfil_param1%totalele, zfil_param1%nfilter2_1,                 &
@@ -242,13 +241,14 @@
 !     &    (my_rank, z_filter_mesh1%node, nrm_z_fil1)
 !
        write(*,*) 'alloc_crs_mat_data'
-       mat_crs_z%NB_crs = ncomp_mat
+       mat_crs_z%NB_crs = zfil_param1%ncomp_mat
        call alloc_crs_mat_data(tbl_crs_z, mat_crs_z)
 !
        call set_matrix_4_border(z_filter_mesh1%node%numnod,             &
-     &     ncomp_mat, neib_z1, mat_crs_z)
+     &     zfil_param1%ncomp_mat, neib_z1, mat_crs_z)
        write(*,*) 's_const_commute_matrix'
-       call s_const_commute_matrix(z_filter_mesh1%node%numnod, neib_z1, &
+       call s_const_commute_matrix                                      &
+     &    (z_filter_mesh1%node%numnod, neib_z1, zfil_param1%ncomp_mat,  &
      &     z_commute1, zfilter_wk1, dz_plane1%delta_z_n, nrm_z_fil1,    &
      &     mat_crs_z)
        call dealloc_z_int_edge_data(z_int_edge1)
@@ -266,8 +266,8 @@
 !C-- solve matrix
       write(*,*) 'METHOD_crs: ', mat_crs_z%METHOD_crs
       if(mat_crs_z%METHOD_crs .eq. 'LU') then
-        call solve_z_commute_LU(z_filter_mesh1%node%numnod, ncomp_mat,  &
-     &                          mat_crs_z)
+        call solve_z_commute_LU(z_filter_mesh1%node%numnod,             &
+     &                          zfil_param1%ncomp_mat, mat_crs_z)
       else
         call transfer_crs_2_djds_matrix                                 &
      &     (z_filter_mesh1%node, z_filter_mesh1%nod_comm,               &
@@ -303,18 +303,19 @@
 !    construct commutative filter
 !
 !
-       ndep_filter = ncomp_mat
+       ndep_filter = zfil_param1%ncomp_mat
       call allocate_int_commute_filter(z_filter_mesh1%node%numnod)
       call init_z_neighbour                                             &
      &   (z_filter_mesh1%node%numnod, z_filter_mesh1%ele%numele,        &
-     &    ncomp_mat, ncomp_mat, nside, nside, neib_z2)
+     &    zfil_param1%ncomp_mat, zfil_param1%ncomp_mat, nside, nside,   &
+     &    neib_z2)
 !       write(50+my_rank,*) 'neib_z2'
 !       call check_z_neighbour(my_rank, z_filter_mesh1%node%numnod,     &
 !     &                        z_filter_mesh1%ele%numele, neib_z2)
 !
        write(*,*) 's_copy_1darray_2_2darray'
        call s_copy_1darray_2_2darray                                    &
-     &    (ncomp_mat, z_filter_mesh1%node%numnod,                       &
+     &    (zfil_param1%ncomp_mat, z_filter_mesh1%node%numnod,           &
      &     c_filter, mat_crs_z%X_crs)
        call dealloc_crs_mat_data(mat_crs_z)
 !

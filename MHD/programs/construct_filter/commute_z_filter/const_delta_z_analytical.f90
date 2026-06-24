@@ -23,7 +23,6 @@
       use m_constants
 !
       use calypso_mpi
-!      use m_commute_filter_z
 !
       use t_geometry_data
       use t_edge_data

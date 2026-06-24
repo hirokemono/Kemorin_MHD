@@ -45,7 +45,6 @@
       use t_jacobian_1d
 !
       use m_int_commtative_filter
-      use m_commute_filter_z
 !
       integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint), intent(in) :: n_int

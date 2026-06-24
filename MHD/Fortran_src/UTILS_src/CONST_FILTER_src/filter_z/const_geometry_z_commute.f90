@@ -23,8 +23,6 @@
       use m_precision
       use m_constants
 !
-      use m_commute_filter_z
-!
       use t_vert_commute_filter_param
       use t_comm_table
       use t_geometry_data
@@ -58,9 +56,6 @@
       type(edge_data), intent(inout) :: edge_z_filter
       type(vart_filter_moments), intent(inout) :: z_commute
 !
-!
-      ncomp_mat = z_commute%ncomp_norm + 2
-      if(zfil_param%numfilter .eq. 1) ncomp_mat = z_commute%ncomp_norm
 !
       call set_numnod_z_commute(zfil_param, node, ele, surf,            &
      &                          edge_z_filter)

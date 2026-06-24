@@ -40,7 +40,6 @@
      &          nfilter6_1, sk_norm_n, g_int)
 !
       use m_constants
-      use m_commute_filter_z
       use m_int_commtative_filter
       use m_z_filter_values
 !
@@ -70,7 +69,7 @@
 !
       do inod = 1, numnod
         zz0 = zz(inod)
-        do je = 1, ncomp_mat-1
+        do je = 1, zfil_param%ncomp_mat-1
           j0 = je - neib_z2%nneib_nod(inod,1) - 1
           jele = inod + j0
           zs = dble(2*(j0)  )
@@ -142,7 +141,7 @@
 !
       do kf = 0, 2
         do inod = 1, numnod
-          do jnod = 1, ncomp_mat
+          do jnod = 1, zfil_param%ncomp_mat
             xmom_int_t(inod,kf) = xmom_int_t(inod,kf)                   &
      &                          + xmom_int(inod,jnod,kf)
             xmom_int_to(inod,kf) = xmom_int_to(inod,kf)                 &

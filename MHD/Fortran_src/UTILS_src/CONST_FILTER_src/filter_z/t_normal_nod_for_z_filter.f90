@@ -93,8 +93,6 @@
 !
       subroutine check_nod_normalize_matrix(id_rank, node, nrm_z_fil)
 !
-      use m_commute_filter_z
-!
       integer, intent(in) :: id_rank
       type(node_data), intent(in) :: node
       type(normal_nod_for_z_filter), intent(inout) :: nrm_z_fil
@@ -119,7 +117,6 @@
      &          zfil_param, dz_ele, g_int, nrm_z_fil)
 !
       use m_constants
-      use m_commute_filter_z
 !
       use t_vert_commute_filter_param
       use t_neighbour_data_z

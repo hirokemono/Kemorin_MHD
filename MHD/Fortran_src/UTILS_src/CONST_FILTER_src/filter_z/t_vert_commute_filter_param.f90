@@ -72,6 +72,8 @@
 !
         integer (kind = kint) :: i_int_z_filter
 !
+        integer (kind = kint) :: ncomp_mat
+!
         integer(kind = kint) :: nfilter2_3
         integer(kind = kint) :: nfilter2_1
       end type vert_commute_filter_param

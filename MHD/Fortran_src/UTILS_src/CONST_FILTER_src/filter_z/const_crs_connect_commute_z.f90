@@ -8,11 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine set_connect_2_n_filter(node, nneib_nod, nfilter2_3,  &
-!!     &                                  ncomp_st)
+!!     &                                  ncomp_mat, ncomp_st)
 !!        type(node_data), intent(in) :: node
 !!        integer(kind = kint), intent(in)                              &
 !!     &                     :: nneib_nod(node%internal_node,2)
 !!        integer(kind = kint), intent(in) :: nfilter2_3
+!!        integer(kind = kint), intent(in) :: ncomp_mat
 !!        integer(kind = kint), intent(inout) :: ncomp_st(node%numnod)
 !!      subroutine set_crs_connect_commute_z(node, tbl_crs)
 !!        type(node_data), intent(inout) :: node
@@ -24,7 +25,6 @@
       use m_precision
 !
       use m_constants
-      use m_commute_filter_z
 !
       use t_crs_connect
 !
@@ -40,7 +40,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_connect_2_n_filter(node, nneib_nod, nfilter2_3,    &
-     &                                  ncomp_st)
+     &                                  ncomp_mat, ncomp_st)
 !
       use t_geometry_data
 !
@@ -48,6 +48,7 @@
       integer(kind = kint), intent(in)                                  &
      &                     :: nneib_nod(node%internal_node,2)
       integer(kind = kint), intent(in) :: nfilter2_3
+      integer(kind = kint), intent(in) :: ncomp_mat
 !
       integer(kind = kint), intent(inout) :: ncomp_st(node%numnod)
 !

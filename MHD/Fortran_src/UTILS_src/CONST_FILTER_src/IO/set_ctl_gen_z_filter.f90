@@ -41,7 +41,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_commute_filter_z
 !
       use set_parallel_file_name
 !
@@ -80,7 +79,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_commute_filter_z
       use m_spheric_constants
       use t_ctl_data_4_plane_model
       use t_ctl_data_gen_filter
@@ -199,6 +197,10 @@
      &     = gen_f_ctl%ref_filter_mom_ctl%c_tbl(1:z_commute%ncomp_norm)
       end if
       call write_vart_filter_moments(isix, z_commute)
+!
+      zfil_param%ncomp_mat = z_commute%ncomp_norm + 2
+      if(zfil_param%numfilter .eq. 1)                                   &
+     &                     zfil_param%ncomp_mat = z_commute%ncomp_norm
 !
 !     set solver information
 !

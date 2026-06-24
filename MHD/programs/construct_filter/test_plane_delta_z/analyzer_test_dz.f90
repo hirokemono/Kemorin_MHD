@@ -58,7 +58,6 @@
       use t_vert_edge_width
       use t_z_int_edge_data
       use t_commute_filter_z
-      use m_commute_filter_z
 
       use input_control_gen_z_filter
       use const_crs_connect_commute_z
