@@ -59,8 +59,6 @@
 !
       use calypso_mpi
 !
-      use m_int_commtative_filter
-!
       use t_vert_commute_filter_param
       use t_commute_filter_z
       use t_neighbour_data_z
@@ -69,6 +67,7 @@
       use t_z_int_edge_data
       use t_normal_nod_for_z_filter
       use t_z_filter_values
+      use t_z_filter_moment_work
 !
       use const_delta_z_analytical
 
@@ -111,6 +110,7 @@
       type(edge_z_width), save :: dz_plane1
       type(normal_nod_for_z_filter), save :: nrm_z_fil1
       type(z_filter_values), save :: zfil_v1
+      type(z_filter_moment_work), save :: z_mom_wk1
 !
       type(neighbour_data_z), save :: neib_z2
 !
@@ -300,12 +300,12 @@
 !    construct commutative filter
 !
 !
-       ndep_filter = zfil_param1%ncomp_mat
-      call allocate_int_commute_filter(z_filter_mesh1%node%numnod)
+      call alloc_int_commute_filter(zfil_param1%ncomp_mat,              &
+     &    z_filter_mesh1%node, z_mom_WK1)
       call init_z_neighbour                                             &
      &   (z_filter_mesh1%node%numnod, z_filter_mesh1%ele%numele,        &
-     &    zfil_param1%ncomp_mat, zfil_param1%ncomp_mat, nside, nside,   &
-     &    neib_z2)
+     &    zfil_param1%ncomp_mat, zfil_param1%ncomp_mat,                 &
+     &    z_mom_WK1%nside, z_mom_WK1%nside, neib_z2)
 !       write(50+my_rank,*) 'neib_z2'
 !       call check_z_neighbour(my_rank, z_filter_mesh1%node%numnod,     &
 !     &                        z_filter_mesh1%ele%numele, neib_z2)
@@ -313,47 +313,56 @@
        write(*,*) 's_copy_1darray_2_2darray'
        call s_copy_1darray_2_2darray                                    &
      &    (zfil_param1%ncomp_mat, z_filter_mesh1%node%numnod,           &
-     &     c_filter, mat_crs_z%X_crs)
+     &     z_mom_WK1%c_filter, mat_crs_z%X_crs)
        call dealloc_crs_mat_data(mat_crs_z)
 !
 !
-       call int_edge_filter_peri(ndep_filter, zfil_param1,              &
+       call int_edge_filter_peri(z_mom_WK1%ndep_filter, zfil_param1,    &
      &     zfil_param1%totalnod_x, zfil_param1%xsize,                   &
-     &     nrm_z_fil1%nfilter6_1, gauss_z, xmom_h_x, xmom_ht_x,         &
+     &     nrm_z_fil1%nfilter6_1, gauss_z,                              &
+     &     z_mom_WK1%xmom_h_x, z_mom_WK1%xmom_ht_x,                     &
      &     nrm_z_fil1%sk_norm_n, g_z_int)
-       call int_edge_filter_peri(ndep_filter, zfil_param1,              &
+       call int_edge_filter_peri(z_mom_WK1%ndep_filter, zfil_param1,    &
      &     zfil_param1%totalnod_y, zfil_param1%ysize,                   &
-     &     nrm_z_fil1%nfilter6_1, gauss_z, xmom_h_y, xmom_ht_y,         &
+     &     nrm_z_fil1%nfilter6_1, gauss_z,                              &
+     &     z_mom_WK1%xmom_h_y, z_mom_WK1%xmom_ht_y,                     &
      &     nrm_z_fil1%sk_norm_n, g_z_int)
 !
+       call copy_ref_vert_filter_moments(z_commute1,                    &
+     &                                   z_mom_WK1%xmom_ht_z)
        if(my_rank.eq.0) write(*,*) 'int_edge_commutative_filter'
        call int_edge_commutative_filter                                 &
-     &    (z_filter_mesh1%node%numnod, z_filter_mesh1%node%xx(1,3),     &
-     &     z_filter_mesh1%ele%numele, edge_z_filter1%ie_edge,           &
-     &     z_int_edge1%dz_ele, gauss_z, zfil_param1, neib_z2,           &
-     &     nrm_z_fil1%nfilter6_1, nrm_z_fil1%sk_norm_n, g_z_int)
-!       call check_int_commutative_filter                               &
-!     &    (my_rank, z_filter_mesh1%node%numnod)
+     &    (z_filter_mesh1%node, z_filter_mesh1%ele,                     &
+     &     edge_z_filter1%ie_edge, z_int_edge1%dz_ele, gauss_z,         &
+     &     zfil_param1, neib_z2, nrm_z_fil1%nfilter6_1,                 &
+     &     nrm_z_fil1%sk_norm_n, g_z_int,                               &
+     &     z_mom_WK1%ndep_filter, z_mom_WK1%c_filter,                   &
+     &     z_mom_WK1%xmom_int_org, z_mom_WK1%xmom_int,                  &
+     &     z_mom_WK1%xmom_int_t, z_mom_WK1%xmom_int_to)
+!       call check_int_commutative_filter((my_rank+50),                 &
+!     &     z_filter_mesh1%node, z_mom_WK1)
 !
-       if(my_rank.eq.0) write(*,*) 'int_edge_moment'
-       call int_edge_moment                                             &
-     &    (z_filter_mesh1%node%numnod, z_filter_mesh1%ele%numele,       &
+       if(my_rank.eq.0) write(*,*) 'int_edge_z_moment'
+       call int_edge_z_moment(z_filter_mesh1%node, z_filter_mesh1%ele,  &
      &     edge_z_filter1, zfil_param1%i_int_z_filter, spf_1d_z,        &
-     &     jacs_z1%g_FEM, jacs_z1%jac_1d_l, z_int_edge1%mk_z)
+     &     jacs_z1%g_FEM, jacs_z1%jac_1d_l, z_int_edge1%mk_z,           &
+     &     z_mom_WK1%xmom_int_t, z_mom_WK1%xmom_int_to,                 &
+     &     z_mom_WK1%xmom_dt, z_mom_WK1%xmom_dot)
        call dealloc_edge_shape_func(spf_1d_z)
 !
 !    output results
 !
        call write_filter_4_nod(z_filter_mesh1%node, z_filter_mesh1%ele, &
-     &     edge_z_filter1, zfil_param1, z_commute1, dz_plane1, neib_z2)
+     &     edge_z_filter1, zfil_param1, z_commute1, dz_plane1, neib_z2, &
+     &     z_mom_WK1)
 !
+       call dealloc_int_commute_filter(z_mom_WK1)
        call dealloc_normal_nod_z_filter(nrm_z_fil1)
 !
        call deallocate_filter_values(zfil_v1)
        call dealloc_work_4_integration(g_z_int)
        call dealloc_gauss_points(gauss_z)
 !
-       call deallocate_int_commute_filter
        call dealloc_z_neighbour(neib_z2)
        call dealloc_z_neighbour(neib_z1)
 !

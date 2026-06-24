@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine write_filter_4_nod(node, ele, edge_z_filter,         &
-!!     &         zfil_param, z_commute, dz_plane, neib_z2)
+!!     &         zfil_param, z_commute, dz_plane, neib_z2, z_mom_WK)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(edge_data), intent(in) :: edge_z_filter
@@ -16,6 +16,7 @@
 !!        type(vart_filter_moments), intent(in) :: z_commute
 !!        type(edge_z_width), intent(in) :: dz_plane
 !!        type(neighbour_data_z), intent(in) :: neib_z2
+!!        type(z_filter_moment_work), intent(in) :: z_mom_WK
 !!@endverbatim
 !
       module write_z_filter_4_nod
@@ -33,13 +34,13 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_filter_4_nod(node, ele, edge_z_filter,           &
-     &         zfil_param, z_commute, dz_plane, neib_z2)
+     &         zfil_param, z_commute, dz_plane, neib_z2, z_mom_WK)
 !
       use t_vert_commute_filter_param
       use t_commute_filter_z
       use t_neighbour_data_z
       use t_vert_edge_width
-      use m_int_commtative_filter
+      use t_z_filter_moment_work
       use const_geometry_z_commute
       use set_parallel_file_name
 !
@@ -50,6 +51,7 @@
       type(vart_filter_moments), intent(in) :: z_commute
       type(edge_z_width), intent(in) :: dz_plane
       type(neighbour_data_z), intent(in) :: neib_z2
+      type(z_filter_moment_work), intent(in) :: z_mom_WK
 !
       integer(kind = kint), parameter :: id_filter_z = 15
       integer(kind = kint) :: i, inod, iele, j, k, kf
@@ -80,24 +82,17 @@
      &                                   zfil_param%f_width_h
 !
 !
-      do i = 1, z_commute%ncomp_norm
-        do j = 0, 2
-          if(z_commute%kcomp_norm_z(i) .eq. j)                          &
-     &                             xmom_ht_z(j) = z_commute%f_mom_z(i)
-        end do
-      end do
-!
         write(id_filter_z,*) '! origianl moments for three directions'
-        write(id_filter_z,'(1p3E25.15e3)') (xmom_ht_x(kf), kf=0,2)
-        write(id_filter_z,'(1p3E25.15e3)') (xmom_ht_y(kf), kf=0,2)
-        write(id_filter_z,'(1p3E25.15e3)') (xmom_ht_z(kf), kf=0,2)
+        write(id_filter_z,'(1p3E25.15e3)') z_mom_WK%xmom_ht_x(0:2)
+        write(id_filter_z,'(1p3E25.15e3)') z_mom_WK%xmom_ht_y(0:2)
+        write(id_filter_z,'(1p3E25.15e3)') z_mom_WK%xmom_ht_z(0:2)
 !
 !        write(id_filter_z,*) '! moments for x-direction'
 !        write(id_filter_z,'(1p3E25.15e3)') (xmom_ht_x(kf), kf=0,2)
         write(id_filter_z,*) '! coefficients for x-direction of moments'
         do j=1, zfil_param%ncomp_mat
           write(id_filter_z,'(i5,1p50E25.15e3)') j,                     &
-     &            (xmom_h_x(j,kf), kf=0,2)
+     &                                         z_mom_WK%xmom_h_x(j,0:2)
         end do
 !
 !        write(id_filter_z,*) '! moments for y-direction'
@@ -105,7 +100,7 @@
         write(id_filter_z,*) '! coefficients for y-direction of moments'
         do j=1, zfil_param%ncomp_mat
           write(id_filter_z,'(i5,1p50E25.15e3)') j,                     &
-     &            (xmom_h_y(j,kf), kf=0,2)
+     &                                         z_mom_WK%xmom_h_y(j,0:2)
         end do
 !
         write(id_filter_z,*) '! node_id, z, dz/dzeta, diff of delta_z'
@@ -144,8 +139,8 @@
 !
         do inod = 1, node%internal_node
           write(id_filter_z,'(i16,1p20E25.15e3)')                       &
-     &                         node%inod_global(inod),                  &
-     &                         c_filter(1:zfil_param%ncomp_mat,inod)
+     &                   node%inod_global(inod),                        &
+     &                   z_mom_WK%c_filter(1:zfil_param%ncomp_mat,inod)
         end do
 !
 !
@@ -153,7 +148,7 @@
 !
         do inod = 1, node%internal_node
           write(id_filter_z,'(i16,1p6E25.15e3)')                        &
-     &          node%inod_global(inod), xmom_int_t(inod,0:2)
+     &          node%inod_global(inod), z_mom_WK%xmom_int_t(inod,0:2)
         end do
 !
          write(id_filter_z,*)                                           &
@@ -161,7 +156,7 @@
 !
         do inod = 1, node%internal_node
           write(id_filter_z,'(i16,1p6E25.15e3)')                        &
-     &          node%inod_global(inod), xmom_dt(inod,0:2)
+     &          node%inod_global(inod), z_mom_WK%xmom_dt(inod,0:2)
         end do
 !
 !
@@ -171,8 +166,8 @@
 !
         do inod = 1, node%internal_node
           write(id_filter_z,'(2i16,1p20E25.15e3)') k,                   &
-     &                        node%inod_global(inod),                   &
-     &                        xmom_int(inod,1:zfil_param%ncomp_mat,k)
+     &                node%inod_global(inod),                           &
+     &                z_mom_WK%xmom_int(inod,1:zfil_param%ncomp_mat,k)
         end do
       end do
 !
@@ -180,7 +175,7 @@
 !
         do inod = 1, node%internal_node
           write(id_filter_z,'(i16,1p6E25.15e3)')                        &
-     &          node%inod_global(inod), xmom_int_to(inod,0:2)
+     &          node%inod_global(inod), z_mom_WK%xmom_int_to(inod,0:2)
         end do
 !
          write(id_filter_z,*)                                           &
@@ -189,7 +184,7 @@
 
         do inod = 1, node%internal_node
           write(id_filter_z,'(i16,1p6E25.15e3)')                        &
-     &          node%inod_global(inod), xmom_dot(inod,0:2)
+     &          node%inod_global(inod), z_mom_WK%xmom_dot(inod,0:2)
         end do
 !
       do k = 0, 2
@@ -198,8 +193,8 @@
 !
         do inod = 1, node%internal_node
           write(id_filter_z,'(2i16,1p20E25.15e3)') k,                   &
-     &                      node%inod_global(inod),                     &
-     &                      xmom_int_org(inod,1:zfil_param%ncomp_mat,k)
+     &             node%inod_global(inod),                              &
+     &             z_mom_WK%xmom_int_org(inod,1:zfil_param%ncomp_mat,k)
         end do
       end do
 !
