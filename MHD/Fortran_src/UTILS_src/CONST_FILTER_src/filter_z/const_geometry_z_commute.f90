@@ -7,8 +7,9 @@
 !>@brief geometry data for horizontal filter
 !!
 !!@verbatim
-!!      subroutine set_geometry_z_commute                               &
-!!     &         (nod_comm, node, ele, surf, edge_z_filter, z_commute)
+!!      subroutine set_geometry_z_commute(zfil_param, nod_comm,         &
+!!     &          node, ele, surf, edge_z_filter, z_commute)
+!!        type(vert_commute_filter_param), intent(inout) :: zfil_param
 !!        type(communication_table), intent(inout) :: nod_comm
 !!        type(node_data), intent(inout) :: node
 !!        type(element_data), intent(inout) :: ele
@@ -24,6 +25,7 @@
 !
       use m_commute_filter_z
 !
+      use t_vert_commute_filter_param
       use t_comm_table
       use t_geometry_data
       use t_surface_data
@@ -43,11 +45,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_geometry_z_commute                                 &
-     &         (nod_comm, node, ele, surf, edge_z_filter, z_commute)
+      subroutine set_geometry_z_commute(zfil_param, nod_comm,           &
+     &          node, ele, surf, edge_z_filter, z_commute)
 !
       use m_spheric_constants
 !
+      type(vert_commute_filter_param), intent(inout) :: zfil_param
       type(communication_table), intent(inout) :: nod_comm
       type(node_data), intent(inout) :: node
       type(element_data), intent(inout) :: ele
@@ -59,7 +62,9 @@
       ncomp_mat = z_commute%ncomp_norm + 2
       if (numfilter .eq. 1)  ncomp_mat = z_commute%ncomp_norm
 !
-      call set_numnod_z_commute(node, ele, surf, edge_z_filter)
+      call set_numnod_z_commute(zfil_param, node, ele, surf,            &
+     &                          edge_z_filter)
+      call set_vert_plane_filter_param(node%internal_node, numfilter, zfil_param)
 !
       call alloc_node_geometry_w_sph(node)
       call alloc_edge_connect(edge_z_filter, surf%numsurf)
@@ -69,18 +74,19 @@
       call set_global_id_z_commute(node, ele, edge_z_filter)
 !
       if (iflag_grid .eq. igrid_Chebyshev) then
-        call set_chebyshev_grids                                        &
-     &     (node%numnod, node%internal_node, node%xx)
+        call set_chebyshev_grids(zfil_param%zsize,                      &
+     &      node%numnod, node%internal_node, node%xx)
       else if (iflag_grid .eq. igrid_half_Chebyshev) then
-        call set_half_chebyshev_grids                                   &
-     &     (node%numnod, node%internal_node, node%xx)
+        call set_half_chebyshev_grids(zfil_param%zsize,                 &
+     &      node%numnod, node%internal_node, node%xx)
       else if (iflag_grid.eq.-1) then
         call set_test_grids(node%numnod, node%internal_node, node%xx)
       else if (iflag_grid.eq.-2) then
         call set_test_grids_2                                           &
      &     (node%numnod, node%internal_node, node%xx)
       else
-        call set_liner_grids(node%numnod, node%internal_node, node%xx)
+        call set_liner_grids(zfil_param%zsize,                          &
+     &                       node%numnod, node%internal_node, node%xx)
       end if
 !
       nod_comm%num_neib =    0
@@ -93,20 +99,21 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine  set_numnod_z_commute(node, ele, surf, edge_z_filter)
+      subroutine  set_numnod_z_commute(zfil_param, node, ele,           &
+     &                                 surf, edge_z_filter)
 !
 !      type(communication_table), intent(inout) :: nod_comm
+      type(vert_commute_filter_param), intent(inout) :: zfil_param
       type(node_data), intent(inout) :: node
       type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge_z_filter
 !
 !
-      node%internal_node = totalnod
-      node%numnod =  node%internal_node
+      node%internal_node = zfil_param%totalnod_z
+      node%numnod =        zfil_param%totalnod_z
 !      nod_comm%num_neib = 2
 !
-      nmat_ele = totalele*nfilter2_1
       nmat_nod = node%internal_node * nfilter2_3
 !
       ele%numele = node%numnod - 1
@@ -121,7 +128,6 @@
       nfilter2_2 = 2*numfilter+2
       nfilter2_3 = 2*numfilter+3
       nfilter2_4 = 2*numfilter+4
-      nfilter6_1 = 6*numfilter+1
 !
       end subroutine  set_numnod_z_commute
 !
@@ -165,9 +171,10 @@
 ! ----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_liner_grids(numnod, internal_node, xx)
+      subroutine set_liner_grids(zsize, numnod, internal_node, xx)
 !
       integer (kind = kint), intent(in) :: numnod, internal_node
+      real(kind = kreal), intent(in) ::    zsize
       real(kind = kreal), intent(inout) :: xx(numnod,3)
 !
       integer (kind = kint) :: i
@@ -181,9 +188,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_chebyshev_grids(numnod, internal_node, xx)
+      subroutine set_chebyshev_grids(zsize, numnod, internal_node, xx)
 !
       integer (kind = kint), intent(in) :: numnod, internal_node
+      real(kind = kreal), intent(in) ::    zsize
       real(kind = kreal), intent(inout) :: xx(numnod,3)
 !
       real (kind = kreal) :: pi
@@ -200,9 +208,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_half_chebyshev_grids(numnod, internal_node, xx)
+      subroutine set_half_chebyshev_grids(zsize,                        &
+     &                                    numnod, internal_node, xx)
 !
       integer (kind = kint), intent(in) :: numnod, internal_node
+      real(kind = kreal), intent(in) ::    zsize
       real(kind = kreal), intent(inout) :: xx(numnod,3)
 !
       real (kind = kreal) :: pi

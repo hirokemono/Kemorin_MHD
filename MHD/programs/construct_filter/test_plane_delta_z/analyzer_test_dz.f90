@@ -54,6 +54,7 @@
 !
       use calypso_mpi
 !
+      use t_vert_commute_filter_param
       use t_vert_edge_width
       use t_z_int_edge_data
       use t_commute_filter_z
@@ -64,6 +65,7 @@
       use cal_jacobian_linear_1d
       use cal_delta_z_4_z_filter
 !
+      type(vert_commute_filter_param), save :: zfil_param2
       type(vart_filter_moments), save :: z_commute2
       type(edge_z_width), save :: dz_plane2
       type(z_int_edge_data), save :: z_int_edge2
@@ -79,8 +81,8 @@
 !C-- CNTL DATA
       call s_input_control_4_z_commute(z_filter_mesh2%nod_comm,         &
      &    z_filter_mesh2%node, z_filter_mesh2%ele,                      &
-     &    surf_z_filter2, edge_z_filter2, z_commute2, mat_crs_z,        &
-     &    CG_param_z, DJDS_param_z)
+     &    surf_z_filter2, edge_z_filter2, zfil_param2, z_commute2,      &
+     &    mat_crs_z, CG_param_z, DJDS_param_z)
 !C
 !C     set gauss points
 !C===

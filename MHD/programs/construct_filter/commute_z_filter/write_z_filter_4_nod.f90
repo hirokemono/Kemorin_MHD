@@ -8,10 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine write_filter_4_nod(node, ele, edge_z_filter,         &
-!!     &                              z_commute, dz_plane, neib_z2)
+!!     &         zfil_param, z_commute, dz_plane, neib_z2)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(edge_data), intent(in) :: edge_z_filter
+!!        type(vert_commute_filter_param), intent(in) :: zfil_param
 !!        type(vart_filter_moments), intent(in) :: z_commute
 !!        type(edge_z_width), intent(in) :: dz_plane
 !!        type(neighbour_data_z), intent(in) :: neib_z2
@@ -32,8 +33,9 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_filter_4_nod(node, ele, edge_z_filter,           &
-     &                              z_commute, dz_plane, neib_z2)
+     &         zfil_param, z_commute, dz_plane, neib_z2)
 !
+      use t_vert_commute_filter_param
       use t_commute_filter_z
       use t_neighbour_data_z
       use t_vert_edge_width
@@ -45,6 +47,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(edge_data), intent(in) :: edge_z_filter
+      type(vert_commute_filter_param), intent(in) :: zfil_param
       type(vart_filter_moments), intent(in) :: z_commute
       type(edge_z_width), intent(in) :: dz_plane
       type(neighbour_data_z), intent(in) :: neib_z2
@@ -53,13 +56,17 @@
       integer (kind= kint) :: i, inod, iele, j, k, kf
 !
 !
-      open (id_filter_z,file=filter_z_file_name)
+      open(id_filter_z,file=filter_z_file_name)
+      call write_vert_plane_filter_param(id_filter_z, zfil_param)
 !
-        write(id_filter_z,*) '! number of node'
-        write(id_filter_z,*) totalnod_x, totalnod_y,                    &
-     &                      node%internal_node
-        write(id_filter_z,*) '! size of domain'
-        write(id_filter_z,'(1p3E25.15e3)') xsize, ysize, zsize
+      write(id_filter_z,'(a)') '! number of node'
+      write(id_filter_z,'(3i6)') zfil_param%totalnod_x,                 &
+     &                           zfil_param%totalnod_y,                 &
+     &                           node%internal_node
+      write(id_filter_z,'(a)') '! size of domain'
+      write(id_filter_z,'(1p3E25.15e3)') zfil_param%xsize,              &
+     &                                   zfil_param%ysize,              &
+     &                                   zfil_param%zsize
         write(id_filter_z,*) '!grid type'
         write(id_filter_z,*) '!   0:equally divided'
         write(id_filter_z,*) '!   1:Chebycyev points from 0 to pi/2'

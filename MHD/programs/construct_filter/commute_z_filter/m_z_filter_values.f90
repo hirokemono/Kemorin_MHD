@@ -7,9 +7,10 @@
 !>@brief commutive filter data in vertical direction
 !!
 !!@verbatim
-!!      subroutine allocate_filter_values
+!!      subroutine allocate_filter_values(nfilter6_1)
+!!        integer(kind = kint), intent(in) :: nfilter6_1
 !!      subroutine deallocate_filter_values
-!!      subroutine check_integrated_values(id_rank)
+!!      subroutine check_integrated_values(id_rank, nfilter6_1)
 !!@endverbatim
       module m_z_filter_values
 !
@@ -27,12 +28,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_filter_values(nfilter)
+      subroutine allocate_filter_values(nfilter6_1)
 !
-      integer (kind = kint) :: nfilter
+      integer(kind = kint), intent(in) :: nfilter6_1
 !
-      nfilter6_1 = 6*nfilter + 1
-      allocate( f_mom_full(0:nfilter6_1) )
+      allocate(f_mom_full(0:nfilter6_1))
 !
       f_mom_full = 0.0d0
 !
@@ -48,9 +48,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine check_integrated_values(id_rank)
+      subroutine check_integrated_values(id_rank, nfilter6_1)
 !
-      integer :: id_rank
+      integer, intent(in) :: id_rank
+      integer(kind = kint), intent(in) :: nfilter6_1
 !
       write(50+id_rank,*) 'f_mom_full'
       write(50+id_rank,'(1p5e16.8)') f_mom_full(0:nfilter6_1)

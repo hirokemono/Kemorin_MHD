@@ -1,8 +1,3 @@
-!
-!      module  const_delta_z_analytical
-!
-!     Written by H. Matsui
-!
 !>@file   const_delta_z_analytical.f90
 !!        module const_delta_z_analytical
 !!
@@ -12,7 +7,9 @@
 !>@brief Construct grid spacing data for plane layer model
 !!
 !!@verbatim
-!!      subroutine cal_delta_z_analytical(ele, edge, node, dz_plane)
+!!      subroutine cal_delta_z_analytical(zsize, ele, edge,             &
+!!     &                                  node, dz_plane)
+!!        real(kind = kreal), intent(in) :: zsize
 !!        type(element_data), intent(in) :: ele
 !!        type(edge_data), intent(in) :: edge
 !!        type(node_data), intent(inout) :: node
@@ -43,10 +40,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_delta_z_analytical(ele, edge, node, dz_plane)
+      subroutine cal_delta_z_analytical(zsize, ele, edge,               &
+     &                                  node, dz_plane)
 !
       use m_spheric_constants
 !
+      real(kind = kreal), intent(in) :: zsize
       type(element_data), intent(in) :: ele
       type(edge_data), intent(in) :: edge
 !
@@ -58,10 +57,11 @@
 !
       if (iflag_grid .eq. igrid_Chebyshev) then
         if (my_rank.eq.0) write(*,*) 'cal_dz_chebyshev_grids'
-        call cal_dz_chebyshev_grids(ele, edge, node, dz_plane)
+        call cal_dz_chebyshev_grids(zsize, ele, edge, node, dz_plane)
       else if (iflag_grid .eq. igrid_half_Chebyshev) then
         if (my_rank.eq.0) write(*,*) 'cal_dz_half_chebyshev_grids'
-        call cal_dz_half_chebyshev_grids(ele, edge, node, dz_plane)
+        call cal_dz_half_chebyshev_grids(zsize, ele, edge,              &
+     &                                   node, dz_plane)
       else if (iflag_grid.eq.-1) then
         if (my_rank.eq.0) write(*,*) 'cal_dz_test_grids'
         call cal_dz_test_grids(ele, node, dz_plane)
@@ -70,15 +70,16 @@
         call cal_dz_test_grids_2(ele, edge, node, dz_plane)
       else
         if (my_rank.eq.0) write(*,*) 'cal_dz_liner_grids'
-        call cal_dz_liner_grids(ele, node, dz_plane)
+        call cal_dz_liner_grids(zsize, ele, node, dz_plane)
       end if
 !
       end subroutine cal_delta_z_analytical
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_dz_liner_grids(ele, node, dz_plane)
+      subroutine cal_dz_liner_grids(zsize, ele, node, dz_plane)
 !
+      real(kind = kreal), intent(in) :: zsize
       type(element_data), intent(in) :: ele
       type(node_data), intent(inout) :: node
       type(edge_z_width), intent(inout) :: dz_plane
@@ -103,8 +104,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_dz_chebyshev_grids(ele, edge, node, dz_plane)
+      subroutine cal_dz_chebyshev_grids(zsize, ele, edge,               &
+     &                                  node, dz_plane)
 !
+      real(kind = kreal), intent(in) :: zsize
       type(element_data), intent(in) :: ele
       type(edge_data), intent(in) :: edge
 !
@@ -154,8 +157,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_dz_half_chebyshev_grids(ele, edge, node, dz_plane)
+      subroutine cal_dz_half_chebyshev_grids(zsize, ele, edge,          &
+     &                                       node, dz_plane)
 !
+      real(kind = kreal), intent(in) :: zsize
       type(element_data), intent(in) :: ele
       type(edge_data), intent(in) :: edge
 !

@@ -8,8 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine int_edge_filter_peri(ndep_filter, numnod_h, hsize,   &
-!!     &          gauss, xmom_h, xmom_ht, sk_norm_n, g_int)
+!!     &          nfilter6_1, gauss, xmom_h, xmom_ht, sk_norm_n, g_int)
 !!        integer(kind = kint), intent(in) :: ndep_filter, numnod_h
+!!        integer(kind = kint), intent(in) :: nfilter6_1
 !!        real(kind = kreal), intent(in) :: hsize
 !!        type(gauss_points), intent(in) :: gauss
 !!        real(kind = kreal), intent(inout) :: xmom_h(ndep_filter,0:2)
@@ -32,7 +33,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine int_edge_filter_peri(ndep_filter, numnod_h, hsize,     &
-     &          gauss, xmom_h, xmom_ht, sk_norm_n, g_int)
+     &          nfilter6_1, gauss, xmom_h, xmom_ht, sk_norm_n, g_int)
 !
       use m_constants
       use m_commute_filter_z
@@ -40,6 +41,7 @@
       use set_filter_moments
 !
       integer(kind = kint), intent(in) :: ndep_filter, numnod_h
+      integer(kind = kint), intent(in) :: nfilter6_1
       real(kind = kreal), intent(in) :: hsize
       type(gauss_points), intent(in) :: gauss
 !

@@ -7,14 +7,16 @@
 !>@brief edge integration for commutrative filter
 !!
 !!@verbatim
-!!      subroutine int_edge_commutative_filter(numnod, zz, numele,      &
-!!     &          ie_edge, dz_ele, gauss, neib_z2, sk_norm_n, g_int)
+!!      subroutine int_edge_commutative_filter                          &
+!!     &         (numnod, zz, numele, ie_edge, dz_ele, gauss, neib_z2,  &
+!!     &          nfilter6_1, sk_norm_n, g_int)
 !!        integer(kind = kint), intent(in) :: numnod, numele
 !!        integer(kind = kint), intent(in) :: ie_edge(numele,2)
 !!        real(kind = kreal), intent(in) :: zz(numnod)
 !!        real(kind = kreal), intent(in) :: dz_ele(numele)
 !!        type(gauss_points), intent(in) :: gauss
 !!        type(neighbour_data_z), intent(in) :: neib_z2
+!!        integer(kind = kint), intent(in) :: nfilter6_1
 !!        real(kind = kreal), intent(inout) :: sk_norm_n(0:nfilter6_1)
 !!        type(gauss_integrations), intent(inout) :: g_int
 !!@endverbatim
@@ -32,8 +34,9 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine int_edge_commutative_filter(numnod, zz, numele,        &
-     &          ie_edge, dz_ele, gauss, neib_z2, sk_norm_n, g_int)
+      subroutine int_edge_commutative_filter                            &
+     &         (numnod, zz, numele, ie_edge, dz_ele, gauss, neib_z2,    &
+     &          nfilter6_1, sk_norm_n, g_int)
 !
       use m_constants
       use m_commute_filter_z
@@ -49,6 +52,7 @@
       real(kind = kreal), intent(in) :: dz_ele(numele)
       type(gauss_points), intent(in) :: gauss
       type(neighbour_data_z), intent(in) :: neib_z2
+      integer(kind = kint), intent(in) :: nfilter6_1
 !
       real(kind = kreal), intent(inout) :: sk_norm_n(0:nfilter6_1)
       type(gauss_integrations), intent(inout) :: g_int

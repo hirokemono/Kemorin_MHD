@@ -66,6 +66,7 @@
       use m_z_filter_values
       use m_int_commtative_filter
 !
+      use t_vert_commute_filter_param
       use t_commute_filter_z
       use t_neighbour_data_z
       use t_neighbour_index_z
@@ -107,6 +108,7 @@
       type(DJDS_ordering_table) :: djds_tbl_z
       type(DJDS_MATRIX) :: djds_mat_z
 !
+      type(vert_commute_filter_param), save :: zfil_param1
       type(vart_filter_moments), save :: z_commute1
       type(neighbour_data_z), save :: neib_z1
       type(z_int_edge_data), save :: z_int_edge1
@@ -129,7 +131,7 @@
       call s_input_control_4_z_commute                                  &
      &  (z_filter_mesh1%nod_comm, z_filter_mesh1%node,                  &
      &   z_filter_mesh1%ele, surf_z_filter1, edge_z_filter1,            &
-     &   z_commute1, mat_crs_z, CG_param_z, DJDS_param_z)
+     &   zfil_param1, z_commute1, mat_crs_z, CG_param_z, DJDS_param_z)
 !
 !C
 !C     set gauss points
@@ -157,7 +159,8 @@
 !
       if(my_rank.eq.0) write(*,*) 'cal_delta_z_analytical'
       if(flag_analytical) then
-        call cal_delta_z_analytical(z_filter_mesh1%ele, edge_z_filter1, &
+        call cal_delta_z_analytical(zfil_param1%zsize,                  &
+     &                              z_filter_mesh1%ele, edge_z_filter1, &
      &                              z_filter_mesh1%node, dz_plane1)
       else
         call cal_delta_z(CG_param_z, DJDS_param_z,                      &
@@ -205,24 +208,25 @@
 !   set moments of filter
 !
       if (my_rank.eq.0) write(*,*) 'allocate_filter_values'
-      call allocate_filter_values(numfilter)
-      write(*,*) 'allocate_filter',                                     &
-     &            nfilter6_1, nfilter2_1, i_int_z_filter
+      call allocate_filter_values(zfil_param1%nfilter6_1)
 !
-      if ( iflag_filter .eq. 0) then
-        call int_tophat_moment_infty(nfilter6_1,f_mom_full,f_width)
+      if(iflag_filter .eq. 0) then
+        call int_tophat_moment_infty(zfil_param1%nfilter6_1,            &
+     &                               f_mom_full,f_width)
       else if (iflag_filter .eq. 1) then
-        call int_linear_moment_infty(nfilter6_1,f_mom_full,f_width)
+        call int_linear_moment_infty(zfil_param1%nfilter6_1,            &
+     &                               f_mom_full,f_width)
       else
-        call int_gaussian_moment_infty(nfilter6_1,f_mom_full,f_width)
+        call int_gaussian_moment_infty(zfil_param1%nfilter6_1,          &
+     &                                 f_mom_full,f_width)
       end if
 !
       if (my_rank.eq.0) write(*,*) 'construct_gauss_coefs'
       call construct_gauss_coefs(i_int_z_filter, gauss_z)
       call alloc_work_4_integration                                     &
-     &  ((nfilter6_1 + 1), gauss_z%n_point, g_z_int)
+     &  ((zfil_param1%nfilter6_1 + 1), gauss_z%n_point, g_z_int)
 !
-      allocate(sk_norm_n(0:nfilter6_1))
+      allocate(sk_norm_n(0:zfil_param1%nfilter6_1))
       sk_norm_n = 0.0d0
 !
       allocate(d_norm_nod(z_filter_mesh1%node%numnod,                   &
@@ -231,9 +235,10 @@
      &           1:nfilter2_3,0:nfilter2_3) =   0.0d0
 !
       if (my_rank.eq.0) write(*,*) 'int_edge_norm_nod'
-       call int_edge_norm_nod(z_filter_mesh1%node, z_filter_mesh1%ele,  &
-      &    edge_z_filter1, gauss_z, neib_z1, z_int_edge1%dz_ele,        &
-      &    g_z_int, sk_norm_n, d_norm_nod)
+       call int_edge_norm_nod                                           &
+      &  (z_filter_mesh1%node, z_filter_mesh1%ele, edge_z_filter1,      &
+      &   gauss_z, neib_z1, zfil_param1%nfilter6_1, z_int_edge1%dz_ele, &
+      &   g_z_int, sk_norm_n, d_norm_nod)
 !       call check_nod_normalize_matrix                                 &
 !     &    (my_rank, z_filter_mesh1%node%numnod, d_norm_nod)
 !
@@ -316,16 +321,21 @@
        call dealloc_crs_mat_data(mat_crs_z)
 !
 !
-       call int_edge_filter_peri(ndep_filter, totalnod_x, xsize,        &
-     &     gauss_z, xmom_h_x, xmom_ht_x, sk_norm_n, g_z_int)
-       call int_edge_filter_peri(ndep_filter, totalnod_y, ysize,        &
-     &     gauss_z, xmom_h_y, xmom_ht_y, sk_norm_n, g_z_int)
+       call int_edge_filter_peri                                        &
+     &    (ndep_filter, zfil_param1%totalnod_x, zfil_param1%xsize,      &
+     &     zfil_param1%nfilter6_1, gauss_z, xmom_h_x, xmom_ht_x,        &
+     &     sk_norm_n, g_z_int)
+       call int_edge_filter_peri                                        &
+     &    (ndep_filter, zfil_param1%totalnod_y, zfil_param1%ysize,      &
+     &     zfil_param1%nfilter6_1, gauss_z, xmom_h_y, xmom_ht_y,        &
+     &     sk_norm_n, g_z_int)
 !
        if(my_rank.eq.0) write(*,*) 'int_edge_commutative_filter'
        call int_edge_commutative_filter                                 &
      &    (z_filter_mesh1%node%numnod, z_filter_mesh1%node%xx(1,3),     &
      &     z_filter_mesh1%ele%numele, edge_z_filter1%ie_edge,           &
-     &     z_int_edge1%dz_ele, gauss_z, neib_z2, sk_norm_n, g_z_int)
+     &     z_int_edge1%dz_ele, gauss_z, neib_z2,                        &
+     &     zfil_param1%nfilter6_1, sk_norm_n, g_z_int)
 !       call check_int_commutative_filter                               &
 !     &    (my_rank, z_filter_mesh1%node%numnod)
 !
@@ -339,7 +349,7 @@
 !    output results
 !
        call write_filter_4_nod(z_filter_mesh1%node, z_filter_mesh1%ele, &
-     &     edge_z_filter1, z_commute1, dz_plane1, neib_z2)
+     &     edge_z_filter1, zfil_param1, z_commute1, dz_plane1, neib_z2)
 !
        deallocate(sk_norm_n)
 !

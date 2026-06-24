@@ -8,12 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine int_edge_norm_nod(node, ele, edge, gauss, neib_z,    &
-!!     &          dz_ele, g_int, sk_norm_n, d_norm_nod)
+!!     &          nfilter6_1, dz_ele, g_int, sk_norm_n, d_norm_nod)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(edge_data), intent(in) :: edge
 !!        type(gauss_points), intent(in) :: gauss
 !!        type(neighbour_data_z), intent(in) :: neib_z
+!!        integer(kind = kint), intent(in) :: nfilter6_1
 !!        real(kind = kreal), intent(in) :: dz_ele
 !!        type(gauss_integrations), intent(inout) :: g_int
 !!      real(kind = kreal), intent(inout) :: sk_norm_n(0:nfilter6_1)
@@ -38,7 +39,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine int_edge_norm_nod(node, ele, edge, gauss, neib_z,      &
-     &          dz_ele, g_int, sk_norm_n, d_norm_nod)
+     &          nfilter6_1, dz_ele, g_int, sk_norm_n, d_norm_nod)
 !
       use m_constants
       use m_commute_filter_z
@@ -52,6 +53,7 @@
       type(edge_data), intent(in) :: edge
       type(gauss_points), intent(in) :: gauss
       type(neighbour_data_z), intent(in) :: neib_z
+      integer(kind = kint), intent(in) :: nfilter6_1
       real(kind = kreal), intent(in) :: dz_ele(ele%numele)
 !
       type(gauss_integrations), intent(inout) :: g_int

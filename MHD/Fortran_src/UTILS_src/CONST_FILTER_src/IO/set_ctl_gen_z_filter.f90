@@ -8,8 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine set_ctl_params_4_gen_z_filter(z_filter_ctl,          &
-!!     &          z_commute, mat_crs, CG_param, DJDS_param)
+!!     &          zfil_param, z_commute, mat_crs, CG_param, DJDS_param)
 !!        type(ctl_data_gen_z_filter), intent(in) :: z_filter_ctl
+!!        type(vert_commute_filter_param), intent(inout) :: zfil_param
+!!        type(vart_filter_moments), intent(inout) :: z_commute
 !!        type(CRS_matrix), intent(inout) :: mat_crs
 !!        type(CG_poarameter), intent(inout) :: CG_param
 !!        type(DJDS_poarameter), intent(inout) :: DJDS_param
@@ -19,6 +21,7 @@
 !
       use m_precision
       use t_ctl_data_gen_z_filter
+      use t_vert_commute_filter_param
       use t_commute_filter_z
       use t_crs_matrix
       use t_iccg_parameter
@@ -34,7 +37,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_ctl_params_4_gen_z_filter(z_filter_ctl,            &
-     &          z_commute, mat_crs, CG_param, DJDS_param)
+     &          zfil_param, z_commute, mat_crs, CG_param, DJDS_param)
 !
       use m_constants
       use m_machine_parameter
@@ -44,6 +47,7 @@
 !
       type(ctl_data_gen_z_filter), intent(in) :: z_filter_ctl
 !
+      type(vert_commute_filter_param), intent(inout) :: zfil_param
       type(vart_filter_moments), intent(inout) :: z_commute
       type(CRS_matrix), intent(inout) :: mat_crs
       type(CG_poarameter), intent(inout) :: CG_param
@@ -67,14 +71,14 @@
 !
       call set_ctl_parameters_z_filter                                  &
      &   (z_filter_ctl%cube_c, z_filter_ctl%gen_f_ctl,                  &
-     &    z_commute, mat_crs, CG_param, DJDS_param)
+     &    zfil_param, z_commute, mat_crs, CG_param, DJDS_param)
 !
       end subroutine set_ctl_params_4_gen_z_filter
 !
 !   --------------------------------------------------------------------
 !
       subroutine set_ctl_parameters_z_filter(cube_c, gen_f_ctl,         &
-     &          z_commute, mat_crs, CG_param, DJDS_param)
+     &          zfil_param, z_commute, mat_crs, CG_param, DJDS_param)
 !
       use m_constants
       use m_machine_parameter
@@ -89,6 +93,7 @@
       type(ctl_data_4_plane_model), intent(in) :: cube_c
       type(ctl_data_gen_filter), intent(in) :: gen_f_ctl
 !
+      type(vert_commute_filter_param), intent(inout) :: zfil_param
       type(vart_filter_moments), intent(inout) :: z_commute
       type(CRS_matrix), intent(inout) :: mat_crs
       type(CG_poarameter), intent(inout) :: CG_param
@@ -102,29 +107,29 @@
 !
 !    set plane layer parameters
 !
-      totalnod_x = cube_c%nnod_plane_ctl%intvalue(1)
-      totalnod_y = cube_c%nnod_plane_ctl%intvalue(2)
-      totalnod =   cube_c%nnod_plane_ctl%intvalue(3)
+      zfil_param%totalnod_x = cube_c%nnod_plane_ctl%intvalue(1)
+      zfil_param%totalnod_y = cube_c%nnod_plane_ctl%intvalue(2)
+      zfil_param%totalnod_z = cube_c%nnod_plane_ctl%intvalue(3)
 !
       tmpchara = cube_c%unit_len_plane_ctl%charavalue(1)
       if(cmp_no_case(tmpchara,'pi')) then
-        xsize = pi * cube_c%plane_size_ctl%realvalue(1)
+        zfil_param%xsize = pi * cube_c%plane_size_ctl%realvalue(1)
       else
-        xsize = cube_c%plane_size_ctl%realvalue(1)
+        zfil_param%xsize = cube_c%plane_size_ctl%realvalue(1)
       end if
 !
       tmpchara = cube_c%unit_len_plane_ctl%charavalue(2)
       if(cmp_no_case(tmpchara,'pi')) then
-        ysize = pi * cube_c%plane_size_ctl%realvalue(2)
+        zfil_param%ysize = pi * cube_c%plane_size_ctl%realvalue(2)
       else
-        ysize = cube_c%plane_size_ctl%realvalue(2)
+        zfil_param%ysize = cube_c%plane_size_ctl%realvalue(2)
       end if
 !
       tmpchara = cube_c%unit_len_plane_ctl%charavalue(3)
       if(cmp_no_case(tmpchara,'pi')) then
-        zsize = pi * cube_c%plane_size_ctl%realvalue(3)
+        zfil_param%zsize = pi * cube_c%plane_size_ctl%realvalue(3)
       else
-        zsize = cube_c%plane_size_ctl%realvalue(3)
+        zfil_param%zsize = cube_c%plane_size_ctl%realvalue(3)
       end if
 !
       if      (cmp_no_case(cube_c%horizontal_grid_ctl%charavalue,       &
