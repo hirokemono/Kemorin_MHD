@@ -33,6 +33,8 @@
         integer(kind = kint) :: totalnod_y
 !>        Number of node in vertical direction
         integer(kind = kint) :: totalnod_z
+!>        Number of element in vertical direction
+        integer(kind = kint) :: totalele
 !
 !>        domain size in x-direction
         real(kind = kreal) :: xsize
@@ -96,7 +98,7 @@
       type(vert_commute_filter_param), intent(inout) :: zfil_param
 !
 !
-!      zfil_param%totalele =   internal_node - 1
+      zfil_param%totalele =   internal_node - 1
 !
       zfil_param%nfilter2_1 = 2*numfilter + 1
       zfil_param%nfilter2_3 = 2*numfilter + 3

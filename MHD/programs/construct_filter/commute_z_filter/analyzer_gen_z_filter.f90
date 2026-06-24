@@ -174,26 +174,28 @@
 !    set information for filtering for node
 !
       call init_z_neighbour                                             &
-     &   (z_filter_mesh1%node%internal_node, totalele,                  &
+     &   (z_filter_mesh1%node%internal_node, zfil_param1%totalele,      &
      &    (2*numfilter+2), zfil_param1%nfilter2_1, (numfilter+1),       &
      &    numfilter, neib_z1)
 !      write(50+my_rank,*) 'neib_z1'
 !      call check_z_neighbour(my_rank,                                  &
-!     &    z_filter_mesh1%node%internal_node, totalele, neib_z1)
+!     &    z_filter_mesh1%node%internal_node, zfil_param1%totalele,     &
+!     &    neib_z1)
 !
 !    set information for filtering for element
 !
       call alloc_z_neib_index(z_filter_mesh1%node%numnod,               &
-     &    totalele, zfil_param1%nfilter2_1, zfilter_wk1)
+     &    zfil_param1%totalele, zfil_param1%nfilter2_1, zfilter_wk1)
       if(my_rank .eq. 0) write(*,*) 'set_connect_2_n_filter'
       call set_connect_2_n_filter(z_filter_mesh1%node,                  &
      &    neib_z1%nneib_nod, zfil_param1%nfilter2_3,                    &
      &    zfilter_wk1%ncomp_z_st)
       if (my_rank.eq.0) write(*,*) 's_set_neib_connect_z'
-      call s_set_neib_connect_z(totalele, zfil_param1%nfilter2_1,       &
-     &                          neib_z1%nneib_ele, zfilter_wk1%jdx_z)
+      call s_set_neib_connect_z                                         &
+     &   (zfil_param1%totalele, zfil_param1%nfilter2_1,                 &
+     &    neib_z1%nneib_ele, zfilter_wk1%jdx_z)
 !      call check_z_neib_index(my_rank, z_filter_mesh1%node%numnod,     &
-!     &                        totalele, zfilter_wk1)
+!     &                        zfil_param1%totalele, zfilter_wk1)
 !
 !     det dz / dxi
 !
@@ -202,8 +204,8 @@
      &   (z_filter_mesh1%node, edge_z_filter1, zfilter_wk1%totalele,    &
      &    zfil_param1%nfilter2_1, neib_z1%nneib_ele, neib_z1%ineib_ele, &
      &    zfilter_wk1%alpha)
-!      call check_difference_of_position(my_rank, totalele, neib_z1,    &
-!     &                                  zfilter_wk1)
+!      call check_difference_of_position(my_rank, zfilter_wk1%totalele, &
+!     &                                  neib_z1, zfilter_wk1)
 !
 !   set moments of filter
 !

@@ -121,8 +121,6 @@
       edge_z_filter%numedge = ele%numele
       edge_z_filter%nnod_4_edge = 2
 !
-      totalele = node%internal_node - 1
-!
       end subroutine  set_numnod_z_commute
 !
 ! ----------------------------------------------------------------------

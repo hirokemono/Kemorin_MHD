@@ -19,7 +19,6 @@
       character(len=kchara) :: filter_z_file_head = 'filter_node_l.0'
       character(len=kchara) :: filter_z_file_name
 !
-      integer (kind = kint) :: totalele
       integer (kind = kint) :: numfilter
       integer (kind = kint) :: iflag_grid
       integer (kind = kint) :: i_int_z_filter
