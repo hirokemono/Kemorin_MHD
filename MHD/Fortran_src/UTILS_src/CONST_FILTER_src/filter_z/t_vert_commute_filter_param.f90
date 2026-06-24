@@ -14,7 +14,8 @@
 !!        integer(kind = kint), intent(in) :: id_file
 !!        type(vert_commute_filter_param), intent(inout) :: zfil_param
 !!
-!!      subroutine set_vert_plane_filter_param(internal_node, zfil_param)
+!!      subroutine set_vert_plane_filter_param(internal_node,           &
+!!     &                                       zfil_param)
 !!        integer(kind = kint), intent(in) :: internal_node
 !!        type(vert_commute_filter_param), intent(inout) :: zfil_param
 !!@endverbatim
@@ -27,6 +28,9 @@
 !
 !
       type vert_commute_filter_param
+!>        Vertical grid type
+        integer (kind = kint) :: iflag_zgrid
+!
 !>        Number of node in x-direction
         integer(kind = kint) :: totalnod_x
 !>        Number of node in y-direction
@@ -42,6 +46,9 @@
         real(kind = kreal) :: ysize
 !>        domain size in z-direction
         real(kind = kreal) :: zsize
+!
+!>        number of filter
+        integer (kind = kint) :: numfilter
 !
         integer (kind = kint) :: nfilter2_3
         integer (kind = kint) :: nfilter2_1
@@ -68,6 +75,12 @@
      &                               zfil_param%ysize,                  &
      &                               zfil_param%zsize
 !
+      write(id_file,'(a)') '!grid type'
+      write(id_file,'(a)') '!   0:equally divided'
+      write(id_file,'(a)') '!   1:Chebycyev points from 0 to pi/2'
+      write(id_file,'(a)') '!   2:Chebycyev points from 0 to pi'
+      write(id_file,'(i3)') zfil_param%iflag_zgrid
+!
       end subroutine write_vert_plane_filter_param
 !
 !  ---------------------------------------------------------------------
@@ -87,21 +100,28 @@
       read(id_file,*) zfil_param%xsize, zfil_param%ysize,               &
      &                zfil_param%zsize
 !
+      read(id_file,*) tmpchara
+      read(id_file,*) tmpchara
+      read(id_file,*) tmpchara
+      read(id_file,*) tmpchara
+      read(id_file,*) zfil_param%iflag_zgrid
+!
       end subroutine read_vert_plane_filter_param
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_vert_plane_filter_param(internal_node, numfilter, zfil_param)
+      subroutine set_vert_plane_filter_param(internal_node,             &
+     &                                       zfil_param)
 !
-      integer(kind = kint), intent(in) :: internal_node, numfilter
+      integer(kind = kint), intent(in) :: internal_node
       type(vert_commute_filter_param), intent(inout) :: zfil_param
 !
 !
       zfil_param%totalele =   internal_node - 1
 !
-      zfil_param%nfilter2_1 = 2*numfilter + 1
-      zfil_param%nfilter2_3 = 2*numfilter + 3
+      zfil_param%nfilter2_1 = 2 * zfil_param%numfilter + 1
+      zfil_param%nfilter2_3 = 2 * zfil_param%numfilter + 3
 !
       end subroutine set_vert_plane_filter_param
 !

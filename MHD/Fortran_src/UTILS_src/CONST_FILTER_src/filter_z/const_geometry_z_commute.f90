@@ -60,11 +60,11 @@
 !
 !
       ncomp_mat = z_commute%ncomp_norm + 2
-      if (numfilter .eq. 1)  ncomp_mat = z_commute%ncomp_norm
+      if(zfil_param%numfilter .eq. 1) ncomp_mat = z_commute%ncomp_norm
 !
       call set_numnod_z_commute(zfil_param, node, ele, surf,            &
      &                          edge_z_filter)
-      call set_vert_plane_filter_param(node%internal_node, numfilter, zfil_param)
+      call set_vert_plane_filter_param(node%internal_node, zfil_param)
 !
       call alloc_node_geometry_w_sph(node)
       call alloc_edge_connect(edge_z_filter, surf%numsurf)
@@ -73,15 +73,15 @@
       call set_element_z_commute(node, edge_z_filter)
       call set_global_id_z_commute(node, ele, edge_z_filter)
 !
-      if (iflag_grid .eq. igrid_Chebyshev) then
+      if(zfil_param%iflag_zgrid .eq. igrid_Chebyshev) then
         call set_chebyshev_grids(zfil_param%zsize,                      &
      &      node%numnod, node%internal_node, node%xx)
-      else if (iflag_grid .eq. igrid_half_Chebyshev) then
+      else if(zfil_param%iflag_zgrid .eq. igrid_half_Chebyshev) then
         call set_half_chebyshev_grids(zfil_param%zsize,                 &
      &      node%numnod, node%internal_node, node%xx)
-      else if (iflag_grid.eq.-1) then
+      else if(zfil_param%iflag_zgrid .eq. -1) then
         call set_test_grids(node%numnod, node%internal_node, node%xx)
-      else if (iflag_grid.eq.-2) then
+      else if(zfil_param%iflag_zgrid .eq. -2) then
         call set_test_grids_2                                           &
      &     (node%numnod, node%internal_node, node%xx)
       else

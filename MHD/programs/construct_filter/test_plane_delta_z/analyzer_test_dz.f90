@@ -71,7 +71,7 @@
       type(z_int_edge_data), save :: z_int_edge2
 !
       integer (kind= kint), parameter :: id_delta_z = 15
-      integer (kind= kint) :: i, n_int
+      integer (kind= kint) :: i
 !
       nprocs = 1
 !
@@ -87,9 +87,9 @@
 !C     set gauss points
 !C===
 !
-      n_int = i_int_z_filter
       if (my_rank.eq.0) write(*,*) 'const_jacobian_linear_1d'
-      call const_jacobian_linear_1d(n_int, z_filter_mesh2%node,         &
+      call const_jacobian_linear_1d                                     &
+     &   (i_int_z_filter, z_filter_mesh2%node,                          &
      &    surf_z_filter2, edge_z_filter2, spf_1d_z, jacs_z2)
 !
       if (my_rank.eq.0) write(*,*) 'set_crs_connect_commute_z'
@@ -98,7 +98,7 @@
       if (my_rank.eq.0) write(*,*) 'init_int_z_edge_data'
       call init_int_z_edge_data                                         &
      &   (z_filter_mesh2%node, z_filter_mesh2%ele, edge_z_filter2,      &
-     &    n_int, jacs_z2%g_FEM, jacs_z2%jac_1d_l, z_int_edge2)
+     &    i_int_z_filter, jacs_z2%g_FEM, jacs_z2%jac_1d_l, z_int_edge2)
 !
 !
       call cal_delta_z(CG_param_z, DJDS_param_z,                        &

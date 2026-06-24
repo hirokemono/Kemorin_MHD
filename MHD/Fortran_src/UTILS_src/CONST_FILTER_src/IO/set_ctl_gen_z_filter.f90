@@ -134,13 +134,13 @@
 !
       if      (cmp_no_case(cube_c%horizontal_grid_ctl%charavalue,       &
      &                     label_equi     )) then
-        iflag_grid = igrid_equidistance
+        zfil_param%iflag_zgrid = igrid_equidistance
       else if (cmp_no_case(cube_c%horizontal_grid_ctl%charavalue,       &
      &                     label_half_Cbyv)) then
-        iflag_grid = igrid_half_Chebyshev
+        zfil_param%iflag_zgrid = igrid_half_Chebyshev
       else if (cmp_no_case(cube_c%horizontal_grid_ctl%charavalue,       &
      &                     label_Chebyshev)) then
-        iflag_grid = igrid_Chebyshev
+        zfil_param%iflag_zgrid = igrid_Chebyshev
       end if
 !
 !   set number of integration points
@@ -190,9 +190,9 @@
       write(*,*) 'width', f_width, f_width_h
 !
       if(gen_f_ctl%num_ele_4_filter_ctl%iflag .ne. 0) then
-        numfilter = gen_f_ctl%num_ele_4_filter_ctl%intvalue
+        zfil_param%numfilter = gen_f_ctl%num_ele_4_filter_ctl%intvalue
       else
-        numfilter = 2
+        zfil_param%numfilter = 2
       end if
 !
 !

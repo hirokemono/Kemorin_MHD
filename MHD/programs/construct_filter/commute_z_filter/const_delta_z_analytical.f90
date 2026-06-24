@@ -7,8 +7,9 @@
 !>@brief Construct grid spacing data for plane layer model
 !!
 !!@verbatim
-!!      subroutine cal_delta_z_analytical(zsize, ele, edge,             &
+!!      subroutine cal_delta_z_analytical(iflag_zgrid, zsize, ele, edge,&
 !!     &                                  node, dz_plane)
+!!        integer(kind = kint), intent(in) :: iflag_zgrid
 !!        real(kind = kreal), intent(in) :: zsize
 !!        type(element_data), intent(in) :: ele
 !!        type(edge_data), intent(in) :: edge
@@ -22,7 +23,7 @@
       use m_constants
 !
       use calypso_mpi
-      use m_commute_filter_z
+!      use m_commute_filter_z
 !
       use t_geometry_data
       use t_edge_data
@@ -40,11 +41,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_delta_z_analytical(zsize, ele, edge,               &
+      subroutine cal_delta_z_analytical(iflag_zgrid, zsize, ele, edge,  &
      &                                  node, dz_plane)
 !
       use m_spheric_constants
 !
+      integer(kind = kint), intent(in) :: iflag_zgrid
       real(kind = kreal), intent(in) :: zsize
       type(element_data), intent(in) :: ele
       type(edge_data), intent(in) :: edge
@@ -55,17 +57,17 @@
 !
       call alloc_edge_vert_width(node%numnod, ele%numele, dz_plane)
 !
-      if (iflag_grid .eq. igrid_Chebyshev) then
+      if(iflag_zgrid .eq. igrid_Chebyshev) then
         if (my_rank.eq.0) write(*,*) 'cal_dz_chebyshev_grids'
         call cal_dz_chebyshev_grids(zsize, ele, edge, node, dz_plane)
-      else if (iflag_grid .eq. igrid_half_Chebyshev) then
+      else if(iflag_zgrid .eq. igrid_half_Chebyshev) then
         if (my_rank.eq.0) write(*,*) 'cal_dz_half_chebyshev_grids'
         call cal_dz_half_chebyshev_grids(zsize, ele, edge,              &
      &                                   node, dz_plane)
-      else if (iflag_grid.eq.-1) then
+      else if(iflag_zgrid.eq.-1) then
         if (my_rank.eq.0) write(*,*) 'cal_dz_test_grids'
         call cal_dz_test_grids(ele, node, dz_plane)
-      else if (iflag_grid.eq.-2) then
+      else if(iflag_zgrid.eq.-2) then
         if (my_rank.eq.0) write(*,*) 'cal_dz_test_grids_2'
         call cal_dz_test_grids_2(ele, edge, node, dz_plane)
       else

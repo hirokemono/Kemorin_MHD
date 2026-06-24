@@ -1,10 +1,19 @@
+!>@file   set_neib_nod_z.f90
+!!        module set_neib_nod_z
+!!
+!!@author H. Matsui
+!!@date Programmed in June, 2007
 !
-!      module set_neib_nod_z
-!
-!        programmed by H. Matsui on June, 2007
-!
-!      subroutine s_set_neib_nod_z(numnod, nsize, numfilter, nneib_nod, &
-!     &          ineib_nod)
+!>@brief commutive filter in vertical direction
+!!
+!!@verbatim
+!!      subroutine s_set_neib_nod_z(numnod, nsize, numfilter,           &
+!!     &                            nneib_nod, ineib_nod)
+!!        integer(kind = kint), intent(in) :: numnod, nsize, numfilter
+!!        integer(kind = kint), intent(inout) :: nneib_nod(numnod,2)
+!!        integer(kind = kint), intent(inout)                           &
+!!     &                      :: ineib_nod(numnod,nsize,2)
+!!@endverbatim
 !
       module set_neib_nod_z
 !

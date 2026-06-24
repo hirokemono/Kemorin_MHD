@@ -58,20 +58,6 @@
 !
       open(id_filter_z,file=filter_z_file_name)
       call write_vert_plane_filter_param(id_filter_z, zfil_param)
-!
-      write(id_filter_z,'(a)') '! number of node'
-      write(id_filter_z,'(3i6)') zfil_param%totalnod_x,                 &
-     &                           zfil_param%totalnod_y,                 &
-     &                           node%internal_node
-      write(id_filter_z,'(a)') '! size of domain'
-      write(id_filter_z,'(1p3E25.15e3)') zfil_param%xsize,              &
-     &                                   zfil_param%ysize,              &
-     &                                   zfil_param%zsize
-        write(id_filter_z,*) '!grid type'
-        write(id_filter_z,*) '!   0:equally divided'
-        write(id_filter_z,*) '!   1:Chebycyev points from 0 to pi/2'
-        write(id_filter_z,*) '!   2:Chebycyev points from 0 to pi'
-          write(id_filter_z,*) iflag_grid
         write(id_filter_z,*) '! width of nodes for filtering'
         write(id_filter_z,*) ncomp_mat, ncomp_mat, ncomp_mat
 !

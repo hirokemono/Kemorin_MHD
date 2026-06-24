@@ -157,9 +157,10 @@
 !
       if(my_rank.eq.0) write(*,*) 'cal_delta_z_analytical'
       if(flag_analytical) then
-        call cal_delta_z_analytical(zfil_param1%zsize,                  &
-     &                              z_filter_mesh1%ele, edge_z_filter1, &
-     &                              z_filter_mesh1%node, dz_plane1)
+        call cal_delta_z_analytical                                     &
+     &     (zfil_param1%iflag_zgrid, zfil_param1%zsize,                 &
+     &      z_filter_mesh1%ele, edge_z_filter1, z_filter_mesh1%node,    &
+     &     dz_plane1)
       else
         call cal_delta_z(CG_param_z, DJDS_param_z,                      &
      &      z_filter_mesh1%nod_comm, z_filter_mesh1%node,               &
@@ -175,8 +176,9 @@
 !
       call init_z_neighbour                                             &
      &   (z_filter_mesh1%node%internal_node, zfil_param1%totalele,      &
-     &    (2*numfilter+2), zfil_param1%nfilter2_1, (numfilter+1),       &
-     &    numfilter, neib_z1)
+     &    (2*zfil_param1%numfilter+2), (zfil_param1%nfilter2_1),        &
+     &    (zfil_param1%numfilter+1),       &
+     &    zfil_param1%numfilter, neib_z1)
 !      write(50+my_rank,*) 'neib_z1'
 !      call check_z_neighbour(my_rank,                                  &
 !     &    z_filter_mesh1%node%internal_node, zfil_param1%totalele,     &
@@ -210,7 +212,7 @@
 !   set moments of filter
 !
       call alloc_normal_nod_z_filter(z_filter_mesh1%node,               &
-     &    zfil_param1%nfilter2_3, numfilter, nrm_z_fil1)
+     &    zfil_param1%nfilter2_3, zfil_param1%numfilter, nrm_z_fil1)
       if (my_rank.eq.0) write(*,*) 'allocate_filter_values'
       call allocate_filter_values(nrm_z_fil1%nfilter6_1)
 !
