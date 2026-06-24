@@ -25,9 +25,6 @@
 !
       implicit none
 !
-      type(CRS_matrix_connect), save :: tbl_crs_z
-      type(CRS_matrix), save :: mat_crs_z
-!
 !>  structure for node data (position)
       type(mesh_geometry), save :: z_filter_mesh1
 !>     Structure for edge data
@@ -62,7 +59,6 @@
 !
       use calypso_mpi
 !
-      use m_z_filter_values
       use m_int_commtative_filter
 !
       use t_vert_commute_filter_param
@@ -72,6 +68,7 @@
       use t_vert_edge_width
       use t_z_int_edge_data
       use t_normal_nod_for_z_filter
+      use t_z_filter_values
 !
       use const_delta_z_analytical
 
@@ -89,7 +86,6 @@
       use input_control_gen_z_filter
       use calcs_by_LUsolver
       use const_z_commute_matrix
-      use copy_1darray_2_2darray
       use switch_crs_matrix
       use cal_jacobian_linear_1d
       use set_matrices_4_z_filter
@@ -114,6 +110,7 @@
       type(z_filter_work), save :: zfilter_wk1
       type(edge_z_width), save :: dz_plane1
       type(normal_nod_for_z_filter), save :: nrm_z_fil1
+      type(z_filter_values), save :: zfil_v1
 !
       type(neighbour_data_z), save :: neib_z2
 !
@@ -214,17 +211,17 @@
       call alloc_normal_nod_z_filter(z_filter_mesh1%node,               &
      &    zfil_param1%nfilter2_3, zfil_param1%numfilter, nrm_z_fil1)
       if (my_rank.eq.0) write(*,*) 'allocate_filter_values'
-      call allocate_filter_values(nrm_z_fil1%nfilter6_1)
+      call allocate_filter_values(nrm_z_fil1%nfilter6_1, zfil_v1)
 !
       if(zfil_param1%iflag_filter_z .eq. id_tophat) then
         call int_tophat_moment_infty(nrm_z_fil1%nfilter6_1,             &
-     &                               f_mom_full, zfil_param1%f_width_z)
+     &      zfil_v1%f_mom_full, zfil_param1%f_width_z)
       else if(zfil_param1%iflag_filter_z .eq. id_Linear) then
         call int_linear_moment_infty(nrm_z_fil1%nfilter6_1,             &
-     &                               f_mom_full, zfil_param1%f_width_z)
+     &      zfil_v1%f_mom_full, zfil_param1%f_width_z)
       else
         call int_gaussian_moment_infty(nrm_z_fil1%nfilter6_1,           &
-     &                               f_mom_full, zfil_param1%f_width_z)
+     &      zfil_v1%f_mom_full, zfil_param1%f_width_z)
       end if
 !
       if (my_rank.eq.0) write(*,*) 'construct_gauss_coefs'
@@ -352,7 +349,7 @@
 !
        call dealloc_normal_nod_z_filter(nrm_z_fil1)
 !
-       call deallocate_filter_values
+       call deallocate_filter_values(zfil_v1)
        call dealloc_work_4_integration(g_z_int)
        call dealloc_gauss_points(gauss_z)
 !

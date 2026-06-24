@@ -109,38 +109,37 @@
 !
       subroutine check_int_commutative_filter(id_rank, numnod_z)
 !
-!
       integer :: id_rank
       integer(kind = kint) :: numnod_z
       integer(kind = kint) :: i, j, k
 !
-       do i = 1, numnod_z
+      do i = 1, numnod_z
         write(id_rank+30,*)  'c_filter (inod) = ',i
         write(id_rank+30,'(1p5e16.8)')                                  &
      &              (c_filter(j,i),j=1,ndep_filter)
-       end do
+      end do
 !
       do k = 0, 2
-       do i = 1, numnod_z
-        write(id_rank+30,*)  'xmom_int_org (order, inod) = ', k, i
-        write(id_rank+30,'(1p5e16.8)')                                  &
+        do i = 1, numnod_z
+          write(id_rank+30,*)  'xmom_int_org (order, inod) = ', k, i
+          write(id_rank+30,'(1p5e16.8)')                                &
      &              (xmom_int_org(i,j,k),j=1,ndep_filter)
-       end do
+        end do
       end do
 !
       do k = 0, 2
-       do i = 1, numnod_z
-        write(id_rank+30,*)  'xmom_int (order, inod) = ', k, i
-        write(id_rank+30,'(1p5e16.8)')                                  &
+        do i = 1, numnod_z
+          write(id_rank+30,*)  'xmom_int (order, inod) = ', k, i
+          write(id_rank+30,'(1p5e16.8)')                                &
      &              (xmom_int(i,j,k),j=1,ndep_filter)
-       end do
+        end do
       end do
 !
-        write(id_rank+30,*)  'xmom_int_t '
-       do i = 1, numnod_z
+      write(id_rank+30,*)  'xmom_int_t '
+      do i = 1, numnod_z
         write(id_rank+30,'(1p5e16.8)')                                  &
      &              (xmom_int_t(i,k),k=0,2)
-       end do
+      end do
 !
       end subroutine check_int_commutative_filter
 !

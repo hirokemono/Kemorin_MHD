@@ -41,7 +41,6 @@
 !
       use m_constants
       use m_int_commtative_filter
-      use m_z_filter_values
 !
       use t_vert_commute_filter_param
       use t_neighbour_data_z

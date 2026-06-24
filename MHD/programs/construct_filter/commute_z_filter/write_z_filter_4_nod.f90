@@ -40,7 +40,6 @@
       use t_neighbour_data_z
       use t_vert_edge_width
       use m_int_commtative_filter
-      use m_z_filter_values
       use const_geometry_z_commute
       use set_parallel_file_name
 !

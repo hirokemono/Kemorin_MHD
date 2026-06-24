@@ -16,6 +16,10 @@
 !!        type(normal_nod_for_z_filter), intent(in) :: nrm_z_fil
 !!        real(kind = kreal), intent(in) :: delta_z(numnod)
 !!        type(CRS_matrix), intent(inout) :: mat_crs
+!!      subroutine s_copy_1darray_2_2darray(n1, n2, x2, x1)
+!!        integer(kind = kint), intent(in) :: n1, n2
+!!        real(kind = kreal), intent(in) :: x1(n1*n2)
+!!        real(kind = kreal), intent(inout) :: x2(n1,n2)
 !!@endverbatim
 !
       module const_z_commute_matrix
@@ -35,8 +39,6 @@
 !
       subroutine s_const_commute_matrix(numnod, neib_z, ncomp_mat,      &
      &          z_commute, zfilter_wk, delta_z, nrm_z_fil, mat_crs)
-!
-      use m_z_filter_values
 !
       use t_commute_filter_z
       use t_neighbour_index_z
@@ -96,6 +98,24 @@
 !
 !
       end subroutine s_const_commute_matrix
+!
+!-----------------------------------------------------------------------
+!
+      subroutine s_copy_1darray_2_2darray(n1, n2, x2, x1)
+!
+      integer(kind = kint), intent(in) :: n1, n2
+      real(kind = kreal), intent(in) :: x1(n1*n2)
+      real(kind = kreal), intent(inout) :: x2(n1,n2)
+!
+      integer(kind = kint) :: i, j
+!
+      do j = 1, n2
+        do i = 1, n1
+          x2(i,j) = x1( n1*(j-1)+i )
+        end do
+      end do
+!
+      end subroutine s_copy_1darray_2_2darray
 !
 !-----------------------------------------------------------------------
 !

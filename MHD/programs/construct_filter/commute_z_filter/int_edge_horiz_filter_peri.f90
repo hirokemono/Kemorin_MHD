@@ -40,7 +40,6 @@
      &          nfilter6_1, gauss, xmom_h, xmom_ht, sk_norm_n, g_int)
 !
       use m_constants
-      use m_z_filter_values
       use set_filter_moments
 !
       type(vert_commute_filter_param), intent(in) :: zfil_param
