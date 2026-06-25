@@ -7852,8 +7852,8 @@ esac
 
 
 
-# Detect the target system
-case "$host" in
+# Detect target system
+case $host in
     *-apple-darwin*)
         COCOA_FLAG="-D__APPLE__"
         XL_FORTRAN=""
@@ -12766,7 +12766,7 @@ fi
 fi
 if test ${have_fftw3_omp} = "yes"
 then
-	FFTW3_OMP_LIBS="${FFTW3_LIBS}_omp"
+	FFTW3_OMP_LIBS="-fftw3_omp"
 	
 fi
 
@@ -14709,11 +14709,11 @@ printf "%s\n" "" >&6; }
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: host:          \"${host}\"" >&5
 printf "%s\n" "host:          \"${host}\"" >&6; }
 if test -n "${COCOA_FLAG}"; then
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: Apple MacOS...          yes" >&5
-printf "%s\n" "Apple MacOS...          yes" >&6; }
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: Apple MacOS:            yes" >&5
+printf "%s\n" "Apple MacOS:            yes" >&6; }
 else
-        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: Apple MacOS...           no" >&5
-printf "%s\n" "Apple MacOS...           no" >&6; }
+        { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: Apple MacOS:             no" >&5
+printf "%s\n" "Apple MacOS:             no" >&6; }
 fi
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: XL_FORTRAN:      \"${XL_FORTRAN}\"" >&5
 printf "%s\n" "XL_FORTRAN:      \"${XL_FORTRAN}\"" >&6; }
