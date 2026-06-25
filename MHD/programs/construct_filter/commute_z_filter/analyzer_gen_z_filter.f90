@@ -66,7 +66,6 @@
       use t_vert_edge_width
       use t_z_int_edge_data
       use t_normal_nod_for_z_filter
-      use t_z_filter_values
       use t_z_filter_moment_work
 !
       use const_delta_z_analytical
@@ -77,6 +76,7 @@
       use int_edge_moment_z_filter
       use int_edge_horiz_filter_peri
       use int_edge_commute_z_filter
+      use int_edge_norm_nod
 
       use int_gaussian_moments
       use int_linear_moments
@@ -109,7 +109,6 @@
       type(z_filter_work), save :: zfilter_wk1
       type(edge_z_width), save :: dz_plane1
       type(normal_nod_for_z_filter), save :: nrm_z_fil1
-      type(z_filter_values), save :: zfil_v1
       type(z_filter_moment_work), save :: z_mom_wk1
 !
       type(neighbour_data_z), save :: neib_z2
@@ -210,18 +209,16 @@
 !
       call alloc_normal_nod_z_filter(z_filter_mesh1%node,               &
      &    zfil_param1%nfilter2_3, zfil_param1%numfilter, nrm_z_fil1)
-      if (my_rank.eq.0) write(*,*) 'allocate_filter_values'
-      call allocate_filter_values(nrm_z_fil1%nfilter6_1, zfil_v1)
 !
       if(zfil_param1%iflag_filter_z .eq. id_tophat) then
         call int_tophat_moment_infty(nrm_z_fil1%nfilter6_1,             &
-     &      zfil_v1%f_mom_full, zfil_param1%f_width_z)
+     &      nrm_z_fil1%f_mom_full, zfil_param1%f_width_z)
       else if(zfil_param1%iflag_filter_z .eq. id_Linear) then
         call int_linear_moment_infty(nrm_z_fil1%nfilter6_1,             &
-     &      zfil_v1%f_mom_full, zfil_param1%f_width_z)
+     &      nrm_z_fil1%f_mom_full, zfil_param1%f_width_z)
       else
         call int_gaussian_moment_infty(nrm_z_fil1%nfilter6_1,           &
-     &      zfil_v1%f_mom_full, zfil_param1%f_width_z)
+     &      nrm_z_fil1%f_mom_full, zfil_param1%f_width_z)
       end if
 !
       if (my_rank.eq.0) write(*,*) 'construct_gauss_coefs'
@@ -229,11 +226,12 @@
       call alloc_work_4_integration                                     &
      &  ((nrm_z_fil1%nfilter6_1 + 1), gauss_z%n_point, g_z_int)
 !
-      if (my_rank.eq.0) write(*,*) 'int_edge_norm_nod'
-       call int_edge_norm_nod                                           &
+      if (my_rank.eq.0) write(*,*) 's_int_edge_norm_nod'
+       call s_int_edge_norm_nod                                         &
       &  (z_filter_mesh1%node, z_filter_mesh1%ele, edge_z_filter1,      &
       &   gauss_z, neib_z1, zfil_param1, z_int_edge1%dz_ele,            &
-      &   g_z_int, nrm_z_fil1)
+      &   nrm_z_fil1%nfilter2_3, nrm_z_fil1%nfilter6_1, g_z_int,        &
+      &   nrm_z_fil1%sk_norm_n, nrm_z_fil1%d_norm_nod)
 !       call check_nod_normalize_matrix                                 &
 !     &    (my_rank, z_filter_mesh1%node, nrm_z_fil1)
 !
@@ -359,7 +357,6 @@
        call dealloc_int_commute_filter(z_mom_WK1)
        call dealloc_normal_nod_z_filter(nrm_z_fil1)
 !
-       call deallocate_filter_values(zfil_v1)
        call dealloc_work_4_integration(g_z_int)
        call dealloc_gauss_points(gauss_z)
 !

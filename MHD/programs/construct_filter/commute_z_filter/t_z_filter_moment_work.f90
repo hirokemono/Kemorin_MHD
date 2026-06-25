@@ -139,24 +139,24 @@
 !
       do i = 1, node_z%numnod
         write(id_file,'(a,i6)')  'c_filter (inod) = ', i
-        write(id_file,'(1p5e16.8)')                                  &
+        write(id_file,'(1p5e16.8)')                                    &
      &            z_mom_WK%c_filter(1:z_mom_WK%ndep_filter,i)
       end do
 !
       do k = 0, 2
         do i = 1, node_z%numnod
-          write(id_file,'(a,2i6)')                                   &
+          write(id_file,'(a,2i6)')                                     &
      &            'xmom_int_org (order, inod) = ', k, i
-          write(id_file,'(1p5e16.8)')                                &
+          write(id_file,'(1p5e16.8)')                                  &
      &             z_mom_WK%xmom_int_org(i,1:z_mom_WK%ndep_filter,k)
         end do
       end do
 !
       do k = 0, 2
         do i = 1, node_z%numnod
-          write(id_file,'(a,2i6)')                                   &
+          write(id_file,'(a,2i6)')                                     &
      &              'xmom_int (order, inod) = ', k, i
-          write(id_file,'(1p5e16.8)')                                &
+          write(id_file,'(1p5e16.8)')                                  &
      &              z_mom_WK%xmom_int(i,1:z_mom_WK%ndep_filter,k)
         end do
       end do
