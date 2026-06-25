@@ -47,7 +47,7 @@
         ft3%elapsed(3) = ft3%elapsed(3) + OMP_GET_WTIME() - ft3%start
 !
         call OMP_backward_FFTW_type                                     &
-     &     (ft3%nfld, ft3%ngrd, ft3%f_x, WK_OMP_FFTW_t                  &
+     &     (ft3%nfld, ft3%ngrd, ft3%f_x, WK_OMP_FFTW_t,                 &
      &      ft3%elapsed(2), ft3%elapsed(3))
       end do
 !
