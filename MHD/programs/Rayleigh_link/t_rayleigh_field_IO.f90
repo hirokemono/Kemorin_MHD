@@ -367,9 +367,7 @@
      &    rayleigh_rtp%nnod_rayleigh_in, rayleigh_rtp%field_rtp(1))
       call calypso_close_mpi_file(id_mpi_file)
 !
-!$omp parallel workshare
-      d_IO(1:numnod,nd)  = rayleigh_rtp%field_rtp(1:numnod)
-!$omp end parallel workshare
+       d_IO(1:numnod,nd)  = rayleigh_rtp%field_rtp(1:numnod)
 !
       end subroutine read_each_rayleigh_component
 !

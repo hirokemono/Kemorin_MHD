@@ -148,6 +148,7 @@ m_constants.o \
 m_machine_parameter.o \
 \
 skip_comment_f.o \
+normalize_for_OMP_FFTW.o \
 m_fftw_parameters.o \
 m_OMP_FFTW3_counter.o \
 OMP_FFTW3_wrapper.o \

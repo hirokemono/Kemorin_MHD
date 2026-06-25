@@ -169,9 +169,7 @@
         call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
      &      ele%numele, ele_tbl%ntot_import, ie_newnod(1,k1), i4_recv,  &
      &      SR_sig, SR_i)
-!$omp parallel workshare
         new_ele%ie(1:num_loop,k1) = i4_recv(1:num_loop)
-!$omp end parallel workshare
       end do
 !
       deallocate(i4_recv, i8_recv)
