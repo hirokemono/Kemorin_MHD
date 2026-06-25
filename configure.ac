@@ -407,7 +407,7 @@ then
 fi
 if test ${have_fftw3_omp} = "yes"
 then
-	FFTW3_OMP_LIBS="-fftw3_omp"
+	FFTW3_OMP_LIBS="-lfftw3_omp"
 	AC_SUBST(FFTW3_OMP_LIBS)
 fi
 
