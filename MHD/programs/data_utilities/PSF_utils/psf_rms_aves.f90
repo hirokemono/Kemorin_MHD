@@ -10,8 +10,6 @@
       use m_precision
       use m_constants
 !
-      use m_base_field_labels
-! 
       use m_psf_results
       use m_field_file_format
       use m_section_file_extensions
@@ -52,10 +50,6 @@
       real(kind = kreal), allocatable :: tave_psf(:,:)
       real(kind = kreal), allocatable :: trms_psf(:,:)
       real(kind = kreal), allocatable :: tsdev_psf(:,:)
-! 
-      integer(kind = kint) :: ifld
-      integer(kind = kint) :: ipsf_velo_phi, ipsf_coriolis_phi
-      character(len=kchara) :: coriolis_psf_name
 !
 !  ===========
 ! . for local 
@@ -131,29 +125,6 @@
       trms_psf =  zero
       tsdev_psf = zero
 !
-! 2. extract velocity and Coriolis phi components
-! 2.1. velocity phi component
-      ipsf_velo_phi = 0
-      do ifld = 1, psf_u%psf_phys%num_phys
-        if(psf_u%psf_phys%phys_name(ifld) .eq. velocity%name) then
-          ipsf_velo_phi = psf_u%psf_phys%istack_component(ifld-1) + 7
-          exit
-        end if
-      end do
-!
-! 
-! 2.2. Coriolis phi component
-      coriolis_psf_name = "Coriolis_force_sph"
-      ipsf_coriolis_phi = 0
-      do ifld = 1, psf_u%psf_phys%num_phys
-        write(*,*) 'check field name for Coriolis force', ifld, psf_u%psf_phys%phys_name(ifld)
-        if(psf_u%psf_phys%phys_name(ifld) .eq. coriolis_psf_name) then
-          ipsf_coriolis_phi = psf_u%psf_phys%istack_component(ifld-1) + 3
-          exit
-        end if
-      end do
-!
-! 
       icou = 0
       write(*,'(a,i15)', advance='NO')                                  &
      &          'read for averaging. Step:  ', istep_start
@@ -171,13 +142,6 @@
      &      psf_u%psf_phys%d_fld, psf_average)
 !
 !
-! put the product of velocity and Coriolis phi components into Corilosi phi component
-	  do inod = 1, psf_u%psf_nod%numnod
-	    psf_u%psf_phys%d_fld(inod,ipsf_coriolis_phi) = psf_u%psf_phys%d_fld(inod,ipsf_coriolis_phi) &
-     &         * psf_u%psf_phys%d_fld(inod,ipsf_velo_phi)
-	  end do
-! 
-! 
 !$omp parallel
         do nd = 1, psf_u%psf_phys%ntot_phys
 !$omp do
