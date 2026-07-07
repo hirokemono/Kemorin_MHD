@@ -6,6 +6,7 @@ PSF_UTIL_MAINDIR = $$(DATA_UTILS_DIR)/PSF_utils
 
 TARGET_PSF_2_VTK = utilities/section_to_VTK
 TARGET_PSF_AVES =  psf_average
+TARGET_PSF_ZONAL_EFLUX =  psf_eflux_zonal
 TARGET_PSF_RANGE_AVES =  psf_range_ave
 
 TARGET_DRAW_CZ =   drcz_fem
@@ -80,6 +81,14 @@ t_norms_4_psf.o \
 take_avarages_4_psf.o \
 take_normals_4_psf.o
 
+MOD_PSF_ZONAL_EFLUX = \
+psf_eflux_to_zonal_flow.o \
+cal_psf_rms_aves.o \
+\
+m_psf_results.o \
+t_norms_4_psf.o \
+take_avarages_4_psf.o \
+take_normals_4_psf.o
 
 MOD_ZCPLANE_PG = \
 drcz_fem.o \
@@ -177,6 +186,7 @@ dir_list:
 target_list:
 	@echo 'TARGET_PSF_2_VTK =    $$(BUILDDIR)/$(TARGET_PSF_2_VTK)'        >> $(MAKENAME)
 	@echo 'TARGET_PSF_AVES =     $$(BUILDDIR)/$(TARGET_PSF_AVES)'         >> $(MAKENAME)
+	@echo 'TARGET_PSF_ZONAL_EFLUX = $$(BUILDDIR)/$(TARGET_PSF_ZONAL_EFLUX)' >> $(MAKENAME)
 	@echo 'TARGET_PSF_RANGE_AVES = $$(BUILDDIR)/$(TARGET_PSF_RANGE_AVES)' >> $(MAKENAME)
 	@echo 'TARGET_DRAW_CZ =      $$(BUILDDIR)/$(TARGET_DRAW_CZ)'          >> $(MAKENAME)
 	@echo 'TARGET_DRAW_CX =      $$(BUILDDIR)/$(TARGET_DRAW_CX)'          >> $(MAKENAME)
@@ -193,6 +203,7 @@ target_list:
 target_task:
 	@echo psf_utils: \
 	'$$(TARGET_PSF_2_VTK)      $$(TARGET_PSF_AVES)'     \
+	'$$(TARGET_PSF_ZONAL_EFLUX)'     \
 	'$$(TARGET_PSF_RANGE_AVES) $$(TARGET_LINE_ON_PSF)'  \
 	'$$(TARGET_DBENCH_ON_PSF)  $$(TARGET_UPDATE_PSF_BIN)' \
 	'$$(TARGET_COMPARE_PSF)'  >> $(MAKENAME)
@@ -224,6 +235,14 @@ target_task:
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_PSF_AVES)' \
 	'$$(MOD_PSF_AVES)' '-L. $$(LIBS_PSF_UTIL)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_PSF_ZONAL_EFLUX)': '$$(MOD_PSF_ZONAL_EFLUX)' \
+	'$$(LIB_FILES_PSF_UTIL)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_PSF_ZONAL_EFLUX)' \
+	'$$(MOD_PSF_ZONAL_EFLUX)' '-L. $$(LIBS_PSF_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_PSF_RANGE_AVES)': '$$(MOD_PSF_RANGE_AVES)' \
@@ -326,6 +345,8 @@ mod_list:
 	@echo  $(MOD_UPDATE_PSF_BIN)     >> $(MAKENAME)
 	@echo  MOD_PSF_AVES =  \\        >> $(MAKENAME)
 	@echo  $(MOD_PSF_AVES)           >> $(MAKENAME)
+	@echo  MOD_PSF_ZONAL_EFLUX =  \\ >> $(MAKENAME)
+	@echo  $(MOD_PSF_ZONAL_EFLUX)    >> $(MAKENAME)
 	@echo  MOD_PSF_RANGE_AVES =  \\  >> $(MAKENAME)
 	@echo  $(MOD_PSF_RANGE_AVES)     >> $(MAKENAME)
 	@echo  MOD_ZCPLANE_PG =  \\      >> $(MAKENAME)
