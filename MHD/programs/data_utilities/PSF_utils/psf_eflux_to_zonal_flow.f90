@@ -1,0 +1,362 @@
+!
+!     program psf_eflux_to_zonal_flow
+!
+!      program for pick up surface connectivities form subdomain mesh
+!         programmed  by  H.Matsui (U. Chicago)  on Oct. 2003 (ver 1.0)
+!         Modified  by  H.Matsui (U. Chicago)  on Jan. 2007 (ver 2.0)
+!
+      program psf_eflux_to_zonal_flow
+!
+      use m_precision
+      use m_constants
+!
+      use m_base_field_labels
+! 
+      use m_psf_results
+      use m_field_file_format
+      use m_section_file_extensions
+!
+      use t_file_IO_parameter
+      use t_time_data
+      use t_ucd_data
+!
+      use set_parallel_file_name
+      use set_ucd_file_names
+      use ucd_IO_select
+      use cal_psf_rms_aves
+      use take_avarages_4_psf
+      use take_normals_4_psf
+!
+      implicit    none
+!
+      type(field_IO_params), save :: ave_psf_param
+      type(field_IO_params), save :: rms_psf_param
+      type(field_IO_params), save :: sdev_psf_param
+!
+      type(time_data), save :: psf_time
+      type(ucd_data), save:: psf_ucd
+      integer :: np_ucd
+!
+      character(len=kchara) :: fname_tmp
+!
+      integer(kind = kint) :: istep_start, istep_end
+      real(kind = kreal) :: rmin, rmax
+!
+      integer(kind = kint) :: istep, icou, nnod_psf, ncomp_phys
+      integer(kind = kint) :: inod, nd, i
+!
+      character(len=kchara) :: input_file_name
+      integer(kind = kint) :: istep_viz
+!
+      real(kind = kreal) :: acou
+      real(kind = kreal), allocatable :: tave_psf(:,:)
+      real(kind = kreal), allocatable :: trms_psf(:,:)
+      real(kind = kreal), allocatable :: tsdev_psf(:,:)
+! 
+      integer(kind = kint) :: ifld
+      integer(kind = kint) :: ipsf_velo_phi
+      character(len=kchara) :: velocity_psf_name
+      integer(kind = kint) :: ipsf_inertia_phi, ipsf_asym_inertia_phi
+      character(len=kchara) :: inertia_psf_name, asym_inertia_psf_name
+      integer(kind = kint) :: ipsf_coriolis_phi, ipsf_viscous_phi, ipsf_lorentz_phi
+      character(len=kchara) :: coriolis_psf_name, viscous_psf_name, lorentz_psf_name
+!
+!  ===========
+! . for local 
+!  ===========
+!
+      write(*,*) 'input file name'
+      read(*,*) input_file_name
+      call viz_file_format_from_file_name(input_file_name,              &
+     &    psf_file_param%iflag_format, psf_file_param%file_prefix,      &
+     &    istep_viz)
+      write(*,*) 'input_file_name: ', trim(input_file_name)
+      write(*,*) 'nostep_prefix: ',   trim(psf_file_param%file_prefix)
+      write(*,*) 'ifmt_psf: ',        psf_file_param%iflag_format
+      write(*,*) 'istep_viz: ', istep_viz
+!
+      write(*,*) 'input start and end step for average'
+      read(*,*) istep_start, istep_end
+!
+      write(*,*) 'input radius range'
+      read(*,*) rmin, rmax
+!
+      fname_tmp = add_int_suffix                                        &
+     &          (istep_start, psf_file_param%file_prefix)
+      write(ave_psf_param%file_prefix, '(a,a)')                        &
+     &                                'ave_with_eflux_zonal_', trim(fname_tmp)
+      write(rms_psf_param%file_prefix, '(a,a)')                        &
+     &                                'rms_with_eflux_zonal_', trim(fname_tmp)
+      write(sdev_psf_param%file_prefix,'(a,a)')                        &
+     &                                'dev_with_eflux_zonal_', trim(fname_tmp)
+!
+!      ave_psf_param%iflag_format =  psf_file_param%iflag_format
+!      rms_psf_param%iflag_format =  psf_file_param%iflag_format
+!      sdev_psf_param%iflag_format = psf_file_param%iflag_format
+!
+      ave_psf_param%iflag_format =  iflag_udt_gz
+      rms_psf_param%iflag_format =  iflag_udt_gz
+      sdev_psf_param%iflag_format = iflag_udt_gz
+!
+      call load_psf_data_to_link_IO                                     &
+     &   (istep_start, psf_file_param, np_ucd, t_IO_u, psf_u, psf_ucd)
+      call alloc_psf_averages(psf_u%psf_phys, psf_average)
+!
+      call sel_write_grd_file(-1, ave_psf_param, psf_ucd)
+      call sel_write_grd_file(-1, rms_psf_param, psf_ucd)
+      call sel_write_grd_file(-1, sdev_psf_param, psf_ucd)
+!
+!   Evaluate size of patches
+!
+      write(*,*) 'allocate_norms_4_psf'
+      call allocate_norms_4_psf                                         &
+     &   (psf_u%psf_nod, psf_u%psf_ele, psf_normal)
+      write(*,*) 'cal_center_ele_4_psf'
+      call cal_center_ele_4_psf                                         &
+     &   (psf_u%psf_nod, psf_u%psf_ele, psf_normal)
+      write(*,*) 'cal_norm_area_4_psf'
+      call cal_norm_area_4_psf                                          &
+     &   (psf_u%psf_nod, psf_u%psf_ele, psf_normal)
+!
+      write(*,*) 'set_averaging_range'
+      call set_averaging_range(rmin, rmax, psf_normal)
+!
+      call open_psf_ave_rms_data                                        &
+     &   (psf_file_param%file_prefix, psf_u%psf_phys)
+      call open_psf_range_data                                          &
+     &   (psf_file_param%file_prefix,  psf_u%psf_phys)
+!
+      nnod_psf = psf_u%psf_nod%numnod
+      ncomp_phys = psf_u%psf_phys%ntot_phys
+      allocate(tave_psf(nnod_psf,ncomp_phys))
+      allocate(trms_psf(nnod_psf,ncomp_phys))
+      allocate(tsdev_psf(nnod_psf,ncomp_phys))
+      tave_psf =  zero
+      trms_psf =  zero
+      tsdev_psf = zero
+!
+! 2. extract velocity and Coriolis phi components
+! 2.1. velocity phi component
+      velocity_psf_name = "velocity_sph"
+      ipsf_velo_phi = 0
+      do ifld = 1, psf_u%psf_phys%num_phys
+        if(psf_u%psf_phys%phys_name(ifld) .eq. velocity_psf_name) then
+          ipsf_velo_phi = psf_u%psf_phys%istack_component(ifld-1) + 3
+          exit
+        end if
+      end do
+      write(*,*) 'ipsf_velo_phi', ipsf_velo_phi
+!
+! 
+! 2.2. Coriolis phi component
+      coriolis_psf_name = "Coriolis_force_sph"
+      ipsf_coriolis_phi = 0
+      do ifld = 1, psf_u%psf_phys%num_phys
+        if(psf_u%psf_phys%phys_name(ifld) .eq. coriolis_psf_name) then
+          ipsf_coriolis_phi = psf_u%psf_phys%istack_component(ifld-1) + 3
+          exit
+        end if
+      end do
+      write(*,*) 'ipsf_coriolis_phi', ipsf_coriolis_phi
+!
+! 2.3. Inertia phi component
+      inertia_psf_name = "inertia_sph"
+      ipsf_inertia_phi = 0
+      do ifld = 1, psf_u%psf_phys%num_phys
+        if(psf_u%psf_phys%phys_name(ifld) .eq. inertia_psf_name) then
+          ipsf_inertia_phi = psf_u%psf_phys%istack_component(ifld-1) + 3
+          exit
+        end if
+      end do
+      write(*,*) 'ipsf_inertia_phi', ipsf_inertia_phi
+!
+! 2.3. asym Inertia phi component
+      asym_inertia_psf_name = "wsym_x_usym_sph"
+      ipsf_asym_inertia_phi = 0
+      do ifld = 1, psf_u%psf_phys%num_phys
+        if(psf_u%psf_phys%phys_name(ifld) .eq. asym_inertia_psf_name) then
+          ipsf_asym_inertia_phi = psf_u%psf_phys%istack_component(ifld-1) + 3
+          exit
+        end if
+      end do
+      write(*,*) 'ipsf_asym_inertia_phi', ipsf_asym_inertia_phi
+!
+! 2.3. Lorentz phi component
+      lorentz_psf_name = "Lorentz_force_sph"
+      ipsf_lorentz_phi = 0
+      do ifld = 1, psf_u%psf_phys%num_phys
+        if(psf_u%psf_phys%phys_name(ifld) .eq. lorentz_psf_name) then
+          ipsf_lorentz_phi = psf_u%psf_phys%istack_component(ifld-1) + 3
+          exit
+        end if
+      end do
+      write(*,*) 'ipsf_lorentz_phi', ipsf_lorentz_phi
+!
+! 2.3. viscous phi component
+      viscous_psf_name = "viscous_diffusion_sph"
+      ipsf_viscous_phi = 0
+      do ifld = 1, psf_u%psf_phys%num_phys
+        if(psf_u%psf_phys%phys_name(ifld) .eq. viscous_psf_name) then
+          ipsf_viscous_phi = psf_u%psf_phys%istack_component(ifld-1) + 3
+          exit
+        end if
+      end do
+      write(*,*) 'ipsf_viscous_phi', ipsf_viscous_phi
+!
+! 
+      icou = 0
+      write(*,'(a,i15)', advance='NO')                                  &
+     &          'read for averaging. Step:  ', istep_start
+      do istep = istep_start, istep_end
+        icou = icou + 1
+        write(*,'(15a1)', advance='NO') (char(8),i=1,15)
+        write(*,'(i15)', advance='NO') istep
+!
+        call sel_read_udt_file                                          &
+     &     (-1, np_ucd, istep, psf_file_param, psf_time, psf_ucd)
+        call cal_rms_ave_4_psf(psf_u%psf_ele, psf_u%psf_phys,           &
+     &     psf_normal, psf_average)
+        call cal_minmax_psf                                             &
+     &     (psf_u%psf_nod%numnod, psf_u%psf_phys%ntot_phys,             &
+     &      psf_u%psf_phys%d_fld, psf_average)
+!
+!
+! put the product of velocity and Coriolis phi components into Corilosi phi component
+      if (ipsf_velo_phi > 0 .and. ipsf_coriolis_phi > 0) then
+        do inod = 1, psf_u%psf_nod%numnod
+	    psf_u%psf_phys%d_fld(inod,ipsf_coriolis_phi) = psf_u%psf_phys%d_fld(inod,ipsf_coriolis_phi) &
+     &         * psf_u%psf_phys%d_fld(inod,ipsf_velo_phi)
+	  end do
+      end if
+! 
+! put the product of velocity and inertia phi components into inertia phi component
+      if (ipsf_velo_phi > 0 .and. ipsf_inertia_phi > 0) then
+        do inod = 1, psf_u%psf_nod%numnod
+	    psf_u%psf_phys%d_fld(inod,ipsf_inertia_phi) = - psf_u%psf_phys%d_fld(inod,ipsf_inertia_phi) &
+     &         * psf_u%psf_phys%d_fld(inod,ipsf_velo_phi)
+	  end do
+      end if
+! 
+! put the product of velocity and asym Inertia phi components into inertia phi component
+      if (ipsf_velo_phi > 0 .and. ipsf_asym_inertia_phi > 0) then
+        do inod = 1, psf_u%psf_nod%numnod
+	    psf_u%psf_phys%d_fld(inod,ipsf_asym_inertia_phi) = - psf_u%psf_phys%d_fld(inod,ipsf_asym_inertia_phi) &
+     &         * psf_u%psf_phys%d_fld(inod,ipsf_velo_phi)
+	  end do
+      end if
+! 
+! put the product of velocity and lorentz phi components into inertia phi component
+      if (ipsf_velo_phi > 0 .and. ipsf_lorentz_phi > 0) then
+        do inod = 1, psf_u%psf_nod%numnod
+	    psf_u%psf_phys%d_fld(inod,ipsf_lorentz_phi) = psf_u%psf_phys%d_fld(inod,ipsf_lorentz_phi) &
+     &           * psf_u%psf_phys%d_fld(inod,ipsf_velo_phi)
+	  end do
+      end if
+! 
+! put the product of velocity and viscous phi components into inertia phi component
+      if (ipsf_velo_phi > 0 .and. ipsf_viscous_phi > 0) then
+        do inod = 1, psf_u%psf_nod%numnod
+	      psf_u%psf_phys%d_fld(inod,ipsf_viscous_phi) = psf_u%psf_phys%d_fld(inod,ipsf_viscous_phi) &
+     &           * psf_u%psf_phys%d_fld(inod,ipsf_velo_phi)
+	  end do
+      end if
+! 
+!$omp parallel
+        do nd = 1, psf_u%psf_phys%ntot_phys
+!$omp do
+          do inod = 1, psf_u%psf_nod%numnod
+            tave_psf(inod,nd) = tave_psf(inod,nd)                       &
+     &                         + psf_u%psf_phys%d_fld(inod,nd)
+            trms_psf(inod,nd) = trms_psf(inod,nd)                       &
+     &                         + psf_u%psf_phys%d_fld(inod,nd)**2
+          end do
+!$omp end do
+        end do
+!$omp end parallel
+!
+        call write_psf_ave_rms_data                                     &
+     &     (istep, psf_normal%area, psf_average)
+        call write_psf_range_data(istep, psf_average)
+      end do
+      write(*,*)
+      call close_psf_ave_rms_data
+      call close_psf_range_data
+!
+      acou = one / dble(icou)
+!$omp parallel
+      do nd = 1, psf_u%psf_phys%ntot_phys
+!$omp do
+        do inod = 1, psf_u%psf_nod%numnod
+          tave_psf(inod,nd) = tave_psf(inod,nd) * acou
+          trms_psf(inod,nd) = sqrt(trms_psf(inod,nd) * acou)
+        end do
+!$omp end do
+      end do
+!$omp end parallel
+!
+!
+      icou = 0
+      write(*,'(a,i15)', advance='NO')                                  &
+     &          'read for RMS. Step:  ', istep
+      do istep = istep_start, istep_end
+        icou = icou + 1
+        write(*,'(15a1)', advance='NO') (char(8),i=1,15)
+        write(*,'(i15)', advance='NO') istep
+!
+        call sel_read_udt_file                                          &
+     &     (-1, np_ucd, istep, psf_file_param, psf_time, psf_ucd)
+!
+!$omp parallel
+        do nd = 1, psf_u%psf_phys%ntot_phys
+!$omp do
+          do inod = 1, psf_u%psf_nod%numnod
+          tsdev_psf(inod,nd) = tsdev_psf(inod,nd)                       &
+     &                        + (psf_u%psf_phys%d_fld(inod,nd)          &
+     &                         - tave_psf(inod,nd))**2
+          end do
+!$omp end do
+        end do
+!$omp end parallel
+      end do
+      write(*,*)
+!
+!$omp parallel
+      do nd = 1, psf_u%psf_phys%ntot_phys
+!$omp do
+        do inod = 1, psf_u%psf_nod%numnod
+          tsdev_psf(inod,nd) = sqrt(tsdev_psf(inod,nd) * acou)
+        end do
+!$omp end do
+      end do
+!$omp end parallel
+!
+! copy_filed_to_phys_data
+      do ifld = 1, psf_u%psf_phys%num_phys
+        if(psf_u%psf_phys%phys_name(ifld) .eq. coriolis_psf_name) then
+          psf_u%psf_phys%phys_name(ifld) = 'Coriolis_work_sph'
+        else if(psf_u%psf_phys%phys_name(ifld) .eq. inertia_psf_name) then
+          psf_u%psf_phys%phys_name(ifld) = 'inertia_work'
+        else if(psf_u%psf_phys%phys_name(ifld) .eq. asym_inertia_psf_name) then
+          psf_u%psf_phys%phys_name(ifld) = 'asym_inertia_work'
+        else if(psf_u%psf_phys%phys_name(ifld) .eq. lorentz_psf_name) then
+          psf_u%psf_phys%phys_name(ifld) = 'Lorentz_work'
+        else if(psf_u%psf_phys%phys_name(ifld) .eq. viscous_psf_name) then
+          psf_u%psf_phys%phys_name(ifld) = 'viscous_work'
+        end if
+      end do
+! 
+      call copy_filed_to_phys_data(tave_psf, psf_u%psf_phys)
+      call sel_write_udt_file                                           &
+     &   (-1, istep_end, ave_psf_param, psf_time, psf_ucd)
+!
+      call copy_filed_to_phys_data(trms_psf, psf_u%psf_phys)
+      call sel_write_udt_file                                           &
+     &   (-1, istep_end, rms_psf_param, psf_time, psf_ucd)
+!
+      call copy_filed_to_phys_data(tsdev_psf, psf_u%psf_phys)
+      call sel_write_udt_file                                           &
+     &   (-1, istep_end, sdev_psf_param, psf_time, psf_ucd)
+!
+      stop ' //// program normally finished //// '
+!
+      end program psf_eflux_to_zonal_flow
