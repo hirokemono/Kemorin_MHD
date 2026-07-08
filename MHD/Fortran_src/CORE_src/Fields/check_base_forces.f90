@@ -227,6 +227,19 @@
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(current_for_dipole, field_ctl)
       end if
+      if(check_field_list_ctl(magnetic_induction_by_zonal_flow,         &
+     &      field_ctl)) then
+        call add_phys_name_ctl(velocity, field_ctl)
+        call add_phys_name_ctl(magnetic_field, field_ctl)
+        call add_phys_name_ctl(zonal_toroidal_velocity, field_ctl)
+        call add_phys_name_ctl(vecp_induction_by_zonal_flow, field_ctl)
+      end if
+      if(check_field_list_ctl(vecp_induction_by_zonal_flow,             &
+     &      field_ctl)) then
+        call add_phys_name_ctl(velocity, field_ctl)
+        call add_phys_name_ctl(magnetic_field, field_ctl)
+        call add_phys_name_ctl(zonal_toroidal_velocity, field_ctl)
+      end if
 !
       if(check_field_list_ctl(kinetic_helicity, field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)

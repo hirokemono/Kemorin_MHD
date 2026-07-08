@@ -56,6 +56,10 @@
 !!   Lorentz_force_dipole     [i_dipole_Lorentz]:
 !!   Lorentz_work_dipole      [i_dipole_ujb]:
 !!
+!!   zonal_toroidal_velocity          [i_zonal_velo]:
+!!   vecp_induction_by_zonal_flow     [i_zonal_vp_induct]:
+!!   magnetic_induction_by_zonal_flow [i_zonal_induction]:
+!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !!
@@ -153,6 +157,13 @@
 !>          start address of Work of Lorentz force by dipole component
 !!             @f$ u \cdot (J_{1}^{0} \times B) @f$
         integer (kind=kint) :: i_dipole_ujb =          izero
+!
+!>        start address for m=0 toroidal velocity
+        integer (kind=kint) :: i_zonal_velo =           izero
+!>        start address for induction vector potential by zonal flow
+        integer (kind=kint) :: i_zonal_vp_induct =      izero
+!>        start address for induction by zonal flow
+        integer (kind=kint) :: i_zonal_induction =      izero
       end type phys_products_address
 !
 ! ----------------------------------------------------------------------
@@ -245,6 +256,14 @@
           prod_fld%i_dipole_Lorentz = i_phys
         else if (field_name .eq. Lorentz_work_dipole%name) then
           prod_fld%i_dipole_ujb =     i_phys
+!
+        else if (field_name .eq. zonal_toroidal_velocity%name) then
+          prod_fld%i_zonal_velo =      i_phys
+        else if (field_name .eq. vecp_induction_by_zonal_flow%name) then
+          prod_fld%i_zonal_vp_induct = i_phys
+        else if (field_name .eq. magnetic_induction_by_zonal_flow%name) &
+     &      then
+          prod_fld%i_zonal_induction = i_phys
         end if
       end if
 !

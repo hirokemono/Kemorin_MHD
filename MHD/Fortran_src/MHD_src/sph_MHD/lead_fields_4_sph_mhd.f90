@@ -299,6 +299,11 @@
      &    trns_snap%b_trns, trns_snap%f_trns, trns_snap%backward,       &
      &    trns_snap%forward)
 !
+      if(iflag_debug.gt.0) write(*,*) 's_cal_zonal_flow_induction'
+      call s_cal_zonal_flow_induction(sph%sph_rtp, MHD_prop%cd_prop,    &
+     &    trns_snap%b_trns, trns_snap%f_trns, trns_snap%backward,       &
+     &    trns_snap%forward)
+!
       if (iflag_debug.gt.0) write(*,*)                                  &
      &    'sph_forward_trans_snapshot_MHD for snapshot'
       call sph_forward_trans_snapshot_MHD                               &

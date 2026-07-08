@@ -30,6 +30,7 @@
 !
       private :: shift_by_CMB_average, remove_sphere_average
       private :: copy_magnetic_dipole, copy_toroidal_dipole
+      private :: copy_zonal_toroidal_vector
 !
 !-----------------------------------------------------------------------
 !
@@ -100,6 +101,12 @@
         call copy_toroidal_dipole(sph%sph_rj,                           &
      &      rj_fld%d_fld(1,ipol_base%i_current),                        &
      &      rj_fld%d_fld(1,ipol_prod%i_dipole_J))
+      end if
+!
+      if(ipol_prod%i_zonal_velo .gt. 0) then
+        call copy_zonal_toroidal_vector(sph%sph_rj,                     &
+     &      rj_fld%d_fld(1,ipol_base%i_velo),                           &
+     &      rj_fld%d_fld(1,ipol_prod%i_zonal_velo))
       end if
 !
       end subroutine s_adjust_scalar_rj_fields
@@ -271,6 +278,35 @@
 !$omp end parallel do
 !
       end subroutine copy_toroidal_dipole
+!
+!-----------------------------------------------------------------------
+!
+      subroutine copy_zonal_toroidal_vector(sph_rj, d_vect, d_rj_part)
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      real(kind = kreal), intent(in) :: d_vect(sph_rj%nnod_rj,3)
+      real(kind = kreal), intent(inout) :: d_rj_part(sph_rj%nnod_rj,3)
+!
+      integer(kind = kint) :: kr, j, inod
+!
+!
+!$omp parallel workshare
+      d_rj_part(1:sph_rj%nnod_rj,1) = 0.0d0
+      d_rj_part(1:sph_rj%nnod_rj,2) = 0.0d0
+      d_rj_part(1:sph_rj%nnod_rj,3) = 0.0d0
+!$omp end parallel workshare
+!
+!$omp parallel do private(kr,j,inod)
+      do j = 1, sph_rj%nidx_rj(2)
+        if(sph_rj%idx_gl_1d_rj_j(j,3) .ne. 0) cycle
+        do kr = 1, sph_rj%nidx_rj(1)
+          inod = (kr-1) * sph_rj%nidx_rj(2) + j
+          d_rj_part(inod,3) = d_vect(inod,3)
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine copy_zonal_toroidal_vector
 !
 !-----------------------------------------------------------------------
 !

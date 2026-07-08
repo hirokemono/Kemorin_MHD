@@ -15,6 +15,8 @@
 !!        type(phys_address), intent(in) :: bs_trns, fs_trns
 !!        type(spherical_transform_data), intent(in) :: trns_b_snap
 !!        type(spherical_transform_data), intent(inout) :: trns_f_snap
+!!      subroutine s_cal_zonal_flow_induction(sph_rtp, cd_prop,         &
+!!     &          bs_trns, fs_trns, trns_b_snap, trns_f_snap)
 !!@endverbatim
 !
       module cal_lorentz_by_dipole
@@ -31,6 +33,7 @@
       implicit  none
 !
       private :: lorentz_frc_and_work_by_dipole
+      private :: vecp_induction_by_zonal_flow
 !
 !-----------------------------------------------------------------------
 !
@@ -60,6 +63,31 @@
      &      trns_f_snap%ncomp, trns_f_snap%fld_pole)
 !
       end subroutine s_cal_lorentz_by_dipole
+!
+!-----------------------------------------------------------------------
+!
+      subroutine s_cal_zonal_flow_induction(sph_rtp, cd_prop,           &
+     &          bs_trns, fs_trns, trns_b_snap, trns_f_snap)
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(conductive_property), intent(in) :: cd_prop
+      type(phys_address), intent(in) :: bs_trns, fs_trns
+      type(spherical_transform_data), intent(in) :: trns_b_snap
+!
+      type(spherical_transform_data), intent(inout) :: trns_f_snap
+!
+!
+      call vecp_induction_by_zonal_flow(cd_prop, bs_trns%base,          &
+     &    bs_trns%prod_fld, fs_trns%prod_fld, sph_rtp%nnod_rtp,         &
+     &    trns_b_snap%ncomp, trns_b_snap%fld_rtp,                       &
+     &    trns_f_snap%ncomp, trns_f_snap%fld_rtp)
+!
+      call vecp_induction_by_zonal_flow(cd_prop, bs_trns%base,          &
+     &    bs_trns%prod_fld, fs_trns%prod_fld, sph_rtp%nnod_pole,        &
+     &    trns_b_snap%ncomp, trns_b_snap%fld_pole,                      &
+     &    trns_f_snap%ncomp, trns_f_snap%fld_pole)
+!
+      end subroutine s_cal_zonal_flow_induction
 !
 !-----------------------------------------------------------------------
 !
@@ -102,6 +130,37 @@
       end if
 !
       end subroutine lorentz_frc_and_work_by_dipole
+!
+!-----------------------------------------------------------------------
+!
+      subroutine vecp_induction_by_zonal_flow                           &
+     &         (cd_prop, bs_trns_base, bs_trns_prod, fs_trns_prod,      &
+     &          nnod, ntot_comp_fld, fld_rtp, ntot_comp_flx, frc_rtp)
+!
+      use cal_vector_products
+!
+      type(conductive_property), intent(in) :: cd_prop
+      type(base_field_address), intent(in) :: bs_trns_base
+      type(phys_products_address), intent(in) :: bs_trns_prod
+      type(phys_products_address), intent(in) :: fs_trns_prod
+!
+      integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: ntot_comp_fld
+      integer(kind = kint), intent(in) :: ntot_comp_flx
+      real(kind = kreal), intent(in) :: fld_rtp(nnod,ntot_comp_fld)
+!
+      real(kind = kreal), intent(inout) :: frc_rtp(nnod,ntot_comp_flx)
+!
+      if(fs_trns_prod%i_zonal_vp_induct .gt. 0) then
+        if(iflag_debug.gt.0) write(*,*)                                 &
+     &      'cal_cross_product_w_coef for zonal flow induction'
+        call cal_cross_product_w_coef(nnod, cd_prop%coef_induct,        &
+     &      fld_rtp(1,bs_trns_prod%i_zonal_velo),                       &
+     &      fld_rtp(1,bs_trns_base%i_magne),                            &
+     &      frc_rtp(1,fs_trns_prod%i_zonal_vp_induct) )
+      end if
+!
+      end subroutine vecp_induction_by_zonal_flow
 !
 !-----------------------------------------------------------------------
 !

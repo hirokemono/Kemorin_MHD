@@ -142,6 +142,9 @@
       call cal_rot_of_induction_sph                                     &
      &   (sph_rj, r_2nd, leg%g_sph_rj, sph_MHD_bc%sph_bc_B,             &
      &    ipol%forces_by_asym_sym, rj_fld)
+      call cal_zonal_flow_induction_sph                                 &
+     &   (sph_rj, r_2nd, leg%g_sph_rj, sph_MHD_bc%sph_bc_B,             &
+     &    ipol%prod_fld, rj_fld)
 !
       end subroutine s_cal_mag_induct_by_sym_rj
 !
@@ -213,6 +216,34 @@
       end if
 !
       end subroutine cal_rot_of_induction_sph
+!
+! ----------------------------------------------------------------------
+!
+      subroutine cal_zonal_flow_induction_sph                           &
+     &         (sph_rj, r_2nd, g_sph_rj, sph_bc_B, ipol_prod, rj_fld)
+!
+      use const_sph_rotation
+      use t_field_product_labels
+!
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(phys_products_address), intent(in) :: ipol_prod
+      type(sph_boundary_type), intent(in) :: sph_bc_B
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+!
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
+      if(ipol_prod%i_zonal_induction .gt. 0                             &
+     &    .and. ipol_prod%i_zonal_vp_induct .gt. 0) then
+        if (iflag_debug .gt. 0) write(*,*)                              &
+     &      'obtain magnetic induction by zonal flow'
+        call const_sph_rotation_uxb(sph_rj, r_2nd, sph_bc_B, g_sph_rj,  &
+     &      ipol_prod%i_zonal_vp_induct, ipol_prod%i_zonal_induction,   &
+     &      rj_fld)
+      end if
+!
+      end subroutine cal_zonal_flow_induction_sph
 !
 ! ----------------------------------------------------------------------
 !
