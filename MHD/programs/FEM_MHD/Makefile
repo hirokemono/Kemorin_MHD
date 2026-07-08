@@ -11,7 +11,7 @@ fem_snapshot            \
 fem_filtered_snapshot   \
 fem_snapshot_tmp        \
 fem_volume_average      \
-check_FEM_MHD_matrices
+check_FEM_MHD_matrix
 
 LIBS_FEM_MHD = \
 '$$(LIB_MHD)'    \

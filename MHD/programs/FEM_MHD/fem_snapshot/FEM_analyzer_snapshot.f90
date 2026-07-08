@@ -103,7 +103,8 @@
      &    FEM_model%FEM_prm, FEM_SGS%SGS_par, FEM_model%bc_FEM_IO,      &
      &    MHD_step, FEM_MHD%geofem, FEM_model%MHD_mesh,                 &
      &    FEM_SGS%FEM_filters, FEM_model%MHD_prop, ak_MHD,              &
-     &    FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs, FEM_SGS%Csims,       &
+     &    FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs,                      &
+     &    FEM_SGS%sgs_coefs, FEM_SGS%diff_coefs,                        &
      &    FEM_MHD%iphys, FEM_SGS%iphys_LES, FEM_MHD%field,              &
      &    FEM_model%FEM_ref, SNAP_time_IO, MHD_step%rst_step,           &
      &    SGS_MHD_wk, fem_sq, MHD_IO%rst_IO, m_SR, FEM_MHD%label_sim)
@@ -158,7 +159,7 @@
 !     ---- Load field data --- 
 !
       call reset_update_flag(FEM_MHD%field,                             &
-     &    FEM_SGS%Csims%sgs_coefs, FEM_SGS%Csims%diff_coefs)
+     &    FEM_SGS%sgs_coefs, FEM_SGS%diff_coefs)
       MHD_step%flex_p%istep_max_dt = i_step
       if(my_rank.eq.0) write(*,*)                                       &
      &    'step: ', MHD_step%flex_p%istep_max_dt
@@ -198,7 +199,7 @@
      &    FEM_model%FEM_prm, FEM_SGS%SGS_par, FEM_MHD%geofem,           &
      &    FEM_model%MHD_mesh, FEM_model%FEM_MHD_BCs,                    &
      &    FEM_MHD%iphys, FEM_SGS%iphys_LES, FEM_SGS%FEM_filters,        &
-     &    SGS_MHD_wk, FEM_MHD%field, FEM_SGS%Csims, m_SR)
+     &    SGS_MHD_wk, FEM_MHD%field, FEM_SGS%diff_coefs, m_SR)
 !
 !     ----- Evaluate model coefficients
 !
@@ -207,14 +208,14 @@
      &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,       &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, FEM_MHD%field,               &
-     &    FEM_SGS%Csims, m_SR)
+     &    FEM_SGS%sgs_coefs, FEM_SGS%diff_coefs, m_SR)
 !
 !     ========  Data output
 !
       call lead_fields_by_FEM(MHD_step%flex_p%istep_max_dt,             &
      &    MHD_step, FEM_model, FEM_SGS%SGS_par, FEM_SGS%iphys_LES,      &
      &    ak_MHD, FEM_SGS%FEM_filters, FEM_MHD, SGS_MHD_wk,             &
-     &    FEM_SGS%Csims, m_SR)
+     &    FEM_SGS%sgs_coefs, FEM_SGS%diff_coefs, m_SR)
 !
 !     -----Output monitor date
 !

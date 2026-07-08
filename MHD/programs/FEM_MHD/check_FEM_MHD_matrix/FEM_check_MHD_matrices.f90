@@ -81,7 +81,8 @@
      &   (MHD_files, FEM_model%bc_FEM_IO, FEM_model%FEM_prm,            &
      &    FEM_SGS%SGS_par, flex_MHD, MHD_step, FEM_MHD%geofem,          &
      &    FEM_model%MHD_mesh, FEM_SGS%FEM_filters, FEM_model%MHD_prop,  &
-     &    FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs, FEM_SGS%Csims,       &
+     &    FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs,                      &
+     &    FEM_SGS%sgs_coefs, FEM_SGS%diff_coefs,                        &
      &    FEM_MHD%iphys, FEM_SGS%iphys_LES, FEM_MHD%field,              &
      &    FEM_model%FEM_ref, MHD_CG, SGS_MHD_wk, fem_sq,                &
      &    MHD_IO%rst_IO, m_SR, FEM_MHD%label_sim)
@@ -98,7 +99,8 @@
      &     FEM_SGS%SGS_par, FEM_MHD%geofem, FEM_model%MHD_mesh,         &
      &    FEM_model%FEM_MHD_BCs, FEM_model%MHD_prop,                    &
      &    SGS_MHD_wk%fem_int, FEM_SGS%FEM_filters%FEM_elens,            &
-     &    FEM_SGS%Csims, SGS_MHD_wk%mk_MHD, SGS_MHD_wk%rhs_mat, MHD_CG)
+     &    FEM_SGS%diff_coefs, SGS_MHD_wk%mk_MHD,                        &
+     &    SGS_MHD_wk%rhs_mat, MHD_CG)
 !
       if (iflag_debug.eq.1) write(*,*) 's_write_djds_mat_MHD'
       call s_write_djds_mat_MHD                                         &

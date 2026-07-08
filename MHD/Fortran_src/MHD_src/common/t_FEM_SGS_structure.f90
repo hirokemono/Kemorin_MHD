@@ -26,8 +26,10 @@
 !>        Structure of input parameters for SGS model
         type(SGS_paremeters) :: SGS_par
 !
-!>        Structure of model coefficieints for FEM MHD
-        type(SGS_coefficients_data) :: Csims
+!>        Model coefficeints in elements
+        type(SGS_coefficients_type) :: sgs_coefs
+!>        Commutation error model coefficeints
+        type(SGS_commutation_coefs) :: diff_coefs
 !
 !>        Structure of grouping of elements
         type(filters_on_FEM) :: FEM_filters

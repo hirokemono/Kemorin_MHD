@@ -2,8 +2,8 @@
 #
 #
 
-FEM_MHD_MAT_DIR =   $$(MHD_OUT_DIR)/check_FEM_MHD_matrices
-TARGET_FEM_MHD_MAT= $$(FEM_BUILDDIR)/check_FEM_MHD_matrices
+FEM_MHD_MAT_DIR =   $$(MHD_OUT_DIR)/check_FEM_MHD_matrix
+TARGET_FEM_MHD_MAT= $$(FEM_BUILDDIR)/check_FEM_MHD_matrix
 
 SOURCES = $(shell ls *.f90)
 MOD_FEM_MHD_MAT = $(addsuffix .o,$(basename $(SOURCES)) )

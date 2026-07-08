@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine lead_fields_by_FEM(istep, MHD_step, FEM_model,       &
 !!     &          SGS_par, iphys_LES, ak_MHD, FEM_filters, FEM_MHD,     &
-!!     &          SGS_MHD_wk, Csims_FEM_MHD, m_SR)
+!!     &          SGS_MHD_wk, sgs_coefs, diff_coefs, m_SR)
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -24,7 +24,8 @@
 !!        type(FEM_mesh_field_data), intent(inout) :: FEM_MHD
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
+!!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(SGS_commutation_coefs), intent(inout) :: diff_coefs
 !!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(mesh_SR), intent(inout) :: m_SR
@@ -67,7 +68,7 @@
 !
       subroutine lead_fields_by_FEM(istep, MHD_step, FEM_model,         &
      &          SGS_par, iphys_LES, ak_MHD, FEM_filters, FEM_MHD,       &
-     &          SGS_MHD_wk, Csims_FEM_MHD, m_SR)
+     &          SGS_MHD_wk, sgs_coefs, diff_coefs, m_SR)
 !
       use update_after_evolution
       use itp_potential_on_edge
@@ -85,7 +86,8 @@
 !
       type(FEM_mesh_field_data), intent(inout) :: FEM_MHD
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
-      type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_commutation_coefs), intent(inout) :: diff_coefs
       type(mesh_SR), intent(inout) :: m_SR
 !
 !
@@ -100,8 +102,8 @@
       call update_FEM_fields                                            &
      &   (MHD_step%time_d, FEM_model%FEM_prm, SGS_par, FEM_MHD%geofem,  &
      &    FEM_model%MHD_mesh, FEM_model%FEM_MHD_BCs,                    &
-     &    FEM_MHD%iphys, iphys_LES,  &
-     &    FEM_filters, SGS_MHD_wk, FEM_MHD%field, Csims_FEM_MHD, m_SR)
+     &    FEM_MHD%iphys, iphys_LES, FEM_filters, SGS_MHD_wk,            &
+     &    FEM_MHD%field, diff_coefs, m_SR)
 !
       call cal_field_by_rotation(MHD_step%time_d%dt, FEM_model%FEM_prm, &
      &   SGS_par%model_p, SGS_par%commute_p,                            &
@@ -110,10 +112,10 @@
      &   FEM_model%MHD_prop%cd_prop,                                    &
      &   FEM_model%FEM_MHD_BCs%nod_bcs, FEM_model%FEM_MHD_BCs%surf_bcs, &
      &   FEM_MHD%iphys%base, SGS_MHD_wk%iphys_ele_base,                 &
-     &   SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int,                        &
-     &   FEM_filters%FEM_elens, Csims_FEM_MHD%diff_coefs,               &
-     &   SGS_MHD_wk%mk_MHD, SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,  &
-     &   FEM_MHD%field, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &   SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int, FEM_filters%FEM_elens, &
+     &   diff_coefs, SGS_MHD_wk%mk_MHD, SGS_MHD_wk%mhd_fem_wk,          &
+     &   SGS_MHD_wk%rhs_mat, FEM_MHD%field, m_SR%v_sol,                 &
+     &   m_SR%SR_sig, m_SR%SR_r)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_helicity'
       call cal_helicity(FEM_MHD%iphys, FEM_MHD%field)
@@ -124,21 +126,22 @@
      &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,       &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, iphys_LES,              &
      &    SGS_MHD_wk%iphys_ele_base, ak_MHD, SGS_MHD_wk%fem_int,        &
-     &    FEM_filters%FEM_elens, Csims_FEM_MHD, FEM_filters%filtering,  &
-     &    SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                     &
-     &    SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, FEM_MHD%field,     &
-     &    SGS_MHD_wk%ele_fld, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &    FEM_filters%FEM_elens, sgs_coefs, diff_coefs,                 &
+     &    FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                     &
+     &    SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                 &
+     &    SGS_MHD_wk%rhs_mat, FEM_MHD%field, SGS_MHD_wk%ele_fld,        &
+     &    m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
       end subroutine lead_fields_by_FEM
 !
 ! ----------------------------------------------------------------------
 !
       subroutine cal_energy_fluxes                                      &
-     &        (dt, FEM_prm, SGS_par, geofem, MHD_mesh, MHD_prop,        &
-     &         FEM_MHD_BCs, iphys, iphys_LES, iphys_ele_base,           &
-     &         ak_MHD, fem_int, FEM_elens, Csims_FEM_MHD, filtering,    &
-     &         mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,                 &
-     &         nod_fld, ele_fld, v_sol, SR_sig, SR_r)
+     &         (dt, FEM_prm, SGS_par, geofem, MHD_mesh, MHD_prop,       &
+     &          FEM_MHD_BCs, iphys, iphys_LES, iphys_ele_base, ak_MHD,  &
+     &          fem_int, FEM_elens, sgs_coefs, diff_coefs, filtering,   &
+     &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,                &
+     &          nod_fld, ele_fld, v_sol, SR_sig, SR_r)
 !
       use cal_MHD_forces_4_monitor
       use cal_sgs_4_monitor
@@ -159,7 +162,8 @@
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
-      type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
+      type(SGS_coefficients_type), intent(in) :: sgs_coefs
+      type(SGS_commutation_coefs), intent(in) :: diff_coefs
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -178,17 +182,17 @@
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
      &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs,                    &
      &    iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int, FEM_elens, &
-     &    Csims_FEM_MHD%diff_coefs, mk_MHD, mhd_fem_wk, rhs_mat,        &
-     &    nod_fld, ele_fld, v_sol, SR_sig, SR_r)
+     &    diff_coefs, mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,    &
+     &    v_sol, SR_sig, SR_r)
 !
       call cal_sgs_terms_4_monitor                                      &
      &   (dt, FEM_prm, SGS_par%model_p, SGS_par%filter_p, geofem%mesh,  &
      &    MHD_mesh%fluid, MHD_mesh%conduct, MHD_prop%cd_prop,           &
      &    iphys, iphys_LES, iphys_ele_base, ele_fld,                    &
-     &    fem_int%jcs, fem_int%rhs_tbl, FEM_elens,                      &
-     &    Csims_FEM_MHD%sgs_coefs, filtering, mk_MHD,                   &
-     &    FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat%fem_wk,             &
-     &    rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
+     &    fem_int%jcs, fem_int%rhs_tbl, FEM_elens, sgs_coefs,           &
+     &    filtering, mk_MHD, FEM_SGS_wk%wk_filter, mhd_fem_wk,          &
+     &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,           &
+     &    v_sol, SR_sig, SR_r)
 !
       call cal_fluxes_4_monitor(geofem%mesh%node,                       &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop, iphys, nod_fld)
@@ -202,8 +206,8 @@
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
      &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs,                    &
      &    iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int, FEM_elens, &
-     &    Csims_FEM_MHD%diff_coefs, mk_MHD, mhd_fem_wk, rhs_mat,        &
-     &    nod_fld, ele_fld, v_sol, SR_sig, SR_r)
+     &    diff_coefs, mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,    &
+     &    v_sol, SR_sig, SR_r)
       call cal_diff_of_sgs_terms                                        &
      &   (dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p, geofem%mesh, &
      &    geofem%group%surf_grp, MHD_mesh%fluid, MHD_mesh%conduct,      &
@@ -211,8 +215,8 @@
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
      &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs,                    &
      &    iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int, FEM_elens, &
-     &    Csims_FEM_MHD%diff_coefs, mk_MHD, mhd_fem_wk, rhs_mat,        &
-     &    nod_fld, ele_fld, v_sol, SR_sig, SR_r)
+     &    diff_coefs, mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,    &
+     &    v_sol, SR_sig, SR_r)
 !
       call cal_true_sgs_terms_post                                      &
      &   (SGS_par%filter_p, geofem%mesh, iphys%div_forces,              &

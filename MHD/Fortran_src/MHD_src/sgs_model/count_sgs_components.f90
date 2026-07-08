@@ -1,12 +1,16 @@
-!
-!     module count_sgs_components
-!
-!      Written by H. Matsui on 2004
-!      Modified by H. Matsui on July, 2007
-!
+!>@file   count_sgs_components.f90
+!!@brief  module count_sgs_components
+!!
+!!@author H. Matsui
+!!@date    Programmed by H.Matsui in 2004
+!!         Modified in July, 2007
+!!
+!>@brief  Dynamo benchmark results
+!!
+!!@verbatim
 !!      subroutine define_sgs_components                                &
 !!     &         (numnod, numele, SGS_param, layer_tbl, MHD_prop,       &
-!!     &          wk_sgs, Csims_FEM_MHD)
+!!     &          wk_sgs, sgs_coefs)
 !!
 !!      subroutine set_sgs_addresses                                    &
 !!     &          (SGS_param, fl_prop, cd_prop, ht_prop, cp_prop,       &
@@ -15,14 +19,13 @@
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop, sgs_coefs)
 !!      subroutine set_SGS_ele_fld_addresses(cd_prop, SGS_param,        &
 !!     &                                     mhd_fem_wk)
-!!      subroutine check_sgs_addresses(wk_sgs, sgs_coefs)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-!!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+!!@endverbatim
 !
       module count_sgs_components
 !
@@ -40,7 +43,7 @@
 !
       subroutine define_sgs_components                                  &
      &         (numnod, numele, SGS_param, layer_tbl, MHD_prop,         &
-     &          wk_sgs, Csims_FEM_MHD)
+     &          wk_sgs, sgs_coefs)
 !
       use calypso_mpi
 !
@@ -56,7 +59,7 @@
       type(SGS_model_control_params), intent(in) :: SGS_param
 !
       type(dynamic_model_data), intent(inout) :: wk_sgs
-      type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !
       integer(kind = kint) :: num_SGS_terms, ntot_SGS_comps
 !
@@ -73,9 +76,8 @@
 !
       call set_sgs_addresses(numnod, numele, SGS_param,                 &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    wk_sgs, Csims_FEM_MHD%sgs_coefs)
-      call check_sgs_addresses(wk_sgs, Csims_FEM_MHD%sgs_coefs)
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,  wk_sgs, sgs_coefs)
+      call check_sgs_addresses(6, wk_sgs, sgs_coefs)
 !
       end subroutine define_sgs_components
 !
@@ -203,7 +205,7 @@
 !
       num_comp = 0
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
-        if(SGS_param%SGS_momentum%iflag_SGS_flux                       &
+        if(SGS_param%SGS_momentum%iflag_SGS_flux                        &
      &         .ne. id_SGS_none) then
           num_comp = n_sym_tensor
           sgs_coefs%Csim_SGS_mf%num_comp = num_comp
@@ -389,72 +391,6 @@
       end subroutine set_SGS_ele_fld_addresses
 !
 !  ------------------------------------------------------------------
-!  ------------------------------------------------------------------
-!
-      subroutine check_sgs_addresses(wk_sgs, sgs_coefs)
-!
-      use calypso_mpi
-!
-      use t_layering_ele_list
-      use t_ele_info_4_dynamic
-      use t_material_property
-      use t_SGS_term_labels
-!
-      type(dynamic_model_data), intent(inout) :: wk_sgs
-      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-!
-!
-      if(iflag_debug .gt. 0) then
-        write(*,*) 'num_sgs_kinds', wk_sgs%num_kinds
-        write(*,*) 'num_sgs_coefs', wk_sgs%ntot_comp
-!
-        if(sgs_coefs%Csim_SGS_hf%iak_Csim .gt. 0) then
-          write(*,*) 'iak_sgs_hf', sgs_coefs%Csim_SGS_hf%iak_Csim,      &
-     &                             sgs_coefs%Csim_SGS_hf%icomp_Csim,    &
-     &                             sgs_coefs%Csim_SGS_hf%num_comp,      &
-     &         trim(wk_sgs%name(sgs_coefs%Csim_SGS_hf%iak_Csim))
-        end if
-        if(sgs_coefs%Csim_SGS_cf%iak_Csim .gt. 0) then
-          write(*,*) 'iak_sgs_cf', sgs_coefs%Csim_SGS_cf%iak_Csim,      &
-     &                             sgs_coefs%Csim_SGS_cf%icomp_Csim,    &
-     &                             sgs_coefs%Csim_SGS_cf%num_comp,      &
-     &         trim(wk_sgs%name(sgs_coefs%Csim_SGS_cf%iak_Csim))
-        end if
-        if(sgs_coefs%Csim_SGS_mf%iak_Csim .gt. 0) then
-          write(*,*) 'iak_sgs_mf', sgs_coefs%Csim_SGS_mf%iak_Csim,      &
-     &                             sgs_coefs%Csim_SGS_mf%icomp_Csim,    &
-     &                             sgs_coefs%Csim_SGS_mf%num_comp,      &
-     &         trim(wk_sgs%name(sgs_coefs%Csim_SGS_mf%iak_Csim))
-        end if
-        if(sgs_coefs%Csim_SGS_lor%iak_Csim .gt. 0) then
-          write(*,*) 'iak_sgs_lor', sgs_coefs%Csim_SGS_lor%iak_Csim,    &
-     &                             sgs_coefs%Csim_SGS_lor%icomp_Csim,   &
-     &                             sgs_coefs%Csim_SGS_lor%num_comp,     &
-     &            trim(wk_sgs%name(sgs_coefs%Csim_SGS_lor%iak_Csim))
-        end if
-        if(sgs_coefs%Csim_SGS_tbuo%iak_Csim .gt. 0) then
-          write(*,*) 'iak_sgs_tbuo', sgs_coefs%Csim_SGS_tbuo%iak_Csim,  &
-     &                              sgs_coefs%Csim_SGS_tbuo%icomp_Csim, &
-     &                              sgs_coefs%Csim_SGS_tbuo%num_comp,   &
-     &             trim(wk_sgs%name(sgs_coefs%Csim_SGS_tbuo%iak_Csim))
-        end if
-        if(sgs_coefs%Csim_SGS_cbuo%iak_Csim .gt. 0) then
-          write(*,*) 'iak_sgs_cbuo', sgs_coefs%Csim_SGS_cbuo%iak_Csim,  &
-     &                              sgs_coefs%Csim_SGS_cbuo%icomp_Csim, &
-     &                              sgs_coefs%Csim_SGS_cbuo%num_comp,   &
-     &             trim(wk_sgs%name(sgs_coefs%Csim_SGS_cbuo%iak_Csim))
-        end if
-        if(sgs_coefs%Csim_SGS_uxb%iak_Csim .gt. 0) then
-          write(*,*) 'iak_sgs_uxb', sgs_coefs%Csim_SGS_uxb%iak_Csim,    &
-     &                              sgs_coefs%Csim_SGS_uxb%icomp_Csim,  &
-     &                              sgs_coefs%Csim_SGS_uxb%num_comp,    &
-     &             trim(wk_sgs%name(sgs_coefs%Csim_SGS_uxb%iak_Csim))
-        end if
-      end if
-!
-      end subroutine check_sgs_addresses
-!
-! -------------------------------------------------------------------
 !
       end module count_sgs_components
       

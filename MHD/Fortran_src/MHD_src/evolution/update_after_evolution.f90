@@ -12,18 +12,17 @@
 !!      subroutine update_FEM_fields                                    &
 !!     &         (time_d, FEM_prm, SGS_par, geofem, MHD_mesh,           &
 !!     &          FEM_MHD_BCs, iphys, iphys_LES, FEM_filters,           &
-!!     &          SGS_MHD_wk, nod_fld, Csims_FEM_MHD,                   &
-!!     &          v_sol, SR_sig, SR_r)
+!!     &          SGS_MHD_wk, nod_fld, diff_coefs, m_SR)
 !!
 !!      subroutine cal_FEM_model_coefficients(time_d, FEM_prm, SGS_par, &
 !!     &          geofem, MHD_mesh, MHD_prop, FEM_MHD_BCs,              &
 !!     &          iphys, iphys_LES, FEM_filters, SGS_MHD_wk,            &
-!!     &          nod_fld, Csims_FEM_MHD, m_SR)
+!!     &          nod_fld, sgs_coefs, diff_coefs, m_SR)
 !!
 !!      subroutine fields_evolution_4_FEM_SPH(time_d, FEM_prm, SGS_par, &
 !!     &          geofem, MHD_mesh, MHD_prop, FEM_MHD_BCs, FEM_ref,     &
 !!     &          iphys, iphys_LES, ak_MHD, FEM_filters, s_package,     &
-!!     &          MGCG_WK, SGS_MHD_wk, nod_fld, Csims_FEM_MHD,          &
+!!     &          MGCG_WK, SGS_MHD_wk, nod_fld, sgs_coefs, diff_coefs,  &
 !!     &          fem_sq, m_SR)
 !!        type(FEM_MHD_model_data), intent(in) :: FEM_model
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -45,7 +44,8 @@
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
 !!        type(FEM_mesh_field_data), intent(inout) :: FEM_MHD
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
-!!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
+!!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(SGS_commutation_coefs), intent(inout) :: diff_coefs
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!@endverbatim
@@ -110,8 +110,8 @@
      &   FEM_model%FEM_MHD_BCs%nod_bcs, FEM_model%FEM_MHD_BCs%surf_bcs, &
      &   FEM_model%FEM_ref, FEM_MHD%iphys, FEM_SGS%iphys_LES,           &
      &   MHD_CG%ak_MHD, FEM_SGS%FEM_filters, MHD_CG%solver_pack,        &
-     &   MHD_CG%MGCG_WK, SGS_MHD_wk, FEM_MHD%field, FEM_SGS%Csims,      &
-     &   fem_sq, m_SR)
+     &   MHD_CG%MGCG_WK, SGS_MHD_wk, FEM_MHD%field,                     &
+     &   FEM_SGS%sgs_coefs, FEM_SGS%diff_coefs, fem_sq, m_SR)
 !
       end subroutine FEM_fields_evolution
 !
@@ -120,7 +120,7 @@
       subroutine update_FEM_fields                                      &
      &         (time_d, FEM_prm, SGS_par, geofem, MHD_mesh,             &
      &          FEM_MHD_BCs, iphys, iphys_LES, FEM_filters,             &
-     &          SGS_MHD_wk, nod_fld, Csims_FEM_MHD, m_SR)
+     &          SGS_MHD_wk, nod_fld, diff_coefs, m_SR)
 !
       use FEM_MHD_evolution
 !
@@ -136,14 +136,14 @@
 !
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(phys_data), intent(inout) :: nod_fld
-      type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
+      type(SGS_commutation_coefs), intent(inout) :: diff_coefs
       type(mesh_SR), intent(inout) :: m_SR
 !
 !
       call update_fields                                                &
      &   (time_d, FEM_prm, SGS_par, geofem, MHD_mesh,                   &
      &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys, iphys_LES,  &
-     &    FEM_filters, SGS_MHD_wk, nod_fld, Csims_FEM_MHD, m_SR)
+     &    FEM_filters, SGS_MHD_wk, nod_fld, diff_coefs, m_SR)
 !
       end subroutine update_FEM_fields
 !
@@ -153,7 +153,7 @@
       subroutine cal_FEM_model_coefficients(time_d, FEM_prm, SGS_par,   &
      &          geofem, MHD_mesh, MHD_prop, FEM_MHD_BCs,                &
      &          iphys, iphys_LES, FEM_filters, SGS_MHD_wk,              &
-     &          nod_fld, Csims_FEM_MHD, m_SR)
+     &          nod_fld, sgs_coefs, diff_coefs, m_SR)
 !
       use cal_model_coefficients
 !
@@ -170,7 +170,8 @@
 !
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(phys_data), intent(inout) :: nod_fld
-      type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_commutation_coefs), intent(inout) :: diff_coefs
       type(mesh_SR), intent(inout) :: m_SR
 !
 !
@@ -180,7 +181,7 @@
      &   (time_d, FEM_prm, SGS_par, geofem, MHD_mesh, MHD_prop,         &
      &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys, iphys_LES,  &
      &    SGS_MHD_wk%fem_int, FEM_filters, SGS_MHD_wk, nod_fld,         &
-     &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%diff_coefs, m_SR)
+     &    sgs_coefs, diff_coefs, m_SR)
 !
       end subroutine cal_FEM_model_coefficients
 !
@@ -190,7 +191,7 @@
       subroutine fields_evolution_4_FEM_SPH(time_d, FEM_prm, SGS_par,   &
      &          geofem, MHD_mesh, MHD_prop, FEM_MHD_BCs, FEM_ref,       &
      &          iphys, iphys_LES, ak_MHD, FEM_filters, s_package,       &
-     &          MGCG_WK, SGS_MHD_wk, nod_fld, Csims_FEM_MHD,            &
+     &          MGCG_WK, SGS_MHD_wk, nod_fld, sgs_coefs, diff_coefs,    &
      &          fem_sq, m_SR)
 !
       use FEM_MHD_evolution
@@ -212,7 +213,8 @@
       type(MGCG_data), intent(inout) :: MGCG_WK
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(phys_data), intent(inout) :: nod_fld
-      type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_commutation_coefs), intent(inout) :: diff_coefs
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       type(mesh_SR), intent(inout) :: m_SR
 !
@@ -221,7 +223,7 @@
      &   (time_d, FEM_prm, SGS_par, geofem, MHD_mesh, MHD_prop,         &
      &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, FEM_ref,           &
      &    iphys, iphys_LES, ak_MHD, FEM_filters, s_package, MGCG_WK,    &
-     &    SGS_MHD_wk, nod_fld, Csims_FEM_MHD, fem_sq, m_SR)
+     &    SGS_MHD_wk, nod_fld, sgs_coefs, diff_coefs, fem_sq, m_SR)
 !
       end subroutine fields_evolution_4_FEM_SPH
 !

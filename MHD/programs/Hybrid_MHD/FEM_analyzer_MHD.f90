@@ -99,8 +99,9 @@
      &    FEM_model%FEM_prm, FEM_SGS%SGS_par, flex_MHD, MHD_step,       &
      &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_SGS%FEM_filters,      &
      &    FEM_model%MHD_prop, FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs,  &
-     &    FEM_SGS%Csims, FEM_MHD%iphys, FEM_SGS%iphys_LES,              &
-     &    FEM_MHD%field, FEM_model%FEM_ref, MHD_CG, SGS_MHD_wk, fem_sq, &
+     &    FEM_SGS%sgs_coefs, FEM_SGS%diff_coefs,                        &
+     &    FEM_MHD%iphys, FEM_SGS%iphys_LES, FEM_MHD%field,              &
+     &    FEM_model%FEM_ref, MHD_CG, SGS_MHD_wk, fem_sq,                &
      &    MHD_IO%rst_IO, m_SR, label_sim)
 !
       call nod_fields_send_recv(FEM_MHD%geofem%mesh, FEM_MHD%field,     &
@@ -109,13 +110,13 @@
 !   obtain elemental averages
 !
       call reset_update_flag(FEM_MHD%field,                             &
-     &    FEM_SGS%Csims%sgs_coefs, FEM_SGS%Csims%diff_coefs)
+     &    FEM_SGS%sgs_coefs, FEM_SGS%diff_coefs)
       if (iflag_debug.eq.1) write(*,*) 'update_FEM_fields'
       call update_FEM_fields(MHD_step%time_d, FEM_model%FEM_prm,        &
      &    FEM_SGS%SGS_par, FEM_MHD%geofem, FEM_model%MHD_mesh,          &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, FEM_MHD%field,               &
-     &    FEM_SGS%Csims, m_SR)
+     &    FEM_SGS%diff_coefs, m_SR)
 !
       call copy_model_coef_2_previous                                   &
      &   (FEM_SGS%SGS_par%model_p, FEM_SGS%SGS_par%commute_p,           &
@@ -133,7 +134,7 @@
      &   (MHD_step%time_d%dt, FEM_model%FEM_prm, FEM_SGS%SGS_par,       &
      &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%FEM_MHD_BCs,    &
      &    FEM_model%MHD_prop, SGS_MHD_wk%fem_int,                       &
-     &    FEM_SGS%FEM_filters%FEM_elens, FEM_SGS%Csims,                 &
+     &    FEM_SGS%FEM_filters%FEM_elens, FEM_SGS%diff_coefs,            &
      &    SGS_MHD_wk%mk_MHD, SGS_MHD_wk%rhs_mat, MHD_CG)
 !
 !   time evolution loop start!
@@ -143,11 +144,12 @@
      &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,       &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, FEM_MHD%field,               &
-     &    FEM_SGS%Csims, m_SR)
+     &    FEM_SGS%sgs_coefs, FEM_SGS%diff_coefs, m_SR)
 !
       call lead_fields_by_FEM(MHD_step%flex_p%istep_max_dt, MHD_step,   &
-     &   FEM_model, FEM_SGS%SGS_par, FEM_SGS%iphys_LES, MHD_CG%ak_MHD,  &
-     &   FEM_SGS%FEM_filters, FEM_MHD, SGS_MHD_wk, FEM_SGS%Csims, m_SR)
+     &    FEM_model, FEM_SGS%SGS_par, FEM_SGS%iphys_LES, MHD_CG%ak_MHD, &
+     &    FEM_SGS%FEM_filters, FEM_MHD, SGS_MHD_wk,                     &
+     &    FEM_SGS%sgs_coefs, FEM_SGS%diff_coefs, m_SR)
 !
 !     ---------------------
 !
@@ -234,7 +236,8 @@
      &    FEM_model%FEM_MHD_BCs, FEM_model%FEM_ref,                     &
      &    FEM_MHD%iphys, FEM_SGS%iphys_LES, MHD_CG%ak_MHD,              &
      &    FEM_SGS%FEM_filters, MHD_CG%solver_pack, MHD_CG%MGCG_WK,      &
-     &    SGS_MHD_wk, FEM_MHD%field, FEM_SGS%Csims, fem_sq, m_SR)
+     &    SGS_MHD_wk, FEM_MHD%field, FEM_SGS%sgs_coefs,                 &
+     &    FEM_SGS%diff_coefs, fem_sq, m_SR)
 !
 !     ----- Evaluate model coefficients
 !
@@ -243,7 +246,7 @@
      &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,       &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, FEM_MHD%field,               &
-     &    FEM_SGS%Csims, m_SR)
+     &    FEM_SGS%sgs_coefs, FEM_SGS%diff_coefs, m_SR)
 !
 !     ---------------------
 !
@@ -257,7 +260,8 @@
       if(MHD_step%flex_p%istep_flex_to_max .eq. 0) then
       call lead_fields_by_FEM(MHD_step%flex_p%istep_max_dt, MHD_step,   &
      &   FEM_model, FEM_SGS%SGS_par, FEM_SGS%iphys_LES, MHD_CG%ak_MHD,  &
-     &   FEM_SGS%FEM_filters, FEM_MHD, SGS_MHD_wk, FEM_SGS%Csims, m_SR)
+     &   FEM_SGS%FEM_filters, FEM_MHD, SGS_MHD_wk,                      &
+     &   FEM_SGS%sgs_coefs, FEM_SGS%diff_coefs, m_SR)
 !
 !     -----Output monitor date
 !
@@ -342,7 +346,7 @@
      &   (MHD_step%time_d, FEM_model%FEM_prm, FEM_SGS%SGS_par,          &
      &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%FEM_MHD_BCs,    &
      &    FEM_model%MHD_prop, SGS_MHD_wk%fem_int,                       &
-     &    FEM_SGS%FEM_filters%FEM_elens, FEM_SGS%Csims,                 &
+     &    FEM_SGS%FEM_filters%FEM_elens, FEM_SGS%diff_coefs,            &
      &    MHD_step%flex_p, SGS_MHD_wk%mk_MHD,                           &
      &    SGS_MHD_wk%rhs_mat, MHD_CG)
       end if

@@ -7,13 +7,23 @@
 !> @brief initialize model coefficients for commutation
 !!
 !!@verbatim
+!!      subroutine def_sgs_commute_component(SGS_par, mesh, layer_tbl,  &
+!!     &          MHD_prop, sgs_coefs, diff_coefs, FEM_SGS_wk)
+!!        type(SGS_paremeters), intent(in) :: SGS_par
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(layering_tbl), intent(in) :: layer_tbl
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(SGS_commutation_coefs), intent(inout) :: diff_coefs
+!!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
+!!
 !!      subroutine define_sgs_diff_coefs(numele, SGS_param, cmt_param,  &
-!!     &          layer_tbl, MHD_prop, wk_diff, Csims_FEM_MHD)
+!!     &          layer_tbl, MHD_prop, wk_diff, diff_coefs)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
-!!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
+!!        type(SGS_commutation_coefs), intent(inout) :: diff_coefs
 !!@end verbatim
 !
       module init_sgs_diff_coefs
@@ -39,7 +49,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine def_sgs_commute_component(SGS_par, mesh, layer_tbl,    &
-     &          MHD_prop, Csims_FEM_MHD, FEM_SGS_wk)
+     &          MHD_prop, sgs_coefs, diff_coefs, FEM_SGS_wk)
 !
       use t_mesh_data
       use t_layering_ele_list
@@ -50,16 +60,18 @@
       type(mesh_geometry), intent(in) :: mesh
       type(layering_tbl), intent(in) :: layer_tbl
       type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
+!
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_commutation_coefs), intent(inout) :: diff_coefs
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !
 !
       call define_sgs_components(mesh%node%numnod, mesh%ele%numele,     &
      &    SGS_par%model_p, layer_tbl, MHD_prop, FEM_SGS_wk%wk_sgs,      &
-     &    Csims_FEM_MHD)
+     &    sgs_coefs)
       call define_sgs_diff_coefs(mesh%ele%numele,                       &
      &    SGS_par%model_p, SGS_par%commute_p, layer_tbl, MHD_prop,      &
-     &    FEM_SGS_wk%wk_diff, Csims_FEM_MHD)
+     &    FEM_SGS_wk%wk_diff, diff_coefs)
 !
       end subroutine def_sgs_commute_component
 !
@@ -67,7 +79,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine define_sgs_diff_coefs(numele, SGS_param, cmt_param,    &
-     &          layer_tbl, MHD_prop, wk_diff, Csims_FEM_MHD)
+     &          layer_tbl, MHD_prop, wk_diff, diff_coefs)
 !
       use calypso_mpi
 !
@@ -84,7 +96,7 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
 !
       type(dynamic_model_data), intent(inout) :: wk_diff
-      type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
+      type(SGS_commutation_coefs), intent(inout) :: diff_coefs
 !
       integer(kind = kint) :: num_diff_field, ntot_diff_comp
 !
@@ -98,86 +110,84 @@
 !
       call set_sgs_diff_addresses(SGS_param, cmt_param,                 &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    wk_diff, Csims_FEM_MHD%diff_coefs)
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop, wk_diff, diff_coefs)
 !
-      if(Csims_FEM_MHD%diff_coefs%Cdiff_velo%iak_Csim .gt. 0) then
+      if(diff_coefs%Cdiff_velo%iak_Csim .gt. 0) then
          call alloc_SGS_model_coefficient(numele, ione,                 &
-     &       Csims_FEM_MHD%diff_coefs%Cdiff_velo)
+     &                                    diff_coefs%Cdiff_velo)
       else
          call alloc_SGS_model_coefficient(numele, ione,                 &
-     &       Csims_FEM_MHD%diff_coefs%Cdiff_velo)
+     &       diff_coefs%Cdiff_velo)
       end if
 !
-      if(Csims_FEM_MHD%diff_coefs%Cdiff_magne%iak_Csim .gt. 0) then
+      if(diff_coefs%Cdiff_magne%iak_Csim .gt. 0) then
          call alloc_SGS_model_coefficient(numele, ione,                 &
-     &       Csims_FEM_MHD%diff_coefs%Cdiff_magne)
+     &                                    diff_coefs%Cdiff_magne)
       else
          call alloc_SGS_model_coefficient(numele, ione,                 &
-     &       Csims_FEM_MHD%diff_coefs%Cdiff_magne)
+     &                                    diff_coefs%Cdiff_magne)
       end if
 !
-      if(Csims_FEM_MHD%diff_coefs%Cdiff_temp%iak_Csim .gt. 0) then
+      if(diff_coefs%Cdiff_temp%iak_Csim .gt. 0) then
          call alloc_SGS_model_coefficient(numele, ione,                 &
-     &       Csims_FEM_MHD%diff_coefs%Cdiff_temp)
+     &                                    diff_coefs%Cdiff_temp)
       else
          call alloc_SGS_model_coefficient(numele, ione,                 &
-     &       Csims_FEM_MHD%diff_coefs%Cdiff_temp)
+     &                                    diff_coefs%Cdiff_temp)
       end if
 !
-      if(Csims_FEM_MHD%diff_coefs%Cdiff_light%iak_Csim .gt. 0) then
+      if(diff_coefs%Cdiff_light%iak_Csim .gt. 0) then
          call alloc_SGS_model_coefficient(numele, ione,                 &
-     &       Csims_FEM_MHD%diff_coefs%Cdiff_light)
+     &                                    diff_coefs%Cdiff_light)
       else
          call alloc_SGS_model_coefficient(numele, ione,                 &
-     &       Csims_FEM_MHD%diff_coefs%Cdiff_light)
+     &                                    diff_coefs%Cdiff_light)
       end if
 !
 !
-      if(Csims_FEM_MHD%diff_coefs%Cdiff_SGS_uxb%iak_Csim .gt. 0) then
+      if(diff_coefs%Cdiff_SGS_uxb%iak_Csim .gt. 0) then
          call alloc_SGS_model_coefficient(numele, ione,                 &
-     &       Csims_FEM_MHD%diff_coefs%Cdiff_SGS_uxb)
+     &                                    diff_coefs%Cdiff_SGS_uxb)
       else
          call alloc_SGS_model_coefficient(numele, ione,                 &
-     &       Csims_FEM_MHD%diff_coefs%Cdiff_SGS_uxb)
+     &                                    diff_coefs%Cdiff_SGS_uxb)
       end if
 !
-      if(Csims_FEM_MHD%diff_coefs%Cdiff_SGS_lor%iak_Csim .gt. 0) then
+      if(diff_coefs%Cdiff_SGS_lor%iak_Csim .gt. 0) then
          call alloc_SGS_model_coefficient(numele, ione,                 &
-     &       Csims_FEM_MHD%diff_coefs%Cdiff_SGS_lor)
+     &                                    diff_coefs%Cdiff_SGS_lor)
       else
          call alloc_SGS_model_coefficient(numele, ione,                 &
-     &       Csims_FEM_MHD%diff_coefs%Cdiff_SGS_lor)
+     &                                    diff_coefs%Cdiff_SGS_lor)
       end if
 !
-      if(Csims_FEM_MHD%diff_coefs%Cdiff_SGS_mf%iak_Csim .gt. 0) then
+      if(diff_coefs%Cdiff_SGS_mf%iak_Csim .gt. 0) then
          call alloc_SGS_model_coefficient(numele, ione,                 &
-     &       Csims_FEM_MHD%diff_coefs%Cdiff_SGS_mf)
+     &                                    diff_coefs%Cdiff_SGS_mf)
       else
          call alloc_SGS_model_coefficient(numele, ione,                 &
-     &       Csims_FEM_MHD%diff_coefs%Cdiff_SGS_mf)
+     &                                    diff_coefs%Cdiff_SGS_mf)
       end if
 !
-      if(Csims_FEM_MHD%diff_coefs%Cdiff_SGS_hf%iak_Csim .gt. 0) then
+      if(diff_coefs%Cdiff_SGS_hf%iak_Csim .gt. 0) then
          call alloc_SGS_model_coefficient(numele, ione,                 &
-     &       Csims_FEM_MHD%diff_coefs%Cdiff_SGS_hf)
+     &                                    diff_coefs%Cdiff_SGS_hf)
       else
          call alloc_SGS_model_coefficient(numele, ione,                 &
-     &       Csims_FEM_MHD%diff_coefs%Cdiff_SGS_hf)
+     &                                    diff_coefs%Cdiff_SGS_hf)
       end if
 !
-      if(Csims_FEM_MHD%diff_coefs%Cdiff_SGS_cf%iak_Csim .gt. 0) then
+      if(diff_coefs%Cdiff_SGS_cf%iak_Csim .gt. 0) then
          call alloc_SGS_model_coefficient(numele, ione,                 &
-     &       Csims_FEM_MHD%diff_coefs%Cdiff_SGS_cf)
+     &                                    diff_coefs%Cdiff_SGS_cf)
       else
          call alloc_SGS_model_coefficient(numele, ione,                 &
-     &       Csims_FEM_MHD%diff_coefs%Cdiff_SGS_cf)
+     &                                    diff_coefs%Cdiff_SGS_cf)
       end if
 !
 !
       if(iflag_debug .gt. 0) then
-        call check_sgs_diff_addresses(wk_diff,                          &
-     &                                Csims_FEM_MHD%diff_coefs)
+        call check_sgs_diff_addresses(wk_diff, diff_coefs)
       end if
 !
       end subroutine define_sgs_diff_coefs
@@ -486,8 +496,8 @@
       use t_SGS_term_labels
       use t_ele_info_4_dynamic
 !
-      type(dynamic_model_data), intent(inout) :: wk_diff
-      type(SGS_commutation_coefs), intent(inout) :: diff_coefs
+      type(dynamic_model_data), intent(in) :: wk_diff
+      type(SGS_commutation_coefs), intent(in) :: diff_coefs
 !
 !
       write(*,*) 'diff_coefs%num_field', wk_diff%num_kinds

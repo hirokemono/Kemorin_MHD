@@ -10,7 +10,7 @@
 !!        type(mesh_SR), intent(inout) :: m_SR
 !!      subroutine nonlinear_incuction_wSGS_SPH(FEM_prm, SGS_par,       &
 !!     &          mesh, sph, comms_sph, trans_p, conduct, MHD_prop,     &
-!!     &          fem_int, Csims_FEM_MHD, iphys, iphys_LES,             &
+!!     &          fem_int, sgs_coefs, iphys, iphys_LES,                 &
 !!     &          ipol, rj_fld, m_SR)
 !!      subroutine nonlinear_incuction_SPH                              &
 !!     &         (sph, comms_sph, trans_p, iphys_ele_base, ele_fld,     &
@@ -141,7 +141,7 @@
 !
       subroutine nonlinear_incuction_wSGS_SPH(FEM_prm, SGS_par,         &
      &          mesh, sph, comms_sph, trans_p, conduct, MHD_prop,       &
-     &          fem_int, Csims_FEM_MHD, iphys, iphys_LES,               &
+     &          fem_int, sgs_coefs, iphys, iphys_LES,                   &
      &          ipol, rj_fld, m_SR)
 !
       use m_schmidt_poly_on_rtm
@@ -163,7 +163,7 @@
       type(SGS_model_addresses), intent(in) :: iphys_LES
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(finite_element_integration), intent(in) :: fem_int
-      type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
+      type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !
       type(field_geometry_data), intent(in) :: conduct
       type(phys_data), intent(inout) :: rj_fld
@@ -176,7 +176,7 @@
      &   MHD_prop%cd_prop, iphys, iphys_LES,                            &
      &   FSGSs%SGS_MHD_wk%iphys_ele_base, FSGSs%SGS_MHD_wk%ele_fld,     &
      &   fem_int%jcs, fem_int%rhs_tbl, FEM1_elen, filtering1,           &
-     &   Csims_FEM_MHD%sgs_coefs%Csim_SGS_uxb,  mhd1_fem_wk%mlump_cd,   &
+     &   sgs_coefs%Csim_SGS_uxb,  mhd1_fem_wk%mlump_cd,                 &
      &   FSGSs%SGS_MHD_wk%FEM_SGS_wk%wk_filter, mhd_fem1_wk,            &
      &   rhs_mat1%fem_wk, rhs_mat1%f_l, rhs_mat1%f_nl,                  &
      &   FEM_MHD%field, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)

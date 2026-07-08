@@ -12,7 +12,7 @@
 !!@verbatim
 !!      subroutine init_analyzer_fl(MHD_files, IO_bc, FEM_prm, SGS_par, &
 !!     &          flex_MHD, MHD_step, geofem, MHD_mesh, FEM_filters,    &
-!!     &          MHD_prop, MHD_BC, FEM_MHD_BCs, Csims_FEM_MHD,         &
+!!     &          MHD_prop, MHD_BC, FEM_MHD_BCs, sgs_coefs, diff_coefs, &
 !!     &          iphys, iphys_LES, nod_fld, FEM_ref, MHD_CG,           &
 !!     &          SGS_MHD_wk, fem_sq, fem_fst_IO, m_SR, label_sim)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
@@ -27,7 +27,8 @@
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!        type(MHD_BC_lists), intent(inout) :: MHD_BC
 !!        type(FEM_MHD_BC_data), intent(inout) :: FEM_MHD_BCs
-!!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
+!!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(SGS_commutation_coefs), intent(inout) :: diff_coefs
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(SGS_model_addresses), intent(inout) :: iphys_LES
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -85,7 +86,7 @@
 !
       subroutine init_analyzer_fl(MHD_files, IO_bc, FEM_prm, SGS_par,   &
      &          flex_MHD, MHD_step, geofem, MHD_mesh, FEM_filters,      &
-     &          MHD_prop, MHD_BC, FEM_MHD_BCs, Csims_FEM_MHD,           &
+     &          MHD_prop, MHD_BC, FEM_MHD_BCs, sgs_coefs, diff_coefs,   &
      &          iphys, iphys_LES, nod_fld, FEM_ref, MHD_CG,             &
      &          SGS_MHD_wk, fem_sq, fem_fst_IO, m_SR, label_sim)
 !
@@ -138,7 +139,8 @@
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(MHD_BC_lists), intent(inout) :: MHD_BC
       type(FEM_MHD_BC_data), intent(inout) :: FEM_MHD_BCs
-      type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_commutation_coefs), intent(inout) :: diff_coefs
       type(phys_address), intent(inout) :: iphys
       type(SGS_model_addresses), intent(inout) :: iphys_LES
       type(phys_data), intent(inout) :: nod_fld
@@ -216,7 +218,7 @@
 !
       call def_sgs_commute_component                                    &
      &   (SGS_par, geofem%mesh, FEM_filters%layer_tbl, MHD_prop,        &
-     &    Csims_FEM_MHD, SGS_MHD_wk%FEM_SGS_wk)
+     &    sgs_coefs, diff_coefs, SGS_MHD_wk%FEM_SGS_wk)
 !
 !  -------------------------------
 !
@@ -241,9 +243,8 @@
      &    MHD_prop%ref_param_T, geofem%mesh%node, geofem%mesh%ele,      &
      &    MHD_mesh%fluid, MHD_prop%cd_prop, iphys,                      &
      &    FEM_filters%layer_tbl, SGS_par, SGS_MHD_wk%FEM_SGS_wk,        &
-     &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%diff_coefs,            &
-     &    nod_fld, MHD_step%flex_p, MHD_step%init_d, MHD_step%time_d,   &
-     &    fem_fst_IO)
+     &    sgs_coefs, diff_coefs, nod_fld, MHD_step%flex_p,              &
+     &    MHD_step%init_d, MHD_step%time_d, fem_fst_IO)
       MHD_step%iflag_initial_step = 0
 !
 !  -------------------------------
@@ -316,11 +317,10 @@
 !
       if(solver_iflag(FEM_PRM%CG11_param%METHOD) .eq. iflag_mgcg) then
         call s_initialize_4_MHD_AMG                                     &
-     &     (MHD_step%time_d%dt, FEM_prm, geofem%mesh,                   &
-     &      SGS_MHD_wk%fem_int%jcs, Csims_FEM_MHD%diff_coefs,           &
-     &      MHD_prop, MHD_BC, FEM_prm%DJDS_param, spfs_1,               &
-     &      MHD_CG%MGCG_WK, MHD_CG%MGCG_FEM, MHD_CG%MGCG_MHD_FEM,       &
-     &      MHD_CG%MHD_mat, m_SR%SR_sig, m_SR%SR_i)
+     &    (MHD_step%time_d%dt, FEM_prm, geofem%mesh,                    &
+     &     SGS_MHD_wk%fem_int%jcs, diff_coefs, MHD_prop, MHD_BC,        &
+     &     FEM_prm%DJDS_param, spfs_1, MHD_CG%MGCG_WK, MHD_CG%MGCG_FEM, &
+     &     MHD_CG%MGCG_MHD_FEM, MHD_CG%MHD_mat, m_SR%SR_sig, m_SR%SR_i)
       end if
 !
 !     --------------------- 

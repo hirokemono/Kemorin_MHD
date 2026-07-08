@@ -10,9 +10,10 @@
 !>@brief Initialization for FEM_MHD
 !!
 !!@verbatim
-!!      subroutine init_analyzer_snap(MHD_files, FEM_prm, SGS_par,      &
-!!     &          IO_bc, MHD_step, geofem, MHD_mesh, FEM_filters,       &
-!!     &          MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs, Csims_FEM_MHD, &
+!!      subroutine init_analyzer_snap                                   &
+!!     &         (MHD_files, FEM_prm, SGS_par, IO_bc, MHD_step,         &
+!!     &          geofem, MHD_mesh, FEM_filters, MHD_prop, ak_MHD,      &
+!!     &          MHD_BC, FEM_MHD_BCs, sgs_coefs, diff_coefs,           &
 !!     &          iphys, iphys_LES, nod_fld, FEM_ref, t_IO, rst_step,   &
 !!     &          SGS_MHD_wk, fem_sq, fem_fst_IO, m_SR, label_sim)
 !!        type(field_IO_params), intent(in) :: fst_file_IO
@@ -26,7 +27,8 @@
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!        type(MHD_BC_lists), intent(inout) :: MHD_BC
 !!        type(FEM_MHD_BC_data), intent(inout) :: FEM_MHD_BCs
-!!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
+!!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(SGS_commutation_coefs), intent(inout) :: diff_coefs
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(SGS_model_addresses), intent(inout) :: iphys_LES
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -85,9 +87,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer_snap(MHD_files, FEM_prm, SGS_par,        &
-     &          IO_bc, MHD_step, geofem, MHD_mesh, FEM_filters,         &
-     &          MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs, Csims_FEM_MHD,   &
+      subroutine init_analyzer_snap                                     &
+     &         (MHD_files, FEM_prm, SGS_par, IO_bc, MHD_step,           &
+     &          geofem, MHD_mesh, FEM_filters, MHD_prop, ak_MHD,        &
+     &          MHD_BC, FEM_MHD_BCs, sgs_coefs, diff_coefs,             &
      &          iphys, iphys_LES, nod_fld, FEM_ref, t_IO, rst_step,     &
      &          SGS_MHD_wk, fem_sq, fem_fst_IO, m_SR, label_sim)
 !
@@ -131,7 +134,8 @@
       type(coefs_4_MHD_type), intent(inout) :: ak_MHD
       type(MHD_BC_lists), intent(inout) :: MHD_BC
       type(FEM_MHD_BC_data), intent(inout) :: FEM_MHD_BCs
-      type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
+      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+      type(SGS_commutation_coefs), intent(inout) :: diff_coefs
       type(phys_address), intent(inout) :: iphys
       type(SGS_model_addresses), intent(inout) :: iphys_LES
       type(phys_data), intent(inout) :: nod_fld
@@ -205,7 +209,7 @@
 !
       call def_sgs_commute_component                                    &
      &   (SGS_par, geofem%mesh, FEM_filters%layer_tbl,                  &
-     &    MHD_prop, Csims_FEM_MHD, SGS_MHD_wk%FEM_SGS_wk)
+     &    MHD_prop, sgs_coefs, diff_coefs, SGS_MHD_wk%FEM_SGS_wk)
 !
 !     --------------------- 
 !

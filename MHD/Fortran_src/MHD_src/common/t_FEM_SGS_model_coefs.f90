@@ -1,10 +1,12 @@
-!t_FEM_SGS_model_coefs.f90
-!     module t_FEM_SGS_model_coefs
-!
-!> @brief addresses for SGS coefficients
-!
-!     Written by H. Matsui
-!
+!>@file   t_FEM_SGS_model_coefs.f90
+!!@brief  module t_FEM_SGS_model_coefs
+!!
+!!@author H. Matsui
+!!@date    Programmed by H.Matsui in 200?
+!!
+!>@brief  Structures for model coefficients for FEM_SGS_MHD
+!!
+!!@verbatim
 !!      subroutine dup_SGS_model_coefficient(org_Csim, new_Csim)
 !!        type(SGS_model_coefficient), intent(in) :: org_Csim
 !!        type(SGS_model_coefficient), intent(inout) :: new_Csim
@@ -15,6 +17,12 @@
 !!        integer(kind = kint), intent(in) :: n_ele, num_comp
 !!        integer(kind = kint), intent(in) :: n_nod
 !!        type(SGS_model_coefficient), intent(inout) :: Csim
+!!
+!!      subroutine check_sgs_addresses(id_file, wk_sgs, sgs_coefs)
+!!        integer(kind = kint), intent(in) :: id_file
+!!        type(dynamic_model_data), intent(in) :: wk_sgs
+!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
+!!@endverbatim
 !
       module t_FEM_SGS_model_coefs
 !
@@ -85,15 +93,6 @@
 !>       Structure for commutationa error coefficient for SGS composition flux
         type(SGS_model_coefficient) :: Cdiff_SGS_cf
       end type SGS_commutation_coefs
-!
-!
-!>      Structure of model coefficieints for FEM MHD
-      type SGS_coefficients_data
-!>        Model coefficeints in elements
-        type(SGS_coefficients_type) :: sgs_coefs
-!>        Commutation error model coefficeints
-        type(SGS_commutation_coefs) :: diff_coefs
-      end type SGS_coefficients_data
 !
 ! -------------------------------------------------------------------
 !
@@ -178,6 +177,75 @@
       deallocate(Csim%coef_nod)
 !
       end subroutine dealloc_SGS_model_coef_on_nod
+!
+! -------------------------------------------------------------------
+! -------------------------------------------------------------------
+!
+      subroutine check_sgs_addresses(id_file, wk_sgs, sgs_coefs)
+!
+      use t_ele_info_4_dynamic
+!
+      integer(kind = kint), intent(in) :: id_file
+      type(dynamic_model_data), intent(in) :: wk_sgs
+      type(SGS_coefficients_type), intent(in) :: sgs_coefs
+!
+!
+      if(iflag_debug .gt. 0) then
+        write(id_file,*) 'num_sgs_kinds', wk_sgs%num_kinds
+        write(id_file,*) 'num_sgs_coefs', wk_sgs%ntot_comp
+!
+        if(sgs_coefs%Csim_SGS_hf%iak_Csim .gt. 0) then
+          write(id_file,*)                                              &
+     &               'iak_sgs_hf', sgs_coefs%Csim_SGS_hf%iak_Csim,      &
+     &                             sgs_coefs%Csim_SGS_hf%icomp_Csim,    &
+     &                             sgs_coefs%Csim_SGS_hf%num_comp,      &
+     &         trim(wk_sgs%name(sgs_coefs%Csim_SGS_hf%iak_Csim))
+        end if
+        if(sgs_coefs%Csim_SGS_cf%iak_Csim .gt. 0) then
+          write(id_file,*)                                              &
+     &               'iak_sgs_cf', sgs_coefs%Csim_SGS_cf%iak_Csim,      &
+     &                             sgs_coefs%Csim_SGS_cf%icomp_Csim,    &
+     &                             sgs_coefs%Csim_SGS_cf%num_comp,      &
+     &         trim(wk_sgs%name(sgs_coefs%Csim_SGS_cf%iak_Csim))
+        end if
+        if(sgs_coefs%Csim_SGS_mf%iak_Csim .gt. 0) then
+          write(id_file,*)                                              &
+     &               'iak_sgs_mf', sgs_coefs%Csim_SGS_mf%iak_Csim,      &
+     &                             sgs_coefs%Csim_SGS_mf%icomp_Csim,    &
+     &                             sgs_coefs%Csim_SGS_mf%num_comp,      &
+     &         trim(wk_sgs%name(sgs_coefs%Csim_SGS_mf%iak_Csim))
+        end if
+        if(sgs_coefs%Csim_SGS_lor%iak_Csim .gt. 0) then
+          write(id_file,*)                                              &
+     &               'iak_sgs_lor', sgs_coefs%Csim_SGS_lor%iak_Csim,    &
+     &                             sgs_coefs%Csim_SGS_lor%icomp_Csim,   &
+     &                             sgs_coefs%Csim_SGS_lor%num_comp,     &
+     &            trim(wk_sgs%name(sgs_coefs%Csim_SGS_lor%iak_Csim))
+        end if
+        if(sgs_coefs%Csim_SGS_tbuo%iak_Csim .gt. 0) then
+          write(id_file,*)                                              &
+     &               'iak_sgs_tbuo', sgs_coefs%Csim_SGS_tbuo%iak_Csim,  &
+     &                              sgs_coefs%Csim_SGS_tbuo%icomp_Csim, &
+     &                              sgs_coefs%Csim_SGS_tbuo%num_comp,   &
+     &             trim(wk_sgs%name(sgs_coefs%Csim_SGS_tbuo%iak_Csim))
+        end if
+        if(sgs_coefs%Csim_SGS_cbuo%iak_Csim .gt. 0) then
+          write(id_file,*)                                              &
+     &               'iak_sgs_cbuo', sgs_coefs%Csim_SGS_cbuo%iak_Csim,  &
+     &                              sgs_coefs%Csim_SGS_cbuo%icomp_Csim, &
+     &                              sgs_coefs%Csim_SGS_cbuo%num_comp,   &
+     &             trim(wk_sgs%name(sgs_coefs%Csim_SGS_cbuo%iak_Csim))
+        end if
+        if(sgs_coefs%Csim_SGS_uxb%iak_Csim .gt. 0) then
+          write(id_file,*)                                              &
+     &               'iak_sgs_uxb', sgs_coefs%Csim_SGS_uxb%iak_Csim,    &
+     &                              sgs_coefs%Csim_SGS_uxb%icomp_Csim,  &
+     &                              sgs_coefs%Csim_SGS_uxb%num_comp,    &
+     &             trim(wk_sgs%name(sgs_coefs%Csim_SGS_uxb%iak_Csim))
+        end if
+      end if
+!
+      end subroutine check_sgs_addresses
 !
 ! -------------------------------------------------------------------
 !

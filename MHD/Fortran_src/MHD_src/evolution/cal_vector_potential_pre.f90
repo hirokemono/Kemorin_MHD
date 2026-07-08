@@ -1,15 +1,18 @@
-!cal_vector_potential_pre.f90
-!      module cal_vector_potential_pre
-!
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!        modieied by H. Matsui on Sep., 2005
-!
+!>@file   cal_vector_potential_pre.f90
+!!        module cal_vector_potential_pre
+!!
+!! @author H. Matsui
+!! @date   programmed in July 2000 (ver 1.1)
+!!        modieied by H. Matsui in Sep., 2005
+!!
+!> @brief Time integration of magnetic vector potential
+!!
+!!@verbatim
 !!      subroutine cal_vector_p_pre(ak_d_magne, dt,                     &
 !!     &          FEM_prm, SGS_param, cmt_param, filter_param,          &
 !!     &          mesh, conduct, group, cd_prop, Bnod_bcs, Asf_bcs,     &
-!!     &          iphys, iphys_LES, iphys_ele_base, ele_fld,            &
-!!     &          jacs, rhs_tbl, Csims_FEM_MHD, FEM_filters, mlump_cd,  &
+!!     &          iphys, iphys_LES, iphys_ele_base, ele_fld, jacs,      &
+!!     &          rhs_tbl, sgs_coefs, diff_coefs, FEM_filters, mlump_cd,&
 !!     &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk,            &
 !!     &          rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !!      subroutine cal_vector_p_co(ak_d_magne, dt,                      &
@@ -39,7 +42,8 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
-!!        type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
+!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
+!!        type(SGS_commutation_coefs), intent(in) :: diff_coefs
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(MHD_MG_matrix), intent(in) :: Bmatrix
@@ -52,6 +56,7 @@
 !!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!@endverbatim
 !
       module cal_vector_potential_pre
 !
@@ -104,8 +109,8 @@
       subroutine cal_vector_p_pre(ak_d_magne, dt,                       &
      &          FEM_prm, SGS_param, cmt_param, filter_param,            &
      &          mesh, conduct, group, cd_prop, Bnod_bcs, Asf_bcs,       &
-     &          iphys, iphys_LES, iphys_ele_base, ele_fld,              &
-     &          jacs, rhs_tbl, Csims_FEM_MHD, FEM_filters, mlump_cd,    &
+     &          iphys, iphys_LES, iphys_ele_base, ele_fld, jacs,        &
+     &          rhs_tbl, sgs_coefs, diff_coefs, FEM_filters, mlump_cd,  &
      &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk,              &
      &          rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !
@@ -139,7 +144,8 @@
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
+      type(SGS_coefficients_type), intent(in) :: sgs_coefs
+      type(SGS_commutation_coefs), intent(in) :: diff_coefs
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(lumped_mass_matrices), intent(in) :: mlump_cd
       type(MHD_MG_matrix), intent(in) :: Bmatrix
@@ -167,9 +173,9 @@
         call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,        &
      &      mesh%ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,          &
      &      mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,      &
-     &      rhs_tbl, FEM_filters%FEM_elens,                             &
-     &      Csims_FEM_MHD%diff_coefs%Cdiff_magne, cd_prop%coef_exp,     &
-     &      ak_d_magne, iphys%base%i_vecp, rhs_mat%fem_wk, rhs_mat%f_l)
+     &      rhs_tbl, FEM_filters%FEM_elens, diff_coefs%Cdiff_magne,     &
+     &      cd_prop%coef_exp, ak_d_magne, iphys%base%i_vecp,            &
+     &      rhs_mat%fem_wk, rhs_mat%f_l)
       end if
 !
 !  lead induction terms
@@ -180,9 +186,8 @@
      &      iphys%base, iphys_LES%filter_fld, iphys_LES%SGS_wk,         &
      &      iphys_ele_base, ele_fld, jacs, rhs_tbl,                     &
      &      FEM_filters%FEM_elens, FEM_filters%filtering,               &
-     &      Csims_FEM_MHD%sgs_coefs%Csim_SGS_uxb,                       &
-     &      wk_filter, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl,        &
-     &      nod_fld, v_sol, SR_sig, SR_r)
+     &      sgs_coefs%Csim_SGS_uxb, wk_filter, mhd_fem_wk,              &
+     &      rhs_mat%fem_wk, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
@@ -237,10 +242,9 @@
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%base%i_vecp, iphys%exp_work%i_pre_uxb,                &
      &      ak_d_magne, Bnod_bcs%nod_bc_a, dt, FEM_prm,                 &
-     &      mesh%nod_comm, mesh%node, mesh%ele, conduct,                &
-     &      cd_prop, iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d,  &
-     &      rhs_tbl, FEM_filters%FEM_elens,                             &
-     &      Csims_FEM_MHD%diff_coefs%Cdiff_magne%coef,                  &
+     &      mesh%nod_comm, mesh%node, mesh%ele, conduct, cd_prop,       &
+     &      iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,  &
+     &      FEM_filters%FEM_elens, diff_coefs%Cdiff_magne%coef,         &
      &      mlump_cd, Bmatrix, MG_vector, mhd_fem_wk,                   &
      &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,         &
      &      v_sol, SR_sig, SR_r)
@@ -251,8 +255,7 @@
      &      iphys%base%i_vecp, iphys%exp_work%i_pre_uxb, ak_d_magne,    &
      &      Bnod_bcs%nod_bc_a, dt, FEM_prm, mesh%node, mesh%ele,        &
      &      conduct, cd_prop, jacs%g_FEM, jacs%jac_3d, rhs_tbl,         &
-     &      FEM_filters%FEM_elens,                                      &
-     &      Csims_FEM_MHD%diff_coefs%Cdiff_magne%coef,                  &
+     &      FEM_filters%FEM_elens, diff_coefs%Cdiff_magne%coef,         &
      &      Bmatrix, MG_vector, mhd_fem_wk, rhs_mat%fem_wk,             &
      &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
       end if
