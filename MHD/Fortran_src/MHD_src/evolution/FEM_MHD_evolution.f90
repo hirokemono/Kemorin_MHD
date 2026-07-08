@@ -168,8 +168,7 @@
      &    (time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,             &
      &     geofem%mesh, geofem%group, MHD_mesh%fluid, MHD_mesh%conduct, &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs,        &
-     &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
-     &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
+     &     iphys%base, iphys_LES, SGS_MHD_wk%iphys_ele_base,            &
      &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int, FEM_filters,   &
      &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                &
      &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,             &
@@ -196,8 +195,7 @@
      &    (time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,             &
      &     geofem%mesh, geofem%group, MHD_mesh%fluid, MHD_mesh%conduct, &
      &     surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs,                          &
-     &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
-     &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
+     &     iphys%base, iphys_LES, SGS_MHD_wk%iphys_ele_base,            &
      &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int, FEM_filters,   &
      &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                &
      &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,             &
@@ -241,14 +239,12 @@
      &      sgs_coefs, fem_sq, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
         call update_with_velocity(time_d%i_time_step, time_d%dt,        &
      &     FEM_prm, SGS_par, geofem%mesh, geofem%group, MHD_mesh%fluid, &
-     &     surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs,                          &
-     &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
-     &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
-     &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int, FEM_filters,   &
-     &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
-     &     SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,          &
-     &     SGS_MHD_wk%ele_fld, diff_coefs%Cdiff_velo,                   &
-     &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &     surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs, iphys%base, iphys_LES,   &
+     &     SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%iphys_ele_fil,         &
+     &     SGS_MHD_wk%fem_int, FEM_filters, SGS_MHD_wk%mk_MHD,          &
+     &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                &
+     &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,             &
+     &     diff_coefs%Cdiff_velo, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !
       end subroutine fields_evolution
@@ -293,14 +289,12 @@
       if(iphys%base%i_velo .ne. 0) then
         call update_with_velocity(time_d%i_time_step, time_d%dt,        &
      &     FEM_prm, SGS_par, geofem%mesh, geofem%group, MHD_mesh%fluid, &
-     &     surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs,                          &
-     &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
-     &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
-     &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int, FEM_filters,   &
-     &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
-     &     SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,          &
-     &     SGS_MHD_wk%ele_fld, diff_coefs%Cdiff_velo,                   &
-     &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &     surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs, iphys%base, iphys_LES,   &
+     &     SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%iphys_ele_fil,         &
+     &     SGS_MHD_wk%fem_int, FEM_filters, SGS_MHD_wk%mk_MHD,          &
+     &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                &
+     &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,             &
+     &     diff_coefs%Cdiff_velo, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !
       if(iphys%base%i_temp .ne. 0) then
@@ -313,8 +307,9 @@
 !
         iflag_supg = FEM_prm%iflag_temp_supg
         n_int_evo =  FEM_prm%npoint_t_evo_int
-        iflag_SGS_flux =      SGS_par%model_p%SGS_heat%iflag_SGS_flux
-        iflag_commute_field = SGS_par%model_p%SGS_heat%iflag_commute_field
+        iflag_SGS_flux = SGS_par%model_p%SGS_heat%iflag_SGS_flux
+        iflag_commute_field                                             &
+     &                 = SGS_par%model_p%SGS_heat%iflag_commute_field
         call update_with_scalar                                         &
      &    (time_d%i_time_step, time_d%dt, i_scalar, i_pert, i_filter_s, &
      &     i_SGS_wk_field, iphys_wfl_scalar, iphys_fefx_buo_gen,        &
@@ -361,8 +356,7 @@
      &    (time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,             &
      &     geofem%mesh, geofem%group, MHD_mesh%fluid, MHD_mesh%conduct, &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs,        &
-     &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
-     &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
+     &     iphys%base, iphys_LES, SGS_MHD_wk%iphys_ele_base,            &
      &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int, FEM_filters,   &
      &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                &
      &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,             &
@@ -372,8 +366,7 @@
      &    (time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,             &
      &     geofem%mesh, geofem%group, MHD_mesh%fluid, MHD_mesh%conduct, &
      &     surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs,                          &
-     &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
-     &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
+     &     iphys%base, iphys_LES, SGS_MHD_wk%iphys_ele_base,            &
      &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int, FEM_filters,   &
      &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                &
      &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,             &
@@ -464,14 +457,12 @@
      &      sgs_coefs, fem_sq, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
         call update_with_velocity(time_d%i_time_step, time_d%dt,        &
      &     FEM_prm, SGS_par, geofem%mesh, geofem%group, MHD_mesh%fluid, &
-     &     surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs,                          &
-     &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
-     &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
-     &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int, FEM_filters,   &
-     &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
-     &     SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,          &
-     &     SGS_MHD_wk%ele_fld, diff_coefs%Cdiff_velo,                   &
-     &     m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
+     &     surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs, iphys%base, iphys_LES,   &
+     &     SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%iphys_ele_fil,         &
+     &     SGS_MHD_wk%fem_int, FEM_filters, SGS_MHD_wk%mk_MHD,          &
+     &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                &
+     &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,             &
+     &     diff_coefs%Cdiff_velo, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if
 !
       end subroutine fields_evo_for_FEM_SPH

@@ -10,10 +10,9 @@
 !!      subroutine update_with_magnetic_field                           &
 !!     &         (i_step, dt, FEM_prm, SGS_par, mesh, group,            &
 !!     &          fluid, conduct, Bsf_bcs, Fsf_bcs,                     &
-!!     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,       &
-!!     &          iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,  &
-!!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,    &
-!!     &          Cdiff_magne, v_sol, SR_sig, SR_r)
+!!     &          iphys_base, iphys_LES, iphys_ele_base, iphys_ele_fil, &
+!!     &          fem_int, FEM_filters, FEM_SGS_wk, mhd_fem_wk, rhs_mat,&
+!!     &          nod_fld, ele_fld, Cdiff_magne, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -22,9 +21,7 @@
 !!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
 !!        type(potential_surf_bc_type), intent(in) :: Fsf_bcs
 !!        type(base_field_address), intent(in) :: iphys_base
-!!        type(base_field_address), intent(in) :: iphys_fil
-!!        type(base_field_address), intent(in) :: iphys_wfl
-!!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
+!!        type(SGS_model_addresses), intent(in) :: iphys_LES
 !!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(base_field_address), intent(in) :: iphys_ele_fil
 !!        type(finite_element_integration), intent(in) :: fem_int
@@ -54,7 +51,6 @@
       use t_phys_data
       use t_base_field_labels
       use t_SGS_model_addresses
-      use t_SGS_model_coef_labels
       use t_table_FEM_const
       use t_jacobians
       use t_MHD_finite_element_mat
@@ -79,10 +75,9 @@
       subroutine update_with_magnetic_field                             &
      &         (i_step, dt, FEM_prm, SGS_par, mesh, group,              &
      &          fluid, conduct, Bsf_bcs, Fsf_bcs,                       &
-     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,         &
-     &          iphys_ele_base, iphys_ele_fil, fem_int, FEM_filters,    &
-     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,      &
-     &          Cdiff_magne, v_sol, SR_sig, SR_r)
+     &          iphys_base, iphys_LES, iphys_ele_base, iphys_ele_fil,   &
+     &          fem_int, FEM_filters, FEM_SGS_wk, mhd_fem_wk, rhs_mat,  &
+     &          nod_fld, ele_fld, Cdiff_magne, v_sol, SR_sig, SR_r)
 !
       use average_on_elements
       use cal_filtering_scalars
@@ -102,9 +97,7 @@
       type(potential_surf_bc_type), intent(in) :: Fsf_bcs
 !
       type(base_field_address), intent(in) :: iphys_base
-      type(base_field_address), intent(in) :: iphys_fil
-      type(base_field_address), intent(in) :: iphys_wfl
-      type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
+      type(SGS_model_addresses), intent(in) :: iphys_LES
 !
       type(base_field_address), intent(in) :: iphys_ele_base
       type(base_field_address), intent(in) :: iphys_ele_fil
@@ -156,42 +149,44 @@
       end if
 !
       if (iflag2.eq.1 .or. iflag2.eq.2 .or. iflag2.eq.3) then
-        if (iphys_fil%i_magne .ne. 0) then
+        if (iphys_LES%filter_fld%i_magne .ne. 0) then
           if(iflag_debug.gt.0) write(*,*)                               &
-     &         'cal_filtered_vector_whole',  iphys_fil%i_magne
+     &       'cal_filtered_vector_whole', iphys_LES%filter_fld%i_magne
           call cal_filtered_vector_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
-     &        iphys_fil%i_magne, iphys_base%i_magne,                    &
+     &        iphys_LES%filter_fld%i_magne, iphys_base%i_magne,         &
      &        FEM_SGS_wk%wk_filter, nod_fld, v_sol, SR_sig, SR_r)
-          nod_fld%iflag_update(iphys_fil%i_magne  ) = 1
-          nod_fld%iflag_update(iphys_fil%i_magne+1) = 1
-          nod_fld%iflag_update(iphys_fil%i_magne+2) = 1
+          nod_fld%iflag_update(iphys_LES%filter_fld%i_magne  ) = 1
+          nod_fld%iflag_update(iphys_LES%filter_fld%i_magne+1) = 1
+          nod_fld%iflag_update(iphys_LES%filter_fld%i_magne+2) = 1
         end if
 !
         if (iflag2.eq.2 .and. iphys_ele_fil%i_magne.ne.0) then
           if (iflag_debug.gt.0) write(*,*) 'filtered_magne_on_ele'
           call vector_on_element_1st(mesh%node, mesh%ele, fem_int%jcs,  &
      &        mesh%ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,        &
-     &        iphys_fil%i_magne, nod_fld, iphys_ele_fil%i_magne,        &
-     &        ele_fld)
+     &        iphys_LES%filter_fld%i_magne, nod_fld,                    &
+     &        iphys_ele_fil%i_magne, ele_fld)
         end if
 !
         if(iflag2.eq.2 .and. mhd_fem_wk%ifil_elediff_b .ne. 0) then
           if(iflag_debug.gt.0) write(*,*) 'diff_filter_b_on_ele'
           call sel_int_diff_vector_on_ele                               &
      &       (FEM_prm%npoint_t_evo_int, mesh%ele%istack_ele_smp,        &
-     &        iphys_fil%i_magne, mhd_fem_wk%ifil_elediff_b,             &
+     &        iphys_LES%filter_fld%i_magne, mhd_fem_wk%ifil_elediff_b,  &
      &        mesh%node, mesh%ele, nod_fld, fem_int%jcs, mhd_fem_wk)
         end if
 !
-        if (iflag2.eq.3 .and. iphys_wfl%i_magne.ne.0) then
+        if((iflag2 .eq. 3)                                              &
+     &     .and. (iphys_LES%wide_filter_fld%i_magne .ne. 0)) then
           call cal_filtered_vector_whole(SGS_par%filter_p,              &
      &         mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,    &
-     &         iphys_wfl%i_magne, iphys_fil%i_magne,                    &
-     &         FEM_SGS_wk%wk_filter, nod_fld, v_sol, SR_sig, SR_r)
-          nod_fld%iflag_update(iphys_wfl%i_magne  ) = 1
-          nod_fld%iflag_update(iphys_wfl%i_magne+1) = 1
-          nod_fld%iflag_update(iphys_wfl%i_magne+2) = 1
+     &         iphys_LES%wide_filter_fld%i_magne,                       &
+     &         iphys_LES%filter_fld%i_magne, FEM_SGS_wk%wk_filter,      &
+     &         nod_fld, v_sol, SR_sig, SR_r)
+          nod_fld%iflag_update(iphys_LES%wide_filter_fld%i_magne  ) = 1
+          nod_fld%iflag_update(iphys_LES%wide_filter_fld%i_magne+1) = 1
+          nod_fld%iflag_update(iphys_LES%wide_filter_fld%i_magne+2) = 1
         end if
       end if
 !
@@ -203,7 +198,7 @@
           call s_cal_diff_coef_magne                                    &
      &       (dt, FEM_prm, SGS_par, mesh%nod_comm, mesh%node,           &
      &        mesh%ele, mesh%surf, group%surf_grp, Bsf_bcs, Fsf_bcs,    &
-     &        iphys_base, iphys_fil, iphys_SGS_wk,                      &
+     &        iphys_base, iphys_LES%filter_fld, iphys_LES%SGS_wk,       &
      &        iphys_ele_base, ele_fld, fluid,                           &
      &        FEM_filters%layer_tbl, fem_int%jcs, fem_int%rhs_tbl,      &
      &        FEM_filters%FEM_elens, FEM_filters%filtering,             &
@@ -238,7 +233,7 @@
 !
 !      call rotation_on_element_1st(mesh%node, mesh%ele, fem_int%jcs,   &
 !     &    mesh%ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,           &
-!     &    iphys_fil%i_vecp, nod_fld, iphys_ele_fil%i_magne,            &
+!     &    iphys_LES%filter_fld%i_vecp, nod_fld, iphys_ele_fil%i_magne, &
 !     &    ele_fld)
 !
        end subroutine update_with_magnetic_field
