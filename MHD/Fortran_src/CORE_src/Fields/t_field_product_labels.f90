@@ -59,6 +59,12 @@
 !!   zonal_toroidal_velocity          [i_zonal_velo]:
 !!   vecp_induction_by_zonal_flow     [i_zonal_vp_induct]:
 !!   magnetic_induction_by_zonal_flow [i_zonal_induction]:
+!!   sym_zonal_toroidal_velocity      [i_sym_zonal_velo]:
+!!   vecp_induction_by_sym_zonal_flow [i_sym_zonal_vp_induct]:
+!!   magnetic_induction_by_sym_zonal_flow [i_sym_zonal_induction]:
+!!   asym_zonal_toroidal_velocity     [i_asym_zonal_velo]:
+!!   vecp_induction_by_asym_zonal_flow [i_asym_zonal_vp_induct]:
+!!   magnetic_induction_by_asym_zonal_flow [i_asym_zonal_induction]:
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -164,6 +170,18 @@
         integer (kind=kint) :: i_zonal_vp_induct =      izero
 !>        start address for induction by zonal flow
         integer (kind=kint) :: i_zonal_induction =      izero
+!>        start address for m=0 toroidal symmetric velocity
+        integer (kind=kint) :: i_sym_zonal_velo =       izero
+!>        start address for induction vector potential by sym zonal flow
+        integer (kind=kint) :: i_sym_zonal_vp_induct =  izero
+!>        start address for induction by sym zonal flow
+        integer (kind=kint) :: i_sym_zonal_induction =  izero
+!>        start address for m=0 toroidal anti-symmetric velocity
+        integer (kind=kint) :: i_asym_zonal_velo =      izero
+!>        start address for induction vector potential by asym zonal flow
+        integer (kind=kint) :: i_asym_zonal_vp_induct = izero
+!>        start address for induction by asym zonal flow
+        integer (kind=kint) :: i_asym_zonal_induction = izero
       end type phys_products_address
 !
 ! ----------------------------------------------------------------------
@@ -264,6 +282,22 @@
         else if (field_name .eq. magnetic_induction_by_zonal_flow%name) &
      &      then
           prod_fld%i_zonal_induction = i_phys
+        else if (field_name .eq. sym_zonal_toroidal_velocity%name) then
+          prod_fld%i_sym_zonal_velo =      i_phys
+        else if (field_name .eq. vecp_induction_by_sym_zonal_flow%name) &
+     &      then
+          prod_fld%i_sym_zonal_vp_induct = i_phys
+        else if (field_name .eq.                                        &
+     &      magnetic_induction_by_sym_zonal_flow%name) then
+          prod_fld%i_sym_zonal_induction = i_phys
+        else if (field_name .eq. asym_zonal_toroidal_velocity%name) then
+          prod_fld%i_asym_zonal_velo =      i_phys
+        else if (field_name .eq.                                        &
+     &      vecp_induction_by_asym_zonal_flow%name) then
+          prod_fld%i_asym_zonal_vp_induct = i_phys
+        else if (field_name .eq.                                        &
+     &      magnetic_induction_by_asym_zonal_flow%name) then
+          prod_fld%i_asym_zonal_induction = i_phys
         end if
       end if
 !

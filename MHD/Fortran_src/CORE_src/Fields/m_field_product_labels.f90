@@ -61,6 +61,12 @@
 !!   zonal_toroidal_velocity          [i_zonal_velo]:
 !!   vecp_induction_by_zonal_flow     [i_zonal_vp_induct]:
 !!   magnetic_induction_by_zonal_flow [i_zonal_induction]:
+!!   sym_zonal_toroidal_velocity      [i_sym_zonal_velo]:
+!!   vecp_induction_by_sym_zonal_flow [i_sym_zonal_vp_induct]:
+!!   magnetic_induction_by_sym_zonal_flow [i_sym_zonal_induction]:
+!!   asym_zonal_toroidal_velocity     [i_asym_zonal_velo]:
+!!   vecp_induction_by_asym_zonal_flow [i_asym_zonal_vp_induct]:
+!!   magnetic_induction_by_asym_zonal_flow [i_asym_zonal_induction]:
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -274,6 +280,48 @@
      &                math = '$ \nabla \times'                          &
      &                    // ' (u_{T}^{m=0} \times B) $')
 !
+!>      Symmetric toroidal velocity with m=0 only
+      type(field_def), parameter :: sym_zonal_toroidal_velocity         &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'sym_zonal_toroidal_velocity',             &
+     &                math = '$ u_{T,s}^{m=0} $')
+!
+!>      Vector potential induction by symmetric toroidal zonal flow
+!!             @f$ u_{T,s}^{m=0} \times B @f$
+      type(field_def), parameter :: vecp_induction_by_sym_zonal_flow    &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'vecp_induction_by_sym_zonal_flow',        &
+     &                math = '$ u_{T,s}^{m=0} \times B $')
+!
+!>      Magnetic induction by symmetric toroidal zonal flow
+!!             @f$ \nabla \times (u_{T,s}^{m=0} \times B) @f$
+      type(field_def), parameter :: magnetic_induction_by_sym_zonal_flow&
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'magnetic_induction_by_sym_zonal_flow',    &
+     &                math = '$ \nabla \times'                          &
+     &                    // ' (u_{T,s}^{m=0} \times B) $')
+!
+!>      Anti-symmetric toroidal velocity with m=0 only
+      type(field_def), parameter :: asym_zonal_toroidal_velocity        &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'asym_zonal_toroidal_velocity',            &
+     &                math = '$ u_{T,a}^{m=0} $')
+!
+!>      Vector potential induction by anti-symmetric toroidal zonal flow
+!!             @f$ u_{T,a}^{m=0} \times B @f$
+      type(field_def), parameter :: vecp_induction_by_asym_zonal_flow   &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'vecp_induction_by_asym_zonal_flow',       &
+     &                math = '$ u_{T,a}^{m=0} \times B $')
+!
+!>      Magnetic induction by anti-symmetric toroidal zonal flow
+!!             @f$ \nabla \times (u_{T,a}^{m=0} \times B) @f$
+      type(field_def), parameter :: magnetic_induction_by_asym_zonal_flow&
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'magnetic_induction_by_asym_zonal_flow',   &
+     &                math = '$ \nabla \times'                          &
+     &                    // ' (u_{T,a}^{m=0} \times B) $')
+!
 !    ----------   Ole definision  ------------------
 !>        Field label for ageostrophic balance
 !!         @f$ -2 e_{ijk} \Omega_{j} u_{k} - \partial_{i} p @f$
@@ -315,6 +363,12 @@
      &   .or. (field_name .eq. zonal_toroidal_velocity%name)            &
      &   .or. (field_name .eq. vecp_induction_by_zonal_flow%name)       &
      &   .or. (field_name .eq. magnetic_induction_by_zonal_flow%name)   &
+     &   .or. (field_name .eq. sym_zonal_toroidal_velocity%name)        &
+     &   .or. (field_name .eq. vecp_induction_by_sym_zonal_flow%name)   &
+     &   .or. (field_name .eq. magnetic_induction_by_sym_zonal_flow%name)&
+     &   .or. (field_name .eq. asym_zonal_toroidal_velocity%name)       &
+     &   .or. (field_name .eq. vecp_induction_by_asym_zonal_flow%name)  &
+     &   .or. (field_name .eq. magnetic_induction_by_asym_zonal_flow%name)&
      &      )   check_field_product_vectors = .TRUE.
 !
       end function check_field_product_vectors
@@ -398,6 +452,18 @@
       call set_field_label_to_ctl(vecp_induction_by_zonal_flow,         &
      &                            array_c2i)
       call set_field_label_to_ctl(magnetic_induction_by_zonal_flow,     &
+     &                            array_c2i)
+      call set_field_label_to_ctl(sym_zonal_toroidal_velocity,          &
+     &                            array_c2i)
+      call set_field_label_to_ctl(vecp_induction_by_sym_zonal_flow,     &
+     &                            array_c2i)
+      call set_field_label_to_ctl(magnetic_induction_by_sym_zonal_flow, &
+     &                            array_c2i)
+      call set_field_label_to_ctl(asym_zonal_toroidal_velocity,         &
+     &                            array_c2i)
+      call set_field_label_to_ctl(vecp_induction_by_asym_zonal_flow,    &
+     &                            array_c2i)
+      call set_field_label_to_ctl(magnetic_induction_by_asym_zonal_flow,&
      &                            array_c2i)
 !
       end subroutine set_field_product_names

@@ -34,6 +34,7 @@
 !
       private :: lorentz_frc_and_work_by_dipole
       private :: vecp_induction_by_zonal_flow
+      private :: vecp_induction_by_each_zonal
 !
 !-----------------------------------------------------------------------
 !
@@ -152,15 +153,57 @@
       real(kind = kreal), intent(inout) :: frc_rtp(nnod,ntot_comp_flx)
 !
       if(fs_trns_prod%i_zonal_vp_induct .gt. 0) then
-        if(iflag_debug.gt.0) write(*,*)                                 &
-     &      'cal_cross_product_w_coef for zonal flow induction'
-        call cal_cross_product_w_coef(nnod, cd_prop%coef_induct,        &
-     &      fld_rtp(1,bs_trns_prod%i_zonal_velo),                       &
-     &      fld_rtp(1,bs_trns_base%i_magne),                            &
-     &      frc_rtp(1,fs_trns_prod%i_zonal_vp_induct) )
+        call vecp_induction_by_each_zonal                               &
+     &     (cd_prop, bs_trns_base, bs_trns_prod%i_zonal_velo,           &
+     &      fs_trns_prod%i_zonal_vp_induct, nnod, ntot_comp_fld,        &
+     &      fld_rtp, ntot_comp_flx, frc_rtp)
+      end if
+!
+      if(fs_trns_prod%i_sym_zonal_vp_induct .gt. 0) then
+        call vecp_induction_by_each_zonal                               &
+     &     (cd_prop, bs_trns_base, bs_trns_prod%i_sym_zonal_velo,       &
+     &      fs_trns_prod%i_sym_zonal_vp_induct, nnod, ntot_comp_fld,    &
+     &      fld_rtp, ntot_comp_flx, frc_rtp)
+      end if
+!
+      if(fs_trns_prod%i_asym_zonal_vp_induct .gt. 0) then
+        call vecp_induction_by_each_zonal                               &
+     &     (cd_prop, bs_trns_base, bs_trns_prod%i_asym_zonal_velo,      &
+     &      fs_trns_prod%i_asym_zonal_vp_induct, nnod, ntot_comp_fld,   &
+     &      fld_rtp, ntot_comp_flx, frc_rtp)
       end if
 !
       end subroutine vecp_induction_by_zonal_flow
+!
+!-----------------------------------------------------------------------
+!
+      subroutine vecp_induction_by_each_zonal                           &
+     &         (cd_prop, bs_trns_base, i_zonal_velo, i_zonal_vp_induct, &
+     &          nnod, ntot_comp_fld, fld_rtp, ntot_comp_flx, frc_rtp)
+!
+      use cal_vector_products
+!
+      type(conductive_property), intent(in) :: cd_prop
+      type(base_field_address), intent(in) :: bs_trns_base
+!
+      integer(kind = kint), intent(in) :: i_zonal_velo
+      integer(kind = kint), intent(in) :: i_zonal_vp_induct
+      integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: ntot_comp_fld
+      integer(kind = kint), intent(in) :: ntot_comp_flx
+      real(kind = kreal), intent(in) :: fld_rtp(nnod,ntot_comp_fld)
+!
+      real(kind = kreal), intent(inout) :: frc_rtp(nnod,ntot_comp_flx)
+!
+      if(i_zonal_velo .le. 0) return
+!
+      if(iflag_debug.gt.0) write(*,*)                                   &
+     &      'cal_cross_product_w_coef for zonal flow induction'
+      call cal_cross_product_w_coef(nnod, cd_prop%coef_induct,          &
+     &    fld_rtp(1,i_zonal_velo), fld_rtp(1,bs_trns_base%i_magne),     &
+     &    frc_rtp(1,i_zonal_vp_induct) )
+!
+      end subroutine vecp_induction_by_each_zonal
 !
 !-----------------------------------------------------------------------
 !

@@ -8,9 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine s_adjust_scalar_rj_fields                            &
-!!     &         (sph, ipol_base, ipol_cmp, ipol_prod, rj_fld)
+!!     &         (sph, ipol_base, ipol_sym, ipol_asym,                 &
+!!     &          ipol_cmp, ipol_prod, rj_fld)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(base_field_address), intent(in) :: ipol_base
+!!        type(base_field_address), intent(in) :: ipol_sym
+!!        type(base_field_address), intent(in) :: ipol_asym
 !!        type(field_component_address), intent(in) :: ipol_cmp
 !!        type(phys_products_address), intent(in) :: ipol_prod
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -39,7 +42,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_adjust_scalar_rj_fields                              &
-     &         (sph, ipol_base, ipol_cmp, ipol_prod, rj_fld)
+     &         (sph, ipol_base, ipol_sym, ipol_asym,                   &
+     &          ipol_cmp, ipol_prod, rj_fld)
 !
       use t_base_field_labels
       use t_field_component_labels
@@ -48,6 +52,8 @@
 !
       type(sph_grids), intent(in) :: sph
       type(base_field_address), intent(in) :: ipol_base
+      type(base_field_address), intent(in) :: ipol_sym
+      type(base_field_address), intent(in) :: ipol_asym
       type(field_component_address), intent(in) :: ipol_cmp
       type(phys_products_address), intent(in) :: ipol_prod
 !
@@ -107,6 +113,18 @@
         call copy_zonal_toroidal_vector(sph%sph_rj,                     &
      &      rj_fld%d_fld(1,ipol_base%i_velo),                           &
      &      rj_fld%d_fld(1,ipol_prod%i_zonal_velo))
+      end if
+!
+      if(ipol_prod%i_sym_zonal_velo .gt. 0) then
+        call copy_zonal_toroidal_vector(sph%sph_rj,                     &
+     &      rj_fld%d_fld(1,ipol_sym%i_velo),                            &
+     &      rj_fld%d_fld(1,ipol_prod%i_sym_zonal_velo))
+      end if
+!
+      if(ipol_prod%i_asym_zonal_velo .gt. 0) then
+        call copy_zonal_toroidal_vector(sph%sph_rj,                     &
+     &      rj_fld%d_fld(1,ipol_asym%i_velo),                           &
+     &      rj_fld%d_fld(1,ipol_prod%i_asym_zonal_velo))
       end if
 !
       end subroutine s_adjust_scalar_rj_fields

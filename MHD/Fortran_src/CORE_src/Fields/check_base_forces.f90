@@ -190,6 +190,7 @@
       use t_control_array_character3
       use m_base_field_labels
       use m_base_force_labels
+      use m_field_w_symmetry_labels
       use m_field_product_labels
       use add_nodal_fields_ctl
 !
@@ -239,6 +240,34 @@
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(magnetic_field, field_ctl)
         call add_phys_name_ctl(zonal_toroidal_velocity, field_ctl)
+      end if
+      if(check_field_list_ctl(magnetic_induction_by_sym_zonal_flow,     &
+     &      field_ctl)) then
+        call add_phys_name_ctl(sym_velocity, field_ctl)
+        call add_phys_name_ctl(magnetic_field, field_ctl)
+        call add_phys_name_ctl(sym_zonal_toroidal_velocity, field_ctl)
+        call add_phys_name_ctl(vecp_induction_by_sym_zonal_flow,        &
+     &                         field_ctl)
+      end if
+      if(check_field_list_ctl(vecp_induction_by_sym_zonal_flow,         &
+     &      field_ctl)) then
+        call add_phys_name_ctl(sym_velocity, field_ctl)
+        call add_phys_name_ctl(magnetic_field, field_ctl)
+        call add_phys_name_ctl(sym_zonal_toroidal_velocity, field_ctl)
+      end if
+      if(check_field_list_ctl(magnetic_induction_by_asym_zonal_flow,    &
+     &      field_ctl)) then
+        call add_phys_name_ctl(asym_velocity, field_ctl)
+        call add_phys_name_ctl(magnetic_field, field_ctl)
+        call add_phys_name_ctl(asym_zonal_toroidal_velocity, field_ctl)
+        call add_phys_name_ctl(vecp_induction_by_asym_zonal_flow,       &
+     &                         field_ctl)
+      end if
+      if(check_field_list_ctl(vecp_induction_by_asym_zonal_flow,        &
+     &      field_ctl)) then
+        call add_phys_name_ctl(asym_velocity, field_ctl)
+        call add_phys_name_ctl(magnetic_field, field_ctl)
+        call add_phys_name_ctl(asym_zonal_toroidal_velocity, field_ctl)
       end if
 !
       if(check_field_list_ctl(kinetic_helicity, field_ctl)) then

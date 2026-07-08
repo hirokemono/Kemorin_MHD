@@ -164,6 +164,8 @@
       check_forces_for_work_spectr = .TRUE.
       if(     ipol_start .eq. ipol%prod_fld%i_dipole_Lorentz            &
      &   .or. ipol_start .eq. ipol%prod_fld%i_zonal_induction           &
+     &   .or. ipol_start .eq. ipol%prod_fld%i_sym_zonal_induction       &
+     &   .or. ipol_start .eq. ipol%prod_fld%i_asym_zonal_induction      &
 !
      &   .or. check_Lorentz_gravity_intertia(ipol_start, ipol%forces)   &
 !

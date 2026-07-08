@@ -104,6 +104,12 @@
       call add_field_name_4_sph_trns_snap(d_rj,                         &
      &    ipol_prd%i_zonal_velo, iphys_prd%i_zonal_velo,                &
      &    b_trns_prd%i_zonal_velo, trns)
+      call add_field_name_4_sph_trns_snap(d_rj,                         &
+     &    ipol_prd%i_sym_zonal_velo, iphys_prd%i_sym_zonal_velo,        &
+     &    b_trns_prd%i_sym_zonal_velo, trns)
+      call add_field_name_4_sph_trns_snap(d_rj,                         &
+     &    ipol_prd%i_asym_zonal_velo, iphys_prd%i_asym_zonal_velo,      &
+     &    b_trns_prd%i_asym_zonal_velo, trns)
 !
       end subroutine add_dipole_sph_trns_snap
 !
@@ -126,6 +132,14 @@
       call add_field_name_4_sph_trns_snap(d_rj,                         &
      &    ipol_prd%i_zonal_vp_induct, iphys_prd%i_zonal_vp_induct,      &
      &    f_trns_prd%i_zonal_vp_induct, trns)
+      call add_field_name_4_sph_trns_snap(d_rj,                         &
+     &    ipol_prd%i_sym_zonal_vp_induct,                               &
+     &    iphys_prd%i_sym_zonal_vp_induct,                              &
+     &    f_trns_prd%i_sym_zonal_vp_induct, trns)
+      call add_field_name_4_sph_trns_snap(d_rj,                         &
+     &    ipol_prd%i_asym_zonal_vp_induct,                              &
+     &    iphys_prd%i_asym_zonal_vp_induct,                             &
+     &    f_trns_prd%i_asym_zonal_vp_induct, trns)
 !
       end subroutine add_vector_prods_sph_trns_snap
 !

@@ -243,6 +243,24 @@
      &      rj_fld)
       end if
 !
+      if(ipol_prod%i_sym_zonal_induction .gt. 0                         &
+     &    .and. ipol_prod%i_sym_zonal_vp_induct .gt. 0) then
+        if (iflag_debug .gt. 0) write(*,*)                              &
+     &      'obtain magnetic induction by sym zonal flow'
+        call const_sph_rotation_uxb(sph_rj, r_2nd, sph_bc_B, g_sph_rj,  &
+     &      ipol_prod%i_sym_zonal_vp_induct,                            &
+     &      ipol_prod%i_sym_zonal_induction, rj_fld)
+      end if
+!
+      if(ipol_prod%i_asym_zonal_induction .gt. 0                        &
+     &    .and. ipol_prod%i_asym_zonal_vp_induct .gt. 0) then
+        if (iflag_debug .gt. 0) write(*,*)                              &
+     &      'obtain magnetic induction by asym zonal flow'
+        call const_sph_rotation_uxb(sph_rj, r_2nd, sph_bc_B, g_sph_rj,  &
+     &      ipol_prod%i_asym_zonal_vp_induct,                           &
+     &      ipol_prod%i_asym_zonal_induction, rj_fld)
+      end if
+!
       end subroutine cal_zonal_flow_induction_sph
 !
 ! ----------------------------------------------------------------------
