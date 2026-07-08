@@ -138,6 +138,7 @@
      &      .or. icomp_st .eq. ipol%forces_by_asym_asym%i_induction     &
      &      .or. icomp_st .eq. ipol%forces_by_sym_asym%i_induction      &
      &      .or. icomp_st .eq. ipol%forces_by_asym_sym%i_induction      &
+     &      .or. icomp_st .eq. ipol%prod_fld%i_zonal_induction          &
      &      .or. icomp_st .eq. ipol_LES%SGS_term%i_SGS_induction        &
      &   ) then
           icomp_ref = ipol%base%i_magne
