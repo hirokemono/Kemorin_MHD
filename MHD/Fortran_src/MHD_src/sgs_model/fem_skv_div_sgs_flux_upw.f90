@@ -1,9 +1,13 @@
-!fem_skv_div_sgs_flux_upw.f90
-!      module fem_skv_div_sgs_flux_upw
-!
-!        programmed by H.Matsui on July, 2005
-!        modified by H.Matsui on Aug., 2006
-!
+!>@file   t_FEM_SGS_model_coefs.f90
+!!@brief  module t_FEM_SGS_model_coefs
+!!
+!!@author H. Matsui
+!!@date    Programmed by H.Matsui in July, 2005
+!!         Modified by H.Matsui in Aug., 2006
+!!
+!>@brief  FEM integration for SGS fluxes
+!!
+!!@verbatim
 !!      subroutine fem_skv_div_sgs_vector_upwind                        &
 !!     &         (iele_fsmp_stack, n_int, k2, i_filter, dt, ak_diff,    &
 !!     &          ele, g_FEM, jac_3d, FEM_elens, vxe,                   &
@@ -32,14 +36,15 @@
 !!     &          ele, g_FEM, jac_3d, FEM_elens, scalar_e, sgs_e,       &
 !!     &          flux_e, vxe, vxe_up, sk_v)
 !!      subroutine fem_skv_vec_inertia_msgs_upw                         &
-!!     &         (iele_fsmp_stack, n_int, k2, i_filter, dt, ak_diff,    &
-!!     &          ele, g_FEM, jac_3d, FEM_elens, vector_e, sgs_e,       &
+!!     &         (iele_fsmp_stack, n_int, k2, i_filter, dt, ele, g_FEM, &
+!!     &          jac_3d, FEM_elens, Cdiff_SGS, vector_e, sgs_e,        &
 !!     &          flux_e, vxe, vxe_up, sk_v)
 !!        type(element_data), intent(in) :: ele
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_model_coefficient), intent(in) :: Cdiff_SGS
+!!@endverbatim
 !
       module fem_skv_div_sgs_flux_upw
 !
@@ -340,22 +345,23 @@
 !-----------------------------------------------------------------------
 !
       subroutine fem_skv_vec_inertia_msgs_upw                           &
-     &         (iele_fsmp_stack, n_int, k2, i_filter, dt, ak_diff,      &
-     &          ele, g_FEM, jac_3d, FEM_elens, vector_e, sgs_e,         &
+     &         (iele_fsmp_stack, n_int, k2, i_filter, dt, ele, g_FEM,   &
+     &          jac_3d, FEM_elens, Cdiff_SGS, vector_e, sgs_e,          &
      &          flux_e, vxe, vxe_up, sk_v)
 !
+      use t_FEM_SGS_model_coefs
       use fem_skv_inertia3_sgsmod_upw
 !
       type(element_data), intent(in) :: ele
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_model_coefficient), intent(in) :: Cdiff_SGS
 !
       integer(kind=kint), intent(in) :: n_int, k2, i_filter
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
       real(kind=kreal), intent(in) :: dt
-      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
       real(kind=kreal), intent(in) :: flux_e(ele%numele,6)
       real(kind=kreal), intent(in) :: sgs_e(ele%numele,6)
       real(kind=kreal), intent(in) :: vector_e(ele%numele,3)
@@ -376,7 +382,8 @@
      &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &
      &    FEM_elens%elen_ele%diff%df_z2, FEM_elens%elen_ele%diff%df_xy, &
      &    FEM_elens%elen_ele%diff%df_yz, FEM_elens%elen_ele%diff%df_zx, &
-     &    ak_diff, vector_e, sgs_e, flux_e, vxe, vxe_up, sk_v)
+     &    Cdiff_SGS%coef(1,1), vector_e, sgs_e, flux_e, vxe, vxe_up,    &
+     &    sk_v)
 !
       end subroutine fem_skv_vec_inertia_msgs_upw
 !

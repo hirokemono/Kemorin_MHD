@@ -163,13 +163,12 @@
 !
       if (iflag_supg .gt. id_turn_OFF) then
         call int_vol_temp_ele_upw                                       &
-     &     (iflag_SGS_flux, iflag_commute_flux, ifilter_final,          &
-     &      n_int_evo, dt, i_scalar, i_velo, i_tensor,                  &
-     &      mesh%node, mesh%ele, fluid, property, nod_fld,              &
-     &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens,                &
-     &      Cdiff_SGS_flux%coef(1,1), ele_fld%ntot_phys,                &
-     &      iphys_ele_base%i_velo, ele_fld%d_fld,                       &
-     &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
+     &    (iflag_SGS_flux, iflag_commute_flux, ifilter_final,           &
+     &     n_int_evo, dt, i_scalar, i_velo, i_tensor,                   &
+     &     mesh%node, mesh%ele, fluid, property, nod_fld,               &
+     &     jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, Cdiff_SGS_flux, &
+     &     ele_fld%ntot_phys, iphys_ele_base%i_velo, ele_fld%d_fld,     &
+     &     mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
       else
         call int_vol_temp_ele                                           &
      &     (iflag_SGS_flux, iflag_commute_flux, ifilter_final,          &

@@ -1,8 +1,12 @@
-!int_vol_solenoid_correct.f90
-!     module int_vol_solenoid_correct
-!
-!      Written by H. Matsui on june, 2005
-!
+!>@file   int_vol_solenoid_correct.f90
+!!@brief  module int_vol_solenoid_correct
+!!
+!!@author H. Matsui
+!!@date    Programmed by H.Matsui in July, 2005
+!!
+!>@brief  FEM integration for SGS fluxes
+!!
+!!@verbatim
 !!      subroutine int_vol_solenoid_co                                  &
 !!     &         (num_int, ifilter_final, iele_fsmp_stack, i_scalar,    &
 !!     &          node, ele, nod_fld, g_FEM, jac_3d_q, jac_3d_l,        &
@@ -17,6 +21,7 @@
 !!        type(SGS_model_coefficient), intent(in) :: Cdiff
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
+!!@endverbatim
 !
       module int_vol_solenoid_correct
 !

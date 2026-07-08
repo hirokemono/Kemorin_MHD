@@ -173,7 +173,7 @@
      &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,                    &
      &    iphys_base, iphys_dif, iphys_SGS, nod_fld,                    &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,   &
-     &    FEM_elens, Cdiff_SGS_uxb%coef(1,1), rhs_mat%fem_wk, rhs_mat%surf_wk,          &
+     &    FEM_elens, Cdiff_SGS_uxb, rhs_mat%fem_wk, rhs_mat%surf_wk,    &
      &    rhs_mat%f_l, rhs_mat%f_nl)
 !
       call cal_t_evo_4_vector_cd                                        &
@@ -249,7 +249,7 @@
      &   node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,                     &
      &   iphys_base, iphys_dif, iphys_SGS, nod_fld,                     &
      &   fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,    &
-     &   FEM_elens, diff_coefs%Cdiff_SGS_uxb%coef(1,1),                 &
+     &   FEM_elens, diff_coefs%Cdiff_SGS_uxb,                           &
      &   rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl)
 !
       call set_ff_nl_smp_2_ff(n_vector, node,                           &

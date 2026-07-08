@@ -193,8 +193,8 @@
      &      mesh%ele%istack_ele_smp, fem_int%m_lump, SGS_par%model_p,   &
      &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,              &
      &      group%surf_grp, iphys_ele_base, ele_fld, fem_int%jcs,       &
-     &      FEM_filters%FEM_elens, Bnod_bcs%nod_bc_b, Asf_bcs%sgs,      &
-     &      Cdiff_magne%coef, fem_int%rhs_tbl,                          &
+     &      FEM_filters%FEM_elens, Cdiff_magne,                         &
+     &      Bnod_bcs%nod_bc_b, Asf_bcs%sgs, fem_int%rhs_tbl,            &
      &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld,     &
      &      v_sol, SR_sig, SR_r)
       end if

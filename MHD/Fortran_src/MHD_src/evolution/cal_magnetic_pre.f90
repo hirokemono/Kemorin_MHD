@@ -218,8 +218,8 @@
      &    mesh%node, mesh%ele, mesh%surf, group%surf_grp,               &
      &    Asf_bcs, Bsf_bcs, iphys%base, iphys_LES%SGS_term, nod_fld,    &
      &    jacs%g_FEM, jacs%jac_sf_grp, rhs_tbl, FEM_filters%FEM_elens,  &
-     &    diff_coefs%Cdiff_SGS_uxb%coef(1,1),                           &
-     &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl)
+     &    diff_coefs%Cdiff_SGS_uxb, rhs_mat%fem_wk, rhs_mat%surf_wk,    &
+     &    rhs_mat%f_l, rhs_mat%f_nl)
 !
       if(cd_prop%iflag_Bevo_scheme .eq. id_explicit_euler) then
         call cal_magne_pre_euler(iphys%base%i_magne, dt, FEM_prm,       &

@@ -1,14 +1,20 @@
-!
-!     module cal_rotation_sgs
-!
-!     Written by H. Matsui
-!
+!>@file   cal_rotation_sgs.f90
+!!@brief  module cal_rotation_sgs
+!!
+!!@author H. Matsui
+!!@date Programmed in 2002
+!!        modified by H. Matsui in Aug., 2005
+!!        modified by H. Matsui in Aug., 2007
+!!
+!>@brief  Finite elememt integration for heat advection term
+!!
+!!@verbatim
 !!      subroutine choose_cal_rotation_sgs                              &
 !!     &         (iflag_commute, iflag_4_supg, num_int, dt,             &
 !!     &          i_vector, i_rot, iele_fsmp_stack, m_lump,             &
 !!     &          SGS_param, nod_comm, node, ele, surf, sf_grp,         &
-!!     &          iphys_ele_base, ele_fld, jacs, FEM_elens, nod_bc,     &
-!!     &          sgs_sf, ak_diff, rhs_tbl, fem_wk, surf_wk, f_nl,      &
+!!     &          iphys_ele_base, ele_fld, jacs, FEM_elens, Cdiff,      &
+!!     &          nod_bc, sgs_sf, rhs_tbl, fem_wk, surf_wk, f_nl,       &
 !!     &          nod_fld, v_sol, SR_sig, SR_r)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(communication_table), intent(in) :: nod_comm
@@ -31,6 +37,7 @@
 !!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!@endverbatim
 !
       module cal_rotation_sgs
 !
@@ -78,8 +85,8 @@
      &         (iflag_commute, iflag_4_supg, num_int, dt,               &
      &          i_vector, i_rot, iele_fsmp_stack, m_lump,               &
      &          SGS_param, nod_comm, node, ele, surf, sf_grp,           &
-     &          iphys_ele_base, ele_fld, jacs, FEM_elens, nod_bc,       &
-     &          sgs_sf, ak_diff, rhs_tbl, fem_wk, surf_wk, f_nl,        &
+     &          iphys_ele_base, ele_fld, jacs, FEM_elens, Cdiff,        &
+     &          nod_bc, sgs_sf, rhs_tbl, fem_wk, surf_wk, f_nl,         &
      &          nod_fld, v_sol, SR_sig, SR_r)
 !
       use cal_rotation
@@ -97,6 +104,7 @@
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_type), intent(in) :: jacs
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_model_coefficient), intent(in) :: Cdiff
       type(scaler_surf_bc_data_type), intent(in) :: sgs_sf(3)
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -105,7 +113,6 @@
       integer(kind = kint), intent(in) :: i_vector, i_rot
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: dt
-      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_surface_element_mat), intent(inout) :: surf_wk
@@ -121,7 +128,7 @@
         call choose_int_vol_rot_sgs(iflag_4_supg, num_int, dt,          &
      &      iele_fsmp_stack, SGS_param%ifilter_final, i_vector,         &
      &      node, ele, surf, sf_grp, nod_fld, iphys_ele_base, ele_fld,  &
-     &      jacs, FEM_elens, sgs_sf, ak_diff, rhs_tbl,                  &
+     &      jacs, FEM_elens, sgs_sf, Cdiff%coef(1,1), rhs_tbl,          &
      &      fem_wk, surf_wk, f_nl)
       else
         call choose_int_vol_rotations                                   &

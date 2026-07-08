@@ -200,9 +200,8 @@
 !
         call fem_skv_vec_inertia_msgs_upw                               &
      &     (fluid%istack_ele_fld_smp, num_int, k2,                      &
-     &      SGS_param%ifilter_final, dt,                                &
-     &      diff_coefs%Cdiff_SGS_mf%coef(1,1),                          &
-     &      ele, g_FEM, jac_3d, FEM_elens, mhd_fem_wk%velo_1,           &
+     &      SGS_param%ifilter_final, dt, ele, g_FEM, jac_3d, FEM_elens, &
+     &      diff_coefs%Cdiff_SGS_mf, mhd_fem_wk%velo_1,                 &
      &      mhd_fem_wk%sgs_t1, fem_wk%tensor_1,                         &
      &      d_ele(1,iphys_ele_base%i_velo), d_ele(1,ie_upw),            &
      &      fem_wk%sk6)

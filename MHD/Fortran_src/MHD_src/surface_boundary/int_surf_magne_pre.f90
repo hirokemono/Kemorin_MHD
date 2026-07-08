@@ -1,18 +1,22 @@
-!
-!      module int_surf_magne_pre
-!
-!     Written by H. Matsui on June, 2005
-!
+!>@file   int_surf_magne_pre.f90
+!!@brief  module int_surf_magne_pre
+!!
+!!@author H. Matsui
+!!@date    Programmed by H.Matsui in June, 2005
+!!
+!>@brief  Surface integration of magnetic induction for FEM MHD
+!!
+!!@verbatim
 !!      subroutine int_surf_magne_pre_ele(SGS_param, cmt_param, num_int,&
 !!     &          ak_d_magne, node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,&
 !!     &          iphys_base, iphys_SGS, nod_fld, g_FEM, jac_sf_grp,    &
-!!     &          rhs_tbl, FEM_elens, ak_diff, fem_wk, surf_wk,         &
+!!     &          rhs_tbl, FEM_elens, Cdiff_SGS_uxb, fem_wk, surf_wk,   &
 !!     &          f_l, f_nl)
 !!      subroutine int_surf_magne_monitor                               &
 !!     &         (SGS_param, cmt_param, num_int, i_field, ak_d_magne,   &
 !!     &          node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,            &
 !!     &          iphys_base, iphys_dif, iphys_SGS, nod_fld,            &
-!!     &          g_FEM, jac_sf_grp, rhs_tbl, FEM_elens, ak_diff,       &
+!!     &          g_FEM, jac_sf_grp, rhs_tbl, FEM_elens, Cdiff_SGS_uxb, &
 !!     &          fem_wk, surf_wk, f_l, f_nl)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -30,9 +34,11 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(SGS_model_coefficient), intent(in) :: Cdiff_SGS_uxb
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+!!@endverbatim
 !
       module int_surf_magne_pre
 !
@@ -71,7 +77,7 @@
       subroutine int_surf_magne_pre_ele(SGS_param, cmt_param, num_int,  &
      &          ak_d_magne, node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,  &
      &          iphys_base, iphys_SGS, nod_fld, g_FEM, jac_sf_grp,      &
-     &          rhs_tbl, FEM_elens, ak_diff, fem_wk, surf_wk,           &
+     &          rhs_tbl, FEM_elens, Cdiff_SGS_uxb, fem_wk, surf_wk,     &
      &          f_l, f_nl)
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -91,10 +97,10 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_model_coefficient), intent(in) :: Cdiff_SGS_uxb
 !
       integer(kind= kint), intent(in) :: num_int
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
-      real(kind = kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_surface_element_mat), intent(inout) :: surf_wk
@@ -110,7 +116,7 @@
          call int_surf_div_induct_t_sgs                                 &
      &      (node, ele, surf, sf_grp, nod_fld, g_FEM, jac_sf_grp,       &
      &       rhs_tbl, FEM_elens, Bsf_bcs%sgs, num_int,                  &
-     &       SGS_param%ifilter_final, ak_diff,                          &
+     &       SGS_param%ifilter_final, Cdiff_SGS_uxb%coef(1,1),          &
      &       iphys_SGS%i_SGS_induct_t, iphys_base%i_velo,               &
      &       iphys_base%i_magne, fem_wk, surf_wk, f_nl)
       end if
@@ -134,7 +140,7 @@
      &         (SGS_param, cmt_param, num_int, i_field, ak_d_magne,     &
      &          node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,              &
      &          iphys_base, iphys_dif, iphys_SGS, nod_fld,              &
-     &          g_FEM, jac_sf_grp, rhs_tbl, FEM_elens, ak_diff,         &
+     &          g_FEM, jac_sf_grp, rhs_tbl, FEM_elens, Cdiff_SGS_uxb,   &
      &          fem_wk, surf_wk, f_l, f_nl)
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -155,11 +161,11 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_model_coefficient), intent(in) :: Cdiff_SGS_uxb
 !
       integer(kind= kint), intent(in) :: num_int
       integer(kind= kint), intent(in) :: i_field
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
-      real(kind = kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_surface_element_mat), intent(inout) :: surf_wk
@@ -178,7 +184,7 @@
           call int_surf_div_induct_t_sgs                                &
      &       (node, ele, surf, sf_grp, nod_fld, g_FEM, jac_sf_grp,      &
      &        rhs_tbl, FEM_elens, Bsf_bcs%sgs, num_int,                 &
-     &        SGS_param%ifilter_final, ak_diff,                         &
+     &        SGS_param%ifilter_final, Cdiff_SGS_uxb%coef(1,1),         &
      &        iphys_SGS%i_SGS_induct_t, iphys_base%i_velo,              &
      &        iphys_base%i_magne, fem_wk, surf_wk, f_nl)
         end if
