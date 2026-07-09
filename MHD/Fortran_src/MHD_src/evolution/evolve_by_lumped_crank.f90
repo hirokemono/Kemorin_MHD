@@ -12,7 +12,7 @@
 !!     &          ifilter_final, ak_d_velo, dt, FEM_prm,                &
 !!     &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,        &
 !!     &          iphys, iphys_LES, iphys_ele_base, ele_fld,            &
-!!     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, ak_diff,           &
+!!     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, Cdiff_velo,        &
 !!     &          mlump_fl, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,     &
 !!     &          f_l, f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !!      subroutine cal_vect_p_pre_lumped_crank                          &
@@ -20,7 +20,7 @@
 !!     &          i_vecp, i_pre_uxb, ak_d_magne, nod_bc_a,              &
 !!     &          dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,   &
 !!     &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,      &
-!!     &          FEM_elens, ak_diff, mlump_cd, Bmatrix, MG_vector,     &
+!!     &          FEM_elens, Cdiff_magne, mlump_cd, Bmatrix, MG_vector, &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,               &
 !!     &          v_sol, SR_sig, SR_r)
 !!      subroutine cal_magne_pre_lumped_crank                           &
@@ -28,7 +28,7 @@
 !!     &          i_magne, i_pre_uxb, ak_d_magne, nod_bc_b, dt, FEM_prm,&
 !!     &          nod_comm, node, ele, conduct, cd_prop,                &
 !!     &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,      &
-!!     &          FEM_elens, ak_diff, mlump_cd, Bmatrix, MG_vector,     &
+!!     &          FEM_elens, Cdiff_magne, mlump_cd, Bmatrix, MG_vector, &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,               &
 !!     &          v_sol, SR_sig, SR_r)
 !!
@@ -59,6 +59,8 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(SGS_model_coefficient), intent(in) :: Cdiff_velo
+!!        type(SGS_model_coefficient), intent(in) :: Cdiff_magne
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_a
@@ -103,6 +105,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_FEM_SGS_model_coefs
       use t_material_property
       use t_nodal_bc_data
       use t_vector_for_solver
@@ -123,7 +126,7 @@
      &          ifilter_final, ak_d_velo, dt, FEM_prm,                  &
      &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,          &
      &          iphys, iphys_LES, iphys_ele_base, ele_fld,              &
-     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, ak_diff,             &
+     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, Cdiff_velo,          &
      &          mlump_fl, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,       &
      &          f_l, f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
@@ -154,12 +157,12 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_model_coefficient), intent(in) :: Cdiff_velo
       type(lumped_mass_matrices), intent(in) :: mlump_fl
       type(MHD_MG_matrix), intent(in) :: Vmatrix
 !
       real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: ak_d_velo(ele%numele)
-      real(kind = kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:Vmatrix%nlevel_MG)
@@ -176,8 +179,8 @@
         call int_sk_4_fixed_velo(iflag_commute_velo, ifilter_final,     &
      &      FEM_prm%npoint_t_evo_int, iphys%base%i_velo, node, ele,     &
      &      nod_fld, fl_prop, g_FEM, jac_3d, rhs_tbl, FEM_elens,        &
-     &      Vnod_bcs%nod_bc_v, Vnod_bcs%nod_bc_rot, ak_d_velo,          &
-     &      ak_diff, fem_wk, f_l)
+     &      Cdiff_velo, Vnod_bcs%nod_bc_v, Vnod_bcs%nod_bc_rot,         &
+     &      ak_d_velo, fem_wk, f_l)
       end if
 !
       call cal_t_evo_4_vector                                           &
@@ -220,7 +223,7 @@
      &          i_vecp, i_pre_uxb, ak_d_magne, nod_bc_a,                &
      &          dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,     &
      &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,        &
-     &          FEM_elens, ak_diff, mlump_cd, Bmatrix, MG_vector,       &
+     &          FEM_elens, Cdiff_magne, mlump_cd, Bmatrix, MG_vector,   &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,                 &
      &          v_sol, SR_sig, SR_r)
 !
@@ -247,13 +250,13 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_model_coefficient), intent(in) :: Cdiff_magne
       type(lumped_mass_matrices), intent(in) :: mlump_cd
       type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_a
       type(MHD_MG_matrix), intent(in) :: Bmatrix
 !
       real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
-      real(kind = kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:Bmatrix%nlevel_MG)
@@ -270,8 +273,8 @@
         call int_sk_4_fixed_vector                                      &
      &   (iflag_commute_magne, ifilter_final, FEM_prm%npoint_t_evo_int, &
      &    i_vecp, node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl,           &
-     &    FEM_elens, nod_bc_a, ak_d_magne, cd_prop%coef_imp, ak_diff,   &
-     &    fem_wk, f_l)
+     &    FEM_elens, Cdiff_magne, nod_bc_a, ak_d_magne,                 &
+     &    cd_prop%coef_imp, fem_wk, f_l)
       end if
 !
       call cal_t_evo_4_vector_cd                                        &
@@ -306,7 +309,7 @@
      &          i_magne, i_pre_uxb, ak_d_magne, nod_bc_b, dt, FEM_prm,  &
      &          nod_comm, node, ele, conduct, cd_prop,                  &
      &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,        &
-     &          FEM_elens, ak_diff, mlump_cd, Bmatrix, MG_vector,       &
+     &          FEM_elens, Cdiff_magne, mlump_cd, Bmatrix, MG_vector,   &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld,                 &
      &          v_sol, SR_sig, SR_r)
 !
@@ -332,13 +335,13 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_model_coefficient), intent(in) :: Cdiff_magne
       type(lumped_mass_matrices), intent(in) :: mlump_cd
       type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_b
       type(MHD_MG_matrix), intent(in) :: Bmatrix
 !
       real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
-      real(kind = kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:Bmatrix%nlevel_MG)
@@ -355,8 +358,8 @@
         call int_sk_4_fixed_vector                                      &
      &   (iflag_commute_magne, ifilter_final, FEM_prm%npoint_t_evo_int, &
      &    i_magne, node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl,          &
-     &    FEM_elens, nod_bc_b, ak_d_magne, cd_prop%coef_imp, ak_diff,   &
-     &    fem_wk, f_l)
+     &    FEM_elens, Cdiff_magne, nod_bc_b, ak_d_magne,                 &
+     &    cd_prop%coef_imp, fem_wk, f_l)
       end if
 !
       call cal_t_evo_4_vector_cd                                        &

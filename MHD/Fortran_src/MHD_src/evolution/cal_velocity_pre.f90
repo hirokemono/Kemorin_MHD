@@ -308,7 +308,7 @@
      &      FEM_prm, nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,     &
      &      iphys, iphys_LES, iphys_ele_base, ele_fld,                  &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
-     &      FEM_elens, diff_coefs%Cdiff_velo%coef(1,1), mlump_fl,       &
+     &      FEM_elens, diff_coefs%Cdiff_velo, mlump_fl,                 &
      &      Vmatrix, MG_vector, mhd_fem_wk, rhs_mat%fem_wk,             &
      &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
@@ -320,9 +320,9 @@
      &      ak_MHD%ak_d_velo, dt, FEM_prm,                              &
      &      node, ele, fluid, fl_prop, Vnod_bcs,                        &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
-     &      FEM_elens, diff_coefs%Cdiff_velo%coef(1,1),                 &
-     &      Vmatrix, MG_vector, mhd_fem_wk, rhs_mat%fem_wk,             &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
+     &      FEM_elens, diff_coefs%Cdiff_velo, Vmatrix, MG_vector,       &
+     &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,      &
+     &      nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       call set_boundary_velo                                            &

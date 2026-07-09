@@ -313,8 +313,9 @@
      &     (SGS_param%SGS_momentum%iflag_commute_field,                 &
      &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
      &      i_velo, node, ele, nod_fld, fl_prop, g_FEM, jac_3d,         &
-     &      rhs_tbl, FEM_elens, Vnod_bcs%nod_bc_v, Vnod_bcs%nod_bc_rot, &
-     &      ak_d_velo, Cdiff_velo%coef(1,1), fem_wk, f_l)
+     &      rhs_tbl, FEM_elens, Cdiff_velo,                             &
+     &      Vnod_bcs%nod_bc_v, Vnod_bcs%nod_bc_rot, ak_d_velo,          &
+     &      fem_wk, f_l)
       end if
 !
       if(fl_prop%flag_coriolis .and. fl_prop%iflag_coriolis_implicit    &
@@ -419,8 +420,8 @@
         call int_sk_4_fixed_vector(cmt_param%iflag_c_magne,             &
      &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
      &      i_vecp, node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl,         &
-     &      FEM_elens, Bnod_bcs%nod_bc_a, ak_d_magne,                   &
-     &      cd_prop%coef_imp, Cdiff_magne%coef(1,1), fem_wk, f_l)
+     &      FEM_elens, Cdiff_magne, Bnod_bcs%nod_bc_a, ak_d_magne,      &
+     &      cd_prop%coef_imp, fem_wk, f_l)
       end if
 !
 !
@@ -515,8 +516,8 @@
         call int_sk_4_fixed_vector(cmt_param%iflag_c_magne,             &
      &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
      &      i_magne, node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl,        &
-     &      FEM_elens, Bnod_bcs%nod_bc_b, ak_d_magne,                   &
-     &      cd_prop%coef_imp, Cdiff_magne%coef(1,1), fem_wk, f_l)
+     &      FEM_elens, Cdiff_magne, Bnod_bcs%nod_bc_b, ak_d_magne,      &
+     &      cd_prop%coef_imp, fem_wk, f_l)
       end if
 !
 !

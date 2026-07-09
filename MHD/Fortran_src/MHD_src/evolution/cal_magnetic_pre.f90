@@ -241,20 +241,20 @@
      &      ak_d_magne, Bnod_bcs%nod_bc_b, dt, FEM_prm,                 &
      &      mesh%nod_comm, mesh%node, mesh%ele, conduct, cd_prop,       &
      &      iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,  &
-     &      FEM_filters%FEM_elens, diff_coefs%Cdiff_magne%coef(1,1),    &
+     &      FEM_filters%FEM_elens, diff_coefs%Cdiff_magne,              &
      &      mlump_cd, Bmatrix, MG_vector, mhd_fem_wk, rhs_mat%fem_wk,   &
      &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
       else if(cd_prop%iflag_Bevo_scheme .eq. id_Crank_nicolson_cmass)   &
      & then
         call cal_magne_pre_consist_crank                                &
-     &    (cmt_param%iflag_c_magne, SGS_param%ifilter_final,            &
-     &     iphys%base%i_magne, iphys%exp_work%i_pre_uxb,                &
-     &     ak_d_magne, Bnod_bcs%nod_bc_b, dt, FEM_prm,                  &
-     &     mesh%node, mesh%ele, conduct, cd_prop,                       &
-     &     jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_filters%FEM_elens,     &
-     &     diff_coefs%Cdiff_magne%coef(1,1), Bmatrix, MG_vector,        &
-     &     mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,       &
-     &     nod_fld, v_sol, SR_sig, SR_r)
+     &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
+     &      iphys%base%i_magne, iphys%exp_work%i_pre_uxb,               &
+     &      ak_d_magne, Bnod_bcs%nod_bc_b, dt, FEM_prm,                 &
+     &      mesh%node, mesh%ele, conduct, cd_prop,                      &
+     &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_filters%FEM_elens,    &
+     &      diff_coefs%Cdiff_magne, Bmatrix, MG_vector,                 &
+     &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,      &
+     &      nod_fld, v_sol, SR_sig, SR_r)
       end if
 !
       call set_boundary_vect                                            &
