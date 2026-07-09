@@ -39,7 +39,7 @@
 !
       implicit none
 !
-      private :: count_sgs_diff_coefs, set_sgs_diff_addresses
+      private :: set_sgs_diff_addresses
       private :: check_sgs_diff_addresses
 !
 ! ----------------------------------------------------------------------
@@ -101,16 +101,14 @@
       integer(kind = kint) :: num_diff_field, ntot_diff_comp
 !
 !
-      call count_sgs_diff_coefs(SGS_param, cmt_param,                   &
-     &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    num_diff_field, ntot_diff_comp)
-      call alloc_sgs_coefs_layer(layer_tbl%e_grp%num_grp,               &
-     &    num_diff_field, ntot_diff_comp, wk_diff)
-!
       call set_sgs_diff_addresses(SGS_param, cmt_param,                 &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop, wk_diff, diff_coefs)
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop, diff_coefs,               &
+     &    num_diff_field, ntot_diff_comp)
+!
+      call alloc_sgs_coefs_layer(layer_tbl%e_grp%num_grp,               &
+     &    num_diff_field, ntot_diff_comp, wk_diff)
+      call copy_sgs_diff_coef_name(diff_coefs, wk_diff)
 !
       if(diff_coefs%Cdiff_velo%iak_Csim .gt. 0) then
          call alloc_SGS_model_coefficient(numele, ione,                 &
@@ -194,126 +192,12 @@
 !
 !  ------------------------------------------------------------------
 !
-      subroutine count_sgs_diff_coefs(SGS_param, cmt_param,             &
-     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
-     &          num_diff_field, ntot_diff_comp)
-!
-      use calypso_mpi
-!
-      use t_base_field_labels
-      use t_layering_ele_list
-      use t_ele_info_4_dynamic
-      use t_material_property
-      use t_scalar_property
-!
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in)  :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
-      type(SGS_model_control_params), intent(in) :: SGS_param
-      type(commutation_control_params), intent(in) :: cmt_param
-!
-      integer(kind = kint), intent(inout) :: num_diff_field
-      integer(kind = kint), intent(inout) :: ntot_diff_comp
-!
-!    count coefficients for SGS terms
-!
-      num_diff_field = 0
-      ntot_diff_comp = 0
-      if (ht_prop%iflag_scheme .gt. id_no_evolution) then
-        if (SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none) then
-          if (SGS_param%SGS_heat%iflag_commute_flux                     &
-     &       .eq. id_SGS_commute_ON) then
-            num_diff_field = num_diff_field + 1
-            ntot_diff_comp = ntot_diff_comp + 3
-          end if
-        end if
-      end if
-!
-      if(fl_prop%iflag_scheme .gt. id_no_evolution) then
-        if(SGS_param%SGS_momentum%iflag_SGS_flux                        &
-     &        .ne. id_SGS_none) then
-          if(SGS_param%SGS_momentum%iflag_commute_flux                  &
-     &      .eq. id_SGS_commute_ON) then
-            num_diff_field = num_diff_field + 1
-            ntot_diff_comp = ntot_diff_comp + 9
-          end if
-        end if
-      end if
-!
-      if(fl_prop%iflag_scheme .gt. id_no_evolution) then
-        if (SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
-          if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
-            num_diff_field = num_diff_field + 1
-            ntot_diff_comp = ntot_diff_comp + 9
-          end if
-        end if
-      end if
-!
-      if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-        if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
-          if(cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
-            num_diff_field = num_diff_field + 1
-            ntot_diff_comp = ntot_diff_comp + 9
-          end if
-        end if
-      end if
-!
-!
-      if (cp_prop%iflag_scheme .gt. id_no_evolution) then
-        if (SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none) then
-          if (SGS_param%SGS_light%iflag_commute_flux                    &
-     &      .eq. id_SGS_commute_ON) then
-            num_diff_field = num_diff_field + 1
-            ntot_diff_comp = ntot_diff_comp + 3
-          end if
-        end if
-      end if
-!
-      if(      (ht_prop%iflag_scheme .gt. id_no_evolution)              &
-     &   .and. (SGS_param%iflag_SGS .ne. id_SGS_none)                   &
-     &   .and. (SGS_param%SGS_heat%iflag_commute_field                  &
-     &                          .eq. id_SGS_commute_ON)) then
-        num_diff_field = num_diff_field + 1
-        ntot_diff_comp = ntot_diff_comp + 3
-      end if
-!
-      if(      (cp_prop%iflag_scheme .gt. id_no_evolution)              &
-     &   .and. (SGS_param%iflag_SGS .ne. id_SGS_none)                   &
-     &   .and. (SGS_param%SGS_light%iflag_commute_field                 &
-     &                           .eq. id_SGS_commute_ON)) then
-          num_diff_field = num_diff_field + 1
-          ntot_diff_comp = ntot_diff_comp + 3
-      end if
-!
-      if(      (fl_prop%iflag_scheme .gt. id_no_evolution)              &
-     &   .and. (SGS_param%iflag_SGS .ne. id_SGS_none)                   &
-     &   .and. (SGS_param%SGS_momentum%iflag_commute_field              &
-     &                              .eq. id_SGS_commute_ON)) then
-          num_diff_field = num_diff_field + 1
-          ntot_diff_comp = ntot_diff_comp + 9
-      end if
-!
-      if(     (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution)          &
-     &   .or. (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution)) then
-        if(      (SGS_param%iflag_SGS .ne. id_SGS_none)                 &
-     &     .and. (cmt_param%iflag_c_magne .eq. id_SGS_commute_ON)) then
-          num_diff_field = num_diff_field + 1
-          ntot_diff_comp = ntot_diff_comp + 9
-        end if
-      end if
-!
-      end subroutine count_sgs_diff_coefs
-!
-!  ------------------------------------------------------------------
-!
       subroutine set_sgs_diff_addresses(SGS_param, cmt_param,           &
      &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
-     &          wk_diff, diff_coefs)
+     &          diff_coefs, num_diff_field, ntot_diff_comp)
 !
-      use calypso_mpi
       use t_base_field_labels
       use t_layering_ele_list
-      use t_ele_info_4_dynamic
       use t_material_property
       use t_scalar_property
       use t_SGS_term_labels
@@ -327,86 +211,51 @@
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
 !
-      type(dynamic_model_data), intent(inout) :: wk_diff
       type(SGS_commutation_coefs), intent(inout) :: diff_coefs
+      integer(kind = kint), intent(inout) :: num_diff_field
+      integer(kind = kint), intent(inout) :: ntot_diff_comp
 !
-      integer(kind = kint) :: id, jd, num_comp
+      integer(kind = kint) :: id, jd
 !
 !
-      id = 1
-      jd = 1
-      num_comp = 0
-      if (ht_prop%iflag_scheme .gt. id_no_evolution) then
-        if (SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none) then
-          if (SGS_param%SGS_heat%iflag_commute_flux                     &
-     &      .eq. id_SGS_commute_ON) then
-            diff_coefs%Cdiff_SGS_hf%icomp_Csim = id
-            diff_coefs%Cdiff_SGS_hf%iak_Csim =   jd
-            wk_diff%name(jd) = SGS_heat_flux%name
-            num_comp =         SGS_heat_flux%n_comp
-            id = id + num_comp
-            jd = jd + 1
-          end if
-        end if
+      id = 0
+      jd = 0
+      if(      (ht_prop%iflag_scheme .gt. id_no_evolution)              &
+     &   .and. (SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none)     &
+     &   .and. (SGS_param%SGS_heat%iflag_commute_flux                   &
+     &                         .eq. id_SGS_commute_ON)) then
+        call SGS_model_coef_address_by_label(SGS_heat_flux, jd, id,     &
+     &                                       diff_coefs%Cdiff_SGS_hf)
       end if
 !
-      num_comp = 0
-      if(fl_prop%iflag_scheme .gt. id_no_evolution) then
-        if(SGS_param%SGS_momentum%iflag_SGS_flux                        &
-     &     .ne. id_SGS_none) then
-          if(SGS_param%SGS_momentum%iflag_commute_flux                  &
-     &     .eq. id_SGS_commute_ON) then
-            diff_coefs%Cdiff_SGS_mf%icomp_Csim = id
-            diff_coefs%Cdiff_SGS_mf%iak_Csim =   jd
-            wk_diff%name(jd) = SGS_momentum_flux%name
-            num_comp =         SGS_momentum_flux%n_comp
-            id = id + num_comp
-            jd = jd + 1
-           end if
-        end if
+      if(      (fl_prop%iflag_scheme .gt. id_no_evolution)              &
+     &   .and. (SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none) &
+     &   .and. (SGS_param%SGS_momentum%iflag_commute_flux               &
+     &                             .eq. id_SGS_commute_ON)) then
+        call SGS_model_coef_address_by_label(SGS_momentum_flux, jd, id, &
+     &                                       diff_coefs%Cdiff_SGS_mf)
       end if
 !
-      num_comp = 0
-      if(fl_prop%iflag_scheme .gt. id_no_evolution) then
-        if (SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
-          if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
-            diff_coefs%Cdiff_SGS_lor%icomp_Csim = id
-            diff_coefs%Cdiff_SGS_lor%iak_Csim =   jd
-            wk_diff%name(jd) = SGS_Lorentz%name
-            num_comp =         n_sym_tensor
-            id = id + num_comp
-            jd = jd + 1
-          end if
-        end if
+      if(      (fl_prop%iflag_scheme .gt. id_no_evolution)              &
+     &   .and. (SGS_param%iflag_SGS_lorentz .ne. id_SGS_none)           &
+     &   .and. (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON)) then
+        call set_SGS_model_coef_address(SGS_Lorentz%name, n_sym_tensor, &
+     &                                jd, id, diff_coefs%Cdiff_SGS_lor)
       end if
 !
-      num_comp = 0
-       if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-         if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
-           if (cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
-             diff_coefs%Cdiff_SGS_uxb%icomp_Csim = id
-             diff_coefs%Cdiff_SGS_uxb%iak_Csim =   jd
-             wk_diff%name(jd) = SGS_induction%name
-             num_comp =         SGS_induction%n_comp
-             id = id + num_comp
-             jd = jd + 1
-           end if
-         end if
+      if(      (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution)         &
+     &   .and. (SGS_param%iflag_SGS_uxb .ne. id_SGS_none)               &
+     &   .and. (cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON)) then
+        call SGS_model_coef_address_by_label(SGS_induction, jd, id,     &
+     &                                       diff_coefs%Cdiff_SGS_uxb)
        end if
 !
-      num_comp = 0
-       if (cp_prop%iflag_scheme .gt. id_no_evolution) then
-         if (SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none) then
-           if(SGS_param%SGS_light%iflag_commute_flux                    &
-     &        .eq. id_SGS_commute_ON) then
-             diff_coefs%Cdiff_SGS_cf%icomp_Csim = id
-             diff_coefs%Cdiff_SGS_cf%iak_Csim =   jd
-             wk_diff%name(jd) = SGS_composit_flux%name
-             num_comp =         SGS_composit_flux%n_comp
-             id = id + num_comp
-             jd = jd + 1
-           end if
-         end if
+      if(      (cp_prop%iflag_scheme .gt. id_no_evolution)              &
+     &   .and. (SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none)    &
+     &   .and. (SGS_param%SGS_light%iflag_commute_flux                  &
+     &                          .eq. id_SGS_commute_ON)) then
+        call SGS_model_coef_address_by_label(SGS_composit_flux, jd, id, &
+     &                                       diff_coefs%Cdiff_SGS_cf)
        end if
 !
 !
@@ -442,8 +291,70 @@
      &                                         diff_coefs%Cdiff_magne)
         end if
       end if
+      num_diff_field = jd
+      ntot_diff_comp = id
+!
 !
       end subroutine set_sgs_diff_addresses
+!
+!  ------------------------------------------------------------------
+!
+      subroutine copy_sgs_diff_coef_name(diff_coefs, wk_diff)
+!
+      use t_ele_info_4_dynamic
+      use t_SGS_term_labels
+!
+      type(SGS_commutation_coefs), intent(in) :: diff_coefs
+      type(dynamic_model_data), intent(inout) :: wk_diff
+!
+!
+      if(diff_coefs%Cdiff_SGS_hf%iak_Csim .gt. 0) then
+        wk_diff%name(diff_coefs%Cdiff_SGS_hf%iak_Csim)                  &
+     &                             = diff_coefs%Cdiff_SGS_hf%term_name
+      end if
+!
+      if(diff_coefs%Cdiff_SGS_mf%iak_Csim .gt. 0) then
+        wk_diff%name(diff_coefs%Cdiff_SGS_mf%iak_Csim)                  &
+     &                             = diff_coefs%Cdiff_SGS_mf%term_name
+      end if
+!
+      if(diff_coefs%Cdiff_SGS_lor%iak_Csim .gt. 0) then
+        wk_diff%name(diff_coefs%Cdiff_SGS_lor%iak_Csim)                 &
+     &                             = diff_coefs%Cdiff_SGS_lor%term_name
+      end if
+!
+      if(diff_coefs%Cdiff_SGS_uxb%iak_Csim .gt. 0) then
+        wk_diff%name(diff_coefs%Cdiff_SGS_uxb%iak_Csim)                 &
+     &                             = diff_coefs%Cdiff_SGS_uxb%term_name
+      end if
+!
+      if(diff_coefs%Cdiff_SGS_cf%iak_Csim .gt. 0) then
+        wk_diff%name(diff_coefs%Cdiff_SGS_cf%iak_Csim)                  &
+     &                              = diff_coefs%Cdiff_SGS_cf%term_name
+      end if
+!
+!
+      if(diff_coefs%Cdiff_temp%iak_Csim .gt. 0) then
+        wk_diff%name(diff_coefs%Cdiff_temp%iak_Csim)                    &
+     &                              = diff_coefs%Cdiff_temp%term_name
+      end if
+!
+      if(diff_coefs%Cdiff_light%iak_Csim .gt. 0) then
+        wk_diff%name(diff_coefs%Cdiff_light%iak_Csim)                   &
+     &                              = diff_coefs%Cdiff_light%term_name
+      end if
+!
+      if(diff_coefs%Cdiff_velo%iak_Csim .gt. 0) then
+        wk_diff%name(diff_coefs%Cdiff_velo%iak_Csim)                    &
+     &                              = diff_coefs%Cdiff_velo%term_name
+      end if
+!
+      if(diff_coefs%Cdiff_magne%iak_Csim .gt. 0) then
+        wk_diff%name(diff_coefs%Cdiff_magne%iak_Csim)                   &
+     &                              = diff_coefs%Cdiff_magne%term_name
+      end if
+!
+      end subroutine copy_sgs_diff_coef_name
 !
 !  ------------------------------------------------------------------
 !

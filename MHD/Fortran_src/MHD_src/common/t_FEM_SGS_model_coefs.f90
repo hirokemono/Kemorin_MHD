@@ -139,8 +139,8 @@
 !
       Csim%flag_set =   .FALSE.
       Csim%term_name =  term_name
-      Csim%icomp_Csim = i_comp
-      Csim%iak_Csim =   i_field
+      Csim%icomp_Csim = i_comp + 1
+      Csim%iak_Csim =   i_field + 1
       Csim%num_comp =   n_comp
       i_comp =  i_comp + n_comp
       i_field = i_field + 1
