@@ -1,13 +1,14 @@
-!
-!     module int_vol_magne_monitor
-!
-!     numerical integration for finite elememt equations of induction
-!
-!        programmed by H.Matsui and H.Okuda
-!                              on July 2000 (ver 1.1)
-!        modified by H. Matsui on Oct., 2005
-!        modified by H. Matsui on Aug., 2007
-!
+!>@file   int_vol_magne_monitor.f90
+!!@brief  module int_vol_magne_monitor
+!!
+!!@author H. Matsui
+!!@date    Programmed by H.Matsui in July 2000 (ver 1.1)
+!!        modified by H. Matsui in Oct., 2005
+!!        modified by H. Matsui in Aug., 2007
+!!
+!>@brief  FEM integration for mangetic induction terms
+!!
+!!@verbatim
 !!      subroutine int_vol_magne_monitor_pg(i_field, num_int,           &
 !!     &          SGS_param, cmt_param, node, ele, conduct, cd_prop,    &
 !!     &          iphys_base, iphys_frc, iphys_div_frc, iphys_SGS,      &
@@ -18,7 +19,8 @@
 !!     &          SGS_param, cmt_param, node, ele, conduct, cd_prop,    &
 !!     &          iphys_base, iphys_frc, iphys_div_frc, iphys_SGS,      &
 !!     &          nod_fld, iphys_ele_base, ele_fld, g_FEM, jac_3d,      &
-!!     &          rhs_tbl, FEM_elen, ak_diff, mhd_fem_wk, fem_wk,f_nl)
+!!     &          rhs_tbl, FEM_elen, Cdiff_SGS_uxb,                     &
+!!     &          mhd_fem_wk, fem_wk, f_nl)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(node_data), intent(in) :: node
@@ -40,6 +42,7 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+!!@endverbatim
 !
       module int_vol_magne_monitor
 !
@@ -151,7 +154,8 @@
      &          SGS_param, cmt_param, node, ele, conduct, cd_prop,      &
      &          iphys_base, iphys_frc, iphys_div_frc, iphys_SGS,        &
      &          nod_fld, iphys_ele_base, ele_fld, g_FEM, jac_3d,        &
-     &          rhs_tbl, FEM_elen, ak_diff, mhd_fem_wk, fem_wk,f_nl)
+     &          rhs_tbl, FEM_elen, Cdiff_SGS_uxb,                       &
+     &          mhd_fem_wk, fem_wk, f_nl)
 !
       use int_vol_vect_diff_upw
       use int_vol_vect_cst_diff_upw
@@ -181,7 +185,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elen
-      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
+      type(SGS_model_coefficient), intent(in) :: Cdiff_SGS_uxb
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -207,7 +211,7 @@
      &       (node, ele, nod_fld, iphys_base, iphys_SGS,                &
      &        g_FEM, jac_3d, rhs_tbl, FEM_elen,                         &
      &        conduct%istack_ele_fld_smp, num_int, dt,                  &
-     &        SGS_param%ifilter_final, ak_diff,                         &
+     &        SGS_param%ifilter_final, Cdiff_SGS_uxb%coef(1,1),         &
      &        cd_prop%coef_induct, ele_fld%ntot_phys,                   &
      &        iphys_ele_base%i_magne, ele_fld%d_fld, fem_wk,            &
      &        mhd_fem_wk, f_nl)

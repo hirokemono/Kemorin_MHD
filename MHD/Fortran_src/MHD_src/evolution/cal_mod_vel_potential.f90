@@ -173,8 +173,8 @@
       call int_vol_sk_po_bc(SGS_param%SGS_momentum%iflag_commute_field, &
      &    SGS_param%ifilter_final, FEM_prm%npoint_poisson_int,          &
      &    iphys%exp_work%i_p_phi, mesh%node, mesh%ele, nod_fld,         &
-     &    jacs%g_FEM, jacs%jac_3d_l, rhs_tbl, FEM_elens,                &
-     &    Vnod_bcs%nod_bc_p, Cdiff_velo%coef(1,1), fem_wk, f_l)
+     &    jacs%g_FEM, jacs%jac_3d_l, rhs_tbl, FEM_elens, Cdiff_velo,    &
+     &    Vnod_bcs%nod_bc_p, fem_wk, f_l)
 !
 !   add boundary term for fixed pressure
 !
@@ -268,7 +268,7 @@
      &   (cmt_param%iflag_c_magne, SGS_param%ifilter_final,             &
      &    FEM_prm%npoint_poisson_int, iphys%exp_work%i_m_phi,           &
      &    mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d_l,      &
-     &    rhs_tbl, FEM_elens, Bnod_bcs%nod_bc_f, Cdiff_magne%coef(1,1), &
+     &    rhs_tbl, FEM_elens, Cdiff_magne, Bnod_bcs%nod_bc_f,           &
      &    fem_wk, f_l)
 !
       call set_boundary_ff(mesh%node, Bnod_bcs%nod_bc_f, f_l)
@@ -365,7 +365,7 @@
      &   (cmt_param%iflag_c_magne, SGS_param%ifilter_final,             &
      &    FEM_prm%npoint_poisson_int, iphys%exp_work%i_m_phi,           &
      &    mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d_l,      &
-     &    rhs_tbl, FEM_elens, Bnod_bcs%nod_bc_f, Cdiff_magne%coef(1,1), &
+     &    rhs_tbl, FEM_elens, Cdiff_magne, Bnod_bcs%nod_bc_f,           &
      &    fem_wk, f_l)
 !
       call set_boundary_ff(mesh%node, Bnod_bcs%nod_bc_f, f_l)

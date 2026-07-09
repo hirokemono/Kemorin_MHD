@@ -19,7 +19,7 @@
 !!     &          SGS_param, cmt_param, node, ele, conduct, cd_prop,    &
 !!     &          iphys_base, iphys_SGS, nod_fld, ncomp_ele, d_ele,     &
 !!     &          iphys_ele_base, g_FEM, jac_3d, rhs_tbl, FEM_elens,    &
-!!     &          ak_diff, mhd_fem_wk, fem_wk, f_nl)
+!!     &          Cdiff_SGS_uxb, mhd_fem_wk, fem_wk, f_nl)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(node_data), intent(in) :: node
@@ -176,7 +176,7 @@
      &          SGS_param, cmt_param, node, ele, conduct, cd_prop,      &
      &          iphys_base, iphys_SGS, nod_fld, ncomp_ele, d_ele,       &
      &          iphys_ele_base, g_FEM, jac_3d, rhs_tbl, FEM_elens,      &
-     &          ak_diff, mhd_fem_wk, fem_wk, f_nl)
+     &          Cdiff_SGS_uxb, mhd_fem_wk, fem_wk, f_nl)
 !
       use cal_add_smp
       use nodal_fld_2_each_element
@@ -201,12 +201,12 @@
       type(conductive_property), intent(in) :: cd_prop
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_model_coefficient), intent(in) :: Cdiff_SGS_uxb
 !
       integer(kind = kint), intent(in) :: num_int
       integer(kind = kint), intent(in) :: ncomp_ele
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
       real(kind = kreal), intent(in) :: dt
-      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -249,7 +249,7 @@
      &        mhd_fem_wk%sgs_v1, fem_wk%vector_1)
           call fem_skv_div_sgs_asym_t_upwind                            &
      &       (conduct%istack_ele_fld_smp, num_int, k2,                  &
-     &        SGS_param%ifilter_final, dt, ak_diff,                     &
+     &        SGS_param%ifilter_final, dt, Cdiff_SGS_uxb%coef(1,1),     &
      &        ele, g_FEM, jac_3d, FEM_elens,                            &
      &        d_ele(1,iphys_ele_base%i_magne), mhd_fem_wk%sgs_v1,       &
      &        fem_wk%vector_1, fem_wk%sk6)

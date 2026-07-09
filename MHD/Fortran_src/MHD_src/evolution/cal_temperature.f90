@@ -402,7 +402,7 @@
      &    iflag_commute_field, i_pre_advect, eps_4_crank,               &
      &    FEM_prm, SGS_param, mesh, fluid, property, nod_bcs,           &
      &    iphys_ele_base, ele_fld, fem_int%jcs, fem_int%rhs_tbl,        &
-     &    FEM_elens, Cdiff_scalar%coef(1,1), mk_MHD%mlump_fl,           &
+     &    FEM_elens, Cdiff_scalar, mk_MHD%mlump_fl,                     &
      &    Smatrix, ak_diffuse, MGCG_WK, mhd_fem_wk, rhs_mat%fem_wk,     &
      &    rhs_mat%f_l, rhs_mat%f_nl, nod_fld, m_SR)
 !

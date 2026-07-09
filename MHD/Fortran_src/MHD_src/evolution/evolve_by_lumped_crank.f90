@@ -37,7 +37,7 @@
 !!     &          i_pre_advect, ak_diffuese, eps_4_crank,               &
 !!     &          dt, FEM_prm, nod_comm, node, ele, fluid, property,    &
 !!     &          Snod_bcs, iphys_ele_base, ele_fld, g_FEM, jac_3d,     &
-!!     &          rhs_tbl, FEM_elens, ak_diff, mlump_fl,                &
+!!     &          rhs_tbl, FEM_elens, Cdiff, mlump_fl,                  &
 !!     &          matrix, MG_vector, mhd_fem_wk, fem_wk,                &
 !!     &          f_l, f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -61,6 +61,7 @@
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_model_coefficient), intent(in) :: Cdiff_velo
 !!        type(SGS_model_coefficient), intent(in) :: Cdiff_magne
+!!        type(SGS_model_coefficient), intent(in) :: Cdiff
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_a
@@ -397,7 +398,7 @@
      &          i_pre_advect, ak_diffuese, eps_4_crank,                 &
      &          dt, FEM_prm, nod_comm, node, ele, fluid, property,      &
      &          Snod_bcs, iphys_ele_base, ele_fld, g_FEM, jac_3d,       &
-     &          rhs_tbl, FEM_elens, ak_diff, mlump_fl,                  &
+     &          rhs_tbl, FEM_elens, Cdiff, mlump_fl,                    &
      &          matrix, MG_vector, mhd_fem_wk, fem_wk,                  &
      &          f_l, f_nl, nod_fld, v_sol, SR_sig, SR_r)
 !
@@ -427,13 +428,13 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_model_coefficient), intent(in) :: Cdiff
       type(lumped_mass_matrices), intent(in) :: mlump_fl
       type(MHD_MG_matrix), intent(in) :: matrix
 !
       real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: eps_4_crank
       real(kind = kreal), intent(in) :: ak_diffuese(ele%numele)
-      real(kind = kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:matrix%nlevel_MG)
@@ -450,7 +451,7 @@
         call int_sk_fixed_temp(iflag_commute_field,                     &
      &      ifilter_final, FEM_prm%npoint_t_evo_int, i_field,           &
      &      node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,      &
-     &      Snod_bcs%nod_bc_s, ak_diffuese, ak_diff, property%coef_imp, &
+     &      Cdiff, Snod_bcs%nod_bc_s, ak_diffuese, property%coef_imp,   &
      &      fem_wk, f_l)
 !        if (MHD_step1%iflag_initial_step.eq.1) then
 !          property%coef_imp = 1.0d0 / property%coef_imp

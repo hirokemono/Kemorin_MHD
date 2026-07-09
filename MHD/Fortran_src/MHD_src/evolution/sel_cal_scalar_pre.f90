@@ -11,7 +11,7 @@
 !!     &          iflag_commute_field, i_pre_advect, eps_4_crank,       &
 !!     &          FEM_prm, SGS_param, mesh, fluid, property, nod_bcs,   &
 !!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,    &
-!!     &          ak_diff, mlump_fl, Smatrix, ak_diffuse, MGCG_WK,      &
+!!     &          Cdiff_scalar, mlump_fl, Smatrix, ak_diffuse, MGCG_WK, &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, m_SR)
 !!        integer(kind = kint), intent(in) :: i_field
 !!        real(kind = kreal), intent(in) :: dt
@@ -30,6 +30,7 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(SGS_model_coefficient), intent(in) :: Cdiff_scalar
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(MHD_MG_matrix), intent(in) :: Smatrix
 !!        real(kind = kreal), intent(in) :: ak_diffuse(mesh%ele%numele)
@@ -92,7 +93,7 @@
      &          iflag_commute_field, i_pre_advect, eps_4_crank,         &
      &          FEM_prm, SGS_param, mesh, fluid, property, nod_bcs,     &
      &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,      &
-     &          ak_diff, mlump_fl, Smatrix, ak_diffuse, MGCG_WK,        &
+     &          Cdiff_scalar, mlump_fl, Smatrix, ak_diffuse, MGCG_WK,   &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, m_SR)
 !
       use m_property_flags
@@ -121,11 +122,11 @@
       type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_model_coefficient), intent(in) :: Cdiff_scalar
       type(lumped_mass_matrices), intent(in) :: mlump_fl
       type(MHD_MG_matrix), intent(in) :: Smatrix
 !
       real(kind = kreal), intent(in) :: ak_diffuse(mesh%ele%numele)
-      real(kind = kreal), intent(in) :: ak_diff(mesh%ele%numele)
 !
       type(MGCG_data), intent(inout) :: MGCG_WK
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -155,7 +156,7 @@
      &      i_field, i_pre_advect, ak_diffuse, eps_4_crank,             &
      &      dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele,            &
      &      fluid, property, nod_bcs, iphys_ele_base, ele_fld,          &
-     &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, ak_diff,       &
+     &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, Cdiff_scalar,  &
      &      mlump_fl, Smatrix, MGCG_WK%MG_vector, mhd_fem_wk, fem_wk,   &
      &      f_l, f_nl, nod_fld, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
 !
@@ -164,7 +165,7 @@
      &    (iflag_commute_field, SGS_param%ifilter_final,                &
      &     i_field, i_pre_advect, ak_diffuse, eps_4_crank, dt, FEM_prm, &
      &     mesh%node, mesh%ele, fluid, property, nod_bcs,               &
-     &     jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, ak_diff,        &
+     &     jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, Cdiff_scalar,   &
      &     Smatrix, MGCG_WK%MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl,   &
      &     nod_fld, m_SR%v_sol, m_SR%SR_sig, m_SR%SR_r)
       end if

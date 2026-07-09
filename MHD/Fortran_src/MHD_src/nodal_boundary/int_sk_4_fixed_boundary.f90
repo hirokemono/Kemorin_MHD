@@ -14,19 +14,19 @@
 !!@verbatim
 !!      subroutine int_vol_sk_po_bc(iflag_commute_velo, ifilter_final,  &
 !!     &          num_int, i_p_phi, node, ele, nod_fld, g_FEM, jac_3d_l,&
-!!     &          rhs_tbl, FEM_elens, nod_bc_p, ak_diff, fem_wk, f_l)
+!!     &          rhs_tbl, FEM_elens, Cdiff, nod_bc_p, fem_wk, f_l)
 !!      subroutine int_vol_sk_mp_bc(iflag_commute_magne, ifilter_final, &
 !!     &          num_int, i_m_phi, node, ele, nod_fld, g_FEM, jac_3d_l,&
-!!     &          rhs_tbl, FEM_elens, nod_bc_f, ak_diff, fem_wk, f_l)
+!!     &          rhs_tbl, FEM_elens, Cdiff, nod_bc_f, fem_wk, f_l)
 !!      subroutine int_vol_sk_mag_p_ins_bc                              &
 !!     &         (iflag_commute_magne, ifilter_final, num_int, i_m_phi, &
 !!     &          node, ele, nod_fld, g_FEM, jac_3d_l, rhs_tbl,         &
-!!     &          FEM_elens, nod_bc_fins, ak_diff, fem_wk, f_l)
+!!     &          FEM_elens, Cdiff, nod_bc_fins, fem_wk, f_l)
 !!
 !!      subroutine int_sk_fixed_temp                                    &
 !!     &         (iflag_commute, ifilter_final, num_int, i_temp,        &
 !!     &          node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,&
-!!     &          nod_bc_t, ak_d, ak_diff, coef_imp, fem_wk, f_l)
+!!     &          Cdiff, nod_bc_t, ak_d, coef_imp, fem_wk, f_l)
 !!      subroutine int_sk_4_fixed_velo(iflag_commute_velo,              &
 !!     &          ifilter_final, num_int, i_velo, node, ele, nod_fld,   &
 !!     &          fl_prop, g_FEM, jac_3d, rhs_tbl, FEM_elens, Cdiff,    &
@@ -84,7 +84,7 @@
 !
       subroutine int_vol_sk_po_bc(iflag_commute_velo, ifilter_final,    &
      &          num_int, i_p_phi, node, ele, nod_fld, g_FEM, jac_3d_l,  &
-     &          rhs_tbl, FEM_elens, nod_bc_p, ak_diff, fem_wk, f_l)
+     &          rhs_tbl, FEM_elens, Cdiff, nod_bc_p, fem_wk, f_l)
 !
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
@@ -100,8 +100,8 @@
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_model_coefficient), intent(in) :: Cdiff
       type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_p
-      real (kind = kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -112,7 +112,7 @@
      &      g_FEM, jac_3d_l, rhs_tbl, FEM_elens, num_int,               &
      &      nod_bc_p%ibc_end, nod_bc_p%num_idx_ibc, nod_bc_p%ele_bc_id, &
      &      nod_bc_p%ibc_stack_smp, nod_bc_p%ibc_shape, ifilter_final,  &
-     &      i_p_phi, ak_diff, fem_wk, f_l)
+     &      i_p_phi, Cdiff%coef(1,1), fem_wk, f_l)
       else
         call int_vol_fixed_poisson_surf                                 &
      &    (node, ele, nod_fld, g_FEM, jac_3d_l, rhs_tbl, num_int,       &
@@ -130,7 +130,7 @@
 !
       subroutine int_vol_sk_mp_bc(iflag_commute_magne, ifilter_final,   &
      &          num_int, i_m_phi, node, ele, nod_fld, g_FEM, jac_3d_l,  &
-     &          rhs_tbl, FEM_elens, nod_bc_f, ak_diff, fem_wk, f_l)
+     &          rhs_tbl, FEM_elens, Cdiff, nod_bc_f, fem_wk, f_l)
 !
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
@@ -146,8 +146,8 @@
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_model_coefficient), intent(in) :: Cdiff
       type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_f
-      real (kind = kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -158,7 +158,7 @@
      &      g_FEM, jac_3d_l, rhs_tbl, FEM_elens, num_int,               &
      &      nod_bc_f%ibc_end, nod_bc_f%num_idx_ibc, nod_bc_f%ele_bc_id, &
      &      nod_bc_f%ibc_stack_smp, nod_bc_f%ibc_shape, ifilter_final,  &
-     &      i_m_phi, ak_diff, fem_wk, f_l)
+     &      i_m_phi, Cdiff%coef(1,1), fem_wk, f_l)
       else
         call int_vol_fixed_poisson_surf                                 &
      &     (node, ele, nod_fld, g_FEM, jac_3d_l, rhs_tbl, num_int,      &
@@ -178,7 +178,7 @@
       subroutine int_vol_sk_mag_p_ins_bc                                &
      &         (iflag_commute_magne, ifilter_final, num_int, i_m_phi,   &
      &          node, ele, nod_fld, g_FEM, jac_3d_l, rhs_tbl,           &
-     &          FEM_elens, nod_bc_fins, ak_diff, fem_wk, f_l)
+     &          FEM_elens, Cdiff, nod_bc_fins, fem_wk, f_l)
 !
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
@@ -194,8 +194,8 @@
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_model_coefficient), intent(in) :: Cdiff
       type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_fins
-      real (kind = kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -207,7 +207,7 @@
      &      nod_bc_fins%ibc_end, nod_bc_fins%num_idx_ibc,               &
      &      nod_bc_fins%ele_bc_id, nod_bc_fins%ibc_stack_smp,           &
      &      nod_bc_fins%ibc_shape, ifilter_final, i_m_phi,              &
-     &      ak_diff, fem_wk, f_l)
+     &      Cdiff%coef(1,1), fem_wk, f_l)
       else
         call int_vol_fixed_poisson_surf                                 &
      &     (node, ele, nod_fld, g_FEM, jac_3d_l, rhs_tbl, num_int,      &
@@ -227,7 +227,7 @@
       subroutine int_sk_fixed_temp                                      &
      &         (iflag_commute, ifilter_final, num_int, i_temp,          &
      &          node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,  &
-     &          nod_bc_t, ak_d, ak_diff, coef_imp, fem_wk, f_l)
+     &          Cdiff, nod_bc_t, ak_d, coef_imp, fem_wk, f_l)
 !
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
@@ -242,11 +242,11 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_model_coefficient), intent(in) :: Cdiff
       type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_t
 !
       real(kind = kreal), intent(in) :: coef_imp
       real(kind = kreal), intent(in) :: ak_d(ele%numele)
-      real (kind = kreal), intent(in) :: ak_diff(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -258,7 +258,7 @@
      &      num_int, nod_bc_t%ibc_end, nod_bc_t%num_idx_ibc,            &
      &      nod_bc_t%ele_bc_id, nod_bc_t%ibc_stack_smp,                 &
      &      nod_bc_t%ibc_shape, ifilter_final, i_temp,                  &
-     &      ak_diff, ak_d, coef_imp, fem_wk, f_l)
+     &      Cdiff%coef(1,1), ak_d, coef_imp, fem_wk, f_l)
       else
         call int_vol_fixed_scalar_surf                                  &
      &     (node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, num_int,        &

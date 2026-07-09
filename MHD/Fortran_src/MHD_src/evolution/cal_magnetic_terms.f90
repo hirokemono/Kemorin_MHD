@@ -155,7 +155,7 @@
      &      iphys_base, iphys_frc, iphys_div_frc, iphys_SGS,            &
      &      nod_fld, iphys_ele_base, ele_fld,                           &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
-     &      FEM_elens, Cdiff_SGS_uxb%coef(1,1), mhd_fem_wk,             &
+     &      FEM_elens, Cdiff_SGS_uxb, mhd_fem_wk,                       &
      &      rhs_mat%fem_wk, rhs_mat%f_nl)
       else
         call int_vol_magne_monitor_pg                                   &
