@@ -7,6 +7,16 @@
 !>@brief  Structures for model coefficients for FEM_SGS_MHD
 !!
 !!@verbatim
+!!      subroutine SGS_model_coef_address_by_label                      &
+!!     &         (term, i_field, i_comp, Csim)
+!!      subroutine set_SGS_model_coef_address(term_name, n_comp,        &
+!!     &                                      i_field, i_comp, Csim)
+!!        type(field_def), intent(in) :: term
+!!        character(len = kchara), intent(in) :: term_name
+!!        integer(kind = kint), intent(in) :: n_comp
+!!        integer(kind = kint), intent(inout) :: i_field, i_comp
+!!        type(SGS_model_coefficient), intent(inout) :: Csim
+!!
 !!      subroutine dup_SGS_model_coefficient(org_Csim, new_Csim)
 !!        type(SGS_model_coefficient), intent(in) :: org_Csim
 !!        type(SGS_model_coefficient), intent(inout) :: new_Csim
@@ -36,20 +46,22 @@
       type SGS_model_coefficient
 !>        Set flag
         logical :: flag_set
+!>        SGS term name
+        character(len = kchara) :: term_name
 !>        Address for model coeffieint
-        integer(kind = kint) :: iak_Csim
+        integer(kind = kint) :: iak_Csim =   0
 !>        Start address for model coeffieint work array
-        integer(kind = kint) :: icomp_Csim
+        integer(kind = kint) :: icomp_Csim = 0
 !
 !>        Number of components (0 indicates no used)
-        integer(kind = kint) :: num_comp
+        integer(kind = kint) :: num_comp = 0
 !>        Number of element
-        integer(kind = kint) :: n_ele
+        integer(kind = kint) :: n_ele = 0
 !>        Model coefficiens on element
         real(kind = kreal), allocatable :: coef(:,:)
 !
 !>        Number of element
-        integer(kind = kint) :: n_nod
+        integer(kind = kint) :: n_nod = 0
 !>        Model coefficiens on element
         real(kind = kreal), allocatable :: coef_nod(:,:)
       end type SGS_model_coefficient
@@ -100,23 +112,40 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine dup_SGS_model_coefficient(org_Csim, new_Csim)
+      subroutine SGS_model_coef_address_by_label                        &
+     &         (term, i_field, i_comp, Csim)
 !
-      type(SGS_model_coefficient), intent(in) :: org_Csim
-      type(SGS_model_coefficient), intent(inout) :: new_Csim
+      use t_field_labels
+!
+      type(field_def), intent(in) :: term
+      integer(kind = kint), intent(inout) :: i_field, i_comp
+      type(SGS_model_coefficient), intent(inout) :: Csim
+!
+      call set_SGS_model_coef_address(term%name, term%n_comp,           &
+     &                                i_field, i_comp, Csim)
+!
+      end subroutine SGS_model_coef_address_by_label
+!
+! -------------------------------------------------------------------
+!
+      subroutine set_SGS_model_coef_address(term_name, n_comp,          &
+     &                                      i_field, i_comp, Csim)
+!
+      character(len = kchara), intent(in) :: term_name
+      integer(kind = kint), intent(in) :: n_comp
+      integer(kind = kint), intent(inout) :: i_field, i_comp
+      type(SGS_model_coefficient), intent(inout) :: Csim
 !
 !
-      call alloc_SGS_model_coefficient                                  &
-     &   (org_Csim%n_ele, org_Csim%num_comp, new_Csim)
+      Csim%flag_set =   .FALSE.
+      Csim%term_name =  term_name
+      Csim%icomp_Csim = i_comp
+      Csim%iak_Csim =   i_field
+      Csim%num_comp =   n_comp
+      i_comp =  i_comp + n_comp
+      i_field = i_field + 1
 !
-      new_Csim%flag_set = org_Csim%flag_set
-      if((new_Csim%n_ele*new_Csim%num_comp) .le. 0) return
-!$omp parallel workshare
-      new_Csim%coef(1:new_Csim%n_ele, 1:new_Csim%num_comp)              &
-     &   = org_Csim%coef(1:new_Csim%n_ele, 1:new_Csim%num_comp)
-!$omp end parallel workshare
-!
-      end subroutine dup_SGS_model_coefficient
+      end subroutine set_SGS_model_coef_address
 !
 ! -------------------------------------------------------------------
 !
@@ -177,6 +206,27 @@
       deallocate(Csim%coef_nod)
 !
       end subroutine dealloc_SGS_model_coef_on_nod
+!
+! -------------------------------------------------------------------
+! -------------------------------------------------------------------
+!
+      subroutine dup_SGS_model_coefficient(org_Csim, new_Csim)
+!
+      type(SGS_model_coefficient), intent(in) :: org_Csim
+      type(SGS_model_coefficient), intent(inout) :: new_Csim
+!
+!
+      call alloc_SGS_model_coefficient                                  &
+     &   (org_Csim%n_ele, org_Csim%num_comp, new_Csim)
+!
+      new_Csim%flag_set = org_Csim%flag_set
+      if((new_Csim%n_ele*new_Csim%num_comp) .le. 0) return
+!$omp parallel workshare
+      new_Csim%coef(1:new_Csim%n_ele, 1:new_Csim%num_comp)              &
+     &   = org_Csim%coef(1:new_Csim%n_ele, 1:new_Csim%num_comp)
+!$omp end parallel workshare
+!
+      end subroutine dup_SGS_model_coefficient
 !
 ! -------------------------------------------------------------------
 ! -------------------------------------------------------------------

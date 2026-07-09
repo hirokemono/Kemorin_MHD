@@ -258,6 +258,7 @@
         end if
       end if
 !
+!
       if (cp_prop%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none) then
           if (SGS_param%SGS_light%iflag_commute_flux                    &
@@ -268,44 +269,34 @@
         end if
       end if
 !
-      if (ht_prop%iflag_scheme .gt. id_no_evolution) then
-        if(SGS_param%iflag_SGS .ne. id_SGS_none                         &
-     &      .and. SGS_param%SGS_heat%iflag_commute_field                &
-     &           .eq. id_SGS_commute_ON) then
+      if(      (ht_prop%iflag_scheme .gt. id_no_evolution)              &
+     &   .and. (SGS_param%iflag_SGS .ne. id_SGS_none)                   &
+     &   .and. (SGS_param%SGS_heat%iflag_commute_field                  &
+     &                          .eq. id_SGS_commute_ON)) then
+        num_diff_field = num_diff_field + 1
+        ntot_diff_comp = ntot_diff_comp + 3
+      end if
+!
+      if(      (cp_prop%iflag_scheme .gt. id_no_evolution)              &
+     &   .and. (SGS_param%iflag_SGS .ne. id_SGS_none)                   &
+     &   .and. (SGS_param%SGS_light%iflag_commute_field                 &
+     &                           .eq. id_SGS_commute_ON)) then
           num_diff_field = num_diff_field + 1
           ntot_diff_comp = ntot_diff_comp + 3
-        end if
       end if
 !
-      if (cp_prop%iflag_scheme .gt. id_no_evolution) then
-        if(SGS_param%iflag_SGS .ne. id_SGS_none                         &
-     &      .and. SGS_param%SGS_light%iflag_commute_field               &
-     &           .eq. id_SGS_commute_ON) then
-          num_diff_field = num_diff_field + 1
-          ntot_diff_comp = ntot_diff_comp + 3
-        end if
-      end if
-!
-      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
-        if(SGS_param%iflag_SGS .ne. id_SGS_none                         &
-     &       .and. SGS_param%SGS_momentum%iflag_commute_field           &
-     &            .eq. id_SGS_commute_ON) then
+      if(      (fl_prop%iflag_scheme .gt. id_no_evolution)              &
+     &   .and. (SGS_param%iflag_SGS .ne. id_SGS_none)                   &
+     &   .and. (SGS_param%SGS_momentum%iflag_commute_field              &
+     &                              .eq. id_SGS_commute_ON)) then
           num_diff_field = num_diff_field + 1
           ntot_diff_comp = ntot_diff_comp + 9
-        end if
       end if
 !
-      if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
-        if(SGS_param%iflag_SGS .ne. id_SGS_none                         &
-     &      .and. cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
-          num_diff_field = num_diff_field + 1
-          ntot_diff_comp = ntot_diff_comp + 9
-        end if
-      end if
-!
-      if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-        if(SGS_param%iflag_SGS .gt. id_SGS_none                         &
-     &      .and. cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
+      if(     (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution)          &
+     &   .or. (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution)) then
+        if(      (SGS_param%iflag_SGS .ne. id_SGS_none)                 &
+     &     .and. (cmt_param%iflag_c_magne .eq. id_SGS_commute_ON)) then
           num_diff_field = num_diff_field + 1
           ntot_diff_comp = ntot_diff_comp + 9
         end if
@@ -419,68 +410,36 @@
        end if
 !
 !
-      num_comp = 0
-      if (ht_prop%iflag_scheme .gt. id_no_evolution) then
-        if(SGS_param%iflag_SGS .ne. id_SGS_none                        &
-     &      .and. SGS_param%SGS_heat%iflag_commute_field               &
-     &           .eq. id_SGS_commute_ON) then
-            diff_coefs%Cdiff_temp%icomp_Csim = id
-            diff_coefs%Cdiff_temp%iak_Csim =   jd
-            wk_diff%name(jd) = temperature%name
-            num_comp =         temperature%n_comp
-            id = id + num_comp
-            jd = jd + 1
-        end if
+      if(      (ht_prop%iflag_scheme .gt. id_no_evolution)              &
+     &   .and. (SGS_param%iflag_SGS .ne. id_SGS_none)                   &
+     &   .and. (SGS_param%SGS_heat%iflag_commute_field                  &
+     &                          .eq. id_SGS_commute_ON)) then
+        call SGS_model_coef_address_by_label(temperature, jd, id,       &
+     &                                       diff_coefs%Cdiff_temp)
       end if
 !
-      num_comp = 0
-      if (cp_prop%iflag_scheme .gt. id_no_evolution) then
-        if(SGS_param%iflag_SGS .ne. id_SGS_none                        &
-     &      .and. SGS_param%SGS_light%iflag_commute_field              &
-     &           .eq. id_SGS_commute_ON) then
-            diff_coefs%Cdiff_light%icomp_Csim = id
-            diff_coefs%Cdiff_light%iak_Csim =   jd
-            wk_diff%name(jd) = composition%name
-            num_comp =         composition%n_comp
-            id = id + num_comp
-            jd = jd + 1
-        end if
+      if(      (cp_prop%iflag_scheme .gt. id_no_evolution)              &
+     &   .and. (SGS_param%iflag_SGS .ne. id_SGS_none)                   &
+     &   .and. (SGS_param%SGS_light%iflag_commute_field                 &
+     &                           .eq. id_SGS_commute_ON)) then
+        call SGS_model_coef_address_by_label(composition, jd, id,       &
+     &                                       diff_coefs%Cdiff_light)
       end if
 !
-      num_comp = 0
-      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
-        if(SGS_param%iflag_SGS .ne. id_SGS_none                        &
-     &      .and. SGS_param%SGS_momentum%iflag_commute_field           &
-     &           .eq. id_SGS_commute_ON) then
-            diff_coefs%Cdiff_velo%icomp_Csim = id
-            diff_coefs%Cdiff_velo%iak_Csim =   jd
-            wk_diff%name(jd) = velocity%name
-            num_comp =         velocity%n_comp
-            id = id + num_comp
-            jd = jd + 1
-        end if
+      if(      (fl_prop%iflag_scheme .gt. id_no_evolution)              &
+     &   .and. (SGS_param%iflag_SGS .ne. id_SGS_none)                   &
+     &   .and. (SGS_param%SGS_momentum%iflag_commute_field              &
+     &                              .eq. id_SGS_commute_ON)) then
+        call SGS_model_coef_address_by_label(velocity, jd, id,          &
+     &                                       diff_coefs%Cdiff_velo)
       end if
 !
-      num_comp = 0
-      if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
-        if(SGS_param%iflag_SGS .ne. id_SGS_none                        &
-     &      .and. cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
-            diff_coefs%Cdiff_magne%icomp_Csim = id
-            diff_coefs%Cdiff_magne%iak_Csim =   jd
-            wk_diff%name(jd) = magnetic_field%name
-            num_comp =         magnetic_field%n_comp
-            id = id + num_comp
-            jd = jd + 1
-        end if
-      else if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-        if(SGS_param%iflag_SGS .ne. id_SGS_none                        &
-     &      .and. cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
-            diff_coefs%Cdiff_magne%icomp_Csim = id
-            diff_coefs%Cdiff_magne%iak_Csim =   jd
-            wk_diff%name(jd) = magnetic_field%name
-            num_comp =         magnetic_field%n_comp
-            id = id + n_vector
-            jd = jd + 1
+      if(     (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution)          &
+     &   .or. (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution)) then
+        if(      (SGS_param%iflag_SGS .ne. id_SGS_none)                 &
+     &     .and. (cmt_param%iflag_c_magne .eq. id_SGS_commute_ON)) then
+          call SGS_model_coef_address_by_label(magnetic_field, jd, id,  &
+     &                                         diff_coefs%Cdiff_magne)
         end if
       end if
 !

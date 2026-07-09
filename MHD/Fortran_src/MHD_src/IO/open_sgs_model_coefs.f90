@@ -363,39 +363,39 @@
 !
 !
       do i = 1, wk_diff%num_kinds
-        if ( wk_diff%name(i) .eq. velocity%name ) then
+        if(wk_diff%name(i) .eq. velocity%name) then
           write(file_id,'(a)') 'dVx_dx, dVx_dy, dVx_dz, '
           write(file_id,'(a)') 'dVy_dx, dVy_dy, dVy_dz, '
           write(file_id,'(a)') 'dVz_dx, dVz_dy, dVz_dz, '
-        else if ( wk_diff%name(i) .eq. temperature%name ) then
+        else if(wk_diff%name(i) .eq. temperature%name) then
           write(file_id,'(a)') 'dT_dx, dT_dy, dT_dz, '
-        else if ( wk_diff%name(i) .eq. magnetic_field%name ) then
+        else if(wk_diff%name(i) .eq. magnetic_field%name) then
           write(file_id,'(a)') 'dBx_dx, dBx_dy, dBx_dz, '
           write(file_id,'(a)') 'dBy_dx, dBy_dy, dBy_dz, '
           write(file_id,'(a)') 'dBz_dx, dBz_dy, dBz_dz, '
-        else if ( wk_diff%name(i) .eq. composition%name ) then
+        else if(wk_diff%name(i) .eq. composition%name) then
           write(file_id,'(a)')                                          &
      &         'composition_x, composition_y, composition_z, '
-        else if ( wk_diff%name(i) .eq. SGS_heat_flux%name ) then
+        else if(wk_diff%name(i) .eq. SGS_heat_flux%name) then
           write(file_id,'(a)') 'SGS_hf_x, SGS_hf_y, SGS_hf_z, '
-        else if ( wk_diff%name(i) .eq. SGS_momentum_flux%name ) then
+        else if(wk_diff%name(i) .eq. SGS_momentum_flux%name) then
           write(file_id,'(a)') 'SGS_mf_xx, SGS_mf_xy, SGS_mf_xz, '
           write(file_id,'(a)') 'SGS_mf_yx, SGS_mf_yy, SGS_mf_yz, '
           write(file_id,'(a)') 'SGS_mf_zx, SGS_mf_yz, SGS_mf_zz, '
-        else if ( wk_diff%name(i) .eq. SGS_composit_flux%name ) then
+        else if(wk_diff%name(i) .eq. SGS_composit_flux%name) then
           write(file_id,'(a)') 'SGS_cf_x, SGS_cf_y, SGS_cf_z, '
-        else if ( wk_diff%name(i) .eq. SGS_maxwell_tensor%name ) then
+        else if(wk_diff%name(i) .eq. SGS_maxwell_tensor%name) then
           write(file_id,'(a)')                                          &
      &        'SGS_maxwell_xx, SGS_maxwell_xy, SGS_maxwell_xz, '
           write(file_id,'(a)')                                          &
      &        'SGS_maxwell_yx, SGS_maxwell_yy, SGS_maxwell_yz, '
           write(file_id,'(a)')                                          &
      &        'SGS_maxwell_zx, SGS_maxwell_yz, SGS_maxwell_zz, '
-        else if ( wk_diff%name(i) .eq. SGS_Lorentz%name) then
+        else if(wk_diff%name(i) .eq. SGS_Lorentz%name) then
           write(file_id,'(a)') 'SGS_lor_xx, SGS_lor_xy, SGS_lor_xz, '
           write(file_id,'(a)') 'SGS_lor_yx, SGS_lor_yy, SGS_lor_yz, '
           write(file_id,'(a)') 'SGS_lor_zx, SGS_lor_yz, SGS_lor_zz, '
-        else if ( wk_diff%name(i) .eq. SGS_induction%name ) then
+        else if(wk_diff%name(i) .eq. SGS_induction%name) then
           if(cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
             write(file_id,'(a)')                                        &
      &        'SGS_uxB_x, SGS_uxB_y, SGS_uxB_z, '
