@@ -148,6 +148,7 @@
 !
       use t_geometry_data_MHD
       use t_FEM_SGS_model_coefs
+      use t_SGS_model_coef_strucures
 !
       use spherical_transforms
       use spherical_SRs_N

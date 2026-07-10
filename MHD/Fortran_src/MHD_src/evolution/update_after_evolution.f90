@@ -73,6 +73,7 @@
       use t_MGCG_data
       use t_MHD_mass_matrices
       use t_FEM_SGS_model_coefs
+      use t_SGS_model_coef_strucures
       use t_SGS_commutation_coefs
       use t_FEM_MHD_mean_square
       use t_reference_field_data

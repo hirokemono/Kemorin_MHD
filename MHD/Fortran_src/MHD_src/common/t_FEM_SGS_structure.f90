@@ -17,6 +17,7 @@
       use t_FEM_SGS_model_coefs
       use t_FEM_MHD_filter_data
       use t_SGS_model_addresses
+      use t_SGS_model_coef_strucures
       use t_SGS_commutation_coefs
 !
       implicit none

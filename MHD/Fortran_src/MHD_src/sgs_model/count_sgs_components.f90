@@ -30,6 +30,7 @@
       use m_precision
       use m_machine_parameter
       use t_FEM_SGS_model_coefs
+      use t_SGS_model_coef_strucures
 !
       implicit none
 !
@@ -75,107 +76,6 @@
      &                                                sgs_coefs)
 !
       end subroutine define_sgs_components
-!
-!  ------------------------------------------------------------------
-!
-      subroutine set_sgs_addresses(numnod, numele, SGS_param,           &
-     &          fl_prop, cd_prop, ht_prop, cp_prop, sgs_coefs,          &
-     &          num_SGS_terms, ntot_SGS_comps)
-!
-      use calypso_mpi
-!
-      use t_SGS_control_parameter
-      use t_layering_ele_list
-      use t_ele_info_4_dynamic
-      use t_physical_property
-      use t_scalar_property
-      use t_SGS_term_labels
-!
-      use m_SGS_term_labels
-!
-      integer(kind = kint), intent(in) :: numnod, numele
-      type(SGS_model_control_params), intent(in) :: SGS_param
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
-!
-      type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-      integer(kind = kint), intent(inout) :: num_SGS_terms
-      integer(kind = kint), intent(inout) :: ntot_SGS_comps
-!
-      integer(kind = kint) :: i_cmp, i_fld, num_comp
-!
-!
-      i_cmp = 0
-      i_fld = 0
-      if(      (ht_prop%iflag_scheme .gt. id_no_evolution)              &
-     &   .and. (SGS_param%SGS_heat%iflag_SGS_flux                       &
-     &                           .ne. id_SGS_none)) then
-        call SGS_model_coef_address_by_label(SGS_heat_flux,             &
-     &      i_fld, i_cmp, sgs_coefs%Csim_SGS_hf)
-      end if
-      call alloc_SGS_model_coefficient(numele, sgs_coefs%Csim_SGS_hf)
-!
-      if(      (fl_prop%iflag_scheme .gt. id_no_evolution)              &
-     &   .and. (SGS_param%SGS_momentum%iflag_SGS_flux                   &
-     &                               .ne. id_SGS_none)) then
-        call SGS_model_coef_address_by_label(SGS_momentum_flux,         &
-     &      i_fld, i_cmp, sgs_coefs%Csim_SGS_mf)
-      end if
-      call alloc_SGS_model_coefficient(numele, sgs_coefs%Csim_SGS_mf)
-!
-      if(      (fl_prop%iflag_scheme .gt. id_no_evolution)              &
-     &   .and. (SGS_param%iflag_SGS_lorentz .ne. id_SGS_none)) then
-        call SGS_model_coef_address_by_label(SGS_maxwell_tensor,        &
-     &      i_fld, i_cmp, sgs_coefs%Csim_SGS_lor)
-      end if
-      call alloc_SGS_model_coefficient(numele, sgs_coefs%Csim_SGS_lor)
-!
-      if(      (fl_prop%iflag_scheme .gt. id_no_evolution)              &
-     &   .and. (SGS_param%iflag_SGS_gravity .ne. id_SGS_none)           &
-     &   .and. (fl_prop%flag_thermal_buoyancy)) then
-        call set_SGS_model_coef_address(SGS_buoyancy%name,              &
-     &      n_sym_tensor, i_fld, i_cmp, sgs_coefs%Csim_SGS_tbuo)
-      end if
-      call alloc_SGS_model_coefficient(numele, sgs_coefs%Csim_SGS_tbuo)
-!
-      if(      (fl_prop%iflag_scheme .gt. id_no_evolution)              &
-     &   .and. (SGS_param%iflag_SGS_gravity .ne. id_SGS_none)           &
-     &   .and. (fl_prop%flag_comp_buoyancy)) then
-        call set_SGS_model_coef_address(SGS_composit_buoyancy%name,     &
-     &      n_sym_tensor, i_fld, i_cmp, sgs_coefs%Csim_SGS_cbuo)
-      end if
-      call alloc_SGS_model_coefficient(numele, sgs_coefs%Csim_SGS_cbuo)
-!
-      if(     (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution)          &
-     &   .or. (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution)) then
-        if(SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
-          call SGS_model_coef_address_by_label(SGS_induction,           &
-     &        i_fld, i_cmp, sgs_coefs%Csim_SGS_uxb)
-        end if
-      end if
-      call alloc_SGS_model_coefficient(numele, sgs_coefs%Csim_SGS_uxb)
-!
-      if(      (cp_prop%iflag_scheme .gt. id_no_evolution)              &
-     &   .and. (SGS_param%SGS_light%iflag_SGS_flux                      &
-     &                            .ne. id_SGS_none)) then
-        call SGS_model_coef_address_by_label(SGS_composit_flux,         &
-     &     i_fld, i_cmp, sgs_coefs%Csim_SGS_cf)
-      end if
-      call alloc_SGS_model_coefficient(numele, sgs_coefs%Csim_SGS_cf)
-!
-      if(     SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF           &
-     &   .or. SGS_param%iflag_SGS.eq.id_SGS_similarity)  then
-        call alloc_SGS_model_coef_on_nod(numnod, sgs_coefs%Csim_SGS_hf)
-        call alloc_SGS_model_coef_on_nod(numnod, sgs_coefs%Csim_SGS_cf)
-        call alloc_SGS_model_coef_on_nod(numnod, sgs_coefs%Csim_SGS_mf)
-        call alloc_SGS_model_coef_on_nod(numnod,sgs_coefs%Csim_SGS_lor)
-        call alloc_SGS_model_coef_on_nod(numnod,sgs_coefs%Csim_SGS_uxb)
-      end if
-      ntot_SGS_comps = i_cmp
-      num_SGS_terms =  i_fld
-!
-      end subroutine set_sgs_addresses
 !
 !  ------------------------------------------------------------------
 !

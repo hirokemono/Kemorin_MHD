@@ -28,11 +28,13 @@
       use t_base_field_labels
       use t_SGS_term_labels
       use t_FEM_SGS_model_coefs
+      use t_SGS_model_coef_strucures
       use t_SGS_commutation_coefs
 !
       implicit none
 !
       private :: copy_sgs_diff_coef_name
+      private :: define_sgs_diff_coefs
 !
 ! ----------------------------------------------------------------------
 !
@@ -80,7 +82,6 @@
       use t_ele_info_4_dynamic
       use t_material_property
       use t_FEM_SGS_model_coefs
-      use t_SGS_commutation_coefs
 !
       integer(kind = kint), intent(in) :: numele
       type(SGS_model_control_params), intent(in) :: SGS_param

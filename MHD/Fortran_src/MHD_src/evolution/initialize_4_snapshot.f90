@@ -68,6 +68,7 @@
       use t_bc_data_list
       use t_FEM_MHD_boundary_data
       use t_FEM_SGS_model_coefs
+      use t_SGS_model_coef_strucures
       use t_SGS_commutation_coefs
       use t_material_property
       use t_FEM_MHD_mean_square

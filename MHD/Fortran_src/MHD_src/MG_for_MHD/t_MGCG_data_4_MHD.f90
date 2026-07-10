@@ -25,6 +25,7 @@
       use t_bc_data_MHD
       use t_boundary_field_IO
       use t_FEM_SGS_model_coefs
+      use t_SGS_model_coef_strucures
       use t_base_field_labels
 !
       implicit  none

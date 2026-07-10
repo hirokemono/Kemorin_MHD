@@ -45,6 +45,7 @@
       use t_phys_data
       use t_phys_address
       use t_FEM_SGS_model_coefs
+      use t_SGS_model_coef_strucures
       use t_SGS_commutation_coefs
       use t_ele_info_4_dynamic
       use t_reference_scalar_param

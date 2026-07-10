@@ -166,6 +166,7 @@
 !
       use t_geometry_data_MHD
       use t_FEM_SGS_model_coefs
+      use t_SGS_model_coef_strucures
       use t_SGS_commutation_coefs
       use m_fem_mhd_restart
       use FEM_sgs_ini_model_coefs_IO

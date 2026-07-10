@@ -284,6 +284,7 @@
 !
       use m_SGS_term_labels
       use m_diff_SGS_term_labels
+      use t_SGS_model_coef_strucures
       use t_SGS_commutation_coefs
       use copy_nodal_fields
       use cvt_sph_vector_2_xyz_smp
