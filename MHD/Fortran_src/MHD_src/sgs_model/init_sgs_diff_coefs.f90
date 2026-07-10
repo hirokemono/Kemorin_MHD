@@ -102,7 +102,7 @@
       integer(kind = kint) :: num_diff_field, ntot_diff_comp
 !
 !
-      call set_sgs_diff_addresses(SGS_param, cmt_param,                 &
+      call set_sgs_diff_addresses(numele, SGS_param, cmt_param,         &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop, diff_coefs,               &
      &    num_diff_field, ntot_diff_comp)
@@ -110,80 +110,6 @@
       call alloc_sgs_coefs_layer(layer_tbl%e_grp%num_grp,               &
      &    num_diff_field, ntot_diff_comp, wk_diff)
       call copy_sgs_diff_coef_name(diff_coefs, wk_diff)
-!
-      if(diff_coefs%Cdiff_velo%iak_Csim .gt. 0) then
-         call alloc_SGS_model_coefficient(numele, ione,                 &
-     &                                    diff_coefs%Cdiff_velo)
-      else
-         call alloc_SGS_model_coefficient(numele, ione,                 &
-     &       diff_coefs%Cdiff_velo)
-      end if
-!
-      if(diff_coefs%Cdiff_magne%iak_Csim .gt. 0) then
-         call alloc_SGS_model_coefficient(numele, ione,                 &
-     &                                    diff_coefs%Cdiff_magne)
-      else
-         call alloc_SGS_model_coefficient(numele, ione,                 &
-     &                                    diff_coefs%Cdiff_magne)
-      end if
-!
-      if(diff_coefs%Cdiff_temp%iak_Csim .gt. 0) then
-         call alloc_SGS_model_coefficient(numele, ione,                 &
-     &                                    diff_coefs%Cdiff_temp)
-      else
-         call alloc_SGS_model_coefficient(numele, ione,                 &
-     &                                    diff_coefs%Cdiff_temp)
-      end if
-!
-      if(diff_coefs%Cdiff_light%iak_Csim .gt. 0) then
-         call alloc_SGS_model_coefficient(numele, ione,                 &
-     &                                    diff_coefs%Cdiff_light)
-      else
-         call alloc_SGS_model_coefficient(numele, ione,                 &
-     &                                    diff_coefs%Cdiff_light)
-      end if
-!
-!
-      if(diff_coefs%Cdiff_SGS_uxb%iak_Csim .gt. 0) then
-         call alloc_SGS_model_coefficient(numele, ione,                 &
-     &                                    diff_coefs%Cdiff_SGS_uxb)
-      else
-         call alloc_SGS_model_coefficient(numele, ione,                 &
-     &                                    diff_coefs%Cdiff_SGS_uxb)
-      end if
-!
-      if(diff_coefs%Cdiff_SGS_lor%iak_Csim .gt. 0) then
-         call alloc_SGS_model_coefficient(numele, ione,                 &
-     &                                    diff_coefs%Cdiff_SGS_lor)
-      else
-         call alloc_SGS_model_coefficient(numele, ione,                 &
-     &                                    diff_coefs%Cdiff_SGS_lor)
-      end if
-!
-      if(diff_coefs%Cdiff_SGS_mf%iak_Csim .gt. 0) then
-         call alloc_SGS_model_coefficient(numele, ione,                 &
-     &                                    diff_coefs%Cdiff_SGS_mf)
-      else
-         call alloc_SGS_model_coefficient(numele, ione,                 &
-     &                                    diff_coefs%Cdiff_SGS_mf)
-      end if
-!
-      if(diff_coefs%Cdiff_SGS_hf%iak_Csim .gt. 0) then
-         call alloc_SGS_model_coefficient(numele, ione,                 &
-     &                                    diff_coefs%Cdiff_SGS_hf)
-      else
-         call alloc_SGS_model_coefficient(numele, ione,                 &
-     &                                    diff_coefs%Cdiff_SGS_hf)
-      end if
-!
-      if(diff_coefs%Cdiff_SGS_cf%iak_Csim .gt. 0) then
-         call alloc_SGS_model_coefficient(numele, ione,                 &
-     &                                    diff_coefs%Cdiff_SGS_cf)
-      else
-         call alloc_SGS_model_coefficient(numele, ione,                 &
-     &                                    diff_coefs%Cdiff_SGS_cf)
-      end if
-!
 !
       if(iflag_debug .gt. 0) then
         call check_sgs_diff_addresses(wk_diff, diff_coefs)
@@ -193,7 +119,7 @@
 !
 !  ------------------------------------------------------------------
 !
-      subroutine set_sgs_diff_addresses(SGS_param, cmt_param,           &
+      subroutine set_sgs_diff_addresses(numele, SGS_param, cmt_param,   &
      &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
      &          diff_coefs, num_diff_field, ntot_diff_comp)
 !
@@ -206,6 +132,7 @@
       use m_base_field_labels
       use m_SGS_term_labels
 !
+      integer(kind = kint), intent(in) :: numele
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in)  :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
@@ -228,6 +155,7 @@
         call SGS_model_coef_address_by_label(SGS_heat_flux, jd, id,     &
      &                                       diff_coefs%Cdiff_SGS_hf)
       end if
+      call alloc_SGS_model_coefficient(numele, diff_coefs%Cdiff_SGS_hf)
 !
       if(      (fl_prop%iflag_scheme .gt. id_no_evolution)              &
      &   .and. (SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none) &
@@ -236,6 +164,7 @@
         call SGS_model_coef_address_by_label(SGS_momentum_flux, jd, id, &
      &                                       diff_coefs%Cdiff_SGS_mf)
       end if
+      call alloc_SGS_model_coefficient(numele, diff_coefs%Cdiff_SGS_mf)
 !
       if(      (fl_prop%iflag_scheme .gt. id_no_evolution)              &
      &   .and. (SGS_param%iflag_SGS_lorentz .ne. id_SGS_none)           &
@@ -243,6 +172,8 @@
         call set_SGS_model_coef_address(SGS_Lorentz%name, n_sym_tensor, &
      &                                jd, id, diff_coefs%Cdiff_SGS_lor)
       end if
+      call alloc_SGS_model_coefficient(numele,                          &
+     &                                 diff_coefs%Cdiff_SGS_lor)
 !
       if(      (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution)         &
      &   .and. (SGS_param%iflag_SGS_uxb .ne. id_SGS_none)               &
@@ -250,6 +181,8 @@
         call SGS_model_coef_address_by_label(SGS_induction, jd, id,     &
      &                                       diff_coefs%Cdiff_SGS_uxb)
        end if
+      call alloc_SGS_model_coefficient(numele,                          &
+     &                                 diff_coefs%Cdiff_SGS_uxb)
 !
       if(      (cp_prop%iflag_scheme .gt. id_no_evolution)              &
      &   .and. (SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none)    &
@@ -258,6 +191,7 @@
         call SGS_model_coef_address_by_label(SGS_composit_flux, jd, id, &
      &                                       diff_coefs%Cdiff_SGS_cf)
        end if
+      call alloc_SGS_model_coefficient(numele, diff_coefs%Cdiff_SGS_cf)
 !
 !
       if(      (ht_prop%iflag_scheme .gt. id_no_evolution)              &
@@ -267,6 +201,7 @@
         call SGS_model_coef_address_by_label(temperature, jd, id,       &
      &                                       diff_coefs%Cdiff_temp)
       end if
+      call alloc_SGS_model_coefficient(numele, diff_coefs%Cdiff_temp)
 !
       if(      (cp_prop%iflag_scheme .gt. id_no_evolution)              &
      &   .and. (SGS_param%iflag_SGS .ne. id_SGS_none)                   &
@@ -275,6 +210,7 @@
         call SGS_model_coef_address_by_label(composition, jd, id,       &
      &                                       diff_coefs%Cdiff_light)
       end if
+      call alloc_SGS_model_coefficient(numele, diff_coefs%Cdiff_light)
 !
       if(      (fl_prop%iflag_scheme .gt. id_no_evolution)              &
      &   .and. (SGS_param%iflag_SGS .ne. id_SGS_none)                   &
@@ -283,6 +219,7 @@
         call SGS_model_coef_address_by_label(velocity, jd, id,          &
      &                                       diff_coefs%Cdiff_velo)
       end if
+      call alloc_SGS_model_coefficient(numele, diff_coefs%Cdiff_velo)
 !
       if(     (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution)          &
      &   .or. (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution)) then
@@ -292,6 +229,7 @@
      &                                         diff_coefs%Cdiff_magne)
         end if
       end if
+      call alloc_SGS_model_coefficient(numele, diff_coefs%Cdiff_magne)
       num_diff_field = jd
       ntot_diff_comp = id
 !

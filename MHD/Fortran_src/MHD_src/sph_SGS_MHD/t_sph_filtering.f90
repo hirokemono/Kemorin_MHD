@@ -69,6 +69,8 @@
 !
       character(len=kchara), parameter :: filter_head = 'radial_filter'
 !
+      private :: s_count_sgs_components
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -209,5 +211,76 @@
       end subroutine init_work_4_SGS_sph_mhd
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine s_count_sgs_components(SGS_param,                      &
+     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
+     &          num_SGS_terms, ntot_SGS_comps)
+!
+      use t_SGS_control_parameter
+      use t_layering_ele_list
+      use t_ele_info_4_dynamic
+      use t_physical_property
+      use t_scalar_property
+!
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      integer(kind = kint), intent(inout) :: num_SGS_terms
+      integer(kind = kint), intent(inout) :: ntot_SGS_comps
+!
+!    count coefficients for SGS terms
+!
+      num_SGS_terms =  0
+      ntot_SGS_comps = 0
+      if(     (ht_prop%iflag_scheme .gt. id_no_evolution)               &
+     &   .or. (SGS_param%SGS_heat%iflag_SGS_flux                        &
+     &                          .ne. id_SGS_none)) then
+          num_SGS_terms = num_SGS_terms +   1
+          ntot_SGS_comps = ntot_SGS_comps + 3
+        end if
+      end if
+!
+      if(fl_prop%iflag_scheme .gt. id_no_evolution) then
+        if(SGS_param%SGS_momentum%iflag_SGS_flux .ne. id_SGS_none) then
+          num_SGS_terms = num_SGS_terms +   1
+          ntot_SGS_comps = ntot_SGS_comps + 6
+        end if
+!
+        if(SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
+          num_SGS_terms = num_SGS_terms +   1
+          ntot_SGS_comps = ntot_SGS_comps + 6
+        end if
+!
+        if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
+          if(fl_prop%flag_thermal_buoyancy) then
+            num_SGS_terms = num_SGS_terms +   1
+            ntot_SGS_comps = ntot_SGS_comps + 6
+          end if
+          if(fl_prop%flag_comp_buoyancy) then
+            num_SGS_terms = num_SGS_terms +   1
+            ntot_SGS_comps = ntot_SGS_comps + 6
+          end if
+        end if
+      end if
+!
+      if(     (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution)          &
+     &   .or. (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution)) then
+        if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
+          num_SGS_terms = num_SGS_terms +   1
+          ntot_SGS_comps = ntot_SGS_comps + 3
+        end if
+      end if
+!
+      if(      (cp_prop%iflag_scheme .gt. id_no_evolution)              &
+     &   .and. (SGS_param%SGS_light%iflag_SGS_flux                      &
+     &                            .ne. id_SGS_none)) then
+        num_SGS_terms = num_SGS_terms +   1
+        ntot_SGS_comps = ntot_SGS_comps + 3
+      end if
+!
+      end subroutine s_count_sgs_components
+!
+!  ------------------------------------------------------------------
 !
       end module t_sph_filtering

@@ -20,11 +20,11 @@
 !!      subroutine dup_SGS_model_coefficient(org_Csim, new_Csim)
 !!        type(SGS_model_coefficient), intent(in) :: org_Csim
 !!        type(SGS_model_coefficient), intent(inout) :: new_Csim
-!!      subroutine alloc_SGS_model_coefficient(n_ele, num_comp, Csim)
+!!      subroutine alloc_SGS_model_coefficient(n_ele, Csim)
 !!      subroutine alloc_SGS_model_coef_on_nod(n_nod, Csim)
 !!      subroutine dealloc_SGS_model_coefficient(Csim)
 !!      subroutine dealloc_SGS_model_coef_on_nod(Csim)
-!!        integer(kind = kint), intent(in) :: n_ele, num_comp
+!!        integer(kind = kint), intent(in) :: n_ele
 !!        integer(kind = kint), intent(in) :: n_nod
 !!        type(SGS_model_coefficient), intent(inout) :: Csim
 !!
@@ -149,14 +149,13 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine alloc_SGS_model_coefficient(n_ele, num_comp, Csim)
+      subroutine alloc_SGS_model_coefficient(n_ele, Csim)
 !
-      integer(kind = kint), intent(in) :: n_ele, num_comp
+      integer(kind = kint), intent(in) :: n_ele
       type(SGS_model_coefficient), intent(inout) :: Csim
 !
 !
       Csim%n_ele = n_ele
-      Csim%num_comp = num_comp
       allocate(Csim%coef(Csim%n_ele, Csim%num_comp))
 !
       Csim%flag_set = .FALSE.
@@ -216,8 +215,8 @@
       type(SGS_model_coefficient), intent(inout) :: new_Csim
 !
 !
-      call alloc_SGS_model_coefficient                                  &
-     &   (org_Csim%n_ele, org_Csim%num_comp, new_Csim)
+      new_Csim%num_comp = org_Csim%num_comp
+      call alloc_SGS_model_coefficient(org_Csim%n_ele, new_Csim)
 !
       new_Csim%flag_set = org_Csim%flag_set
       if((new_Csim%n_ele*new_Csim%num_comp) .le. 0) return
