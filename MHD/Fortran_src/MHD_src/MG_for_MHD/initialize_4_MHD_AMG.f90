@@ -43,6 +43,7 @@
       use t_solver_djds_MHD
       use t_material_property
       use t_FEM_SGS_model_coefs
+      use t_SGS_commutation_coefs
       use t_next_node_ele_4_node
       use t_MGCG_data
       use t_MGCG_data_4_MHD

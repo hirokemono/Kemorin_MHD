@@ -62,6 +62,7 @@
       use t_MGCG_data
       use t_physical_property
       use t_FEM_SGS_model_coefs
+      use t_SGS_commutation_coefs
       use t_FEM_MHD_solvers
 !
       implicit none

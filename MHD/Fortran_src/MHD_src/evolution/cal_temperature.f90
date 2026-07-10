@@ -60,6 +60,7 @@
       use t_MGCG_data
       use t_work_FEM_SGS_MHD
       use t_FEM_SGS_model_coefs
+      use t_SGS_commutation_coefs
       use t_mesh_SR
 !
       implicit none

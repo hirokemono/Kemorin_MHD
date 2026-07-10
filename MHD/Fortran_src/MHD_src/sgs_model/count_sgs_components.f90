@@ -71,7 +71,8 @@
       call alloc_sgs_coefs_layer(layer_tbl%e_grp%num_grp,               &
      &    num_SGS_terms, ntot_SGS_comps, wk_sgs)
       call copy_sgs_model_coef_name(sgs_coefs, wk_sgs)
-      call check_sgs_addresses(6, wk_sgs, sgs_coefs)
+      if(iflag_debug .gt. 0) call check_sgs_addresses(6, wk_sgs,        &
+     &                                                sgs_coefs)
 !
       end subroutine define_sgs_components
 !

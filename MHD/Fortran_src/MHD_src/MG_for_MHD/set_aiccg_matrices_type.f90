@@ -89,7 +89,8 @@
       use t_material_property
       use t_scalar_property
       use t_FEM_SGS_model_coefs
-!
+      use t_SGS_commutation_coefs
+
       use m_property_flags
 !
       use init_iccg_matrices

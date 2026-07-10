@@ -236,9 +236,8 @@
       if(     (ht_prop%iflag_scheme .gt. id_no_evolution)               &
      &   .or. (SGS_param%SGS_heat%iflag_SGS_flux                        &
      &                          .ne. id_SGS_none)) then
-          num_SGS_terms = num_SGS_terms +   1
-          ntot_SGS_comps = ntot_SGS_comps + 3
-        end if
+        num_SGS_terms = num_SGS_terms +   1
+        ntot_SGS_comps = ntot_SGS_comps + 3
       end if
 !
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then

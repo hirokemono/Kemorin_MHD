@@ -82,6 +82,7 @@
       use t_surface_bc_velocity
       use t_MHD_finite_element_mat
       use t_work_FEM_integration
+      use t_SGS_commutation_coefs
       use t_vector_for_solver
       use t_solver_SR
 !

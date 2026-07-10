@@ -202,6 +202,7 @@
      &          iphys_base, iphys_dif, iphys_SGS, fem_int, FEM_elens,   &
      &          diff_coefs, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
 !
+      use t_SGS_commutation_coefs
       use int_vol_diffusion_ele
       use set_boundary_scalars
 !

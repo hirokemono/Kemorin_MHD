@@ -31,6 +31,7 @@
 !
       use t_ele_info_4_dynamic
       use t_FEM_SGS_model_coefs
+      use t_SGS_commutation_coefs
       use t_time_data
       use t_field_data_IO
 !

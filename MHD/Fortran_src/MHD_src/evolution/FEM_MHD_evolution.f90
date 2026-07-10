@@ -92,6 +92,7 @@
       use t_FEM_MHD_mean_square
       use t_work_FEM_SGS_MHD
       use t_FEM_SGS_model_coefs
+      use t_SGS_commutation_coefs
       use t_reference_field_data
       use t_mesh_SR
 !

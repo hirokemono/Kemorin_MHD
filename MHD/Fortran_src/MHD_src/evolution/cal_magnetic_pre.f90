@@ -1,10 +1,13 @@
-!
-!      module cal_magnetic_pre
-!
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!        modieied by H. Matsui on Sep., 2005
-!
+!>@file   cal_magnetic_pre.f90
+!!@brief  module cal_magnetic_pre
+!!
+!!@author  H. Matsui and H.Okuda
+!!@date    Programmed  in July 2000 (ver 1.1)
+!!         Modieied by H. Matsui on Sep., 2005
+!!
+!>@brief  TIme integration for magnetic field
+!!
+!!@verbatim
 !!      subroutine cal_magnetic_field_pre(ak_d_magne, dt,               &
 !!     &          FEM_prm, SGS_param, cmt_param, filter_param,          &
 !!     &          mesh, conduct, group, cd_prop, Bnod_bcs,              &
@@ -59,6 +62,7 @@
 !!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!@endverbatim
 !
       module cal_magnetic_pre
 !
@@ -96,6 +100,7 @@
       use t_material_property
       use t_work_FEM_integration
       use t_FEM_SGS_model_coefs
+      use t_SGS_commutation_coefs
       use t_FEM_MHD_filter_data
       use t_vector_for_solver
       use t_solver_SR

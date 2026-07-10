@@ -83,29 +83,6 @@
         type(SGS_model_coefficient) :: Csim_SGS_cbuo
       end type SGS_coefficients_type
 !
-!
-      type SGS_commutation_coefs
-!>       Structure for commutationa error coefficient for velocity
-        type(SGS_model_coefficient) :: Cdiff_velo
-!>       Structure for commutationa error coefficient for magnetic field
-        type(SGS_model_coefficient) :: Cdiff_magne
-!>       Structure for commutationa error coefficient for temperature
-        type(SGS_model_coefficient) :: Cdiff_temp
-!>       Structure for commutationa error coefficient for temperature
-        type(SGS_model_coefficient) :: Cdiff_light
-!
-!>       Structure for commutationa error coefficient for SGS inducion
-        type(SGS_model_coefficient) :: Cdiff_SGS_uxb
-!>       Structure for commutationa error coefficient for SGS Lorenz force
-        type(SGS_model_coefficient) :: Cdiff_SGS_lor
-!>       Structure for commutationa error coefficient for SGS momentum flux
-        type(SGS_model_coefficient) :: Cdiff_SGS_mf
-!>       Structure for commutationa error coefficient for SGS heat flux
-        type(SGS_model_coefficient) :: Cdiff_SGS_hf
-!>       Structure for commutationa error coefficient for SGS composition flux
-        type(SGS_model_coefficient) :: Cdiff_SGS_cf
-      end type SGS_commutation_coefs
-!
 ! -------------------------------------------------------------------
 !
       contains
@@ -215,7 +192,8 @@
       type(SGS_model_coefficient), intent(inout) :: new_Csim
 !
 !
-      new_Csim%num_comp = org_Csim%num_comp
+      new_Csim%term_name = org_Csim%term_name
+      new_Csim%num_comp =  org_Csim%num_comp
       call alloc_SGS_model_coefficient(org_Csim%n_ele, new_Csim)
 !
       new_Csim%flag_set = org_Csim%flag_set
@@ -230,6 +208,21 @@
 ! -------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
+      subroutine check_SGS_model_coefficient(id_file, Csim)
+!
+      integer(kind = kint), intent(in) :: id_file
+      type(SGS_model_coefficient), intent(in) :: Csim
+!
+!
+      if(Csim%iak_Csim .le. 0) return
+      write(id_file,'(2a,3i4)') trim(Csim%term_name), ': ',             &
+     &                    Csim%iak_Csim, Csim%icomp_Csim, Csim%num_comp
+!
+      end subroutine check_SGS_model_coefficient
+!
+! -------------------------------------------------------------------
+! -------------------------------------------------------------------
+!
       subroutine check_sgs_addresses(id_file, wk_sgs, sgs_coefs)
 !
       use t_ele_info_4_dynamic
@@ -239,60 +232,16 @@
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !
 !
-      if(iflag_debug .gt. 0) then
-        write(id_file,*) 'num_sgs_kinds', wk_sgs%num_kinds
-        write(id_file,*) 'num_sgs_coefs', wk_sgs%ntot_comp
+      write(id_file,'(a,i4)') 'num_sgs_kinds', wk_sgs%num_kinds
+      write(id_file,'(a,i4)') 'num_sgs_coefs', wk_sgs%ntot_comp
 !
-        if(sgs_coefs%Csim_SGS_hf%iak_Csim .gt. 0) then
-          write(id_file,*)                                              &
-     &               'iak_sgs_hf', sgs_coefs%Csim_SGS_hf%iak_Csim,      &
-     &                             sgs_coefs%Csim_SGS_hf%icomp_Csim,    &
-     &                             sgs_coefs%Csim_SGS_hf%num_comp,      &
-     &         trim(wk_sgs%name(sgs_coefs%Csim_SGS_hf%iak_Csim))
-        end if
-        if(sgs_coefs%Csim_SGS_cf%iak_Csim .gt. 0) then
-          write(id_file,*)                                              &
-     &               'iak_sgs_cf', sgs_coefs%Csim_SGS_cf%iak_Csim,      &
-     &                             sgs_coefs%Csim_SGS_cf%icomp_Csim,    &
-     &                             sgs_coefs%Csim_SGS_cf%num_comp,      &
-     &         trim(wk_sgs%name(sgs_coefs%Csim_SGS_cf%iak_Csim))
-        end if
-        if(sgs_coefs%Csim_SGS_mf%iak_Csim .gt. 0) then
-          write(id_file,*)                                              &
-     &               'iak_sgs_mf', sgs_coefs%Csim_SGS_mf%iak_Csim,      &
-     &                             sgs_coefs%Csim_SGS_mf%icomp_Csim,    &
-     &                             sgs_coefs%Csim_SGS_mf%num_comp,      &
-     &         trim(wk_sgs%name(sgs_coefs%Csim_SGS_mf%iak_Csim))
-        end if
-        if(sgs_coefs%Csim_SGS_lor%iak_Csim .gt. 0) then
-          write(id_file,*)                                              &
-     &               'iak_sgs_lor', sgs_coefs%Csim_SGS_lor%iak_Csim,    &
-     &                             sgs_coefs%Csim_SGS_lor%icomp_Csim,   &
-     &                             sgs_coefs%Csim_SGS_lor%num_comp,     &
-     &            trim(wk_sgs%name(sgs_coefs%Csim_SGS_lor%iak_Csim))
-        end if
-        if(sgs_coefs%Csim_SGS_tbuo%iak_Csim .gt. 0) then
-          write(id_file,*)                                              &
-     &               'iak_sgs_tbuo', sgs_coefs%Csim_SGS_tbuo%iak_Csim,  &
-     &                              sgs_coefs%Csim_SGS_tbuo%icomp_Csim, &
-     &                              sgs_coefs%Csim_SGS_tbuo%num_comp,   &
-     &             trim(wk_sgs%name(sgs_coefs%Csim_SGS_tbuo%iak_Csim))
-        end if
-        if(sgs_coefs%Csim_SGS_cbuo%iak_Csim .gt. 0) then
-          write(id_file,*)                                              &
-     &               'iak_sgs_cbuo', sgs_coefs%Csim_SGS_cbuo%iak_Csim,  &
-     &                              sgs_coefs%Csim_SGS_cbuo%icomp_Csim, &
-     &                              sgs_coefs%Csim_SGS_cbuo%num_comp,   &
-     &             trim(wk_sgs%name(sgs_coefs%Csim_SGS_cbuo%iak_Csim))
-        end if
-        if(sgs_coefs%Csim_SGS_uxb%iak_Csim .gt. 0) then
-          write(id_file,*)                                              &
-     &               'iak_sgs_uxb', sgs_coefs%Csim_SGS_uxb%iak_Csim,    &
-     &                              sgs_coefs%Csim_SGS_uxb%icomp_Csim,  &
-     &                              sgs_coefs%Csim_SGS_uxb%num_comp,    &
-     &             trim(wk_sgs%name(sgs_coefs%Csim_SGS_uxb%iak_Csim))
-        end if
-      end if
+      call check_SGS_model_coefficient(id_file,sgs_coefs%Csim_SGS_mf)
+      call check_SGS_model_coefficient(id_file,sgs_coefs%Csim_SGS_hf)
+      call check_SGS_model_coefficient(id_file,sgs_coefs%Csim_SGS_cf)
+      call check_SGS_model_coefficient(id_file,sgs_coefs%Csim_SGS_lor)
+      call check_SGS_model_coefficient(id_file,sgs_coefs%Csim_SGS_tbuo)
+      call check_SGS_model_coefficient(id_file,sgs_coefs%Csim_SGS_cbuo)
+      call check_SGS_model_coefficient(id_file,sgs_coefs%Csim_SGS_uxb)
 !
       end subroutine check_sgs_addresses
 !

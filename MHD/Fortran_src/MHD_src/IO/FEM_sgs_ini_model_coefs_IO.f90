@@ -42,6 +42,7 @@
       use m_constants
 !
       use t_SGS_control_parameter
+      use t_SGS_commutation_coefs
       use t_FEM_SGS_model_coefs
       use t_ele_info_4_dynamic
       use t_file_IO_parameter

@@ -68,6 +68,7 @@
       use t_filter_elength
       use t_material_property
       use t_FEM_SGS_model_coefs
+      use t_SGS_commutation_coefs
       use t_bc_data_MHD
       use t_surface_bc_data_MHD
       use t_physical_property

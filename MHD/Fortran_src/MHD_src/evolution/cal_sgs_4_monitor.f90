@@ -81,6 +81,7 @@
       use t_material_property
       use t_scalar_property
       use t_FEM_SGS_model_coefs
+      use t_SGS_commutation_coefs
       use t_MHD_finite_element_mat
       use t_MHD_mass_matrices
       use t_work_FEM_integration

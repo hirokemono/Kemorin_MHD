@@ -95,6 +95,7 @@
       use t_interpolate_table
       use t_material_property
       use t_FEM_SGS_model_coefs
+      use t_SGS_commutation_coefs
       use t_ele_info_4_dynamic
       use t_work_4_dynamic_model
       use t_vector_for_solver

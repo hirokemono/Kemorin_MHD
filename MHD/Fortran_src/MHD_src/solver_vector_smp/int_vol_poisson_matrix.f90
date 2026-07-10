@@ -62,6 +62,7 @@
       use t_table_FEM_const
       use t_material_property
       use t_FEM_SGS_model_coefs
+      use t_SGS_commutation_coefs
       use t_solver_djds
 !
       implicit none
