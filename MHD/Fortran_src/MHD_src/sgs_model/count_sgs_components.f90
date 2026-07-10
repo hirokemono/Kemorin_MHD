@@ -181,121 +181,84 @@
       type(dynamic_model_data), intent(inout) :: wk_sgs
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !
-      integer(kind = kint) :: i_cmp, i_fld, id, jd, num_comp
+      integer(kind = kint) :: i_cmp, i_fld, num_comp
 !
 !
-      i_cmp = 1
-      i_fld = 1
-      id = 1
-      jd = 1
-      num_comp = 0
-      if (ht_prop%iflag_scheme .gt. id_no_evolution) then
-        if (SGS_param%SGS_heat%iflag_SGS_flux .ne. id_SGS_none) then
-          num_comp = SGS_heat_flux%n_comp
-          sgs_coefs%Csim_SGS_hf%iak_Csim =   i_fld
-          sgs_coefs%Csim_SGS_hf%icomp_Csim = i_cmp
-          wk_sgs%name(i_fld) = SGS_heat_flux%name
-          i_cmp = i_cmp + num_comp
-          i_fld = i_fld + 1
-        end if
+      i_cmp = 0
+      i_fld = 0
+      if(      (ht_prop%iflag_scheme .gt. id_no_evolution)              &
+     &   .and. (SGS_param%SGS_heat%iflag_SGS_flux                       &
+     &                           .ne. id_SGS_none)) then
+        call SGS_model_coef_address_by_label(SGS_heat_flux,             &
+     &      i_fld, i_cmp, sgs_coefs%Csim_SGS_hf)
+        wk_sgs%name(sgs_coefs%Csim_SGS_hf%iak_Csim)                     &
+     &                       = sgs_coefs%Csim_SGS_hf%term_name
       end if
       call alloc_SGS_model_coefficient(numele, num_comp,                &
      &                                 sgs_coefs%Csim_SGS_hf)
 !
-      num_comp = 0
-      if(fl_prop%iflag_scheme .gt. id_no_evolution) then
-        if(SGS_param%SGS_momentum%iflag_SGS_flux                        &
-     &         .ne. id_SGS_none) then
-          num_comp = SGS_momentum_flux%n_comp
-          sgs_coefs%Csim_SGS_mf%iak_Csim =   i_fld
-          sgs_coefs%Csim_SGS_mf%icomp_Csim = i_cmp
-          wk_sgs%name(i_fld) = SGS_momentum_flux%name
-          i_cmp = i_cmp + num_comp
-          i_fld = i_fld + 1
-        end if
+      if(      (fl_prop%iflag_scheme .gt. id_no_evolution)              &
+     &   .and. (SGS_param%SGS_momentum%iflag_SGS_flux                   &
+     &                               .ne. id_SGS_none)) then
+        call SGS_model_coef_address_by_label(SGS_momentum_flux,         &
+     &      i_fld, i_cmp, sgs_coefs%Csim_SGS_mf)
+        wk_sgs%name(sgs_coefs%Csim_SGS_mf%iak_Csim)                     &
+     &                       = sgs_coefs%Csim_SGS_mf%term_name
       end if
-      call alloc_SGS_model_coefficient(numele, num_comp,               &
+      call alloc_SGS_model_coefficient(numele, num_comp,                &
      &                                 sgs_coefs%Csim_SGS_mf)
 !
-      num_comp = 0
-      if(fl_prop%iflag_scheme .gt. id_no_evolution) then
-        if (SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
-          num_comp = SGS_maxwell_tensor%n_comp
-          sgs_coefs%Csim_SGS_lor%iak_Csim =   i_fld
-          sgs_coefs%Csim_SGS_lor%icomp_Csim = i_cmp
-          wk_sgs%name(i_fld) = SGS_maxwell_tensor%name
-          i_cmp = i_cmp + num_comp
-          i_fld = i_fld + 1
-        end if
+      if(      (fl_prop%iflag_scheme .gt. id_no_evolution)              &
+     &   .and. (SGS_param%iflag_SGS_lorentz .ne. id_SGS_none)) then
+        call SGS_model_coef_address_by_label(SGS_maxwell_tensor,        &
+     &      i_fld, i_cmp, sgs_coefs%Csim_SGS_lor)
+        wk_sgs%name(sgs_coefs%Csim_SGS_lor%iak_Csim)                    &
+     &                       = sgs_coefs%Csim_SGS_lor%term_name
       end if
       call alloc_SGS_model_coefficient(numele, num_comp,                &
      &                                  sgs_coefs%Csim_SGS_lor)
 !
-      num_comp = 0
-      if(fl_prop%iflag_scheme .gt. id_no_evolution) then
-        if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
-          if(fl_prop%flag_thermal_buoyancy) then
-            num_comp = n_sym_tensor
-            sgs_coefs%Csim_SGS_tbuo%iak_Csim =   i_fld
-            sgs_coefs%Csim_SGS_tbuo%icomp_Csim = i_cmp
-            wk_sgs%name(i_fld) = SGS_buoyancy%name
-            i_cmp = i_cmp + num_comp
-            i_fld = i_fld + 1
-          end if
-        end if
+      if(      (fl_prop%iflag_scheme .gt. id_no_evolution)              &
+     &   .and. (SGS_param%iflag_SGS_gravity .ne. id_SGS_none)           &
+     &   .and. (fl_prop%flag_thermal_buoyancy) then
+        call set_SGS_model_coef_address(SGS_buoyancy%name,              &
+     &      n_sym_tensor, i_fld, i_cmp, sgs_coefs%Csim_SGS_tbuo)
+        wk_sgs%name(sgs_coefs%Csim_SGS_tbuo%iak_Csim)                   &
+     &                       = sgs_coefs%Csim_SGS_tbuo%term_name
       end if
       call alloc_SGS_model_coefficient(numele, num_comp,                &
-     &                                  sgs_coefs%Csim_SGS_lor)
+     &                                  sgs_coefs%Csim_SGS_tbuo)
 !
-      num_comp = 0
-      if(fl_prop%iflag_scheme .gt. id_no_evolution) then
-       num_comp = 0
-        if (SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
-          if(fl_prop%flag_comp_buoyancy) then
-            num_comp = n_sym_tensor
-            sgs_coefs%Csim_SGS_cbuo%num_comp = num_comp
-            sgs_coefs%Csim_SGS_cbuo%iak_Csim =   i_fld
-            sgs_coefs%Csim_SGS_cbuo%icomp_Csim = i_cmp
-            wk_sgs%name(i_fld) = SGS_composit_buoyancy%name
-            i_cmp = i_cmp + num_comp
-            i_fld = i_fld + 1
-          end if
-        end if
+      if(      (fl_prop%iflag_scheme .gt. id_no_evolution)              &
+     &   .and. (SGS_param%iflag_SGS_gravity .ne. id_SGS_none)           &
+     &   .and. (fl_prop%flag_comp_buoyancy)) then
+        call set_SGS_model_coef_address(SGS_composit_buoyancy%name,     &
+     &      n_sym_tensor, i_fld, i_cmp, sgs_coefs%Csim_SGS_cbuo)
+        wk_sgs%name(sgs_coefs%Csim_SGS_cbuo%iak_Csim)                   &
+     &                       = sgs_coefs%Csim_SGS_cbuo%term_name
       end if
+      call alloc_SGS_model_coefficient(numele, num_comp,                &
+     &                                  sgs_coefs%Csim_SGS_cbuo)
 !
-      num_comp = 0
-      if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
-        if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
-          num_comp = SGS_induction%n_comp
-          sgs_coefs%Csim_SGS_uxb%iak_Csim =   i_fld
-          sgs_coefs%Csim_SGS_uxb%icomp_Csim = i_cmp
-          wk_sgs%name(i_fld) = SGS_induction%name
-          i_cmp = i_cmp + num_comp
-          i_fld = i_fld + 1
-        end if
-      else if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-        if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
-          num_comp = SGS_induction%n_comp
-          sgs_coefs%Csim_SGS_uxb%iak_Csim =   i_fld
-          sgs_coefs%Csim_SGS_uxb%icomp_Csim = i_cmp
-          wk_sgs%name(i_fld) = SGS_induction%name
-          i_cmp = i_cmp + num_comp
-          i_fld = i_fld + 1
+      if(     (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution)          &
+     &   .or. (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution)) then
+        if(SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
+          call SGS_model_coef_address_by_label(SGS_induction,           &
+     &        i_fld, i_cmp, sgs_coefs%Csim_SGS_uxb)
+          wk_sgs%name(sgs_coefs%Csim_SGS_uxb%iak_Csim)                  &
+     &                       = sgs_coefs%Csim_SGS_uxb%term_name
         end if
       end if
       call alloc_SGS_model_coefficient(numele, num_comp,                &
      &                                 sgs_coefs%Csim_SGS_uxb)
 !
-      num_comp = 0
-      if (cp_prop%iflag_scheme .gt. id_no_evolution) then
-        if (SGS_param%SGS_light%iflag_SGS_flux .ne. id_SGS_none) then
-          num_comp = SGS_composit_flux%n_comp
-          sgs_coefs%Csim_SGS_cf%iak_Csim =   i_fld
-          sgs_coefs%Csim_SGS_cf%icomp_Csim = i_cmp
-          wk_sgs%name(i_fld) = SGS_composit_flux%name
-          i_cmp = i_cmp + num_comp
-          i_fld = i_fld + 1
-        end if
+      if(      (cp_prop%iflag_scheme .gt. id_no_evolution)              &
+     &   .and. (SGS_param%SGS_light%iflag_SGS_flux                      &
+     &                            .ne. id_SGS_none)) then
+        call SGS_model_coef_address_by_label(SGS_composit_flux,         &
+     &     i_fld, i_cmp, sgs_coefs%Csim_SGS_cf)
+        wk_sgs%name(sgs_coefs%Csim_SGS_cf%iak_Csim)                     &
+     &                       = sgs_coefs%Csim_SGS_cf%term_name
       end if
       call alloc_SGS_model_coefficient(numele, num_comp,                &
      &                                 sgs_coefs%Csim_SGS_cf)

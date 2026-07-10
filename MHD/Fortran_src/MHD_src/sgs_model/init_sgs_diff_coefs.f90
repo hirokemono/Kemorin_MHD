@@ -41,6 +41,7 @@
 !
       private :: set_sgs_diff_addresses
       private :: check_sgs_diff_addresses
+      private :: copy_sgs_diff_coef_name
 !
 ! ----------------------------------------------------------------------
 !

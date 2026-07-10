@@ -1,8 +1,12 @@
-!
-!      module cal_sgs_fluxes
-!
-!      Written by H. Matsui
-!
+!>@file   cal_sgs_fluxes.f90
+!!@brief  module cal_sgs_fluxes
+!!
+!!@author H. Matsui
+!!@date    Programmed by H.Matsui in 200?
+!!
+!>@brief  Evaluate SGS fluxes for FEM dynamo
+!!
+!!@verbatim
 !!      subroutine cal_sgs_heat_flux(iflag_supg, num_int, dt,           &
 !!     &          iflag_SGS_flux, itype_Csym_flux,                      &
 !!     &          ifleld, ifield_f, ivelo, ivelo_f, i_sgs,              &
@@ -70,6 +74,7 @@
 !!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!@endverbatim
 !
       module cal_sgs_fluxes
 !
