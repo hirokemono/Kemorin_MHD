@@ -22,6 +22,7 @@ TARGET_T_AVE_SPEC =          t_ave_sph_spec
 TARGET_SPH_NEUTRAL =         sph_neutral_points
 TARGET_TAVE_SPH_ENE_SPEC =   t_ave_sph_monitor_data
 TARGET_PSUM_SPH_ENE_SPEC =   part_sum_sph_mean_square
+TARGET_TAVE_DYNAMOBENCH =   t_ave_dynamobench
 
 TARGET_T_AVE_STABLE_REV =      t_ave_stable_and_reversal
 TARGET_T_AVE_STABLE_REV_SPEC = t_ave_stable_and_rev_spectr
@@ -253,6 +254,26 @@ cal_tave_sph_ene_spectr.o \
 time_ave_sph_volume_mean.o \
 time_ave_sph_monitor_data.o
 
+MOD_TAVE_DYNAMOBENCH = \
+t_average_sph_dynamobench.o \
+t_ctl_data_sph_monitor_list.o \
+t_ctl_data_tave_sph_monitor.o \
+t_ctl_param_sph_series_util.o \
+t_picked_sph_spectr_data_IO.o \
+t_sph_volume_mean_series.o \
+t_sph_volume_spectr_series.o \
+t_tave_sph_volume_spectr.o \
+tave_sdev_sph_volume_spec.o \
+picked_sph_spectr_data_IO.o \
+gz_spl_sph_spectr_data_IO.o \
+sph_volume_monitor_snap_IO.o \
+old_sph_spectr_data_IO.o \
+write_snap_pick_sph_spectr.o \
+count_monitor_time_series.o \
+cal_tave_sph_ene_spectr.o \
+time_ave_sph_volume_mean.o \
+time_ave_sph_monitor_data.o
+
 MOD_MAX_SPH_ENE = \
 maxmode_sph_ene_spec.o \
 t_ctl_data_sph_monitor_list.o \
@@ -400,6 +421,8 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_TAVE_SPH_ENE_SPEC =     $$(SPH_UTIL_BINDIR)/$(TARGET_TAVE_SPH_ENE_SPEC)' \
 	>> $(MAKENAME)
+	@echo 'TARGET_TAVE_DYNAMOBENCH =      $$(SPH_UTIL_BINDIR)/$(TARGET_TAVE_DYNAMOBENCH)' \
+	>> $(MAKENAME)
 	@echo 'TARGET_T_AVE_STABLE_REV =      $$(SPH_UTIL_BINDIR)/$(TARGET_T_AVE_STABLE_REV)' \
 	>> $(MAKENAME)
 	@echo 'TARGET_T_AVE_STABLE_REV_SPEC = $$(SPH_UTIL_BINDIR)/$(TARGET_T_AVE_STABLE_REV_SPEC)' \
@@ -435,7 +458,7 @@ target_task:
 	'$$(TARGET_TAVE_SPH_ENE_SPEC)   $$(TARGET_SPH_NEUTRAL)'          \
 	'$$(TARGET_APPEND_SPH_MONITORS) $$(TARGET_TRIM_SPH_MONITORS)'    \
 	'$$(TARGET_MAX_SPH_ENE)         $$(TARGET_SPH_ULI_LSCALE)'       \
-	'$$(TARGET_FIT_DIPOLE_RATIO)'                                    \
+	'$$(TARGET_FIT_DIPOLE_RATIO)    $$(TARGET_TAVE_DYNAMOBENCH)'     \
 	'$$(TARGET_SPH_V_SPEC_CHECK)    $$(TARGET_SPH_PICK_MODE_CHECK)'  \
 	'$$(TARGET_SPH_ENE_CHECK)       $$(TARGET_SPH_REF_CHECK)'        \
 	'$$(TARGET_PSUM_SPH_ENE_SPEC)   $$(TARGET_SPH_DYN_ELSASSER)'     \
@@ -558,6 +581,14 @@ target_task:
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_TAVE_DYNAMOBENCH)': '$$(MOD_TAVE_DYNAMOBENCH)' \
+	'$$(LIB_FILES_SPH_UTIL)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_TAVE_DYNAMOBENCH)' \
+	'$$(MOD_TAVE_DYNAMOBENCH)' \
+	'-L. $$(LIBS_SPH_UTIL)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_T_AVE_STABLE_REV)': '$$(MOD_T_AVE_STABLE_REV)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
@@ -674,8 +705,10 @@ mod_list:
 	@echo  $(MOD_TAVE_SPH_SPEC)         >> $(MAKENAME)
 	@echo  MOD_SPH_NEUTRAL=  \\         >> $(MAKENAME)
 	@echo  $(MOD_SPH_NEUTRAL)           >> $(MAKENAME)
-	@echo  MOD_TAVE_SPH_ENE_SPEC=  \\     >> $(MAKENAME)
-	@echo  $(MOD_TAVE_SPH_ENE_SPEC)       >> $(MAKENAME)
+	@echo  MOD_TAVE_SPH_ENE_SPEC=  \\   >> $(MAKENAME)
+	@echo  $(MOD_TAVE_SPH_ENE_SPEC)     >> $(MAKENAME)
+	@echo  MOD_TAVE_DYNAMOBENCH=  \\    >> $(MAKENAME)
+	@echo  $(MOD_TAVE_DYNAMOBENCH)      >> $(MAKENAME)
 	@echo  MOD_MAX_SPH_ENE=  \\           >> $(MAKENAME)
 	@echo  $(MOD_MAX_SPH_ENE)             >> $(MAKENAME)
 	@echo  MOD_SPH_ULI_LSCALE=  \\        >> $(MAKENAME)
