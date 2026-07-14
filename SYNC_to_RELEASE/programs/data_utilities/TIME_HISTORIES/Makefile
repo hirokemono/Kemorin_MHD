@@ -20,12 +20,12 @@ t_tave_sph_layer_spectr.o \
 t_tave_sph_layer_mean.o \
 t_tave_sph_volume_spectr.o \
 t_picked_sph_spectr_data_IO.o \
+t_time_ave_sph_volume_mean.o \
 sph_layer_monitor_snap_IO.o \
 sph_volume_monitor_snap_IO.o \
 tave_sdev_sph_layer_spec.o \
 tave_sdev_sph_layer_mean.o \
 tave_sdev_sph_volume_spec.o \
-time_ave_sph_volume_mean.o \
 time_ave_picked_sph_spectr.o \
 t_sph_volume_mean_series.o \
 t_sph_volume_spectr_series.o \

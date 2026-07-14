@@ -32,6 +32,7 @@ t_sph_volume_spectr_series.o \
 t_tave_sph_volume_spectr.o \
 t_tave_sph_layer_mean.o \
 t_tave_sph_layer_spectr.o \
+t_time_ave_sph_volume_mean.o \
 tave_sdev_sph_layer_spec.o \
 tave_sdev_sph_layer_mean.o \
 tave_sdev_sph_volume_spec.o \
@@ -53,7 +54,6 @@ time_average_sph_ene_spectr.o \
 time_average_gauss_coefs.o \
 write_snap_pick_sph_spectr.o \
 time_ave_picked_sph_spectr.o \
-time_ave_sph_volume_mean.o \
 time_ave_sph_monitor_data.o
 
 #

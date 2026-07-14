@@ -1,1 +1,0 @@
-../../../../MHD/programs/data_utilities/sph_spectr/time_ave_sph_volume_mean.f90

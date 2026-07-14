@@ -53,7 +53,7 @@
       integer(c_int) function                                           &
     &     time_ave_sdev_sph_volume_pwr_f(cname, cstart, cend) Bind(C)
 !
-      use time_ave_sph_volume_mean
+      use t_time_ave_sph_volume_mean
 !
       character(1,C_char), intent(in) :: cname(*)
       real(C_double), Value :: cstart, cend

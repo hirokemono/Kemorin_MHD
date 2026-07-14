@@ -239,6 +239,7 @@ t_sph_volume_spectr_series.o \
 t_tave_sph_volume_spectr.o \
 t_tave_sph_layer_mean.o \
 t_tave_sph_layer_spectr.o \
+t_time_ave_sph_volume_mean.o \
 tave_sdev_sph_layer_spec.o \
 tave_sdev_sph_layer_mean.o \
 tave_sdev_sph_volume_spec.o \
@@ -251,7 +252,6 @@ old_sph_spectr_data_IO.o \
 write_snap_pick_sph_spectr.o \
 count_monitor_time_series.o \
 cal_tave_sph_ene_spectr.o \
-time_ave_sph_volume_mean.o \
 time_ave_sph_monitor_data.o
 
 MOD_TAVE_DYNAMOBENCH = \
@@ -259,19 +259,16 @@ t_average_sph_dynamobench.o \
 t_ctl_data_sph_monitor_list.o \
 t_ctl_data_tave_sph_monitor.o \
 t_ctl_param_sph_series_util.o \
-t_picked_sph_spectr_data_IO.o \
 t_sph_volume_mean_series.o \
-t_sph_volume_spectr_series.o \
 t_tave_sph_volume_spectr.o \
+t_sph_volume_spectr_series.o \
+t_time_ave_sph_volume_mean.o \
 tave_sdev_sph_volume_spec.o \
-picked_sph_spectr_data_IO.o \
 gz_spl_sph_spectr_data_IO.o \
 sph_volume_monitor_snap_IO.o \
 old_sph_spectr_data_IO.o \
-write_snap_pick_sph_spectr.o \
 count_monitor_time_series.o \
 cal_tave_sph_ene_spectr.o \
-time_ave_sph_volume_mean.o \
 time_ave_sph_monitor_data.o
 
 MOD_MAX_SPH_ENE = \
