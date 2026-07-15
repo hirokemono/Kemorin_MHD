@@ -263,6 +263,7 @@ t_sph_volume_mean_series.o \
 t_tave_sph_volume_spectr.o \
 t_sph_volume_spectr_series.o \
 t_time_ave_sph_volume_mean.o \
+time_ave_sdev_sph_dbench.o \
 tave_sdev_sph_volume_spec.o \
 gz_spl_sph_spectr_data_IO.o \
 sph_volume_monitor_snap_IO.o \

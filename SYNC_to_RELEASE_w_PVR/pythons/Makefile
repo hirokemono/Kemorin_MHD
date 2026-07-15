@@ -36,6 +36,7 @@ t_time_ave_sph_volume_mean.o \
 tave_sdev_sph_layer_spec.o \
 tave_sdev_sph_layer_mean.o \
 tave_sdev_sph_volume_spec.o \
+time_ave_sdev_sph_dbench.o \
 gz_spl_sph_spectr_data_IO.o \
 gz_volume_spectr_monitor_IO.o \
 gz_layer_mean_monitor_IO.o \
