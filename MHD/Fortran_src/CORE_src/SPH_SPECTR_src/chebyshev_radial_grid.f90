@@ -145,19 +145,46 @@
       integer(kind = kint), intent(inout) :: nlayer_ICB, nlayer_CMB
       integer(kind = kint), intent(inout) :: ntot_shell
 !
-      real(kind = kreal) :: pi, dr, r, shell
-      integer(kind = kint) :: ngrid_icore, ngrid_ext
+      real(kind = kreal) :: shell
+      integer(kind = kint) :: ngrid_icore, ngrid_external
+!
+!
+      shell = r_CMB - r_ICB
+      dr =   half * shell * ( one - cos( pi/dble(nri)) )
+!
+      ngrid_icore = count_chebyshev_inner_shell(shell, nri,             &
+     &                                          r_ICB, r_min)
+      ngrid_external = count_chebyshev_external(shell, nri,             &
+     &                                          r_CMB, r_max)
+!
+      nlayer_ICB = ngrid_icore + 1
+      nlayer_CMB = nlayer_ICB +  nri
+      ntot_shell = nlayer_CMB + ngrid_ext
+!
+      end subroutine count_chebyshev_ext_layers
+!
+!  -------------------------------------------------------------------
+!
+      integer(kind = kint) function count_chebyshev_inner_shell         &
+     &                                    (shell, nri, r_ICB, r_min)
+!
+      integer(kind = kint), intent(in) :: nri
+      real(kind = kreal), intent(in) :: shell
+      real(kind = kreal), intent(in) :: r_ICB
+      real(kind = kreal), intent(in) :: r_min
+!
+      real(kind = kreal), parameter :: pi = four * atan(one)
+      real(kind = kreal) :: dr, r
       integer(kind = kint) :: k
 !
 !
-      pi = four * atan(one)
-      shell = r_CMB - r_ICB
-      dr =   half * shell * ( one - cos( pi/dble(nri)) )
+      dr =   half * shell * (one - cos( pi/dble(nri)))
 !
 !      Set grid by Chebyshev grid
       r = r_ICB
       k = 0
       do
+        if(r .le. zero)  exit
         if(r .le. r_min) exit
         if(k .ge. nri/2) exit
 !
@@ -168,12 +195,29 @@
 !        write(*,*) k, r, dr
       end do
 !
-!
 !      Set grid by equidistance grid
       if(k .eq. nri/2) k = int(aint((r - r_min)/dr), KIND(k)) + nri/2
-      ngrid_icore = k-1
-      if(ngrid_icore .lt. 0) ngrid_icore = 0
+      count_chebyshev_inner_shell = max(k-1, 0)
 !
+      end function count_chebyshev_inner_shell
+!
+!  -------------------------------------------------------------------
+!
+      integer(kind = kint) function count_chebyshev_external            &
+     &                                     (shell, nri, r_CMB, r_max)
+!
+      integer(kind = kint), intent(in) :: nri
+      real(kind = kreal), intent(in) :: shell
+      real(kind = kreal), intent(in) :: r_CMB
+      real(kind = kreal), intent(in) :: r_max
+!
+      real(kind = kreal), parameter :: pi = four * atan(one)
+      real(kind = kreal) :: dr, r, shell
+      integer(kind = kint) :: ngrid_icore, ngrid_ext
+      integer(kind = kint) :: k
+!
+!
+      dr =   half * shell * ( one - cos( pi/dble(nri)) )
 !
       r = r_CMB
       k = 0
@@ -188,7 +232,6 @@
 !        write(*,*) k, r, dr
       end do
 !
-!
       do
         if(r .ge. r_max) exit
         k = k + 1
@@ -196,17 +239,10 @@
 !        write(*,*) k, r, dr
       end do
 !
-      if(k .le. 1) then
-        ngrid_ext = 0
-      else
-        ngrid_ext = k
-      end if
+      count_chebyshev_external = k
+      if(k .le. 1) count_chebyshev_external = 0
 !
-      nlayer_ICB = ngrid_icore + 1
-      nlayer_CMB = nlayer_ICB +  nri
-      ntot_shell = nlayer_CMB + ngrid_ext
-!
-      end subroutine count_chebyshev_ext_layers
+      end function count_chebyshev_external
 !
 !  -------------------------------------------------------------------
 !

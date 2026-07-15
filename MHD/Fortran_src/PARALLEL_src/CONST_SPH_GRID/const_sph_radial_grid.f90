@@ -100,10 +100,16 @@
      &      sph_param%nlayer_CMB, sph_param%radius_CMB,                 &
      &      s3d_radius%radius_1d_gl(1))
       else if(sph_param%iflag_radial_grid .eq. igrid_equidistance) then
-        call set_equi_distance_shell(nri_tmp,                           &
-     &      sph_param%nlayer_ICB, sph_param%nlayer_CMB,                 &
-     &      sph_param%radius_ICB, sph_param%radius_CMB,                 &
-     &      s3d_radius%radius_1d_gl(1))
+        if(sph_param%radius_ICB .eq. zero) then
+          call set_equi_distance_sphere(nri_tmp,                        &
+     &        sph_param%nlayer_CMB, sph_param%radius_CMB,               &
+     &        s3d_radius%radius_1d_gl(1))
+        else
+          call set_equi_distance_shell(nri_tmp,                         &
+     &        sph_param%nlayer_ICB, sph_param%nlayer_CMB,               &
+     &        sph_param%radius_ICB, sph_param%radius_CMB,               &
+     &        s3d_radius%radius_1d_gl(1))
+        end if
       end if
 !
       if(sph_param%iflag_radial_grid .eq. igrid_half_Chebyshev          &
