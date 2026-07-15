@@ -9,11 +9,25 @@
 !!@verbatim
 !!      subroutine set_equi_distance_shell(num_layer, nlayer_ICB,       &
 !!     &          nlayer_CMB, r_ICB, r_CMB, r_grid)
+!!        integer(kind = kint), intent(in) :: num_layer
+!!        integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+!!        real(kind = kreal), intent(in) :: r_ICB, r_CMB
+!!        real(kind = kreal), intent(inout) :: r_grid(num_layer)
 !!      subroutine count_equi_ext_layers(nri, r_ICB, r_CMB,             &
 !!     &          r_min, r_max, ntot_shell, nlayer_ICB, nlayer_CMB)
+!!        integer(kind = kint), intent(in) :: nri
+!!        real(kind = kreal), intent(in) :: r_ICB, r_CMB
+!!        real(kind = kreal), intent(in) :: r_min, r_max
+!!        integer(kind = kint), intent(inout) :: nlayer_ICB, nlayer_CMB
+!!        integer(kind = kint), intent(inout) :: ntot_shell
 !!
-!!      subroutine set_radial_distance_flag(num_layer, nlayer_ICB,      &
-!!     &          nlayer_CMB, r_ICB, r_CMB, r_grid, iflag_rgrid)
+!!      integer(kind = kint) function find_radial_distance_flag         &
+!!     &                            (num_layer, nlayer_ICB, nlayer_CMB, &
+!!     &                             r_ICB, r_CMB, r_grid)
+!!        integer(kind = kint), intent(in) :: num_layer
+!!        integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+!!        real(kind = kreal), intent(in) :: r_ICB, r_CMB
+!!        real(kind = kreal), intent(in) :: r_grid(num_layer)
 !!@endverbatim
 !
       module set_radial_grid_sph_shell
@@ -94,8 +108,9 @@
 !  -------------------------------------------------------------------
 !  -------------------------------------------------------------------
 !
-      subroutine set_radial_distance_flag(num_layer, nlayer_ICB,        &
-     &          nlayer_CMB, r_ICB, r_CMB, r_grid, iflag_rgrid)
+      integer(kind = kint) function find_radial_distance_flag           &
+     &                            (num_layer, nlayer_ICB, nlayer_CMB,   &
+     &                             r_ICB, r_CMB, r_grid)
 !
       use chebyshev_radial_grid
       use half_chebyshev_radial_grid
@@ -106,16 +121,15 @@
       real(kind = kreal), intent(in) :: r_ICB, r_CMB
       real(kind = kreal), intent(in) :: r_grid(num_layer)
 !
-      integer(kind = kint), intent(inout) :: iflag_rgrid
-!
       integer(kind = kint) :: k
       real(kind = kreal) :: diff
       real(kind = kreal) :: diff_ch_max, diff_eq_max, diff_hch_max
+      integer(kind = kint) :: iflag_rgrid
 !
       real(kind = kreal), allocatable :: r_eq(:), r_ch(:), r_hch(:)
 !
       if(num_layer .le. 0) then
-        iflag_rgrid = igrid_error
+        find_radial_distance_flag = igrid_error
         return
       end if
 !
@@ -159,10 +173,11 @@
       else
         iflag_rgrid = igrid_non_equidist
       end if
+      find_radial_distance_flag = iflag_rgrid
 !
-      deallocate( r_eq, r_ch, r_hch)
+      deallocate(r_eq, r_ch, r_hch)
 !
-      end subroutine set_radial_distance_flag
+      end function find_radial_distance_flag
 !
 !  -------------------------------------------------------------------
 !

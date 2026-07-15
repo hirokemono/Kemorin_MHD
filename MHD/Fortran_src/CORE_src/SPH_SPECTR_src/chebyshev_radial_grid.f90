@@ -41,6 +41,9 @@
       integer(kind = kint) :: kst, ked, k, nri
       real(kind = kreal) :: pi, dr, shell
 !
+      write(*,*) 'r_grid start', r_grid
+      write(*,*) 'nlayer_ICB', nlayer_ICB
+      write(*,*) 'r_ICB', r_ICB
 !
       pi = four * atan(one)
       nri = nlayer_CMB - nlayer_ICB
@@ -79,6 +82,8 @@
       do k = kst, ked
         r_grid(k) = r_grid(k-1) + dr
       end do
+!
+      write(*,*) 'r_grid end', r_grid
 !
       end subroutine set_chebyshev_distance_shell
 !
