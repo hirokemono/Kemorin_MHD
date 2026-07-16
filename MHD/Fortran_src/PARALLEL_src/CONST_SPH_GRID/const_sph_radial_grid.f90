@@ -72,8 +72,9 @@
      &      sph_param%nlayer_ICB, sph_param%nlayer_CMB)
       else if(sph_param%iflag_radial_grid .eq. igrid_half_Chebyshev)    &
      & then
-        call count_half_chebyshev_external(nri_tmp,                     &
-     &      sph_param%radius_CMB, rmax, sph_rtp%nidx_global_rtp(1),     &
+        call count_half_chebyshev_ext_layers                            &
+     &     (nri_tmp, sph_param%radius_ICB, sph_param%radius_CMB,        &
+     &      rmin, rmax, sph_rtp%nidx_global_rtp(1),                     &
      &      sph_param%nlayer_ICB, sph_param%nlayer_CMB)
       else if(sph_param%iflag_radial_grid .eq. igrid_equidistance) then
         call count_equi_ext_layers                                      &
@@ -108,9 +109,16 @@
         end if
       else if(sph_param%iflag_radial_grid .eq. igrid_half_Chebyshev)    &
      & then
-        call half_chebyshev_distance_shell(nri_tmp,                     &
-     &      sph_param%nlayer_CMB, sph_param%radius_CMB,                 &
-     &      s3d_radius%radius_1d_gl(1))
+        if(sph_param%radius_ICB .eq. 0.0d0) then
+          call half_chebyshev_distance_sphere(nri_tmp,                  &
+     &        sph_param%nlayer_CMB, sph_param%radius_CMB,               &
+     &        s3d_radius%radius_1d_gl(1))
+        else
+          call half_chebyshev_distance_shell(nri_tmp,                   &
+     &        sph_param%nlayer_ICB, sph_param%nlayer_CMB,               &
+     &        sph_param%radius_ICB, sph_param%radius_CMB,               &
+     &        s3d_radius%radius_1d_gl(1))
+        end if
       else if(sph_param%iflag_radial_grid .eq. igrid_equidistance) then
         if(sph_param%radius_ICB .eq. zero) then
           call set_equi_distance_sphere(nri_tmp,                        &
