@@ -52,8 +52,9 @@
      &          nlayer_ICB, nlayer_CMB, nlayer_2_center,                &
      &          r_ele_rj, ar_ele_rj, r_ICB, r_CMB, R_earth)
 !
-      use set_radial_grid_sph_shell
       use skip_comment_f
+      use set_radial_grid_sph_shell
+!      use find_radial_distance_flag
 !
       type(group_data), intent(in) :: radial_rj_grp
 !
@@ -98,7 +99,7 @@
       R_earth(2) = one / R_earth(0)**2
 !
 !      iflag_radial_grid                                                &
-!     &        = find_radial_distance_flag(nri, nlayer_ICB, nlayer_CMB, &
+!     &      = s_find_radial_distance_flag(nri, nlayer_ICB, nlayer_CMB, &
 !     &                                    r_ICB, r_CMB, radius_1d_rj_r)
 !      if(iflag_radial_grid .eq. igrid_error) return
 !

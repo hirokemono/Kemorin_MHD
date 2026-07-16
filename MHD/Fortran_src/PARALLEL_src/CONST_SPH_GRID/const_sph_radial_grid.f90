@@ -95,12 +95,8 @@
 !
       call alloc_radius_1d_gl(sph_rtp%nidx_global_rtp(1), s3d_radius)
 !
-      write(*,*) 'r_grid start', s3d_radius%radius_1d_gl
-      write(*,*) 'nlayer_ICB',   sph_param%nlayer_ICB
-      write(*,*) 'r_ICB',        sph_param%radius_ICB
-!
       if(sph_param%iflag_radial_grid .eq. igrid_Chebyshev) then
-        if(sph_param%radius_ICB .eq. 0.0d0) then
+        if(sph_param%radius_ICB .eq. zero) then
           call set_chebyshev_distance_sphere(nri_tmp,                   &
      &        sph_param%nlayer_CMB, sph_param%radius_CMB,               &
      &        s3d_radius%radius_1d_gl(1))
@@ -112,7 +108,7 @@
         end if
       else if(sph_param%iflag_radial_grid .eq. igrid_half_Chebyshev)    &
      & then
-        if(sph_param%radius_ICB .eq. 0.0d0) then
+        if(sph_param%radius_ICB .eq. zero) then
           call half_chebyshev_distance_sphere(nri_tmp,                  &
      &        sph_param%nlayer_CMB, sph_param%radius_CMB,               &
      &        s3d_radius%radius_1d_gl(1))
@@ -134,8 +130,6 @@
      &        s3d_radius%radius_1d_gl(1))
         end if
       end if
-!
-      write(*,*) 'r_grid', s3d_radius%radius_1d_gl
 !
       if(sph_param%iflag_radial_grid .eq. igrid_half_Chebyshev          &
      &    .or. sph_param%iflag_radial_grid .eq. igrid_Chebyshev) then

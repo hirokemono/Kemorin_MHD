@@ -58,37 +58,32 @@
       nri = nlayer_CMB - nlayer_ICB
       shell = r_CMB - r_ICB
 !
-      kst = 1
       ked = nlayer_ICB-nri/2 - 1
-      do k = kst, ked
+      do k = 1, ked
         r_grid(k) = (r_ICB - half * shell) * dble(k) / dble(ked+1)
       end do
 !
       kst = max(ione,nlayer_ICB-nri/itwo)
-      ked = nlayer_ICB-1
-      do k = kst, ked
-        r_grid(k) = r_ICB - half * shell * (one - cos( pi               &
-     &              * dble(k-nlayer_ICB)/dble(nri)) )
+      do k = kst, nlayer_ICB-1
+        r_grid(k) = r_ICB - half * shell                                &
+     &             * (one - cos(pi * dble(k-nlayer_ICB)/dble(nri)) )
       end do
 !
-      kst = nlayer_ICB
-      ked = nlayer_CMB
-      do k = kst, ked
-        r_grid(k) = r_ICB + half * shell * (one - cos( pi               &
-     &              * dble(k-nlayer_ICB)/dble(nri)) )
+      do k = nlayer_ICB, nlayer_CMB
+        r_grid(k) = r_ICB + half * shell                                &
+     &             * (one - cos(pi * dble(k-nlayer_ICB)/dble(nri)) )
       end do
 !
       kst = nlayer_CMB + 1
       ked = min(num_layer, nlayer_CMB + nri/2)
       do k = kst, ked
-        r_grid(k) = r_CMB + half * shell * (one - cos( pi               &
-     &              * dble(k-nlayer_CMB)/dble(nri)) )
+        r_grid(k) = r_CMB + half * shell                                &
+     &              * (one - cos(pi  * dble(k-nlayer_CMB)/dble(nri)) )
       end do
       dr = r_grid(ked) - r_grid(ked-1)
 !
       kst = nlayer_CMB + nri/2 + 1
-      ked = num_layer
-      do k = kst, ked
+      do k = kst, num_layer
         r_grid(k) = r_grid(k-1) + dr
       end do
 !
@@ -118,8 +113,8 @@
       kst = nlayer_CMB + 1
       ked = min(num_layer, nlayer_CMB + nlayer_CMB/2)
       do k = kst, ked
-        r_grid(k) = r_CMB + half * r_CMB * (one - cos( pi               &
-     &              * dble(k-nlayer_CMB)/dble(nlayer_CMB)) )
+        r_grid(k) = r_CMB + half * r_CMB                                &
+     &          * (one - cos(pi * dble(k-nlayer_CMB)/dble(nlayer_CMB)))
       end do
       dr = r_grid(ked) - r_grid(ked-1)
 !

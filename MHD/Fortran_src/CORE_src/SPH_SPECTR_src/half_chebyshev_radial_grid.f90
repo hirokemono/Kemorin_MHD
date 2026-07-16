@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine half_chebyshev_distance_shell(num_layer,             &
 !!     &          nlayer_ICB, nlayer_CMB, r_ICB, r_CMB, r_grid)
-!!      subroutine half_chebyshev_distance_shell                        &
+!!      subroutine half_chebyshev_distance_sphere                       &
 !!     &         (num_layer, nlayer_CMB, r_CMB, r_grid)
 !!        integer(kind = kint), intent(in) :: num_layer
 !!        integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
