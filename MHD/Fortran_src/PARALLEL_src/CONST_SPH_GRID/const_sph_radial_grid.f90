@@ -58,6 +58,7 @@
       type(sph_rtp_grid), intent(inout) :: sph_rtp
       type(spheric_global_radius), intent(inout) :: s3d_radius
 !
+      integer(kind = kint) :: ngrid_icore, ngrid_external
       integer(kind = kint) :: i, nri_tmp
 !
 !
@@ -68,20 +69,22 @@
       if(sph_param%iflag_radial_grid .eq. igrid_Chebyshev) then
         call count_chebyshev_ext_layers                                 &
      &     (nri_tmp, sph_param%radius_ICB, sph_param%radius_CMB,        &
-     &      rmin, rmax, sph_rtp%nidx_global_rtp(1),                     &
-     &      sph_param%nlayer_ICB, sph_param%nlayer_CMB)
-      else if(sph_param%iflag_radial_grid .eq. igrid_half_Chebyshev)    &
-     & then
+     &      rmin, rmax, ngrid_icore, ngrid_external)
+      else if(sph_param%iflag_radial_grid                               &
+     &          .eq. igrid_half_Chebyshev)  then
         call count_half_chebyshev_ext_layers                            &
      &     (nri_tmp, sph_param%radius_ICB, sph_param%radius_CMB,        &
-     &      rmin, rmax, sph_rtp%nidx_global_rtp(1),                     &
-     &      sph_param%nlayer_ICB, sph_param%nlayer_CMB)
+     &      rmin, rmax, ngrid_icore, ngrid_external)
       else if(sph_param%iflag_radial_grid .eq. igrid_equidistance) then
         call count_equi_ext_layers                                      &
      &     (nri_tmp, sph_param%radius_ICB, sph_param%radius_CMB,        &
-     &      rmin, rmax, sph_rtp%nidx_global_rtp(1),                     &
-     &      sph_param%nlayer_ICB, sph_param%nlayer_CMB)
+     &      rmin, rmax, ngrid_icore, ngrid_external)
       end if
+!
+      sph_param%nlayer_ICB =       1 + ngrid_icore
+      sph_param%nlayer_CMB =       sph_param%nlayer_ICB + nri_tmp
+      sph_rtp%nidx_global_rtp(1) = sph_param%nlayer_CMB                 &
+     &                            + ngrid_external
 !
       nri_tmp = sph_rtp%nidx_global_rtp(1)
       do i = 1, add_ext_layer_ctl%num

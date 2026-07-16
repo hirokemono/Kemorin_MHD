@@ -16,12 +16,12 @@
 !!        real(kind = kreal), intent(in) :: r_ICB, r_CMB
 !!        real(kind = kreal), intent(inout) :: r_grid(num_layer)
 !!      subroutine count_equi_ext_layers(nri, r_ICB, r_CMB,             &
-!!     &          r_min, r_max, ntot_shell, nlayer_ICB, nlayer_CMB)
+!!     &          r_min, r_max, ngrid_icore, ngrid_external)
 !!        integer(kind = kint), intent(in) :: nri
 !!        real(kind = kreal), intent(in) :: r_ICB, r_CMB
 !!        real(kind = kreal), intent(in) :: r_min, r_max
-!!        integer(kind = kint), intent(inout) :: nlayer_ICB, nlayer_CMB
-!!        integer(kind = kint), intent(inout) :: ntot_shell
+!!        integer(kind = kint), intent(inout) :: ngrid_icore
+!!        integer(kind = kint), intent(inout) :: ngrid_external
 !!
 !!      integer(kind = kint) function find_radial_distance_flag         &
 !!     &                            (num_layer, nlayer_ICB, nlayer_CMB, &
@@ -90,26 +90,21 @@
 !  -------------------------------------------------------------------
 !
       subroutine count_equi_ext_layers(nri, r_ICB, r_CMB,               &
-     &          r_min, r_max, ntot_shell, nlayer_ICB, nlayer_CMB)
+     &          r_min, r_max, ngrid_icore, ngrid_external)
 !
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: r_ICB, r_CMB
       real(kind = kreal), intent(in) :: r_min, r_max
 !
-      integer(kind = kint), intent(inout) :: nlayer_ICB, nlayer_CMB
-      integer(kind = kint), intent(inout) :: ntot_shell
+      integer(kind = kint), intent(inout) :: ngrid_icore
+      integer(kind = kint), intent(inout) :: ngrid_external
 !
       real(kind = kreal) :: dr
-      integer(kind = kint) :: ngrid_icore, ngrid_extrnal
 !
 !
       dr = (r_CMB - r_ICB) / dble(nri)
       ngrid_icore =    count_equi_inner_sphere(dr, r_ICB, r_min)
-      ngrid_extrnal =  count_equi_external(dr, r_CMB, r_max)
-!
-      nlayer_ICB = ngrid_icore + 1
-      nlayer_CMB = nlayer_ICB +  nri
-      ntot_shell = nlayer_CMB + ngrid_extrnal
+      ngrid_external = count_equi_external(dr, r_CMB, r_max)
 !
       end subroutine count_equi_ext_layers
 !
@@ -195,12 +190,12 @@
       r_ch(1:num_layer) =  0.0d0
       r_hch(1:num_layer) = 0.0d0
 !
-      call set_equi_distance_shell(num_layer, nlayer_ICB,               &
-     &                             nlayer_CMB, r_ICB, r_CMB, r_eq)
-      call set_chebyshev_distance_shell(num_layer, nlayer_ICB,          &
-     &                                  nlayer_CMB, r_ICB, r_CMB, r_ch)
-      call half_chebyshev_distance_shell(num_layer, nlayer_CMB,         &
-     &                                   r_CMB, r_hch)
+      call set_equi_distance_shell                                      &
+     &   (num_layer, nlayer_ICB, nlayer_CMB, r_ICB, r_CMB, r_eq)
+      call set_chebyshev_distance_shell                                 &
+     &   (num_layer, nlayer_ICB, nlayer_CMB, r_ICB, r_CMB, r_ch)
+      call half_chebyshev_distance_shell                                &
+     &   (num_layer, nlayer_ICB, nlayer_CMB, r_ICB, r_CMB, r_hch)
 !
 !
       diff_eq_max =  0.0d0

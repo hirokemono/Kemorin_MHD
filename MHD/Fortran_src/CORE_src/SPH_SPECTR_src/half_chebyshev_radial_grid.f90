@@ -15,8 +15,14 @@
 !!        integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
 !!        real(kind = kreal), intent(in) :: r_ICB, r_CMB
 !!        real(kind = kreal), intent(inout) :: r_grid(num_layer)
-!!      subroutine count_half_chebyshev_external(nri, r_CMB, r_max,     &
-!!     &          ntot_shell, nlayer_ICB, nlayer_CMB)
+!!
+!!      subroutine count_half_chebyshev_ext_layers(nri, r_ICB, r_CMB,   &
+!!     &          r_min, r_max, ngrid_icore, ngrid_external)
+!!        integer(kind = kint), intent(in) :: nri
+!!        real(kind = kreal), intent(in) :: r_ICB, r_CMB
+!!        real(kind = kreal), intent(in) :: r_min, r_max
+!!        integer(kind = kint), intent(inout) :: ngrid_icore
+!!        integer(kind = kint), intent(inout) :: ngrid_external
 !!@endverbatim
 !
       module half_chebyshev_radial_grid
@@ -115,7 +121,7 @@
 !  -------------------------------------------------------------------
 !
       subroutine count_half_chebyshev_ext_layers(nri, r_ICB, r_CMB,     &
-     &          r_min, r_max, ntot_shell, nlayer_ICB, nlayer_CMB)
+     &          r_min, r_max, ngrid_icore, ngrid_external)
 !
       use set_radial_grid_sph_shell
 !
@@ -123,24 +129,19 @@
       real(kind = kreal), intent(in) :: r_ICB, r_CMB
       real(kind = kreal), intent(in) :: r_min, r_max
 !
-      integer(kind = kint), intent(inout) :: nlayer_ICB, nlayer_CMB
-      integer(kind = kint), intent(inout) :: ntot_shell
+      integer(kind = kint), intent(inout) :: ngrid_icore
+      integer(kind = kint), intent(inout) :: ngrid_external
 !
       real(kind = kreal), parameter :: pi = four * atan(one)
       real(kind = kreal) :: shell, dr
-      integer(kind = kint) :: ngrid_icore, ngrid_extrnal
 !
 !
       shell = r_CMB - r_ICB
       dr = shell * (cos(half*pi)                                        &
      &    - cos(half*pi * dble(nri+1)/dble(nri)))
       ngrid_icore =    count_equi_inner_sphere(dr, r_ICB, r_min)
-      ngrid_extrnal = count_half_chebyshev_external(shell, nri,         &
-     &                                              r_CMB, r_max)
-!
-      nlayer_ICB = ngrid_icore + 1
-      nlayer_CMB = nlayer_ICB + nri
-      ntot_shell = nlayer_CMB + ngrid_extrnal
+      ngrid_external = count_half_chebyshev_external(shell, nri,        &
+     &                                               r_CMB, r_max)
 !
       end subroutine count_half_chebyshev_ext_layers
 !

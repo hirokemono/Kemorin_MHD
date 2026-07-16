@@ -50,6 +50,7 @@
      &           :: vsp_evo_name = 'velocity_pressure_evolution'
 !
       integer ::  k, l, ierr
+      integer(kind = kint) :: ngrid_icore, ngrid_external
 !
       iflag_debug = 0
 !
@@ -58,8 +59,14 @@
       sph1%sph_params%radius_CMB = r_CMB
       call count_chebyshev_ext_layers(num_fluid_grid,                   &
      &    sph1%sph_params%radius_ICB, sph1%sph_params%radius_CMB,       &
-     &    rmin, rmax, sph1%sph_rj%nidx_rj(1),                           &
-     &    sph1%sph_params%nlayer_ICB, sph1%sph_params%nlayer_CMB)
+     &    rmin, rmax, ngrid_icore, ngrid_external)
+!
+      sph1%sph_params%nlayer_ICB = 1 + ngrid_icore
+      sph1%sph_params%nlayer_CMB = sph1%sph_params%nlayer_ICB           &
+     &                            + num_fluid_grid
+      sph1%sph_rj%nidx_rj(1) = sph1%sph_params%nlayer_CMB               &
+     &                        + ngrid_external
+!
       sph1%sph_rj%nnod_rj = sph1%sph_rj%nidx_rj(1)                      &
      &                     * sph1%sph_rj%nidx_rj(2)
 !

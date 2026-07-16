@@ -20,12 +20,12 @@
 !!        real(kind = kreal), intent(inout) :: r_grid(num_layer)
 !!
 !!      subroutine count_chebyshev_ext_layers(nri, r_ICB, r_CMB,        &
-!!     &          r_min, r_max, ntot_shell, nlayer_ICB, nlayer_CMB)
+!!     &          r_min, r_max, ngrid_icore, ngrid_external)
 !!        integer(kind = kint), intent(in) :: nri
 !!        real(kind = kreal), intent(in) :: r_ICB, r_CMB
 !!        real(kind = kreal), intent(in) :: r_min, r_max
-!!        integer(kind = kint), intent(inout) :: nlayer_ICB, nlayer_CMB
-!!        integer(kind = kint), intent(inout) :: ntot_shell
+!!        integer(kind = kint), intent(inout) :: ngrid_icore
+!!        integer(kind = kint), intent(inout) :: ngrid_external
 !!@endverbatim
 !
       module chebyshev_radial_grid
@@ -195,7 +195,7 @@
 !
       real(kind = kreal), intent(inout) :: r_grid(num_layer)
 !
-      integer(kind = kint) :: k, kk, kst, ked, nri
+      integer(kind = kint) :: k, kk, ked, nri
       real(kind = kreal) :: r1, r2
 !
 !
@@ -227,17 +227,16 @@
 !  -------------------------------------------------------------------
 !
       subroutine count_chebyshev_ext_layers(nri, r_ICB, r_CMB,          &
-     &          r_min, r_max, ntot_shell, nlayer_ICB, nlayer_CMB)
+     &          r_min, r_max, ngrid_icore, ngrid_external)
 !
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: r_ICB, r_CMB
       real(kind = kreal), intent(in) :: r_min, r_max
 !
-      integer(kind = kint), intent(inout) :: nlayer_ICB, nlayer_CMB
-      integer(kind = kint), intent(inout) :: ntot_shell
+      integer(kind = kint), intent(inout) :: ngrid_icore
+      integer(kind = kint), intent(inout) :: ngrid_external
 !
       real(kind = kreal) :: shell
-      integer(kind = kint) :: ngrid_icore, ngrid_external
 !
 !
       shell = r_CMB - r_ICB
@@ -245,10 +244,6 @@
      &                                          r_ICB, r_min)
       ngrid_external = count_chebyshev_external(shell, nri,             &
      &                                          r_CMB, r_max)
-!
-      nlayer_ICB = ngrid_icore + 1
-      nlayer_CMB = nlayer_ICB +  nri
-      ntot_shell = nlayer_CMB +  ngrid_external
 !
       end subroutine count_chebyshev_ext_layers
 !
@@ -302,7 +297,6 @@
 !
       real(kind = kreal), parameter :: pi = four * atan(one)
       real(kind = kreal) :: dr, r
-      integer(kind = kint) :: ngrid_icore, ngrid_ext
       integer(kind = kint) :: k
 !
 !
