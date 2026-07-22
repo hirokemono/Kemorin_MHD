@@ -91,7 +91,7 @@
 !
       cdat%circle%s_circle = r_MID
       cdat%circle%z_circle = zero
-      cdat%circle%r_circle = circle%s_circle
+      cdat%circle%r_circle = cdat%circle%s_circle
       cdat%circle%colat_circle = acos(0.0d0)
 !
       end subroutine init_mid_equator_point_global
