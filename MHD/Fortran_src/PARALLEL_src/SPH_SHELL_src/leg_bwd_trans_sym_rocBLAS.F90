@@ -149,14 +149,12 @@
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+12)
         call cal_v_rtm_sym_matmul_big_smp                               &
      &     (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,      &
-     &      sph_rlm%nidx_rlm, leg%asin_t_rtm, nkr,                      &
-     &      mp_rlm, idx_trns%mn_rlm(mp_rlm), nl_rtm,                    &
-     &      WK_l_bsm%symp_r(1,1), WK_l_bsm%asmp_p(1,1),                 &
+     &      leg%asin_t_rtm, nkr,  mp_rlm, idx_trns%mn_rlm(mp_rlm),      &
+     &      nl_rtm, WK_l_bsm%symp_r(1,1), WK_l_bsm%asmp_p(1,1),         &
      &      WK_l_bsm%asmp_r(1,1), WK_l_bsm%symp_p(1,1),                 &
      &      ncomp, nvector, comm_rtm%irev_sr, n_WS, WS)
-        call cal_s_rtm_sym_matmul_big_smp                               &
-     &     (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,      &
-     &      sph_rlm%nidx_rlm, nkr, mp_rlm, nl_rtm,                      &
+        call cal_s_rtm_sym_matmul_big_smp(sph_rtm%nnod_rtm,             &
+     &      sph_rtm%nidx_rtm, sph_rtm%istep_rtm, nkr, mp_rlm, nl_rtm,   &
      &      WK_l_bsm%symp_r(1,1), WK_l_bsm%asmp_r(1,1),                 &
      &      ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+12)

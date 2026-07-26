@@ -69,7 +69,7 @@
      &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,    &
      &          n_WR, n_WS, WR, WS, WK_l_bsm, rocBLAS_WK)
 !
-      use set_v_rtm_lg_matmul_big_smp
+      use set_sp_to_rtm_rocBLAS_smp
       use cal_srlm_sym_matmul_big_smp
       use rocBLAS_for_legendre_trans
 !
@@ -118,16 +118,16 @@
      &      call start_elapsed_time(ist_elapsed_SDT+13)
         call set_vec_rtm_sym_matmul_big_smp                             &
      &     (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,      &
-     &      sph_rlm%nidx_rlm, leg%asin_t_rtm, leg%weight_rtm,           &
-     &      nkr, mp_rlm, idx_trns%mn_rlm(mp_rlm),                       &
-     &      nle_rtm, nlo_rtm, ncomp, nvector, comm_rtm%irev_sr,         &
-     &      n_WR, WR, WK_l_bsm%symp_r(1,1), WK_l_bsm%asmp_p(1,1),       &
+     &      leg%asin_t_rtm, leg%weight_rtm, nkr, mp_rlm,                &
+     &      idx_trns%mn_rlm(mp_rlm), nle_rtm, nlo_rtm,                  &
+     &      ncomp, nvector, comm_rtm%irev_sr, n_WR, WR(1),              &
+     &      WK_l_bsm%symp_r(1,1), WK_l_bsm%asmp_p(1,1),                 &
      &      WK_l_bsm%asmp_r(1,1), WK_l_bsm%symp_p(1,1) )
         call set_scl_rtm_sym_matmul_big_smp                             &
      &    (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,       &
-     &     sph_rlm%nidx_rlm, leg%weight_rtm, nkr, mp_rlm,               &
-     &     nle_rtm, nlo_rtm, ncomp, nvector, nscalar, comm_rtm%irev_sr, &
-     &     n_WR, WR, WK_l_bsm%symp_r(1,1), WK_l_bsm%asmp_r(1,1))
+     &     leg%weight_rtm, nkr, mp_rlm, nle_rtm, nlo_rtm,               &
+     &     ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WR, WR(1),      &
+     &     WK_l_bsm%symp_r(1,1), WK_l_bsm%asmp_r(1,1))
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+13)
 !
 !  even l-m
