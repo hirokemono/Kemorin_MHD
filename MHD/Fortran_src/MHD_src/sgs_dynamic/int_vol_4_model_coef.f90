@@ -325,7 +325,8 @@
 !
       use t_work_layer_correlate
       use int_vol_cor_dynamic_smp
-      use int_vol_layer_cor_grpsmp
+      use int_vol_layer_cor_grpsmp_q
+      use int_vol_layer_cor_grpsmp_l
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -377,7 +378,7 @@
       else
 !
         if (ele%nnod_4_ele .eq. num_t_quad) then
-          call int_vol_layer_cor_grpsmp_q(node%numnod,                  &
+          call s_int_vol_layer_cor_grpsmp_q(node%numnod,                &
      &      ele%numele, ele%ie, ele%interior_ele, n_tensor,             &
      &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
      &      g_FEM%owe3d, jac_3d_q%ntot_int, n_int,                      &
@@ -391,7 +392,7 @@
      &      wk_cor%cor_l_smp, wk_cor%sig_l, wk_cor%cov_l,               &
      &      wk_cor%sig_w, wk_cor%cov_w)
         else
-          call int_vol_layer_cor_grpsmp_l(node%numnod,                  &
+          call s_int_vol_layer_cor_grpsmp_l(node%numnod,                &
      &      ele%numele, ele%ie, ele%interior_ele, n_tensor,             &
      &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
      &      g_FEM%owe3d, jac_3d_l%ntot_int, n_int,                      &
