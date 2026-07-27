@@ -112,15 +112,15 @@
 !
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+9)
         call set_sv_rlm_sym_matmul_big_smp                              &
-     &     (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%istep_rlm,      &
-     &      sph_rlm%idx_gl_1d_rlm_j, sph_rlm%ar_1d_rlm, leg%g_sph_rlm,  &
-     &      nkr, jst, n_jk_e, n_jk_o, ncomp, nvector,                   &
-     &      comm_rlm%irev_sr, n_WR, WR,                                 &
+     &     (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm(1), sph_rlm%nidx_rlm(2), &
+     &      sph_rlm%istep_rlm, sph_rlm%idx_gl_1d_rlm_j,                 &
+     &      sph_rlm%ar_1d_rlm, leg%g_sph_rlm, jst, n_jk_e, n_jk_o,      &
+     &      ncomp, nvector, comm_rlm%irev_sr, n_WR, WR,                 &
      &      WK_l_bsm%pol_e(1,1), WK_l_bsm%tor_e(1,1),                   &
      &      WK_l_bsm%pol_o(1,1), WK_l_bsm%tor_o(1,1))
         call set_sc_rlm_sym_matmul_big_smp                              &
-     &     (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%istep_rlm,      &
-     &      nkr, jst, n_jk_e, n_jk_o, ncomp, nvector, nscalar,          &
+     &     (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm(1), sph_rlm%istep_rlm,   &
+     &      jst, n_jk_e, n_jk_o, ncomp, nvector, nscalar,               &
      &      comm_rlm%irev_sr, n_WR, WR,                                 &
      &      WK_l_bsm%pol_e(1,1), WK_l_bsm%pol_o(1,1))
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+9)
