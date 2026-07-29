@@ -1,31 +1,20 @@
-!>@file   cal_magnetic_pre.f90
-!!@brief  module cal_magnetic_pre
+!>@file   cal_magnetic_field_pre.f90
+!!@brief  module cal_magnetic_field_pre
 !!
 !!@author  H. Matsui and H.Okuda
 !!@date    Programmed  in July 2000 (ver 1.1)
 !!         Modieied by H. Matsui on Sep., 2005
 !!
-!>@brief  TIme integration for magnetic field
+!>@brief  Time integration for magnetic field
 !!
 !!@verbatim
-!!      subroutine cal_magnetic_field_pre(ak_d_magne, dt,               &
+!!      subroutine cal_magnetic_pre(ak_d_magne, dt,                     &
 !!     &          FEM_prm, SGS_param, cmt_param, filter_param,          &
 !!     &          mesh, conduct, group, cd_prop, Bnod_bcs,              &
 !!     &          Asf_bcs, Bsf_bcs, iphys, iphys_LES, iphys_ele_base,   &
 !!     &          ele_fld, jacs, rhs_tbl, Csim_SGS_uxb, diff_coefs,     &
 !!     &          FEM_filters, mlump_cd, Bmatrix, MG_vector, wk_filter, &
 !!     &          mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
-!!      subroutine cal_magnetic_co                                      &
-!!     &         (ak_d_magne, dt, FEM_prm, SGS_param, cmt_param,        &
-!!     &          mesh, conduct, group, cd_prop, Bnod_bcs, Fsf_bcs,     &
-!!     &          iphys, iphys_ele_base, ele_fld, jacs, rhs_tbl,        &
-!!     &          FEM_elens, Cdiff_magne, m_lump, Bmatrix, MG_vector,   &
-!!     &          mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
-!!      subroutine cal_magnetic_co_outside                              &
-!!     &         (FEM_prm, SGS_param, cmt_param, mesh, insulate, group, &
-!!     &          Bnod_bcs, Fsf_bcs, iphys, jacs, rhs_tbl, FEM_elens,   &
-!!     &          Cdiff_magne, mlump_ins, mhd_fem_wk, rhs_mat, nod_fld, &
-!!     &          v_sol, SR_sig, SR_r)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -64,7 +53,7 @@
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !
-      module cal_magnetic_pre
+      module cal_magnetic_field_pre
 !
       use m_precision
 !
@@ -113,7 +102,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_magnetic_field_pre(ak_d_magne, dt,                 &
+      subroutine cal_magnetic_pre(ak_d_magne, dt,                       &
      &          FEM_prm, SGS_param, cmt_param, filter_param,            &
      &          mesh, conduct, group, cd_prop, Bnod_bcs,                &
      &          Asf_bcs, Bsf_bcs, iphys, iphys_LES, iphys_ele_base,     &
@@ -268,194 +257,8 @@
       call vector_send_recv(iphys%base%i_magne, mesh%nod_comm,          &
      &                      nod_fld, v_sol, SR_sig, SR_r)
 !
-      end subroutine cal_magnetic_field_pre
+      end subroutine cal_magnetic_pre
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_magnetic_co                                        &
-     &         (ak_d_magne, dt, FEM_prm, SGS_param, cmt_param,          &
-     &          mesh, conduct, group, cd_prop, Bnod_bcs, Fsf_bcs,       &
-     &          iphys, iphys_ele_base, ele_fld, jacs, rhs_tbl,          &
-     &          FEM_elens, Cdiff_magne, m_lump, Bmatrix, MG_vector,     &
-     &          mhd_fem_wk, rhs_mat, nod_fld, v_sol, SR_sig, SR_r)
-!
-      use set_boundary_scalars
-      use nod_phys_send_recv
-      use int_vol_solenoid_correct
-      use int_surf_grad_sgs
-      use implicit_vector_correct
-      use cal_multi_pass
-      use cal_sol_vector_co_crank
-!
-      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
-      type(SGS_model_control_params), intent(in) :: SGS_param
-      type(commutation_control_params), intent(in) :: cmt_param
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) ::   group
-      type(field_geometry_data), intent(in) :: conduct
-      type(conductive_property), intent(in) :: cd_prop
-      type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
-      type(potential_surf_bc_type), intent(in) :: Fsf_bcs
-      type(phys_address), intent(in) :: iphys
-      type(base_field_address), intent(in) :: iphys_ele_base
-      type(phys_data), intent(in) :: ele_fld
-      type(jacobians_type), intent(in) :: jacs
-      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(lumped_mass_matrices), intent(in) :: m_lump
-      type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_model_coefficient), intent(in) :: Cdiff_magne
-      type(MHD_MG_matrix), intent(in) :: Bmatrix
-!
-      real(kind = kreal), intent(in) :: ak_d_magne(mesh%ele%numele)
-      real(kind = kreal), intent(in) :: dt
-!
-      type(vectors_4_solver), intent(inout)                             &
-     &           :: MG_vector(0:Bmatrix%nlevel_MG)
-      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
-      type(phys_data), intent(inout) :: nod_fld
-      type(vectors_4_solver), intent(inout) :: v_sol
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-!
-!
-      call reset_ff_smps(mesh%node, rhs_mat%f_l, rhs_mat%f_nl)
-!
-      if (iflag_debug.eq.1)  write(*,*) 'int_vol_magne_co'
-      call int_vol_solenoid_co(FEM_prm%npoint_poisson_int,              &
-     &    SGS_param%ifilter_final, mesh%ele%istack_ele_smp,             &
-     &    iphys%exp_work%i_m_phi, mesh%node, mesh%ele, nod_fld,         &
-     &    jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l, rhs_tbl, FEM_elens,   &
-     &    Cdiff_magne, rhs_mat%fem_wk, rhs_mat%f_nl)
-!
-      if (cmt_param%iflag_c_magne .eq. id_SGS_commute_ON                &
-     &     .and. Fsf_bcs%sgs%ngrp_sf_dat .gt. 0) then
-        if (iflag_debug.eq.1) write(*,*) 'int_surf_sgs_velo_co_ele',    &
-                             iphys%exp_work%i_m_phi
-         call int_surf_sgs_velo_co_ele                                  &
-     &     (mesh%node, mesh%ele, mesh%surf, group%surf_grp, nod_fld,    &
-     &      jacs%g_FEM, jacs%jac_sf_grp, jacs%jac_sf_grp_l, rhs_tbl,    &
-     &      FEM_elens, Cdiff_magne, FEM_prm%npoint_poisson_int,         &
-     &      Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,         &
-     &      SGS_param%ifilter_final, iphys%exp_work%i_m_phi,            &
-     &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl)
-      end if
-!
-!
-!
-      if (   FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson           &
-     &  .or. FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)    &
-     & then
-        call cal_magnetic_co_imp(iphys%base%i_magne,                    &
-     &      ak_d_magne, dt, FEM_prm, SGS_param, cmt_param,              &
-     &      mesh%nod_comm, mesh%node, mesh%ele, conduct, cd_prop,       &
-     &      Bnod_bcs, iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, &
-     &      rhs_tbl, FEM_elens, Cdiff_magne, m_lump,                    &
-     &      Bmatrix, MG_vector, mhd_fem_wk, rhs_mat%fem_wk,             &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol, SR_sig, SR_r)
-      else
-        call cal_magnetic_co_exp(iphys%base%i_magne, FEM_prm,           &
-     &      mesh%nod_comm, mesh%node, mesh%ele,                         &
-     &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, m_lump, mhd_fem_wk,       &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld,         &
-     &      v_sol, SR_sig, SR_r)
-      end if
-!
-!
-      if (iflag_debug.eq.1)   write(*,*) 'set_boundary_vect magne'
-      call set_boundary_vect                                            &
-     &   (Bnod_bcs%nod_bc_b, iphys%base%i_magne, nod_fld)
-!
-      call vector_send_recv(iphys%base%i_magne, mesh%nod_comm,          &
-     &                      nod_fld, v_sol, SR_sig, SR_r)
-      call scalar_send_recv(iphys%base%i_mag_p, mesh%nod_comm,          &
-     &                      nod_fld, v_sol, SR_sig, SR_r)
-!
-      end subroutine cal_magnetic_co
-!
-! ----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine cal_magnetic_co_outside                                &
-     &         (FEM_prm, SGS_param, cmt_param, mesh, insulate, group,   &
-     &          Bnod_bcs, Fsf_bcs, iphys, jacs, rhs_tbl, FEM_elens,     &
-     &          Cdiff_magne, mlump_ins, mhd_fem_wk, rhs_mat, nod_fld,   &
-     &          v_sol, SR_sig, SR_r)
-!
-      use set_boundary_scalars
-      use nod_phys_send_recv
-      use int_vol_solenoid_correct
-      use int_surf_grad_sgs
-      use cal_sol_vector_correct
-      use cal_multi_pass
-      use cal_sol_vector_co_crank
-!
-      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
-      type(SGS_model_control_params), intent(in) :: SGS_param
-      type(commutation_control_params), intent(in) :: cmt_param
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) ::   group
-      type(field_geometry_data), intent(in) :: insulate
-      type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
-      type(potential_surf_bc_type), intent(in) :: Fsf_bcs
-      type(phys_address), intent(in) :: iphys
-      type(jacobians_type), intent(in) :: jacs
-      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_model_coefficient), intent(in) :: Cdiff_magne
-      type(lumped_mass_matrices), intent(in) :: mlump_ins
-!
-      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
-      type(phys_data), intent(inout) :: nod_fld
-      type(vectors_4_solver), intent(inout) :: v_sol
-      type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_real_buffer), intent(inout) :: SR_r
-!
-!
-      call reset_ff_smps(mesh%node, rhs_mat%f_l, rhs_mat%f_nl)
-!
-      call int_vol_solenoid_co                                          &
-     &   (FEM_prm%npoint_poisson_int, SGS_param%ifilter_final,          &
-     &    insulate%istack_ele_fld_smp, iphys%base%i_mag_p,              &
-     &    mesh%node, mesh%ele, nod_fld,                                 &
-     &    jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l, rhs_tbl, FEM_elens,   &
-     &    Cdiff_magne, rhs_mat%fem_wk, rhs_mat%f_nl)
-!
-      if (cmt_param%iflag_c_magne .eq. id_SGS_commute_ON                &
-     &     .and. Fsf_bcs%sgs%ngrp_sf_dat .gt. 0) then
-        if (iflag_debug.eq.1) write(*,*) 'int_surf_sgs_velo_co_ele',    &
-                             iphys%exp_work%i_m_phi
-         call int_surf_sgs_velo_co_ele                                  &
-     &     (mesh%node, mesh%ele, mesh%surf, group%surf_grp, nod_fld,    &
-     &      jacs%g_FEM, jacs%jac_sf_grp, jacs%jac_sf_grp_l, rhs_tbl,    &
-     &      FEM_elens, Cdiff_magne, FEM_prm%npoint_poisson_int,         &
-     &      Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,         &
-     &      SGS_param%ifilter_final, iphys%exp_work%i_m_phi,            &
-     &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl)
-      end if
-!
-!
-      call cal_multi_pass_4_vector_ff                                   &
-     &   (insulate%istack_ele_fld_smp, FEM_prm, mlump_ins,              &
-     &    mesh%nod_comm, mesh%node, mesh%ele,                           &
-     &    jacs%g_FEM, jacs%jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,        &
-     &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,                    &
-     &    v_sol, SR_sig, SR_r)
-!
-      call cal_sol_magne_insulate                                       &
-     &   (nod_fld%n_point, insulate%istack_inter_fld_smp,               &
-     &    insulate%numnod_fld, insulate%inod_fld, rhs_mat%f_l%ff,       &
-     &    nod_fld%ntot_phys, iphys%base%i_magne, nod_fld%d_fld)
-!
-      call set_boundary_vect                                            &
-     &   (Bnod_bcs%nod_bc_b, iphys%base%i_magne, nod_fld)
-!
-      call vector_send_recv(iphys%base%i_magne, mesh%nod_comm,          &
-     &                      nod_fld, v_sol, SR_sig, SR_r)
-!
-      end subroutine cal_magnetic_co_outside
-!
-! -----------------------------------------------------------------------
-!
-      end module cal_magnetic_pre
+      end module cal_magnetic_field_pre

@@ -1,8 +1,3 @@
-!
-!     module int_sk_4_fixed_boundary
-!
-!      Written by H. Matsui on Oct., 2005
-!
 !>@file   int_sk_4_fixed_boundary.f90
 !!@brief  module int_sk_4_fixed_boundary
 !!

@@ -195,7 +195,8 @@
      &          n_tensor, n_int, wk_cor)
 !
       use int_vol_rms_dynamic_smp
-      use int_vol_rms_dynamic_grpsmp
+      use int_vol_rms_dynamic_gsmp_l
+      use int_vol_rms_dynamic_gsmp_q
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -204,7 +205,7 @@
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(layering_tbl), intent(in) :: layer_tbl
-      integer (kind = kint), intent(in) :: n_tensor, n_int
+      integer(kind = kint),  intent(in) :: n_tensor, n_int
 !
       type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
@@ -243,7 +244,7 @@
       else
 !
         if (ele%nnod_4_ele .eq. num_t_quad) then
-          call int_vol_rms_dynamic_grpsmp_q(node%numnod,                &
+          call s_int_vol_rms_dynamic_grpsmp_q(node%numnod,              &
      &      ele%numele, ele%ie, ele%interior_ele, n_tensor,             &
      &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
      &      g_FEM%owe3d, jac_3d_q%ntot_int, n_int, jac_3d_q%xjac,       &
@@ -256,7 +257,7 @@
      &      wk_cor%ncomp_dble, wk_cor%ave_l_smp, wk_cor%rms_l_smp,      &
      &      wk_cor%ave_l, wk_cor%rms_l, wk_cor%ave_w, wk_cor%rms_w)
         else
-          call int_vol_rms_dynamic_grpsmp_l(node%numnod,                &
+          call s_int_vol_rms_dynamic_grpsmp_l(node%numnod,              &
      &      ele%numele, ele%ie, ele%interior_ele, n_tensor,             &
      &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
      &      g_FEM%owe3d, jac_3d_l%ntot_int, n_int, jac_3d_l%xjac,       &
@@ -324,7 +325,8 @@
      &          n_tensor, n_int, ave_s, ave_g, wk_cor)
 !
       use t_work_layer_correlate
-      use int_vol_cor_dynamic_smp
+      use int_vol_cor_dynamic_smp_l
+      use int_vol_cor_dynamic_smp_q
       use int_vol_layer_cor_grpsmp_q
       use int_vol_layer_cor_grpsmp_l
 !

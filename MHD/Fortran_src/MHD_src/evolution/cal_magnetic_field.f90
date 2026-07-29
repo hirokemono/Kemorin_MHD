@@ -244,7 +244,8 @@
      &          Bmatrix, Fmatrix, ak_d_magne, MGCG_WK, FEM_SGS_wk,      &
      &          mhd_fem_wk, rhs_mat, fem_sq, nod_fld, m_SR)
 !
-      use cal_magnetic_pre
+      use cal_magnetic_field_pre
+      use cal_magnetic_field_co
       use cal_sol_pressure_MHD
       use init_4_sol_potentials
       use int_rms_div_MHD
@@ -302,8 +303,8 @@
      &    dt, cd_prop%coef_mag_p, nod_fld%ntot_phys,                    &
      &    iphys%exp_work%i_m_phi, iphys%base%i_mag_p, nod_fld%d_fld)
 !
-      if (iflag_debug.eq.1) write(*,*) 'cal_magnetic_field_pre'
-      call cal_magnetic_field_pre(ak_d_magne, dt, FEM_prm,              &
+      if (iflag_debug.eq.1) write(*,*) 'cal_magnetic_pre'
+      call cal_magnetic_pre(ak_d_magne, dt, FEM_prm,                    &
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
      &    mesh, conduct, group, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs,    &
      &    iphys, iphys_LES, iphys_ele_base, ele_fld,                    &
