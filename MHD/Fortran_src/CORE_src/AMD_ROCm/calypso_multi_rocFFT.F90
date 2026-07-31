@@ -19,7 +19,7 @@
 !!      subroutine calypso_forward_rocFFT_r2r(fwd_plan, fwd_wk_info,    &
 !!     &          Ncomp, aNfft, Nfft_r, X_rocFFT, Nbytes, data_ptr)
 !!      subroutine calypso_fwd_OpenMP_rocFFT(fwd_plan, fwd_wk_info,     &
-!!     &                                     Ncomp, Nfft_r, X_rocFFT)
+!!     &         Ncomp, aNfft, Nfft_r, X_rocFFT)
 !!        type(c_ptr), intent(in), target :: fwd_plan
 !!        type(c_ptr), intent(in), target :: fwd_wk_info
 !!        integer(c_size_t), intent(in) :: Ncomp, Nfft_r, Nfft_c
@@ -229,11 +229,12 @@
 ! ------------------------------------------------------------------
 !
       subroutine calypso_fwd_OpenMP_rocFFT(fwd_plan, fwd_wk_info,       &
-     &                                     Ncomp, Nfft_r, X_rocFFT)
+     &         Ncomp, aNfft, Nfft_r, X_rocFFT)
 !
       type(c_ptr), intent(in), target :: fwd_plan
       type(c_ptr), intent(in), target :: fwd_wk_info
       integer(c_size_t), intent(in) :: Ncomp, Nfft_r
+      real(kind = kreal), intent(in) :: aNfft
 !
       real(kind = kreal), intent(inout), target                         &
      &                   :: X_rocFFT(Nfft_r*Ncomp)
@@ -247,6 +248,12 @@
 !$OMP target update from(X_rocFFT)
 !$OMP end target data
 !$OMP target exit data map(delete:X_rocFFT)
+!
+!$OMP target teams distribute parallel do
+      do i = 1, Nfft_r*Ncomp
+        X_rocFFT(i) = aNfft * X_rocFFT(i)
+      end do
+!$OMP end target teams distribute parallel do
 !
       end subroutine calypso_fwd_OpenMP_rocFFT
 !
