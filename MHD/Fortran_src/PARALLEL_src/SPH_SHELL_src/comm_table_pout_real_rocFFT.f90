@@ -8,11 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine set_comm_item_pout_real_rocFFT(nnod_rtp, nnod_rt,    &
-!!     &          irev_sr_rtp, Nfft_r, aNfft, comm_sph_FFT)
+!!     &          irev_sr_rtp, Nfft_r, comm_sph_FFT)
 !!        integer(kind = kint), intent(in) :: nnod_rtp
 !!        integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
 !!        integer(kind = kint), intent(in) :: Nfft_r, nnod_rt
-!!        real(kind = kreal), intent(in) :: aNfft
 !!        type(comm_tbl_from_FFTW), intent(inout) :: comm_sph_FFT
 !!
 !!      subroutine pout_real_rocFFT_all_to_send(nnod_rt, Nfft_r,        &
@@ -62,13 +61,12 @@
 ! ------------------------------------------------------------------
 !
       subroutine set_comm_item_pout_real_rocFFT(nnod_rtp, nnod_rt,      &
-     &          irev_sr_rtp, Nfft_r, aNfft, comm_sph_FFT)
+     &          irev_sr_rtp, Nfft_r, comm_sph_FFT)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
 !
       integer(kind = kint), intent(in) :: Nfft_r, nnod_rt
-      real(kind = kreal), intent(in) :: aNfft
 !
       type(comm_tbl_from_FFTW), intent(inout) :: comm_sph_FFT
 !
@@ -80,7 +78,7 @@
         if(ic_send .le. comm_sph_FFT%ntot_item) then
           comm_sph_FFT%kl_fftw(ic_send) = j
           comm_sph_FFT%m_fftw(ic_send) =  1
-          comm_sph_FFT%cnrm_sr_rtp(ic_send) = aNfft * ru
+          comm_sph_FFT%cnrm_sr_rtp(ic_send) = ru
         end if
       end do
 !
@@ -92,7 +90,7 @@
           if(ic_send .le. comm_sph_FFT%ntot_item) then
             comm_sph_FFT%kl_fftw(ic_send) =  j
             comm_sph_FFT%m_fftw(ic_send) =   m
-            comm_sph_FFT%cnrm_sr_rtp(ic_send) = two * aNfft * ru
+            comm_sph_FFT%cnrm_sr_rtp(ic_send) = two * ru
           end if
 !
           is_rtp = j + (2*m-1) * nnod_rt
@@ -100,7 +98,7 @@
           if(is_send .le. comm_sph_FFT%ntot_item) then
             comm_sph_FFT%kl_fftw(is_send) =  j
             comm_sph_FFT%m_fftw(is_send) =  -m
-            comm_sph_FFT%cnrm_sr_rtp(is_send) = - two * aNfft * ru
+            comm_sph_FFT%cnrm_sr_rtp(is_send) = - two * ru
           end if
         end do
       end do
@@ -112,7 +110,7 @@
         if(ic_send .le. comm_sph_FFT%ntot_item) then
           comm_sph_FFT%kl_fftw(ic_send) = j
           comm_sph_FFT%m_fftw(ic_send) =  Nfft_r-1
-          comm_sph_FFT%cnrm_sr_rtp(ic_send) = aNfft * ru
+          comm_sph_FFT%cnrm_sr_rtp(ic_send) = ru
         end if
       end do
 !

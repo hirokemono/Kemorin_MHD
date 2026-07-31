@@ -125,14 +125,18 @@
      &    WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT,                         &
      &    WK_rocFFT%Nfft_c, WK_rocFFT%C_rocFFT,                         &
      &    rocFFT_fwd%Nbytes, WK_rocFFT%data_ptr)
+!$omp parallel workshare
+      WK_rocFFT%C_rocFFT(1:sph_rtp%istack_rtp_rt_smp(np_smp)*WK_rocFFT%Nfft_c*ncomp_fwd)     &
+     &   = WK_rocFFT%aNfft                                                 &
+     &  * WK_rocFFT%C_rocFFT(1:sph_rtp%istack_rtp_rt_smp(np_smp)*WK_rocFFT%Nfft_c*ncomp_fwd)
+!$omp end parallel workshare
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
 !      call pin_FFTW_fields_to_send                                     &
 !     &   (sph_rtp%nnod_rtp, comm_rtp%irev_sr,                          &
 !     &    sph_rtp%istack_rtp_rt_smp(np_smp), ncomp_fwd,                &
-!     &    WK_rocFFT%Nfft_c, WK_rocFFT%aNfft, WK_rocFFT%C_rocFFT(1),    &
-!     &     n_WS, WS)
+!     &    WK_rocFFT%Nfft_c, WK_rocFFT%C_rocFFT(1), n_WS, WS)
       call pin_FFTW_all_field_to_send                                   &
      &  (sph_rtp%istack_rtp_rt_smp(np_smp), ncomp_fwd,                  &
      &   int(WK_rocFFT%Nfft_c), WK_rocFFT%C_rocFFT(1), comm_sph_rocFFT, &
@@ -150,7 +154,7 @@
       use m_elapsed_labels_SPH_TRNS
       use calypso_multi_rocFFT
       use multi_pin_complex_rocFFT
-      use set_comm_table_prt_FFTW
+      use copy_sph_FFTW_from_recv
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp

@@ -160,7 +160,7 @@
      &   (sph_rtp%nnod_rtp, sph_rtp%istep_rtp,                          &
      &    sph_rtp%istack_rtp_rt_smp(np_smp),                            &
      &    comm_rtp%ntot_item_sr, comm_rtp%irev_sr,                      &
-     &    FFTW_f%Nfft_c, FFTW_f%aNfft, FFTW_f%comm_sph_FFTW)
+     &    FFTW_f%Nfft_c, FFTW_f%comm_sph_FFTW)
       flag_fft = .TRUE.
 !
       end subroutine init_prt_field_FFTW
@@ -235,13 +235,18 @@
      &        FFTW_f%X(ist_r+1), FFTW_f%C(ist_c+1))
         end do
 !$omp end parallel do
+!$omp parallel workshare
+        FFTW_f%C(1:sph_rtp%istack_rtp_rt_smp(np_smp)*FFTW_f%Nfft_c)     &
+     &   = FFTW_f%aNfft                                                 &
+     &    * FFTW_f%C(1:sph_rtp%istack_rtp_rt_smp(np_smp)*FFTW_f%Nfft_c)
+!$omp end parallel workshare
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
 !        call copy_prt_comp_FFTW_to_send                                &
 !     &     (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                    &
 !     &      sph_rtp%istack_rtp_rt_smp(np_smp), ncomp_fwd,              &
-!     &      FFTW_f%Nfft_c, FFTW_f%aNfft, FFTW_f%C(1), n_WS, WS)
+!     &      FFTW_f%Nfft_c, FFTW_f%C(1), n_WS, WS)
         call copy_1comp_FFTW_to_send                                    &
      &     (nd, sph_rtp%istack_rtp_rt_smp(np_smp),                      &
      &      ncomp_fwd, FFTW_f%Nfft_c, FFTW_f%C(1),                      &
@@ -257,7 +262,7 @@
      &          ncomp_bwd, n_WR, WR, X_rtp, FFTW_f, flag_FFT)
 !
       use copy_field_smp
-      use set_comm_table_prt_FFTW
+      use copy_sph_FFTW_from_recv
       use copy_rtp_data_to_FFTPACK
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -279,7 +284,7 @@
       flag_FFT = .TRUE.
       do nd = 1, ncomp_bwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
-        call copy_FFTW_comp_from_recv                                   &
+        call copy_prt_FFTW_comp_from_recv                               &
      &     (nd, sph_rtp%nnod_rtp, sph_rtp%istep_rtp,                    &
      &      sph_rtp%istack_rtp_rt_smp(np_smp), comm_rtp%irev_sr,        &
      &      ncomp_bwd, n_WR, WR, FFTW_f%Nfft_c, FFTW_f%C(1))

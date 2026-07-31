@@ -125,6 +125,11 @@
      &    WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT,                         &
      &    WK_rocFFT%Nfft_c, WK_rocFFT%C_rocFFT,                         &
      &    rocFFT_fwd%Nbytes, WK_rocFFT%data_ptr)
+!$omp parallel workshare
+      WK_rocFFT%C_rocFFT(1:sph_rtp%istack_rtp_rt_smp(np_smp)*WK_rocFFT%Nfft_c*ncomp_fwd)     &
+     &   = WK_rocFFT%aNfft                                                 &
+     &  * WK_rocFFT%C_rocFFT(1:sph_rtp%istack_rtp_rt_smp(np_smp)*WK_rocFFT%Nfft_c*ncomp_fwd)
+!$omp end parallel workshare
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
 !   normalization

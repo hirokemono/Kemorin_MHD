@@ -174,8 +174,7 @@
      &   (comm_rtp%ntot_item_sr, OFFTW_d%comm_FFTW)
       call set_comm_item_pout_OMP_FFTW                                  &
      &   (sph_rtp%nnod_rtp, sph_rtp%istack_rtp_rt_smp(np_smp),          &
-     &    comm_rtp%irev_sr, OFFTW_d%Nfft_c, OFFTW_d%aNfft,              &
-     &    OFFTW_d%comm_FFTW)
+     &    comm_rtp%irev_sr, OFFTW_d%Nfft_c, OFFTW_d%comm_FFTW)
       flag_fft = .TRUE.
 !
       end subroutine init_sph_domain_OMP_FFTW
@@ -259,6 +258,11 @@
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
         call dfftw_execute_dft_r2c(OFFTW_d%plan_fwd,                    &
       &                            OFFTW_d%X, OFFTW_d%C)
+!$omp parallel workshare
+        OFFTW_d%C(1:sph_rtp%istack_rtp_rt_smp(np_smp)*OFFTW_d%Nfft_c)   &
+     &   = OFFTW_d%aNfft                                                &
+     &  * OFFTW_d%C(1:sph_rtp%istack_rtp_rt_smp(np_smp)*OFFTW_d%Nfft_c)
+!$omp end parallel workshare
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
 !   normalization
