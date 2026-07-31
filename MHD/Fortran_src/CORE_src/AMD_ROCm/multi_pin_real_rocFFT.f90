@@ -106,14 +106,14 @@
 !
         start = OMP_GET_WTIME()
         call calypso_forward_rocFFT_r2r                                 &
-     &     (fwd%rocFFT_plan, fwd%rocFFT_wk_info,                        &
-     &      fwd%Ncomp, WK_fft%Nfft_r, WK_fft%X_rocFFT,                  &
+     &     (fwd%rocFFT_plan, fwd%rocFFT_wk_info, fwd%Ncomp,             &
+     &      WK_fft%aNfft, WK_fft%Nfft_r, WK_fft%X_rocFFT,               &
      &      fwd%Nbytes, WK_fft%data_ptr)
         elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call norm_prt_from_fwd_rocFFT(int(fwd%Ncomp), WK_fft%aNfft,     &
-     &      int(WK_fft%NFFT_r), WK_fft%X_rocFFT(1),                     &
+        call norm_prt_from_fwd_rocFFT                                   &
+     &     (int(fwd%Ncomp), int(WK_fft%NFFT_r), WK_fft%X_rocFFT(1),     &
      &      int(fwd%Nfft), X(1,1))
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
@@ -179,7 +179,7 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
-      integer(kind = kint) :: nd, i, j
+      integer(kind = kint_gl) :: i, j, nd
 !
 !
         start = OMP_GET_WTIME()
@@ -201,11 +201,15 @@
         call calypso_fwd_OpenMP_rocFFT                                  &
      &     (fwd%rocFFT_plan, fwd%rocFFT_wk_info,                        &
      &      fwd%Ncomp, WK_fft%Nfft_r, WK_fft%X_rocFFT(1))
+!$omp parallel workshare
+        WK_fft%X_rocFFT(1:WK_fft%NFFT_r*fwd%Ncomp)                      &
+     &     = WK_fft%aNfft * WK_fft%X_rocFFT(1:WK_fft%NFFT_r*fwd%Ncomp)
+!$omp end parallel workshare
         elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call norm_prt_from_fwd_rocFFT(int(fwd%Ncomp), WK_fft%aNfft,     &
-     &      int(WK_fft%NFFT_r), WK_fft%X_rocFFT(1),                     &
+        call norm_prt_from_fwd_rocFFT                                   &
+     &     (int(fwd%Ncomp), int(WK_fft%NFFT_r), WK_fft%X_rocFFT(1),     &
      &      int(fwd%Nfft), X(1,1))
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
@@ -226,7 +230,7 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
-      integer(kind = kint) :: nd, i, j
+      integer(kind = kint_gl) :: i, j, nd
 !
 !
         start = OMP_GET_WTIME()

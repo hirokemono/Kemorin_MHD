@@ -17,7 +17,7 @@
 !!        complex(kind = kreal), intent(inout), target                  &
 !!     &                   :: C_rocFFT(Nfft_c*Ncomp)
 !!      subroutine calypso_forward_rocFFT_r2r(fwd_plan, fwd_wk_info,    &
-!!     &          Ncomp, Nfft_r, X_rocFFT, Nbytes, data_ptr)
+!!     &          Ncomp, aNfft, Nfft_r, X_rocFFT, Nbytes, data_ptr)
 !!      subroutine calypso_fwd_OpenMP_rocFFT(fwd_plan, fwd_wk_info,     &
 !!     &                                     Ncomp, Nfft_r, X_rocFFT)
 !!        type(c_ptr), intent(in), target :: fwd_plan
@@ -118,7 +118,7 @@
      &                   :: C_rocFFT(Nfft_c*Ncomp)
       type(c_ptr), intent(inout) :: data_ptr
 !
-      integer(kind = kint) :: i
+      integer(kind = kint_gl) :: i
 !
 !
       call hipCheck(hipMemcpy(data_ptr, c_loc(X_rocFFT(1)),             &
@@ -169,16 +169,19 @@
 ! ------------------------------------------------------------------
 !
       subroutine calypso_forward_rocFFT_r2r(fwd_plan, fwd_wk_info,      &
-     &          Ncomp, Nfft_r, X_rocFFT, Nbytes, data_ptr)
+     &          Ncomp, aNfft, Nfft_r, X_rocFFT, Nbytes, data_ptr)
 !
       type(c_ptr), intent(in), target :: fwd_plan
       type(c_ptr), intent(in), target :: fwd_wk_info
       integer(c_size_t), intent(in) :: Ncomp, Nfft_r
       integer(c_size_t), intent(in) :: Nbytes
+      real(kind = kreal), intent(in) :: aNfft
 !
       real(kind = kreal), intent(inout), target                         &
      &                   :: X_rocFFT(Nfft_r*Ncomp)
       type(c_ptr), intent(inout) :: data_ptr
+!
+      integer(kind = kint_gl) :: i
 !
 !
       call hipCheck(hipMemcpy(data_ptr, c_loc(X_rocFFT(1)),             &
@@ -188,6 +191,12 @@
       call hipCheck(hipDeviceSynchronize())
       call hipCheck(hipMemcpy(c_loc(X_rocFFT(1)), data_ptr,             &
      &                        Nbytes, hipMemcpyDeviceToHost))
+!
+!$OMP target teams distribute parallel do
+      do i = 1, Nfft_r*Ncomp
+        X_rocFFT(i) = aNfft * X_rocFFT(i)
+      end do
+!$OMP end target teams distribute parallel do
 !
       end subroutine calypso_forward_rocFFT_r2r
 !

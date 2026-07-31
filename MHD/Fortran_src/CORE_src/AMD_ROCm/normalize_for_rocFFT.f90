@@ -8,16 +8,14 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine norm_rtp_from_fwd_rocFFT                             &
-!!     &         (Ncomp, aNfft, Nfft_r, X_FFT, Nfft, X)
+!!      subroutine norm_rtp_from_fwd_rocFFT(Ncomp, Nfft_r, X_FFT,       &
+!!     &                                    Nfft, X)
 !!        integer(kind = kint), intent(in) :: Ncomp, Nfft, Nfft_r
-!!        real(kind = kreal), intent(in) :: aNfft
 !!        real(kind = kreal), intent(in) :: X_FFT(Ncomp*Nfft_r)
 !!        real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
-!!      subroutine norm_prt_from_fwd_rocFFT(Ncomp, aNfft,               &
-!!     &                                    NFFT_r, X_FFT, Nfft, X)
+!!      subroutine norm_prt_from_fwd_rocFFT(Ncomp, NFFT_r, X_FFT,       &
+!!     &                                    Nfft, X)
 !!        integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_r
-!!        real(kind = kreal), intent(in) :: aNfft
 !!        real(kind = kreal), intent(in) :: X_FFT(NFFT_r,Ncomp)
 !!        real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
 !!
@@ -46,32 +44,32 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine norm_rtp_from_fwd_rocFFT                               &
-     &         (Ncomp, aNfft, Nfft_r, X_FFT, Nfft, X)
+      subroutine norm_rtp_from_fwd_rocFFT(Ncomp, Nfft_r, X_FFT,         &
+     &                                    Nfft, X)
 !
       integer(kind = kint), intent(in) :: Ncomp, Nfft, Nfft_r
-      real(kind = kreal), intent(in) :: aNfft
       real(kind = kreal), intent(in) :: X_FFT(Ncomp*Nfft_r)
 !
       real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
 !
       integer(kind = kint) :: i, nd, inum
 !
+!
 !$omp parallel
 !$omp do private(nd,inum)
       do nd = 1, Ncomp
         inum = nd
-        X(nd,1) = aNfft * X_FFT(2*inum-1)
+        X(nd,1) = X_FFT(2*inum-1)
         inum = nd + (Nfft_r/2-1) * Ncomp
-        X(nd,2) = aNfft * X_FFT(2*inum-1)
+        X(nd,2) = X_FFT(2*inum-1)
       end do
 !$omp end do nowait
       do i = 2, Nfft_r/2-1
 !$omp do private(nd,inum)
         do nd = 1, Ncomp
           inum = nd + (i-1) * Ncomp
-          X(nd,2*i-1) =  two * aNfft * X_FFT(2*inum-1)
-          X(nd,2*i  ) = -two * aNfft * X_FFT(2*inum  )
+          X(nd,2*i-1) =  two * X_FFT(2*inum-1)
+          X(nd,2*i  ) = -two * X_FFT(2*inum  )
         end do
 !$omp end do nowait
       end do
@@ -81,24 +79,24 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine norm_prt_from_fwd_rocFFT(Ncomp, aNfft,                 &
-     &                                    NFFT_r, X_FFT, Nfft, X)
+      subroutine norm_prt_from_fwd_rocFFT(Ncomp, NFFT_r, X_FFT,         &
+     &                                    Nfft, X)
 !
       integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_r
-      real(kind = kreal), intent(in) :: aNfft
       real(kind = kreal), intent(in) :: X_FFT(NFFT_r,Ncomp)
 !
       real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
 !
       integer(kind = kint) :: i, nd
 !
+!
 !$omp parallel do private(i,nd)
       do nd = 1, Ncomp
-        X(1,nd) = aNfft * real(X_FFT(1,       nd))
-        X(2,nd) = aNfft * real(X_FFT(NFFT_r-1,nd))
+        X(1,nd) = real(X_FFT(1,       nd))
+        X(2,nd) = real(X_FFT(NFFT_r-1,nd))
         do i = 2, NFFT_r/2-1
-          X(2*i-1,nd) =  two * aNfft * X_FFT(2*i-1,nd)
-          X(2*i,  nd) = -two * aNfft * X_FFT(2*i,  nd)
+          X(2*i-1,nd) =  two * X_FFT(2*i-1,nd)
+          X(2*i,  nd) = -two * X_FFT(2*i,  nd)
         end do
       end do
 !$omp end parallel do
