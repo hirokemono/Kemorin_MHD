@@ -286,17 +286,17 @@
       write(*,*) 'Save FFT test data into ', trim(file_name)
       open(15,file=file_name)
       write(15,'(a)') '# Num_of_field, Nlength'
-      write(15,'(2i5)')  ftst%nfld, ftst%ngrd
+      write(15,'(2i8)')  ftst%nfld, ftst%ngrd
       write(15,'(a)') '# Num_of_threads'
-      write(15,'(2i5)')  np_smp
+      write(15,'(i8)')  np_smp
       do j = 1, ftst%nfld
-          write(15,'(a,i5)') 'Field Index:', j
+          write(15,'(a,i8)') 'Field Index:', j
           write(15,'(a)')                                               &
      &         'index, mode, Original, Fwd_Back_Trans, Spectr'
         do i = 1, ftst%ngrd
           k = ((i+1)/2-1) * (-1)**mod((i-ione),itwo)
           if(i .eq. 2) k = (ftst%ngrd + 1) / 2
-          write(15,'(2i5,1p3E25.15e3)')                                 &
+          write(15,'(2i8,1p3E25.15e3)')                                 &
      &          i, k, ftst%org(j,i), ftst%f_x(j,i), ftst%s_k(j,i)
         end do
       end do

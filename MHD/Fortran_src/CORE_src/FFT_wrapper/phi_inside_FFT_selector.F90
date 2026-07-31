@@ -31,7 +31,7 @@
 !!        integer(kind = kint), intent(in) :: iflag_FFT
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !!        integer(kind = kint), intent(in) :: M, Nfft
-!!        real(kind = kreal), intent(inout) :: X(M, Nfft)
+!!        real(kind = kreal), intent(inout) :: X(Nfft,M)
 !!        type(working_FFTs), intent(inout) :: WKS
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
@@ -53,7 +53,7 @@
 !!        integer(kind = kint), intent(in) :: iflag_FFT
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !!        integer(kind = kint), intent(in) :: M, Nfft
-!!        real(kind = kreal), intent(inout) :: X(M,Nfft)
+!!        real(kind = kreal), intent(inout) :: X(Nfft,M)
 !!        type(working_FFTs), intent(inout) :: WKS
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
@@ -278,7 +278,7 @@
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
 !
-      real(kind = kreal), intent(inout) :: X(M, Nfft)
+      real(kind = kreal), intent(inout) :: X(Nfft,M)
       type(working_FFTs), intent(inout) :: WKS
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
@@ -340,7 +340,7 @@
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
 !
-      real(kind = kreal), intent(inout) :: X(M,Nfft)
+      real(kind = kreal), intent(inout) :: X(Nfft,M)
       type(working_FFTs), intent(inout) :: WKS
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
@@ -367,7 +367,6 @@
         call calypso_multi_pin_bwd_FFTW3(Nsmp, Nstacksmp, M, Nfft, X,   &
      &      WKS%WK_MUL_FFTW, elapsed_fft, elapsed_cpy)
       else if(abs(iflag_FFT) .eq. (iflag_FFTW + iflag_single_fft)) then
-        write(*,*) 'calypso_single_pin_bwd_FFTW3'
         call calypso_single_pin_bwd_FFTW3(Nsmp, Nstacksmp, M,           &
      &                                    Nfft, X, WKS%WK_FFTW,         &
      &                                    elapsed_fft, elapsed_cpy)

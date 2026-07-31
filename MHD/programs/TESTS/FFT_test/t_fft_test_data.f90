@@ -61,7 +61,7 @@
       type(fft_test_data), intent(inout) :: ftst
 !
       real(kind = kreal) :: pi
-      integer(kind = kint) :: i, nd
+      integer(kind = kint) :: i, nd, nd2
 !
 !
       ftst%elapsed(1:8) = 0.0d0
@@ -142,6 +142,7 @@
 !
       if(ftst%nfld .lt. 9) return
       do nd = 9, ftst%nfld
+        nd2 = 1 + mod(nd-1,8)
         do i = 1, ftst%ngrd
           ftst%org(nd,i) = 2.0d0 * ftst%org(nd,i) - 1.0d0
         end do
@@ -286,17 +287,17 @@
       write(*,*) 'Save FFT test data into ', trim(file_name)
       open(15,file=file_name)
       write(15,'(a)') '# Num_of_field, Nlength'
-      write(15,'(2i5)')  ftst%nfld, ftst%ngrd
+      write(15,'(2i8)')  ftst%nfld, ftst%ngrd
       write(15,'(a)') '# Num_of_threads'
-      write(15,'(2i5)')  np_smp
+      write(15,'(i8)')  np_smp
       do j = 1, ftst%nfld
-          write(15,'(a,i5)') 'Field Index:', j
+          write(15,'(a,i8)') 'Field Index:', j
           write(15,'(a)')                                               &
      &         'index, mode, Original, Fwd_Back_Trans, Spectr'
         do i = 1, ftst%ngrd
           k = ((i+1)/2-1) * (-1)**mod((i-ione),itwo)
           if(i .eq. 2) k = (ftst%ngrd + 1) / 2
-          write(15,'(2i5,1p3E25.15e3)')                                 &
+          write(15,'(2i8,1p3E25.15e3)')                                 &
      &          i, k, ftst%org(j,i), ftst%f_x(j,i), ftst%s_k(j,i)
         end do
       end do
