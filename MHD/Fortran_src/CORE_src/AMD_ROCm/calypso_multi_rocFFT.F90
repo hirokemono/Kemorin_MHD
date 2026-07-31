@@ -239,6 +239,9 @@
       real(kind = kreal), intent(inout), target                         &
      &                   :: X_rocFFT(Nfft_r*Ncomp)
 !
+      integer(kind = kint_gl) :: i
+!
+!
 !$OMP target enter data map(to:X_rocFFT)
 !$OMP target data use_device_addr(X_rocFFT)
 !      call rocblasCheck(rocblas_set_pointer_mode(rocblas_handle, 0))
