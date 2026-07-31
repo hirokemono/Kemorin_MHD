@@ -225,12 +225,13 @@
         start = OMP_GET_WTIME()
         call dfftw_execute_dft_r2c(plan_forward_smp(ip),                &
      &                             X_FFTW(1,ist+1), C_FFTW(1,ist+1))
+        call normalize_fwd_FFTW(aNfft, num, NFFT_c, C_FFTW(1,ist+1))
         ed_f = ed_f + OMP_GET_WTIME() - start
 !
 !   normalization
         start = OMP_GET_WTIME()
         call norm_swap_from_prt_fwd_FFTW                                &
-     &     (ist, num, Ncomp, NFFT_c, C_FFTW(1,ist+1), Nfft, aNfft, X)
+     &     (ist, num, Ncomp, NFFT_c, C_FFTW(1,ist+1), Nfft, X)
         ed_c = ed_c + OMP_GET_WTIME() - start
       end do
 !$omp end parallel do

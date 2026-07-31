@@ -241,6 +241,7 @@
      &         (sph_rtp, ncomp_fwd, n_WS, X_rtp, WS, OFFTW, flag_FFT)
 !
       use set_comm_table_rtp_OMP_FFTW
+      use normalize_for_FFTW
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
 !
@@ -253,9 +254,12 @@
       type(work_for_OpenMP_FFTW), intent(inout) :: OFFTW
       logical, intent(inout) :: flag_FFT
 !
+      integer(kind = kint) :: ncomp
+!
 !
       flag_FFT = .TRUE.
       if(ncomp_fwd .le. 0) return
+      ncomp = sph_rtp%istack_rtp_rt_smp(np_smp) * ncomp_fwd
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
       call copy_rtp_field_to_OMP_FFTW(ncomp_fwd,                        &
@@ -266,11 +270,8 @@
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
       call dfftw_execute_dft_r2c(OFFTW%plan_fwd,                        &
      &                            OFFTW%X, OFFTW%C)
-!$omp parallel workshare
-      OFFTW%C(1:sph_rtp%istack_rtp_rt_smp(np_smp)*OFFTW%Nfft_c*ncomp_fwd)     &
-     &   = OFFTW%aNfft                                                 &
-     &  * OFFTW%C(1:sph_rtp%istack_rtp_rt_smp(np_smp)*OFFTW%Nfft_c*ncomp_fwd)
-!$omp end parallel workshare
+      call normalize_fwd_OMP_FFTW(OFFTW%aNfft, ncomp, OFFTW%Nfft_c,     &
+     &                            OFFTW%C)
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
 !   normalization

@@ -172,6 +172,7 @@
      &          elapsed_fft, elapsed_cpy)
 !
       use normalize_for_OMP_FFTW
+      use normalize_for_FFTW
 !
       integer(kind = kint), intent(in) :: Ncomp, Nfft, Nfft_c
       integer(kind = fftw_plan), intent(in) :: plan_forward
@@ -187,11 +188,8 @@
 !
       st = OMP_GET_WTIME()
       call dfftw_execute_dft_r2c(plan_forward, X, C_FFTW)
+      call normalize_fwd_OMP_FFTW(aNfft, Ncomp, Nfft_c, C_FFTW)
       elapsed_fft = elapsed_fft + OMP_GET_WTIME() - st
-!
-!$omp parallel workshare
-      C_FFTW(1:Ncomp,1:Nfft_c) = aNfft * C_FFTW(1:Ncomp,1:Nfft_c)
-!$omp end parallel workshare
 !
 !   normalization
       st = OMP_GET_WTIME()

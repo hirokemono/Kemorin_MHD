@@ -124,12 +124,13 @@
         st_f = OMP_GET_WTIME()
         call dfftw_execute_dft_r2c(plan_forward_smp(ip),                &
      &                             X(1,ist+1), C_FFTW(1,ist+1))
+        call normalize_fwd_FFTW(aNfft, num, NFFT_c, C_FFTW(1,ist+1))
         ed_f = ed_f + OMP_GET_WTIME() - st_f
 !
 !   normalization
         ed_c = OMP_GET_WTIME() - st_c
         call norm_copy_from_prt_fwd_FFTW(num, NFFT_c, C_FFTW(1,ist+1),  &
-     &                                   Nfft, aNfft, X(1,ist+1))
+     &                                   Nfft, X(1,ist+1))
         ed_c = ed_c + OMP_GET_WTIME() - st_c
       end do
 !$omp end parallel do

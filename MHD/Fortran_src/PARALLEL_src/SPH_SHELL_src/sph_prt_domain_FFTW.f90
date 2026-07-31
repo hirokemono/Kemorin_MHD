@@ -201,6 +201,7 @@
       use copy_field_smp
       use set_comm_table_prt_FFTW
       use copy_rtp_data_to_FFTPACK
+      use normalize_for_FFTW
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
 !      type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -228,18 +229,16 @@
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
 !$omp parallel do  private(ip,ist,ist_r,ist_c)
         do ip = 1, np_smp
-          ist = sph_rtp%istack_rtp_rt_smp(ip-1) + 1
-          ist_r = FFTW_f%Nfft_r * (ist-1)
-          ist_c = FFTW_f%Nfft_c * (ist-1)
+          ist = sph_rtp%istack_rtp_rt_smp(ip-1)
+          ist_r = FFTW_f%Nfft_r * ist
+          ist_c = FFTW_f%Nfft_c * ist
           call dfftw_execute_dft_r2c(FFTW_f%plan_fwd(ip),               &
      &        FFTW_f%X(ist_r+1), FFTW_f%C(ist_c+1))
         end do
 !$omp end parallel do
-!$omp parallel workshare
-        FFTW_f%C(1:sph_rtp%istack_rtp_rt_smp(np_smp)*FFTW_f%Nfft_c)     &
-     &   = FFTW_f%aNfft                                                 &
-     &    * FFTW_f%C(1:sph_rtp%istack_rtp_rt_smp(np_smp)*FFTW_f%Nfft_c)
-!$omp end parallel workshare
+!
+        call normalize_fwd_OMP_FFTW(FFTW_f%aNfft,                       &
+     &      sph_rtp%istack_rtp_rt_smp(np_smp), FFTW_f%Nfft_c, FFTW_f%C)
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
