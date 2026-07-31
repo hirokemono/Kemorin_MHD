@@ -165,13 +165,9 @@
         start = OMP_GET_WTIME()
         call calypso_forward_rocFFT_r2c                                 &
      &     (fwd%rocFFT_plan, fwd%rocFFT_wk_info, fwd%Ncomp,             &
-     &      WK_fft%Nfft_r, WK_fft%X_rocFFT(1),                          &
-     &      WK_fft%Nfft_c, WK_fft%C_rocFFT(1),                          &
+     &      WK_fft%aNfft, WK_fft%Nfft_r, WK_fft%X_rocFFT(1),            &
+     &                    WK_fft%Nfft_c, WK_fft%C_rocFFT(1),            &
      &      fwd%Nbytes, WK_fft%data_ptr)
-!$omp parallel workshare
-        WK_fft%C_rocFFT(1:fwd%Ncomp*WK_fft%Nfft_c)                      &
-     &      = WK_fft%aNfft * WK_fft%C_rocFFT(1:fwd%Ncomp*WK_fft%Nfft_c)
-!$omp end parallel workshare
         elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
