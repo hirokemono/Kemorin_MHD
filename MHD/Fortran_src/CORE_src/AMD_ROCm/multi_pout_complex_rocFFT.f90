@@ -168,11 +168,15 @@
      &      WK_fft%Nfft_r, WK_fft%X_rocFFT(1),                          &
      &      WK_fft%Nfft_c, WK_fft%C_rocFFT(1),                          &
      &      fwd%Nbytes, WK_fft%data_ptr)
+!$omp parallel workshare
+        WK_fft%C_rocFFT(1:fwd%Ncomp*WK_fft%Nfft_c)                      &
+     &      = WK_fft%aNfft * WK_fft%C_rocFFT(1:fwd%Ncomp*WK_fft%Nfft_c)
+!$omp end parallel workshare
         elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
         start = OMP_GET_WTIME()
-        call norm_rtp_from_fwd_OMP_FFTW(int(fwd%Ncomp), WK_fft%aNfft,   &
-     &      int(WK_fft%NFFT_c), WK_fft%C_rocFFT(1),                     &
+        call norm_rtp_from_fwd_OMP_FFTW                                 &
+     &     (int(fwd%Ncomp), int(WK_fft%NFFT_c), WK_fft%C_rocFFT(1),     &
      &      int(fwd%Nfft), X(1,1))
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !

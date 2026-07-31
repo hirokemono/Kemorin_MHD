@@ -189,10 +189,13 @@
       call dfftw_execute_dft_r2c(plan_forward, X, C_FFTW)
       elapsed_fft = elapsed_fft + OMP_GET_WTIME() - st
 !
+!$omp parallel workshare
+      C_FFTW(1:Ncomp,1:Nfft_c) = aNfft * C_FFTW(1:Ncomp,1:Nfft_c)
+!$omp end parallel workshare
+!
 !   normalization
       st = OMP_GET_WTIME()
-      call norm_rtp_from_fwd_OMP_FFTW(Ncomp, aNfft, NFFT_c, C_FFTW,     &
-     &                                Nfft, X)
+      call norm_rtp_from_fwd_OMP_FFTW(Ncomp, NFFT_c, C_FFTW, Nfft, X)
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - st
 !
       end subroutine forward_mul_OMP_FFTW
