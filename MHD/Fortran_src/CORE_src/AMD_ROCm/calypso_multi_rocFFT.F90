@@ -121,6 +121,12 @@
       integer(kind = kint_gl) :: i
 !
 !
+!$OMP target teams distribute parallel do
+      do i = 1, Nfft_c*Ncomp
+        C_rocFFT(i) = aNfft * C_rocFFT(i)
+      end do
+!$OMP end target teams distribute parallel do
+!
       call hipCheck(hipMemcpy(data_ptr, c_loc(X_rocFFT(1)),             &
      &                        Nbytes, hipMemcpyHostToDevice))
       call rocfftCheck(rocfft_execute(fwd_plan, data_ptr,               &
@@ -128,12 +134,6 @@
       call hipCheck(hipDeviceSynchronize())
       call hipCheck(hipMemcpy(c_loc(C_rocFFT(1)), data_ptr,             &
      &                        Nbytes, hipMemcpyDeviceToHost))
-!
-!$OMP target teams distribute parallel do
-      do i = 1, Nfft_c*Ncomp
-        C_rocFFT(i) = aNfft * C_rocFFT(i)
-      end do
-!$OMP end target teams distribute parallel do
 !
       end subroutine calypso_forward_rocFFT_r2c
 !
@@ -184,6 +184,12 @@
       integer(kind = kint_gl) :: i
 !
 !
+!$OMP target teams distribute parallel do
+      do i = 1, Nfft_r*Ncomp
+        X_rocFFT(i) = aNfft * X_rocFFT(i)
+      end do
+!$OMP end target teams distribute parallel do
+!
       call hipCheck(hipMemcpy(data_ptr, c_loc(X_rocFFT(1)),             &
      &                        Nbytes, hipMemcpyHostToDevice))
       call rocfftCheck(rocfft_execute(fwd_plan, data_ptr,               &
@@ -191,12 +197,6 @@
       call hipCheck(hipDeviceSynchronize())
       call hipCheck(hipMemcpy(c_loc(X_rocFFT(1)), data_ptr,             &
      &                        Nbytes, hipMemcpyDeviceToHost))
-!
-!$OMP target teams distribute parallel do
-      do i = 1, Nfft_r*Ncomp
-        X_rocFFT(i) = aNfft * X_rocFFT(i)
-      end do
-!$OMP end target teams distribute parallel do
 !
       end subroutine calypso_forward_rocFFT_r2r
 !
@@ -242,6 +242,12 @@
       integer(kind = kint_gl) :: i
 !
 !
+!$OMP target teams distribute parallel do
+      do i = 1, Nfft_r*Ncomp
+        X_rocFFT(i) = aNfft * X_rocFFT(i)
+      end do
+!$OMP end target teams distribute parallel do
+!
 !$OMP target enter data map(to:X_rocFFT)
 !$OMP target data use_device_addr(X_rocFFT)
 !      call rocblasCheck(rocblas_set_pointer_mode(rocblas_handle, 0))
@@ -251,12 +257,6 @@
 !$OMP target update from(X_rocFFT)
 !$OMP end target data
 !$OMP target exit data map(delete:X_rocFFT)
-!
-!$OMP target teams distribute parallel do
-      do i = 1, Nfft_r*Ncomp
-        X_rocFFT(i) = aNfft * X_rocFFT(i)
-      end do
-!$OMP end target teams distribute parallel do
 !
       end subroutine calypso_fwd_OpenMP_rocFFT
 !

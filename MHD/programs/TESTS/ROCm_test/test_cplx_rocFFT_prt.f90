@@ -16,7 +16,7 @@
       implicit none
 !
       character(len=kchara) :: file_name = 'prt_rocFFT_test.dat'
-      real(kind = kreal) :: start, finish, elapsed(4)
+      real(kind = kreal) :: start, finish, elapsed(5)
 !
       type(fft_test_data) :: ft1
 !
@@ -37,7 +37,7 @@
       elapsed(1) = OMP_GET_WTIME() - start
 !
       elapsed(2:4) = zero
-      do icou = 1, n_loop
+      do icou = 1, n_loop+1
         if(mod(icou, 20) .eq. 0) write(*,*) 'loop count: ', icou
 !
         start = OMP_GET_WTIME()
@@ -59,7 +59,9 @@
 !   Backword transform
         call multi_pin_bwd_rocFFT_c2r(bwd, WK_fft, ft1%f_x,             &
      &                                elapsed(2), elapsed(3))
+        if(icou .eq. 1) elapsed(4) = elapsed(2)
       end do
+      elapsed(4) = elapsed(2) - elapsed(4)
 !
 !   Finalize
       start = OMP_GET_WTIME()
@@ -76,10 +78,11 @@
       write(*,'(a,i4)') 'Number of threads:  ', np_smp
       write(*, '(a,3i6)')                                               &
      &        "Num (point, field, loop): ", ngrid, n_field, n_loop
-      write(*, '("Time for Initialize: ",1pE16.6e3)') elapsed(1)
-      write(*, '("Time for rocFFT:     ",1pE16.6e3)') elapsed(2)
-      write(*, '("Time for Data copy:  ",1pE16.6e3)') elapsed(3)
-      write(*, '("Total FFT:           ",1pE16.6e3)')                   &
+      write(*, '("Time for Initialize:       ",1pE16.6e3)') elapsed(1)
+      write(*, '("Time for rocFFT:           ",1pE16.6e3)') elapsed(2)
+      write(*, '("Time for rocFFT w/o first: ",1pE16.6e3)') elapsed(4)
+      write(*, '("Time for Data copy:        ",1pE16.6e3)') elapsed(3)
+      write(*, '("Total FFT:                 ",1pE16.6e3)')             &
      &                           elapsed(2) + elapsed(3)
 !
       stop 'finish'
