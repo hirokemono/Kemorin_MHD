@@ -204,40 +204,35 @@
      &                                  :: C_FFTW(Nfft_c,Ncomp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
-      real(kind = kreal) :: start, ed_c, ed_f
+      real(kind = kreal) :: start
       integer(kind = kint) :: j, ip, ist, num
 !
 !
-      ed_c = 0.0d0
-      ed_f = 0.0d0
-!$omp parallel do private(j,ip,ist,num,start)                           &
-!$omp&            reduction(+:ed_c,ed_f)
+      start = OMP_GET_WTIME()
+!$omp parallel do private(j)
+      do j = 1, Ncomp
+        X_FFTW(1:Nfft,j) = X(j,1:Nfft)
+      end do
+!$omp end parallel do
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+!
+      start = OMP_GET_WTIME()
+!$omp parallel do private(ip,ist,num)
       do ip = 1, Nsmp
         ist = Nstacksmp(ip-1)
         num = Nstacksmp(ip) - ist
-!
-        start = OMP_GET_WTIME()
-        do j = ist+1, ist+num
-          X_FFTW(1:Nfft,j) = X(j,1:Nfft)
-        end do
-        ed_c = ed_c + OMP_GET_WTIME() - start
-!
-        start = OMP_GET_WTIME()
         call dfftw_execute_dft_r2c(plan_forward_smp(ip),                &
      &                             X_FFTW(1,ist+1), C_FFTW(1,ist+1))
-        call normalize_fwd_FFTW(aNfft, num, NFFT_c, C_FFTW(1,ist+1))
-        ed_f = ed_f + OMP_GET_WTIME() - start
-!
-!   normalization
-        start = OMP_GET_WTIME()
-        call norm_swap_from_prt_fwd_FFTW                                &
-     &     (ist, num, Ncomp, NFFT_c, C_FFTW(1,ist+1), Nfft, X)
-        ed_c = ed_c + OMP_GET_WTIME() - start
       end do
 !$omp end parallel do
+      elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
-      elapsed_fft = elapsed_fft + ed_f / dble(Nsmp)
-      elapsed_cpy = elapsed_cpy + ed_c / dble(Nsmp)
+!   normalization
+      start = OMP_GET_WTIME()
+      call normalize_fwd_OMP_FFTW(aNfft, Ncomp, NFFT_c, C_FFTW(1,1))
+      call swap_from_prt_fwd_OMP_FFTW(Ncomp, NFFT_c, C_FFTW(1,1),       &
+     &                                Nfft, X(1,1))
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       end subroutine multi_pout_fwd_FFTW3_smp
 !
@@ -259,38 +254,35 @@
      &                                  :: C_FFTW(Nfft_c,Ncomp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
-      real(kind = kreal) :: start, ed_c, ed_f
-      integer(kind = kint) :: i, ip, ist, ied, num
+      real(kind = kreal) :: start
+      integer(kind = kint) :: i, ip, ist, num
 !
 !
-      ed_c = 0.0d0
-      ed_f = 0.0d0
-!$omp parallel do private(i,ip,ist,num,start)                           &
-!$omp&            reduction(+:ed_c,ed_f)
+!   normalization
+      start = OMP_GET_WTIME()
+      call norm_swap_to_prt_bwd_OMP_FFTW(Ncomp, Nfft, X(1,1),           &
+     &                                   NFFT_c, C_FFTW(1,1))
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+!
+      start = OMP_GET_WTIME()
+!$omp parallel do private(i,ip,ist,num,start)
       do ip = 1, Nsmp
         ist = Nstacksmp(ip-1)
         num = Nstacksmp(ip) - ist
-!   normalization
-        start = OMP_GET_WTIME()
-        call norm_swap_to_prt_bwd_FFTW(ist, num, Ncomp, Nfft, X,        &
-     &                                 NFFT_c, C_FFTW(1,ist+1))
-        ed_c = ed_c + OMP_GET_WTIME() - start
-!
-        start = OMP_GET_WTIME()
         call dfftw_execute_dft_c2r(plan_backward_smp(ip),               &
      &                             C_FFTW(1,ist+1), X_FFTW(1,ist+1))
-        ed_f = ed_f + OMP_GET_WTIME() - start
-!
-        start = OMP_GET_WTIME()
-        do i = 1, Nfft
-          X(ist+1:ist+num,i) = X_FFTW(i,ist+1:ist+num)
-        end do
-        ed_c = ed_c + OMP_GET_WTIME() - start
       end do
 !$omp end parallel do
+      elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
-      elapsed_fft = elapsed_fft + ed_f / dble(Nsmp)
-      elapsed_cpy = elapsed_cpy + ed_c / dble(Nsmp)
+      start = OMP_GET_WTIME()
+!$omp parallel do
+      do i = 1, Nfft
+        X(1:Ncomp,i) = X_FFTW(i,1:Ncomp)
+      end do
+!$omp end parallel do
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+!
 !
       end subroutine multi_pout_bwd_FFTW3_smp
 !

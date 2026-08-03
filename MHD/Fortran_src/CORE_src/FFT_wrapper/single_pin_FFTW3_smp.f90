@@ -132,8 +132,8 @@
 !
 !   normalization
           start = OMP_GET_WTIME()
-          call norm_copy_from_prt_fwd_FFTW(ione, NFFT_c, C_FFTW(1,ip),  &
-     &                                     Nfft, X(1,j))
+          call copy_from_prt_fwd_fftw(ione, NFFT_c, C_FFTW(1,ip),       &
+     &                                Nfft, X(1,j))
           ed_c = ed_c + OMP_GET_WTIME() - start
         end do
       end do
