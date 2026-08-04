@@ -147,7 +147,7 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call multi_pout_RFFTMF_smp(Nsmp, Nstacksmp, M, Nfft, X,           &
+      call multi_pout_RFFTMF(Nsmp, Nstacksmp, M, Nfft, X,               &
      &    WK%X_FFTPACK5, WK%Mmax_smp, WK%lsave_FFTPACK,                 &
      &    WK%WSAVE_FFTPACK, WK%WORK_FFTPACK, elapsed_fft, elapsed_cpy)
 !
@@ -168,7 +168,7 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call multi_pout_RFFTMB_smp(Nsmp, Nstacksmp, M, Nfft, X,           &
+      call multi_pout_RFFTMB(Nsmp, Nstacksmp, M, Nfft, X,               &
      &    WK%X_FFTPACK5, WK%Mmax_smp, WK%lsave_FFTPACK,                 &
      &    WK%WSAVE_FFTPACK, WK%WORK_FFTPACK, elapsed_fft, elapsed_cpy)
 !
