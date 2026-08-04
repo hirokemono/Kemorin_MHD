@@ -61,7 +61,7 @@
       type(fft_test_data), intent(inout) :: ftst
 !
       real(kind = kreal) :: pi
-      integer(kind = kint) :: i, nd, nd2
+      integer(kind = kint) :: i, nd, nd2, imul
 !
 !
       ftst%elapsed(1:8) = 0.0d0
@@ -142,9 +142,10 @@
 !
       if(ftst%nfld .lt. 9) return
       do nd = 9, ftst%nfld
-        nd2 = 1 + mod(nd-1,8)
+        nd2 =  1 + mod(nd-1,8)
+        imul = 1 + nd / 8
         do i = 1, ftst%ngrd
-          ftst%org(nd,i) = 2.0d0 * ftst%org(nd,i) - 1.0d0
+          ftst%org(nd,i) = dble(imul) * ftst%org(nd2,i) - 1.0d0
         end do
       end do
 !

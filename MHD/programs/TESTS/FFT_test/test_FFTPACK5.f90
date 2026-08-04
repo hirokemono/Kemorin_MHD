@@ -27,8 +27,8 @@
 !
       character(len = kchara) :: title
 !
-      call init_FFT_mode_flags()
-      call check_FFT_mode_flags(6)
+!      call init_FFT_mode_flags()
+!      call check_FFT_mode_flags(6)
 !
 !
       write(*,'(a)') '-----  Test FFTPACK  -----'
