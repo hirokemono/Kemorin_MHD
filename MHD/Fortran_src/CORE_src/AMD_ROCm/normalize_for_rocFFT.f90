@@ -222,7 +222,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine copy_pout_fld_from_rocFFT(Ncomp_r, Nfft_r, X_fft       &
+      subroutine copy_pout_fld_from_rocFFT(Ncomp_r, Nfft_r, X_fft,      &
      &                                     Ncomp, Nfft, ist_comp, X)
 !
       integer(kind = kint), intent(in) :: Ncomp_r, Nfft_r

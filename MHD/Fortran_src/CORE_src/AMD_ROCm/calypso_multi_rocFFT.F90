@@ -121,12 +121,6 @@
       integer(kind = kint_gl) :: i
 !
 !
-!$OMP target teams distribute parallel do
-      do i = 1, Nfft_c*Ncomp
-        C_rocFFT(i) = aNfft * C_rocFFT(i)
-      end do
-!$OMP end target teams distribute parallel do
-!
       call hipCheck(hipMemcpy(data_ptr, c_loc(X_rocFFT(1)),             &
      &                        Nbytes, hipMemcpyHostToDevice))
       call rocfftCheck(rocfft_execute(fwd_plan, data_ptr,               &
@@ -134,6 +128,12 @@
       call hipCheck(hipDeviceSynchronize())
       call hipCheck(hipMemcpy(c_loc(C_rocFFT(1)), data_ptr,             &
      &                        Nbytes, hipMemcpyDeviceToHost))
+!
+!$OMP target teams distribute parallel do
+      do i = 1, Nfft_c*Ncomp
+        C_rocFFT(i) = aNfft * C_rocFFT(i)
+      end do
+!$OMP end target teams distribute parallel do
 !
       end subroutine calypso_forward_rocFFT_r2c
 !
