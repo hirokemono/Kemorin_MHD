@@ -60,8 +60,8 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Forward transform
-        call multi_pout_fwd_OMP_rocFFT(fwd, WK_fft, ft1%s_k(1,1),       &
-     &                                 elapsed(2), elapsed(3))
+        call multi_pout_fwd_OMP_rocFFT(n_field, fwd, WK_fft,            &
+     &      ft1%s_k(1,1), elapsed(2), elapsed(3))
 !
         start = OMP_GET_WTIME()
 !$omp parallel workshare
@@ -70,8 +70,8 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Backword transform
-        call multi_pout_bwd_OMP_rocFFT(bwd, WK_fft, ft1%f_x(1,1),       &
-     &                                 elapsed(2), elapsed(3))
+        call multi_pout_bwd_OMP_rocFFT(n_field, bwd, WK_fft,            &
+     &      ft1%f_x(1,1), elapsed(2), elapsed(3))
       end do
 !
 !   Finalize

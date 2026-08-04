@@ -49,8 +49,8 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Forward transform
-        call multi_pout_fwd_rocFFT_r2r(fwd, WK_fft, ft1%s_k(1,1),       &
-     &                                 elapsed(2), elapsed(3))
+        call multi_pout_fwd_rocFFT_r2r(n_field, fwd, WK_fft,            &
+     &      ft1%s_k(1,1), elapsed(2), elapsed(3))
 !
         start = OMP_GET_WTIME()
 !$omp parallel workshare
@@ -59,8 +59,8 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Backword transform
-        call multi_pout_bwd_rocFFT_r2r(bwd, WK_fft, ft1%f_x(1,1),       &
-     &                                 elapsed(2), elapsed(3))
+        call multi_pout_bwd_rocFFT_r2r(n_field, bwd, WK_fft,            &
+     &      ft1%f_x(1,1), elapsed(2), elapsed(3))
         if(icou .eq. 1) elapsed(4) = elapsed(2)
       end do
       elapsed(4) = elapsed(2) - elapsed(4)

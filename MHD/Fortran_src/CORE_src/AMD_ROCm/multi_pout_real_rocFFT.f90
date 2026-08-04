@@ -9,13 +9,14 @@
 !!@verbatim
 !! wrapper subroutine for initialization of rocFFT
 !! wrapper subroutine for forward Fourier transform by rocFFT
-!!      subroutine multi_pout_fwd_rocFFT_r2r(fwd, WK_fft, X,            &
+!!      subroutine multi_pout_fwd_rocFFT_r2r(Ncomp, fwd, WK_fft, X,     &
 !!     &                                     elapsed_fft, elapsed_cpy)
-!!      subroutine multi_pout_fwd_OMP_rocFFT(fwd, WK_fft, X,            &
+!!      subroutine multi_pout_fwd_OMP_rocFFT(Ncomp, fwd, WK_fft, X,     &
 !!     &                                     elapsed_fft, elapsed_cpy)
+!!        integer(kind = kint), intent(in) :: Ncomp
 !!        type(calypso_rocFFT_params), intent(in), target :: fwd
 !!        type(calypso_rocFFT_work), intent(inout) :: WK_fft
-!!        real(kind = kreal), intent(inout) :: X(fwd%Ncomp,fwd%Nfft)
+!!        real(kind = kreal), intent(inout) :: X(Ncomp,fwd%Nfft)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
 !!
@@ -29,13 +30,14 @@
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by rocFFT
-!!      subroutine multi_pout_bwd_rocFFT_r2r(bwd, WK_fft, X,            &
+!!      subroutine multi_pout_bwd_rocFFT_r2r(Ncomp, bwd, WK_fft, X,     &
 !!     &                                     elapsed_fft, elapsed_cpy)
-!!      subroutine multi_pout_bwd_OMP_rocFFT(bwd, WK_fft, X,            &
+!!      subroutine multi_pout_bwd_OMP_rocFFT(Ncomp, bwd, WK_fft, X,     &
 !!     &                                     elapsed_fft, elapsed_cpy)
+!!        integer(kind = kint), intent(in) :: Ncomp
 !!        type(calypso_rocFFT_params), intent(in), target :: bwd
 !!        type(calypso_rocFFT_work), intent(inout) :: WK_fft
-!!        real(kind = kreal), intent(inout) :: X(bwd%Ncomp,bwd%Nfft)
+!!        real(kind = kreal), intent(inout) :: X(Ncomp,bwd%Nfft)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
 !!
@@ -74,16 +76,17 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine multi_pout_fwd_rocFFT_r2r(fwd, WK_fft, X,              &
+      subroutine multi_pout_fwd_rocFFT_r2r(Ncomp, fwd, WK_fft, X,       &
      &                                     elapsed_fft, elapsed_cpy)
 !
       use normalize_for_rocFFT
       use calypso_multi_rocFFT
 !
+      integer(kind = kint), intent(in) :: Ncomp
       type(calypso_rocFFT_params), intent(in), target :: fwd
 !
       type(calypso_rocFFT_work), intent(inout) :: WK_fft
-      real(kind = kreal), intent(inout) :: X(fwd%Ncomp,fwd%Nfft)
+      real(kind = kreal), intent(inout) :: X(Ncomp,fwd%Nfft)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
@@ -117,23 +120,24 @@
         start = OMP_GET_WTIME()
         call norm_rtp_from_fwd_rocFFT                                   &
      &     (int(fwd%Ncomp), int(WK_fft%NFFT_r), WK_fft%X_rocFFT(1),     &
-     &      int(fwd%Nfft), X(1,1))
+     &      Ncomp, int(fwd%Nfft), X(1,1))
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       end subroutine multi_pout_fwd_rocFFT_r2r
 !
 ! ------------------------------------------------------------------
 !
-      subroutine multi_pout_bwd_rocFFT_r2r(bwd, WK_fft, X,              &
+      subroutine multi_pout_bwd_rocFFT_r2r(Ncomp, bwd, WK_fft, X,       &
      &                                     elapsed_fft, elapsed_cpy)
 !
       use normalize_for_rocFFT
       use calypso_multi_rocFFT
 !
+      integer(kind = kint), intent(in) :: Ncomp
       type(calypso_rocFFT_params), intent(in), target :: bwd
 !
       type(calypso_rocFFT_work), intent(inout) :: WK_fft
-      real(kind = kreal), intent(inout) :: X(bwd%Ncomp,bwd%Nfft)
+      real(kind = kreal), intent(inout) :: X(Ncomp,bwd%Nfft)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
@@ -141,9 +145,8 @@
 !
 !
       start = OMP_GET_WTIME()
-      call norm_rtp_to_bwd_rocFFT                                       &
-     &   (int(bwd%Ncomp), int(bwd%Nfft), X(1,1),                        &
-     &    int(WK_fft%Nfft_r), WK_fft%X_rocFFT(1))
+      call norm_rtp_to_bwd_rocFFT(Ncomp, int(bwd%Nfft), X(1,1),         &
+     &    int(bwd%Ncomp), int(WK_fft%Nfft_r), WK_fft%X_rocFFT(1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
@@ -167,16 +170,17 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine multi_pout_fwd_OMP_rocFFT(fwd, WK_fft, X,              &
+      subroutine multi_pout_fwd_OMP_rocFFT(Ncomp, fwd, WK_fft, X,       &
      &                                     elapsed_fft, elapsed_cpy)
 !
       use normalize_for_rocFFT
       use calypso_multi_rocFFT
 !
+      integer(kind = kint), intent(in) :: Ncomp
       type(calypso_rocFFT_params), intent(in), target :: fwd
 !
       type(calypso_rocFFT_work), intent(inout) :: WK_fft
-      real(kind = kreal), intent(inout) :: X(fwd%Ncomp,fwd%Nfft)
+      real(kind = kreal), intent(inout) :: X(Ncomp,fwd%Nfft)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
@@ -209,23 +213,24 @@
         start = OMP_GET_WTIME()
         call norm_rtp_from_fwd_rocFFT                                   &
      &     (int(fwd%Ncomp), int(WK_fft%NFFT_r), WK_fft%X_rocFFT(1),     &
-     &      int(fwd%Nfft), X(1,1))
+     &      Ncomp, int(fwd%Nfft), X(1,1))
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       end subroutine multi_pout_fwd_OMP_rocFFT
 !
 ! ------------------------------------------------------------------
 !
-      subroutine multi_pout_bwd_OMP_rocFFT(bwd, WK_fft, X,              &
+      subroutine multi_pout_bwd_OMP_rocFFT(Ncomp, bwd, WK_fft, X,       &
      &                                     elapsed_fft, elapsed_cpy)
 !
       use normalize_for_rocFFT
       use calypso_multi_rocFFT
 !
+      integer(kind = kint), intent(in) :: Ncomp
       type(calypso_rocFFT_params), intent(in), target :: bwd
 !
       type(calypso_rocFFT_work), intent(inout) :: WK_fft
-      real(kind = kreal), intent(inout) :: X(bwd%Ncomp,bwd%Nfft)
+      real(kind = kreal), intent(inout) :: X(Ncomp,bwd%Nfft)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
@@ -233,9 +238,8 @@
 !
 !
       start = OMP_GET_WTIME()
-      call norm_rtp_to_bwd_rocFFT                                       &
-     &   (int(bwd%Ncomp), int(bwd%Nfft),X(1,1),                         &
-     &    int(WK_fft%Nfft_r), WK_fft%X_rocFFT(1))
+      call norm_rtp_to_bwd_rocFFT(Ncomp, int(bwd%Nfft),X(1,1),          &
+     &    int(bwd%Ncomp), int(WK_fft%Nfft_r), WK_fft%X_rocFFT(1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()

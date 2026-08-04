@@ -8,10 +8,11 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine norm_rtp_from_fwd_rocFFT(Ncomp, Nfft_r, X_FFT,       &
-!!     &                                    Nfft, X)
-!!        integer(kind = kint), intent(in) :: Ncomp, Nfft, Nfft_r
-!!        real(kind = kreal), intent(in) :: X_FFT(Ncomp*Nfft_r)
+!!      subroutine norm_rtp_from_fwd_rocFFT(Ncomp_r, Nfft_r, X_FFT,     &
+!!     &                                    Ncomp, Nfft, X)
+!!        integer(kind = kint), intent(in) :: Ncomp_r, Nfft_r
+!!        real(kind = kreal), intent(in) :: X_FFT(Ncomp_r*Nfft_r)
+!!        integer(kind = kint), intent(in) :: Ncomp, Nfft
 !!        real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
 !!      subroutine norm_prt_from_fwd_rocFFT(Ncomp, NFFT_r, X_FFT,       &
 !!     &                                    Nfft, X)
@@ -20,10 +21,11 @@
 !!        real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
 !!
 !!      subroutine norm_rtp_to_bwd_rocFFT(Ncomp, Nfft, X,               &
-!!     &                                  Nfft_r, X_FFT)
-!!        integer(kind = kint), intent(in) :: Ncomp, Nfft, Nfft_r
+!!     &                                  Ncomp_r, Nfft_r, X_FFT)
+!!        integer(kind = kint), intent(in) :: Ncomp, Nfft
 !!        real(kind = kreal), intent(in) :: X(Ncomp,Nfft)
-!!        real(kind = kreal), intent(inout) :: X_FFT(Ncomp*Nfft_r)
+!!        integer(kind = kint), intent(in) :: Ncomp_r, Nfft_r
+!!        real(kind = kreal), intent(inout) :: X_FFT(Ncomp_r*Nfft_r)
 !!      subroutine norm_prt_to_bwd_rocFFT(Ncomp, Nfft, X,               &
 !!     &                                  NFFT_r, X_FFT)
 !!        integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_r
@@ -44,12 +46,13 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine norm_rtp_from_fwd_rocFFT(Ncomp, Nfft_r, X_FFT,         &
-     &                                    Nfft, X)
+      subroutine norm_rtp_from_fwd_rocFFT(Ncomp_r, Nfft_r, X_FFT,       &
+     &                                    Ncomp, Nfft, X)
 !
-      integer(kind = kint), intent(in) :: Ncomp, Nfft, Nfft_r
-      real(kind = kreal), intent(in) :: X_FFT(Ncomp*Nfft_r)
+      integer(kind = kint), intent(in) :: Ncomp_r, Nfft_r
+      real(kind = kreal), intent(in) :: X_FFT(Ncomp_r*Nfft_r)
 !
+      integer(kind = kint), intent(in) :: Ncomp, Nfft
       real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
 !
       integer(kind = kint) :: i, nd, inum
@@ -57,17 +60,17 @@
 !
 !$omp parallel
 !$omp do private(nd,inum)
-      do nd = 1, Ncomp
+      do nd = 1, Ncomp_r
         inum = nd
         X(nd,1) = X_FFT(2*inum-1)
-        inum = nd + (Nfft_r/2-1) * Ncomp
+        inum = nd + (Nfft_r/2-1) * Ncomp_r
         X(nd,2) = X_FFT(2*inum-1)
       end do
 !$omp end do nowait
       do i = 2, Nfft_r/2-1
 !$omp do private(nd,inum)
-        do nd = 1, Ncomp
-          inum = nd + (i-1) * Ncomp
+        do nd = 1, Ncomp_r
+          inum = nd + (i-1) * Ncomp_r
           X(nd,2*i-1) =  two * X_FFT(2*inum-1)
           X(nd,2*i  ) = -two * X_FFT(2*inum  )
         end do
@@ -107,18 +110,19 @@
 ! ------------------------------------------------------------------
 !
       subroutine norm_rtp_to_bwd_rocFFT(Ncomp, Nfft, X,                 &
-     &                                  Nfft_r, X_FFT)
+     &                                  Ncomp_r, Nfft_r, X_FFT)
 !
-      integer(kind = kint), intent(in) :: Ncomp, Nfft, Nfft_r
+      integer(kind = kint), intent(in) :: Ncomp, Nfft
       real(kind = kreal), intent(in) :: X(Ncomp,Nfft)
 !
-      real(kind = kreal), intent(inout) :: X_FFT(Ncomp*Nfft_r)
+      integer(kind = kint), intent(in) :: Ncomp_r, Nfft_r
+      real(kind = kreal), intent(inout) :: X_FFT(Ncomp_r*Nfft_r)
 !
       integer(kind = kint) :: i, nd, inum
 !
 !$omp parallel
 !$omp do private(nd,inum)
-      do nd = 1, Ncomp
+      do nd = 1, Ncomp_r
         inum = nd
         X_FFT(2*inum-1) = X(nd,1)
         X_FFT(2*inum  ) = zero
@@ -126,15 +130,15 @@
 !$omp end do nowait
       do i = 2, Nfft_r/2-1
 !$omp do private(nd,inum)
-        do nd = 1, Ncomp
-          inum = nd + (i-1) * Ncomp
+        do nd = 1, Ncomp_r
+          inum = nd + (i-1) * Ncomp_r
           X_FFT(2*inum-1) =  half * X(nd,2*i-1)
           X_FFT(2*inum  ) = -half * X(nd,2*i  )
         end do
 !$omp end do nowait
 !$omp do private(nd,inum)
-        do nd = 1, Ncomp
-          inum = nd + (Nfft_r/2-1) * Ncomp
+        do nd = 1, Ncomp_r
+          inum = nd + (Nfft_r/2-1) * Ncomp_r
           X_FFT(2*inum-1) = X(nd,2)
           X_FFT(2*inum  ) = zero
         end do
