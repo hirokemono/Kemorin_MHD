@@ -190,13 +190,13 @@
 !
       use normalize_for_FFTW
 !
-      integer(kind = kint), intent(in) :: Nfft, Ncomp_FFTW
+      integer(kind = kint), intent(in) :: Nfft, Ncomp, Ncomp_FFTW
       type(calypso_rocFFT_params), intent(in), target :: bwd
 !
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
       type(working_FFTW), intent(inout) :: WK_FFTW
 !
-      real(kind = kreal), intent(inout) :: X(Nfft,bwd%Ncomp)
+      real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
