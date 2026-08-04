@@ -75,12 +75,12 @@ m_FFT_size.o \
 t_fft_test_data.o
 
 MOD_HALF_OMP_ROCFFT_PRT_TEST = \
-test_half_OMP_rocFFT_rtp.o \
+test_half_OMP_rocFFT_prt.o \
 m_FFT_size.o \
 t_fft_test_data.o
 
 MOD_HALF_OMP_ROCFFT_RTP_TEST = \
-test_half_OMP_rocFFT_prt.o \
+test_half_OMP_rocFFT_rtp.o \
 m_FFT_size.o \
 t_fft_test_data.o
 
