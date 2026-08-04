@@ -34,7 +34,7 @@
 !!     &                                     elapsed_fft, elapsed_cpy)
 !!      subroutine multi_pout_bwd_OMP_rocFFT(Ncomp, bwd, WK_fft, X,     &
 !!     &                                     elapsed_fft, elapsed_cpy)
-!!        integer(kind = kint), intent(in) :: Ncomp
+!!        integer(kind = kint), intent(in) :: ist_comp, Ncomp
 !!        type(calypso_rocFFT_params), intent(in), target :: bwd
 !!        type(calypso_rocFFT_work), intent(inout) :: WK_fft
 !!        real(kind = kreal), intent(inout) :: X(Ncomp,bwd%Nfft)
@@ -90,38 +90,25 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
-      integer(kind = kint) :: i, ist
 !
 !
-        start = OMP_GET_WTIME()
-!$omp parallel do private(i,ist)
-        do i = 1, fwd%Nfft
-          ist = (i-1) * fwd%Ncomp
-          WK_fft%X_rocFFT(ist+1:ist+fwd%Ncomp) = X(1:fwd%Ncomp,i)
-        end do
-!$omp end parallel do
-        if(fwd%Nfft .lt. WK_fft%Nfft_r) then
-!$omp parallel do private(i,ist)
-          do i = fwd%Nfft+1, WK_fft%Nfft_r
-            ist = (i-1) * fwd%Ncomp
-            WK_fft%X_rocFFT(ist+1:ist+fwd%Ncomp) = 0.0d0
-          end do
-!$omp end parallel do
-        end if
-        elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+      start = OMP_GET_WTIME()
+      call copy_pout_fld_to_rocFFT(ione, Ncomp, int(fwd%Nfft), X(1,1),  &
+     &    int(fwd%Ncomp), int(fwd%Nfft), WK_fft%X_rocFFT(1))
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
-        start = OMP_GET_WTIME()
-        call calypso_forward_rocFFT_r2r                                 &
-     &     (fwd%rocFFT_plan, fwd%rocFFT_wk_info, fwd%Ncomp,             &
-     &      WK_fft%aNfft, WK_fft%Nfft_r, WK_fft%X_rocFFT(1),            &
-     &      fwd%Nbytes, WK_fft%data_ptr)
-        elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
+      start = OMP_GET_WTIME()
+      call calypso_forward_rocFFT_r2r                                   &
+     &   (fwd%rocFFT_plan, fwd%rocFFT_wk_info, fwd%Ncomp,               &
+     &    WK_fft%aNfft, WK_fft%Nfft_r, WK_fft%X_rocFFT(1),              &
+     &    fwd%Nbytes, WK_fft%data_ptr)
+      elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
-        start = OMP_GET_WTIME()
-        call norm_rtp_from_fwd_rocFFT                                   &
-     &     (int(fwd%Ncomp), int(WK_fft%NFFT_r), WK_fft%X_rocFFT(1),     &
-     &      Ncomp, int(fwd%Nfft), X(1,1))
-        elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+      start = OMP_GET_WTIME()
+      call norm_rtp_from_fwd_rocFFT                                     &
+     &   (int(fwd%Ncomp), int(WK_fft%NFFT_r), WK_fft%X_rocFFT(1),       &
+     &    Ncomp, int(fwd%Nfft), X(1,1))
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       end subroutine multi_pout_fwd_rocFFT_r2r
 !
@@ -157,12 +144,9 @@
       elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
-!$omp parallel do private(i,ist)
-      do i = 1, bwd%Nfft
-        ist = (i-1) * bwd%Ncomp
-        X(1:bwd%Ncomp,i) = WK_fft%X_rocFFT(ist+1:ist+bwd%Ncomp)
-      end do
-!$omp end parallel do
+      call copy_pout_fld_from_rocFFT                                    &
+     &   (int(bwd%Ncomp), int(bwd%Nfft), K_fft%X_rocFFT(1)              &
+     &    Ncomp, int(bwd%Nfft), ione, X(1,1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       end subroutine multi_pout_bwd_rocFFT_r2r
@@ -184,37 +168,24 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
-      integer(kind = kint) :: i, ist
 !
 !
-        start = OMP_GET_WTIME()
-!$omp parallel do private(i,ist)
-        do i = 1, fwd%Nfft
-          ist = (i-1) * fwd%Ncomp
-          WK_fft%X_rocFFT(ist+1:ist+fwd%Ncomp) = X(1:fwd%Ncomp,i)
-        end do
-!$omp end parallel do
-        if(fwd%Nfft .lt. WK_fft%Nfft_r) then
-!$omp parallel do private(i,ist)
-          do i = fwd%Nfft+1, WK_fft%Nfft_r
-            ist = (i-1) * fwd%Ncomp
-            WK_fft%X_rocFFT(ist+1:ist+fwd%Ncomp) = 0.0d0
-          end do
-!$omp end parallel do
-        end if
-        elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+      start = OMP_GET_WTIME()
+      call copy_pout_fld_to_rocFFT(ione, Ncomp, int(fwd%Nfft), X(1,1),  &
+     &    int(fwd%Ncomp), int(fwd%Nfft), WK_fft%X_rocFFT(1))
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
-        start = OMP_GET_WTIME()
-        call calypso_fwd_OpenMP_rocFFT                                  &
-     &     (fwd%rocFFT_plan, fwd%rocFFT_wk_info, fwd%Ncomp,             &
-     &      WK_fft%aNfft, WK_fft%Nfft_r, WK_fft%X_rocFFT(1))
-        elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
+      start = OMP_GET_WTIME()
+      call calypso_fwd_OpenMP_rocFFT                                    &
+     &   (fwd%rocFFT_plan, fwd%rocFFT_wk_info, fwd%Ncomp,               &
+     &    WK_fft%aNfft, WK_fft%Nfft_r, WK_fft%X_rocFFT(1))
+      elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
-        start = OMP_GET_WTIME()
-        call norm_rtp_from_fwd_rocFFT                                   &
-     &     (int(fwd%Ncomp), int(WK_fft%NFFT_r), WK_fft%X_rocFFT(1),     &
-     &      Ncomp, int(fwd%Nfft), X(1,1))
-        elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+      start = OMP_GET_WTIME()
+      call norm_rtp_from_fwd_rocFFT                                     &
+     &   (int(fwd%Ncomp), int(WK_fft%NFFT_r), WK_fft%X_rocFFT(1),       &
+     &    Ncomp, int(fwd%Nfft), X(1,1))
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       end subroutine multi_pout_fwd_OMP_rocFFT
 !
@@ -238,7 +209,7 @@
 !
 !
       start = OMP_GET_WTIME()
-      call norm_rtp_to_bwd_rocFFT(Ncomp, int(bwd%Nfft),X(1,1),          &
+      call norm_rtp_to_bwd_rocFFT(ione, Ncomp, int(bwd%Nfft), X(1,1),   &
      &    int(bwd%Ncomp), int(WK_fft%Nfft_r), WK_fft%X_rocFFT(1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
@@ -249,12 +220,9 @@
       elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
-!$omp parallel do private(i,ist)
-      do i = 1, bwd%Nfft
-        ist = (i-1) * bwd%Ncomp
-        X(1:bwd%Ncomp,i) = WK_fft%X_rocFFT(ist+1:ist+bwd%Ncomp)
-      end do
-!$omp end parallel do
+      call copy_pout_fld_from_rocFFT                                    &
+     &   (int(bwd%Ncomp), int(bwd%Nfft), K_fft%X_rocFFT(1)              &
+     &    Ncomp, int(bwd%Nfft), ione, X(1,1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       end subroutine multi_pout_bwd_OMP_rocFFT

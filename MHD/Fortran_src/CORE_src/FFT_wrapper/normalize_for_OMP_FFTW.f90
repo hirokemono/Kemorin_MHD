@@ -8,10 +8,11 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine norm_rtp_from_fwd_OMP_FFTW(Ncomp, NFFT_c, C_FFT,     &
-!!     &                                      Nfft, X)
-!!        integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_c
-!!        complex(kind = kreal), intent(in) :: C_FFT(Ncomp,Nfft_c)
+!!      subroutine norm_rtp_from_fwd_OMP_FFTW(Ncomp_c, NFFT_c, C_FFT,   &
+!!     &                                      Ncomp, Nfft, ist_c, X)
+!!        integer(kind = kint), intent(in) :: Ncomp_c, NFFT_c
+!!        complex(kind = kreal), intent(in) :: C_FFT(Ncomp_c,Nfft_c)
+!!        integer(kind = kint), intent(in) :: ist_c, Ncomp, Nfft
 !!        real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
 !!      subroutine norm_prt_from_fwd_OMP_FFTW(Ncomp, NFFT_c, C_FFT,     &
 !!     &                                      Nfft, X)
@@ -44,11 +45,12 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine norm_rtp_from_fwd_OMP_FFTW(Ncomp, NFFT_c, C_FFT,       &
-     &                                      Nfft, X)
+      subroutine norm_rtp_from_fwd_OMP_FFTW(Ncomp_c, NFFT_c, C_FFT,     &
+     &                                      Ncomp, Nfft, ist_c, X)
 !
-      integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_c
-      complex(kind = kreal), intent(in) :: C_FFT(Ncomp,Nfft_c)
+      integer(kind = kint), intent(in) :: Ncomp_c, NFFT_c
+      complex(kind = kreal), intent(in) :: C_FFT(Ncomp_c,Nfft_c)
+      integer(kind = kint), intent(in) :: ist_c, Ncomp, Nfft
 !
       real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
 !
@@ -56,13 +58,13 @@
 !
 !$omp parallel
 !$omp workshare
-      X(1:Ncomp,1) = real(C_FFT(1:Ncomp,1     ))
-      X(1:Ncomp,2) = real(C_FFT(1:Ncomp,Nfft_c))
+      X(ist_c:ist_c+Ncomp_c-1,1) = real(C_FFT(1:Ncomp_c,1     ))
+      X(ist_c:ist_c+Ncomp_c-1,2) = real(C_FFT(1:Ncomp_c,Nfft_c))
 !$omp end workshare nowait
       do i = 2, Nfft_c-1
 !$omp workshare
-        X(1:Ncomp,2*i-1) =  two * real(C_FFT(1:Ncomp,i))
-        X(1:Ncomp,2*i  ) = -two * imag(C_FFT(1:Ncomp,i))
+        X(ist_c:ist_c+Ncomp_c-1,2*i-1) = two * real(C_FFT(1:Ncomp_c,i))
+        X(ist_c:ist_c+Ncomp_c-1,2*i  ) =-two * imag(C_FFT(1:Ncomp_c,i))
 !$omp end workshare nowait
       end do
 !$omp end parallel
