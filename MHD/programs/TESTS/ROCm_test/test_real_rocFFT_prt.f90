@@ -85,6 +85,8 @@
       write(*, '("Time for Data copy:        ",1pE16.6e3)') elapsed(3)
       write(*, '("Total FFT:                 ",1pE16.6e3)')             &
      &                           elapsed(2) + elapsed(3)
+      write(*,'(a)') '-----------------------------'
+      write(*,'(a)') ' '
 !
       stop 'finish'
       end program test_real_rocFFT_prt

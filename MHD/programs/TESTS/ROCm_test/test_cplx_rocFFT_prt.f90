@@ -26,6 +26,7 @@
 !
       integer(kind = kint) :: i, nd, icou
 !
+      write(*,'(a)') '-----------------------------'
       write(*,'(a)') '-----  Test prt rocFFT  -----'
       call init_fft_test_data(n_field, ngrid, ft1)
       call swap_fft_test_input_to_pin(ft1)
@@ -84,6 +85,8 @@
       write(*, '("Time for Data copy:        ",1pE16.6e3)') elapsed(3)
       write(*, '("Total FFT:                 ",1pE16.6e3)')             &
      &                           elapsed(2) + elapsed(3)
+      write(*,'(a)') '-----------------------------'
+      write(*,'(a)') ' '
 !
       stop 'finish'
       end program test_cplx_rocFFT_prt

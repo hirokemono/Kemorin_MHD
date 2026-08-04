@@ -109,6 +109,8 @@
       write(*, '("Time for Data copy:        ",1pE16.6e3)') elapsed(3)
       write(*, '("Total FFT:                 ",1pE16.6e3)')             &
      &                           elapsed(2) + elapsed(3)
+      write(*,'(a)') '-----------------------------'
+      write(*,'(a)') ' '
 !
       stop 'finish'
 !
@@ -203,8 +205,7 @@
         call norm_prt_to_bwd_rocFFT                                     &
      &     (int(bwd%Ncomp), int(bwd%Nfft), X1(1,1),                     &
      &      int(WK_fft%Nfft_r), WK_fft%X_rocFFT(1))
-        call norm_copy_to_prt_bwd_OMP_FFTW                              &
-     &     (ncomp_FFTW, Ncomp_FFTW, X2(1,1),                            &
+        call norm_copy_to_prt_bwd_OMP_FFTW(ncomp_FFTW, Nfft, X2(1,1),   &
      &      WK_FFTW%Nfft_c, WK_FFTW%C_FFTW(1,1))
         elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
