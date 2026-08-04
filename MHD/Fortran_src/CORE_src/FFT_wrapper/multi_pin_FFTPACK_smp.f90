@@ -129,6 +129,7 @@
         ist = Nstacksmp(ismp-1)
         num = Nstacksmp(ismp) - Nstacksmp(ismp-1)
         nsize = num*Nfft
+        if(num .le. 0) cycle
 !
         st_c = OMP_GET_WTIME()
         call swap_prt_fld_to_RFFTMF_smp(ist, num, Nfft, M, X,           &
@@ -183,6 +184,7 @@
         ist = Nstacksmp(ismp-1)
         num = Nstacksmp(ismp) - Nstacksmp(ismp-1)
         nsize = num*Nfft
+        if(num .le. 0) cycle
 !
 !   normalization
         st_c = OMP_GET_WTIME()

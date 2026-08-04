@@ -117,7 +117,7 @@
       integer(kind = kint) :: ip
 !
 !
-      WK%Mmax_smp = Nstacksmp(1)
+      WK%Mmax_smp = Nstacksmp(1) - Nstacksmp(0)
       do ip = 1, Nsmp
         WK%Mmax_smp                                                     &
      &      = max(WK%Mmax_smp, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
