@@ -47,15 +47,16 @@
       call init_fft_test_data(n_field, ngrid, ft1)
       call swap_fft_test_input_to_pin(ft1)
 !
-!      allocate(istack_half(0:np_smp))
-!      istack_half(0:np_smp) = ft1%nstack(0:np_smp) / 2
+      allocate(istack_FFTW(0:np_smp))
+      istack_FFTW(0:np_smp) = 0
+      call count_number_4_smp(np_smp, (ncomp_rocFFT+1), n_field,        &
+     &                        istack_FFTW, max_4_smp)
+!
+      write(*,*) 'ncomp_rocFFT, ncomp_FFTW', ncomp_rocFFT, ncomp_FFTW
+      write(*,*) 'istack_FFTW', istack_FFTW
 !
 !   Initialize Fourier transform
       start = OMP_GET_WTIME()
-!      write(*,*) 'np_smp', np_smp
-!      write(*,*) 'ft1%nstack',  ft1%nstack
-!      write(*,*) 'istack_half', istack_half
-!
       call calypso_pin_rocFFT_init(ncomp_rocFFT, ncomp_rocFFT, ngrid,   &
      &                             fwd, bwd, WK_rocFFT)
       call init_FFTW_type2(ncomp_FFTW, ngrid, WK_FFTW)
@@ -272,27 +273,9 @@
 !
 !$omp single
       st_g = OMP_GET_WTIME()
-!$OMP target teams distribute
-      do i = 1, Nfft_r*fwd%Ncomp
-        X_rocFFT(i) = aNfft * X_rocFFT(i)
-      end do
-!$OMP end target teams distribute
-!      write(*,*) 'RocFFT normalize end', OMP_GET_WTIME() - start
-!
-!$OMP target enter data map(to:X_rocFFT)
-!$OMP target data use_device_addr(X_rocFFT)
-!      write(*,*) 'rocfft_execute start', OMP_GET_WTIME() - start
-      call rocfftCheck(rocfft_execute(fwd%rocFFT_plan,                &
-     &    c_loc(X_rocFFT(1)), c_null_ptr, fwd%rocFFT_wk_info))
-!      write(*,*) 'rocfft_execute end', OMP_GET_WTIME() - start
-!
-!      write(*,*) 'hipDeviceSynchronize start', OMP_GET_WTIME() - start
-      call hipCheck(hipDeviceSynchronize())
-!      write(*,*) 'hipDeviceSynchronize end', OMP_GET_WTIME() - start
-!
-!$OMP target update from(X_rocFFT)
-!$OMP end target data
-!$OMP target exit data map(delete:X_rocFFT)
+      call calypso_fwd_OpenMP_rocFFT                                    &
+     &   (fwd%rocFFT_plan, fwd%rocFFT_wk_info, fwd%Ncomp,               &
+     &    WK_fft%aNfft, WK_fft%Nfft_r, WK_fft%X_rocFFT(1))
       ed_g = ed_g + OMP_GET_WTIME() - st_g
 !$omp end single nowait
 !
