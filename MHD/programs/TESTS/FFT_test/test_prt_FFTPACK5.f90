@@ -1,18 +1,18 @@
-!>@file   test_FFTPACK5.f90
-!!@brief  module test_FFTPACK5
+!>@file   test_prt_FFTPACK5.f90
+!!@brief  module test_prt_FFTPACK5
 !!
 !!@author H. Matsui
 !!@date Programmed in Aug., 2011
 !!      Modified in Aug., 2026
 !
-!> @brief Test program of FFTPACK5 with outer series array
+!> @brief Test program of FFTPACK5 with inner series array
 !!
 !!@verbatim
 !! ----------------------------------------------------------------------
 !!     Control file example
 !! ----------------------------------------------------------------------
 !!  begin FFT_test_ctl
-!!    output_file_name    'test_FFTPACK5.dat'
+!!    output_file_name    'rtp_test_FFTPACK5.dat'
 !!
 !!    FFT_length_ctl         128
 !!    num_series_ctl          24
@@ -21,7 +21,7 @@
 !!
 !! ----------------------------------------------------------------------
 !!@endverbatim
-      program test_FFTPACK5
+      program test_prt_FFTPACK5
 !
       use omp_lib
 !
@@ -44,7 +44,7 @@
       type(FFT_tests_ctl), save :: fft_c1
 !
       character(len = kchara), parameter                                &
-     &                      :: def_file_name = 'rtp_fftpack_test.dat'
+     &                      :: def_file_name = 'prt_fftpack_test.dat'
 !
       character(len = kchara) :: file_name = def_file_name
       integer(kind = kint) :: nfft_test =  ngrid
@@ -78,6 +78,7 @@
 !
       iflag_debug = 1
       call init_fft_test_data(ncomp_test, nfft_test, ft1)
+      call swap_fft_test_input_to_pin(ft1)
 !
       ft1%start = OMP_GET_WTIME()
       call init_WK_FFTPACK_t                                            &
@@ -89,27 +90,32 @@
 !
         ft1%start = OMP_GET_WTIME()
 !$omp parallel workshare
-        ft1%s_k(1:ft1%nfld,1:ft1%ngrd) = ft1%org(1:ft1%nfld,1:ft1%ngrd)
+        ft1%s_k(1:ft1%ngrd,1:ft1%nfld) = ft1%org(1:ft1%ngrd,1:ft1%nfld)
 !$omp end parallel workshare
         ft1%elapsed(3) = ft1%elapsed(3) + OMP_GET_WTIME() - ft1%start
 !
-        call CALYPSO_RFFTMF_t(np_smp, ft1%nstack, ft1%nfld, ft1%ngrd,   &
+        call calypso_multi_pin_RFFTMF                                   &
+     &     (np_smp, ft1%nstack, ft1%nfld, ft1%ngrd,                     &
      &      ft1%s_k, WK_FFTPACK_T, ft1%elapsed(2), ft1%elapsed(3))
 !
         ft1%start = OMP_GET_WTIME()
 !$omp parallel workshare
-        ft1%f_x(1:ft1%nfld,1:ft1%ngrd) = ft1%s_k(1:ft1%nfld,1:ft1%ngrd)
+        ft1%f_x(1:ft1%ngrd,1:ft1%nfld) = ft1%s_k(1:ft1%ngrd,1:ft1%nfld)
 !$omp end parallel workshare
         ft1%elapsed(3) = ft1%elapsed(3) + OMP_GET_WTIME() - ft1%start
 !
-        call CALYPSO_RFFTMB_t(np_smp, ft1%nstack, ft1%nfld, ft1%ngrd,   &
+        call calypso_multi_pin_RFFTMB                                   &
+     &     (np_smp, ft1%nstack, ft1%nfld, ft1%ngrd,                     &
      &      ft1%f_x, WK_FFTPACK_T, ft1%elapsed(2), ft1%elapsed(3))
       end do
 !
-      if(nloop_test .eq. 1) call write_fft_test_data(file_name, ft1)
+      if(nloop_test .eq. 1) then
+        call swap_fft_test_data_to_pout(ft1)
+        call write_fft_test_data(file_name, ft1)
+      end if
       call dealloc_fft_test_data(ft1)
 !
-      write(*,'(a)') '-----  Test FFTPACK  -----'
+      write(*,'(a)') '-----  Test FFTPACK with inner series loop -----'
       write(*,'(a,i4)') 'Number of threads:  ', np_smp
       write(*, '(a,3i6)')  "Num (point, field, loop): ",                &
      &       nfft_test, ncomp_test, nloop_test
@@ -120,5 +126,5 @@
       write(*,'(a)') ' '
 !
       stop 'finish'
-      end program test_FFTPACK5
+      end program test_prt_FFTPACK5
 

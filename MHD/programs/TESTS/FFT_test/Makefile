@@ -8,23 +8,30 @@ FFT_TEST_DIR =       $$(TESTS_DIR)/FFT_test
 
 TARGET_FFT_TEST =      test_fft
 
-TARGET_FFTPACK_TEST =  test_FFTPACK
-TARGET_ISPACK1_TEST =  test_ISPACK1
-TARGET_ISPACK3_TEST =  test_ISPACK3
-TARGET_FFW3_F_TEST =   test_FFTW3_f
-TARGET_SGL_FFW3_TEST = test_single_FFTW3
-TARGET_OMP_FFW3_TEST = test_omp_FFTW3
+TARGET_FFTPACK_TEST =  $$(TEST_BUILD_DIR)/test_FFTPACK
+TARGET_ISPACK1_TEST =  $$(TEST_BUILD_DIR)/test_ISPACK1
+TARGET_ISPACK3_TEST =  $$(TEST_BUILD_DIR)/test_ISPACK3
+TARGET_FFW3_F_TEST =   $$(TEST_BUILD_DIR)/test_FFTW3_f
+TARGET_SGL_FFW3_TEST = $$(TEST_BUILD_DIR)/test_single_FFTW3
+TARGET_OMP_FFW3_TEST = $$(TEST_BUILD_DIR)/test_omp_FFTW3
 
-TARGET_FFW3_F_TEST =   test_FFTW3_f
+TARGET_PRT_FFTPACK_TEST =  $$(TEST_BUILD_DIR)/test_prt_FFTPACK
 
-TARGET_CMPR_FFT_TEST = compare_fft_test
+TARGET_FFW3_F_TEST =     $$(TEST_BUILD_DIR)/test_FFTW3_f
+
+TARGET_CMPR_FFT_TEST =   $$(TEST_BUILD_DIR)/compare_fft_test
+
+TARGET_FFT_LABEL_CHECK = $$(TEST_BUILD_DIR)/check_FFT_labels
 
 TARGETS_FFT_TEST = \
 '$$(TARGET_FFT_TEST)' \
 '$$(TARGET_FFTPACK_TEST)' \
 '$$(TARGET_ISPACK1_TEST)' \
 '$$(TARGET_ISPACK3_TEST)' \
-'$$(TARGET_CMPR_FFT_TEST)'
+'$$(TARGET_PRT_FFTPACK_TEST)' \
+'$$(TARGET_CMPR_FFT_TEST)' \
+'$$(TARGET_FFT_LABEL_CHECK)'
+
 
 ifdef FFTW3_LIBS
   TARGETS_FFT_TEST+= \
@@ -66,33 +73,26 @@ t_fft_test_data.o \
 FFT_test_loop.o \
 test_FFT.o
 
+LIBS_FFTPACK_TEST = \
+'$$(LIB_MESH)'      \
+'$$(LIB_FFTPACK)'
+
+LIB_FILES_FFTPACK_TEST = \
+'$$(LIB_MESH_FILE)'      \
+'$$(LIB_FFTPACK_FILE)'
+
 MOD_FFTPACK_TEST = \
-m_precision.o \
-m_constants.o \
-m_machine_parameter.o \
-m_FFT_selector.o \
-m_FFTPACK_labels.o \
-m_ISPACK1_labels.o \
-m_ISPACK3_labels.o \
-m_FFTW_labels.o \
-m_OMP_FFTW_labels.o \
-m_rocFFT_labels.o \
-m_complex_rocFFT_labels.o \
-m_real_rocFFT_labels.o \
-m_OMP_rocFFT_labels.o \
-m_FFT_labels.o \
-t_multi_flag_labels.o \
-skip_comment_f.o \
-\
-normalize_for_FFTPACK.o \
-multi_pin_FFTPACK_smp.o \
-multi_pout_FFTPACK_smp.o \
-calypso_multi_fftpack.o \
-t_FFTPACK5_wrapper.o \
-\
 m_FFT_size.o      \
 t_fft_test_data.o \
+t_ctl_data_4_FFT_tests.o \
 test_FFTPACK5.o
+
+MOD_PRT_FFTPACK_TEST = \
+m_FFT_size.o      \
+t_fft_test_data.o \
+t_ctl_data_4_FFT_tests.o \
+test_prt_FFTPACK5.o
+
 
 MOD_ISPACK1_TEST = \
 m_precision.o \
@@ -184,6 +184,8 @@ compare_FFT_test.o \
 m_FFT_size.o      \
 t_fft_test_data.o
 
+MOD_FFT_LABEL_CHECK = \
+FFT_flag_check.o
 
 #
 #  ------------------------------------------------------------------
@@ -193,14 +195,16 @@ dir_list:
 	@echo 'FFT_TEST_DIR =  $(FFT_TEST_DIR)'          >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_FFT_TEST =      $$(TEST_BUILD_DIR)/$(TARGET_FFT_TEST)'      >> $(MAKENAME)
-	@echo 'TARGET_FFTPACK_TEST =  $$(TEST_BUILD_DIR)/$(TARGET_FFTPACK_TEST)'  >> $(MAKENAME)
-	@echo 'TARGET_ISPACK1_TEST =  $$(TEST_BUILD_DIR)/$(TARGET_ISPACK1_TEST)'  >> $(MAKENAME)
-	@echo 'TARGET_ISPACK3_TEST =  $$(TEST_BUILD_DIR)/$(TARGET_ISPACK3_TEST)'  >> $(MAKENAME)
-	@echo 'TARGET_FFW3_F_TEST =   $$(TEST_BUILD_DIR)/$(TARGET_FFW3_F_TEST)'   >> $(MAKENAME)
-	@echo 'TARGET_SGL_FFW3_TEST = $$(TEST_BUILD_DIR)/$(TARGET_SGL_FFW3_TEST)' >> $(MAKENAME)
-	@echo 'TARGET_OMP_FFW3_TEST = $$(TEST_BUILD_DIR)/$(TARGET_OMP_FFW3_TEST)' >> $(MAKENAME)
-	@echo 'TARGET_CMPR_FFT_TEST = $$(TEST_BUILD_DIR)/$(TARGET_CMPR_FFT_TEST)' >> $(MAKENAME)
+	@echo 'TARGET_FFT_TEST =      $(TARGET_FFT_TEST)'      >> $(MAKENAME)
+	@echo 'TARGET_FFTPACK_TEST =  $(TARGET_FFTPACK_TEST)'  >> $(MAKENAME)
+	@echo 'TARGET_ISPACK1_TEST =  $(TARGET_ISPACK1_TEST)'  >> $(MAKENAME)
+	@echo 'TARGET_ISPACK3_TEST =  $(TARGET_ISPACK3_TEST)'  >> $(MAKENAME)
+	@echo 'TARGET_FFW3_F_TEST =   $(TARGET_FFW3_F_TEST)'   >> $(MAKENAME)
+	@echo 'TARGET_SGL_FFW3_TEST = $(TARGET_SGL_FFW3_TEST)' >> $(MAKENAME)
+	@echo 'TARGET_OMP_FFW3_TEST = $(TARGET_OMP_FFW3_TEST)' >> $(MAKENAME)
+	@echo 'TARGET_PRT_FFTPACK_TEST = $(TARGET_PRT_FFTPACK_TEST)'  >> $(MAKENAME)
+	@echo 'TARGET_CMPR_FFT_TEST =    $(TARGET_CMPR_FFT_TEST)' >> $(MAKENAME)
+	@echo 'TARGET_FFT_LABEL_CHECK =  $(TARGET_FFT_LABEL_CHECK)' >> $(MAKENAME)
 
 target_task:
 	@echo fft_test: $(TARGETS_FFT_TEST) >> $(MAKENAME)
@@ -213,10 +217,17 @@ target_task:
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_FFTPACK_TEST)': '$$(MOD_FFTPACK_TEST)' \
-	'$$(LIB_FFTPACK_FILE)' >> $(MAKENAME)
+	'$$(LIB_FILES_FFTPACK_TEST)' >> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_FFTPACK_TEST)' \
-	'$$(MOD_FFTPACK_TEST)  -L. $$(LIB_FFTPACK)' \
+	'$$(MOD_FFTPACK_TEST)  -L. $$(LIBS_FFTPACK_TEST)' \
+	>> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_PRT_FFTPACK_TEST)': '$$(MOD_PRT_FFTPACK_TEST)' \
+	'$$(LIB_FILES_FFTPACK_TEST)' >> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_PRT_FFTPACK_TEST)' \
+	'$$(MOD_PRT_FFTPACK_TEST)  -L. $$(LIBS_FFTPACK_TEST)' \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_ISPACK1_TEST)': '$$(MOD_ISPACK1_TEST)' \
@@ -261,6 +272,13 @@ target_task:
 	'$$(MOD_CMPR_FFT_TEST)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_FFT_LABEL_CHECK)': '$$(MOD_FFT_LABEL_CHECK)' \
+	'$$(LIB_MESH_FILE)' >> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_FFT_LABEL_CHECK)' \
+	'$$(MOD_FFT_LABEL_CHECK)' -L. '$$(LIB_MESH)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 
 
 lib_name:
@@ -269,12 +287,19 @@ lib_name:
 	@echo  LIB_FILES_FFT_TEST=  \\     >> $(MAKENAME)
 	@echo  $(LIB_FILES_FFT_TEST)       >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
+	@echo  LIBS_FFTPACK_TEST=  \\          >> $(MAKENAME)
+	@echo  $(LIBS_FFTPACK_TEST)            >> $(MAKENAME)
+	@echo  LIB_FILES_FFTPACK_TEST=  \\     >> $(MAKENAME)
+	@echo  $(LIB_FILES_FFTPACK_TEST)       >> $(MAKENAME)
+	@echo  '#' >> $(MAKENAME)
 
 mod_list:
 	@echo  MOD_FFT_TEST=      \\  >> $(MAKENAME)
 	@echo  $(MOD_FFT_TEST)        >> $(MAKENAME)
 	@echo  MOD_FFTPACK_TEST=       \\  >> $(MAKENAME)
 	@echo  $(MOD_FFTPACK_TEST)         >> $(MAKENAME)
+	@echo  MOD_PRT_FFTPACK_TEST=   \\  >> $(MAKENAME)
+	@echo  $(MOD_PRT_FFTPACK_TEST)     >> $(MAKENAME)
 	@echo  MOD_ISPACK1_TEST=       \\  >> $(MAKENAME)
 	@echo  $(MOD_ISPACK1_TEST)         >> $(MAKENAME)
 	@echo  MOD_ISPACK3_TEST=       \\  >> $(MAKENAME)
@@ -287,6 +312,8 @@ mod_list:
 	@echo  $(MOD_OMP_FFW3_TEST)        >> $(MAKENAME)
 	@echo  MOD_CMPR_FFT_TEST=      \\  >> $(MAKENAME)
 	@echo  $(MOD_CMPR_FFT_TEST)        >> $(MAKENAME)
+	@echo  MOD_FFT_LABEL_CHECK=    \\  >> $(MAKENAME)
+	@echo  $(MOD_FFT_LABEL_CHECK)      >> $(MAKENAME)
 
 depends:
 	@$(MAKE_MOD_DEP) $(MAKENAME).depends '$$(FFT_TEST_DIR)' $(SOURCES)

@@ -99,7 +99,6 @@
 !
       real(kind = kreal), intent(inout) :: X(M, Nfft)
 !
-      real(kind = kreal) :: start
       integer(kind = kint) :: ip, ist, num
 !
 !
@@ -196,9 +195,7 @@
       real(kind = kreal), intent(inout)                                 &
      &                   :: X_FFTPACK5(Mmax_smp*Nfft,Nsmp)
 !
-      real(kind = kreal) :: start
-      integer(kind = kint) :: ismp, ist, num, nsize
-      integer(kind = kint) :: ierr
+      integer(kind = kint) :: ismp, ist, num
 !
 !
 !$omp parallel do private(ist,num)
@@ -372,9 +369,7 @@
 !
       real(kind = kreal), intent(inout) :: X(M,Nfft)
 !
-      real(kind = kreal) :: start
-      integer(kind = kint) ::  ismp, ist, num, nsize
-      integer(kind = kint) :: ierr
+      integer(kind = kint) ::  ismp, ist, num
 !
 !
 !$omp parallel do private(ist,num)

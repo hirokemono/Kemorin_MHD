@@ -141,8 +141,6 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
-      integer(kind = kint) :: ismp, ist, num, nsize
-      integer(kind = kint) :: ierr
 !
 !
       start = OMP_GET_WTIME()
@@ -183,8 +181,6 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
-      integer(kind = kint) ::  ismp, ist, num, nsize
-      integer(kind = kint) :: ierr
 !
 !
       start = OMP_GET_WTIME()
@@ -220,8 +216,7 @@
       real(kind = 8), intent(inout) :: X_FFTPACK5(Mmax_smp*Nfft,Nsmp)
       real(kind = 8), intent(inout) :: WORK(Mmax_smp*Nfft,Nsmp)
 !
-      real(kind = kreal) :: start
-      integer(kind = kint) :: ismp, ist, num, nsize
+      integer(kind = kint) :: ismp, num, nsize
       integer(kind = kint) :: ierr
 !
 !
