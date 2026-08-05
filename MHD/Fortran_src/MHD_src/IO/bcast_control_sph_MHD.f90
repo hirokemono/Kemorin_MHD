@@ -115,6 +115,8 @@
 !
 !
       call bcast_ctl_type_i1(crust_filter_c%crust_truncation_ctl)
+      call bcast_ctl_type_i1(crust_filter_c%lowpass_lmax_ctl)
+      call bcast_ctl_type_i1(crust_filter_c%lowpass_mmax_ctl)
 !
       call calypso_mpi_bcast_character(crust_filter_c%block_name,       &
      &                                 cast_long(kchara), 0)

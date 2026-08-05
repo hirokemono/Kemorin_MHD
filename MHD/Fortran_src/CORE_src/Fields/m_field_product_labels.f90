@@ -22,6 +22,8 @@
 !!
 !!   rest_of_geostrophic      [i_geostrophic]:
 !!   truncated_magnetic_field [i_truncated_B]:
+!!   lowpass_velocity         [i_lowpass_velo]:
+!!   lowpass_magnetic_field   [i_lowpass_magne]:
 !!   electric_field           [i_electric]:
 !!   poynting_flux            [i_poynting]:
 !!
@@ -93,6 +95,16 @@
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'truncated_magnetic_field',                &
      &                math = '$ B_{i} $')
+!>        Output-only low-pass velocity field
+      type(field_def), parameter :: lowpass_velocity                    &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'lowpass_velocity',                        &
+     &                math = '$ u_{i}^{LP} $')
+!>        Output-only low-pass magnetic field
+      type(field_def), parameter :: lowpass_magnetic_field              &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'lowpass_magnetic_field',                  &
+     &                math = '$ B_{i}^{LP} $')
 !>        Field label for electric field
 !!         @f$ E_{i} @f$
       type(field_def), parameter :: electric_field                      &
@@ -345,6 +357,8 @@
       check_field_product_vectors = .FALSE.
       if (    (field_name .eq. rest_of_geostrophic%name)                &
      &   .or. (field_name .eq. truncated_magnetic_field%name)           &
+     &   .or. (field_name .eq. lowpass_velocity%name)                   &
+     &   .or. (field_name .eq. lowpass_magnetic_field%name)             &
      &   .or. (field_name .eq. electric_field%name)                     &
      &   .or. (field_name .eq. poynting_flux%name)                      &
 !
@@ -418,6 +432,8 @@
 !
       call set_field_label_to_ctl(rest_of_geostrophic,      array_c2i)
       call set_field_label_to_ctl(truncated_magnetic_field, array_c2i)
+      call set_field_label_to_ctl(lowpass_velocity,         array_c2i)
+      call set_field_label_to_ctl(lowpass_magnetic_field,   array_c2i)
       call set_field_label_to_ctl(electric_field,           array_c2i)
       call set_field_label_to_ctl(poynting_flux,            array_c2i)
       call set_field_label_to_ctl(kinetic_helicity,         array_c2i)

@@ -131,8 +131,18 @@
 !
 !
       monitor%ltr_crust = 1
+      monitor%ltr_lowpass = huge(monitor%ltr_lowpass)
+      monitor%mtr_lowpass = huge(monitor%mtr_lowpass)
       if(crust_c%crust_truncation_ctl%iflag .gt. 0) then
         monitor%ltr_crust = crust_c%crust_truncation_ctl%intvalue
+      end if
+      if(crust_c%lowpass_lmax_ctl%iflag .gt. 0) then
+        monitor%ltr_lowpass                                            &
+     &      = max(0_kint, crust_c%lowpass_lmax_ctl%intvalue)
+      end if
+      if(crust_c%lowpass_mmax_ctl%iflag .gt. 0) then
+        monitor%mtr_lowpass                                            &
+     &      = max(0_kint, crust_c%lowpass_mmax_ctl%intvalue)
       end if
 !
       end subroutine set_crustal_filtering_control

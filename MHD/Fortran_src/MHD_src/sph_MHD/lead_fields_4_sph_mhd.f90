@@ -182,7 +182,8 @@
      &    SPH_MHD%ipol, WK%trns_snap, WK%trns_difv,                     &
      &    WK%WK_leg, WK%WK_FFTs, SPH_MHD%fld, SR_sig, SR_r)
 !
-      call enegy_fluxes_4_sph_mhd(monitor%ltr_crust, SPH_MHD%sph,       &
+      call enegy_fluxes_4_sph_mhd(monitor%ltr_crust,                    &
+     &    monitor%ltr_lowpass, monitor%mtr_lowpass, SPH_MHD%sph,        &
      &    SPH_MHD%comms, r_2nd, MHD_prop, sph_MHD_bc, trans_p,          &
      &    SPH_MHD%ipol, WK%trns_MHD, WK%trns_snap, WK%trns_difv,        &
      &    WK%trns_eflux, WK%WK_leg, WK%WK_FFTs, SPH_MHD%fld,            &
@@ -368,7 +369,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine enegy_fluxes_4_sph_mhd(ltr_crust, sph, comms_sph,      &
+      subroutine enegy_fluxes_4_sph_mhd                                 &
+     &         (ltr_crust, ltr_lowpass, mtr_lowpass, sph, comms_sph,    &
      &          r_2nd, MHD_prop, sph_MHD_bc, trans_p,                   &
      &          ipol, trns_MHD, trns_snap, trns_difv, trns_eflux,       &
      &          WK_leg, WK_FFTs, rj_fld, SR_sig, SR_r)
@@ -380,6 +382,7 @@
       use cal_helicities_rtp
 !
       integer(kind = kint), intent(in) :: ltr_crust
+      integer(kind = kint), intent(in) :: ltr_lowpass, mtr_lowpass
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(fdm_matrices), intent(in) :: r_2nd
@@ -406,7 +409,8 @@
      &    trns_MHD%backward%ncomp, trns_MHD%backward%fld_rtp,           &
      &    trns_eflux%forward%ncomp, trns_eflux%forward%fld_rtp)
       call cal_sph_enegy_fluxes                                         &
-     &   (ltr_crust, sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,       &
+     &   (ltr_crust, ltr_lowpass, mtr_lowpass, sph, comms_sph,          &
+     &    r_2nd, MHD_prop, sph_MHD_bc,                                  &
      &    trans_p, ipol, trns_MHD, trns_snap, trns_difv, trns_eflux,    &
      &    WK_leg, WK_FFTs, rj_fld, SR_sig, SR_r)
 !
@@ -421,7 +425,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_sph_enegy_fluxes(ltr_crust, sph, comms_sph,        &
+      subroutine cal_sph_enegy_fluxes                                   &
+     &         (ltr_crust, ltr_lowpass, mtr_lowpass, sph, comms_sph,    &
      &          r_2nd, MHD_prop, sph_MHD_bc, trans_p,                   &
      &          ipol, trns_MHD, trns_snap, trns_difv, trns_eflux,       &
      &          WK_leg, WK_FFTs, rj_fld, SR_sig, SR_r)
@@ -435,6 +440,7 @@
       use cal_self_buoyancies_sph
 !
       integer(kind = kint), intent(in) :: ltr_crust
+      integer(kind = kint), intent(in) :: ltr_lowpass, mtr_lowpass
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(fdm_matrices), intent(in) :: r_2nd
@@ -464,7 +470,8 @@
 !      Evaluate fields for output in spectrum space
       if (iflag_debug.gt.0) write(*,*) 's_cal_energy_flux_rj'
       call s_cal_energy_flux_rj                                         &
-     &   (ltr_crust, sph%sph_rj, r_2nd, sph_MHD_bc, ipol, rj_fld)
+     &   (ltr_crust, ltr_lowpass, mtr_lowpass, sph%sph_rj,              &
+     &    r_2nd, sph_MHD_bc, ipol, rj_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'sph_back_trans_snapshot_MHD'
       call sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p,         &

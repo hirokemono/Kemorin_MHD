@@ -219,6 +219,12 @@
      &   .or. check_field_list_ctl(vgp_longigude, field_ctl)) then
         call add_phys_name_ctl(magnetic_field, field_ctl)
       end if
+      if(check_field_list_ctl(lowpass_velocity, field_ctl)) then
+        call add_phys_name_ctl(velocity, field_ctl)
+      end if
+      if(check_field_list_ctl(lowpass_magnetic_field, field_ctl)) then
+        call add_phys_name_ctl(magnetic_field, field_ctl)
+      end if
 !
       if(check_field_list_ctl(Lorentz_work_dipole, field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)

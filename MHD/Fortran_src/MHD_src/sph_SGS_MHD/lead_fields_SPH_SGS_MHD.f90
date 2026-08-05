@@ -155,6 +155,7 @@
      &    dynamic_SPH, SPH_MHD%fld, SR_sig, SR_r)
 !
       call enegy_fluxes_SPH_SGS_MHD(monitor%ltr_crust,                  &
+     &    monitor%ltr_lowpass, monitor%mtr_lowpass,                     &
      &    SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms,                  &
      &    r_2nd, MHD_prop, sph_MHD_bc, trans_p,                         &
      &    SPH_MHD%ipol, ipol_LES, WK%trns_MHD, WK_LES%trns_SGS,         &
@@ -341,7 +342,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine enegy_fluxes_SPH_SGS_MHD(ltr_crust, SGS_param,         &
+      subroutine enegy_fluxes_SPH_SGS_MHD                               &
+     &         (ltr_crust, ltr_lowpass, mtr_lowpass, SGS_param,         &
      &          sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,            &
      &          trans_p, ipol, ipol_LES, trns_MHD, trns_SGS,            &
      &          trns_fil_MHD, trns_fil_snap, trns_snap, trns_difv,      &
@@ -357,6 +359,7 @@
       use cal_geomagnetic_data
 !
       integer(kind = kint), intent(in) :: ltr_crust
+      integer(kind = kint), intent(in) :: ltr_lowpass, mtr_lowpass
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -388,7 +391,8 @@
      &    trns_MHD%backward%ncomp, trns_MHD%backward%fld_rtp,           &
      &    trns_eflux%forward%ncomp, trns_eflux%forward%fld_rtp)
       call cal_sph_enegy_fluxes                                         &
-     &   (ltr_crust, sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,       &
+     &   (ltr_crust, ltr_lowpass, mtr_lowpass, sph, comms_sph,          &
+     &    r_2nd, MHD_prop, sph_MHD_bc,                                  &
      &    trans_p, ipol, trns_MHD, trns_snap, trns_difv, trns_eflux,    &
      &    WK_leg, WK_FFTs, rj_fld, SR_sig, SR_r)
 !

@@ -88,6 +88,9 @@
         type(energy_label_param) :: ene_labels
 !>        Truncation level for crustal filtering
         integer(kind = kint) :: ltr_crust
+!>        Degree and order limits for output-only low-pass fields
+        integer(kind = kint) :: ltr_lowpass
+        integer(kind = kint) :: mtr_lowpass
 !
 !>        Data on equator of mid-depth
         type(circle_fld_maker) :: circ_mid_eq

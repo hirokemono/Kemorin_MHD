@@ -9,7 +9,8 @@
 !!
 !!@verbatim
 !!      subroutine s_cal_energy_flux_rj                                 &
-!!     &         (ltr_crust, sph_rj, r_2nd, sph_MHD_bc, ipol, rj_fld)
+!!     &         (ltr_crust, ltr_lowpass, mtr_lowpass, sph_rj,         &
+!!     &          r_2nd, sph_MHD_bc, ipol, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
@@ -31,6 +32,7 @@
       implicit  none
 !
       private :: truncate_magnetic_field_4_view
+      private :: lowpass_vector_field_4_view
       private :: copy_poloidal_to_streamfunc_rj
 !
 ! -----------------------------------------------------------------------
@@ -40,12 +42,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_cal_energy_flux_rj                                   &
-     &         (ltr_crust, sph_rj, r_2nd, sph_MHD_bc, ipol, rj_fld)
+     &         (ltr_crust, ltr_lowpass, mtr_lowpass, sph_rj,            &
+     &          r_2nd, sph_MHD_bc, ipol, rj_fld)
 !
       use sph_radial_grad_4_velocity
       use copy_nodal_fields
 !
       integer(kind = kint), intent(in) :: ltr_crust
+      integer(kind = kint), intent(in) :: ltr_lowpass, mtr_lowpass
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
@@ -68,6 +72,16 @@
       if(ipol%prod_fld%i_truncated_B .gt. 0) then
         call truncate_magnetic_field_4_view(ltr_crust, sph_rj, rj_fld,  &
      &      ipol%base%i_magne, ipol%prod_fld%i_truncated_B)
+      end if
+      if(ipol%prod_fld%i_lowpass_velo .gt. 0) then
+        call lowpass_vector_field_4_view                                &
+     &     (ltr_lowpass, mtr_lowpass, sph_rj, rj_fld,                   &
+     &      ipol%base%i_velo, ipol%prod_fld%i_lowpass_velo)
+      end if
+      if(ipol%prod_fld%i_lowpass_magne .gt. 0) then
+        call lowpass_vector_field_4_view                                &
+     &     (ltr_lowpass, mtr_lowpass, sph_rj, rj_fld,                   &
+     &      ipol%base%i_magne, ipol%prod_fld%i_lowpass_magne)
       end if
 !
 !
@@ -116,6 +130,34 @@
 !$omp end parallel do
 !
       end subroutine truncate_magnetic_field_4_view
+!
+!-----------------------------------------------------------------------
+!
+      subroutine lowpass_vector_field_4_view                            &
+     &         (ltr, mtr, sph_rj, rj_fld, i_source, i_lowpass)
+!
+      integer(kind = kint), intent(in) :: ltr, mtr
+      integer(kind = kint), intent(in) :: i_source, i_lowpass
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(phys_data), intent(inout) :: rj_fld
+!
+      integer(kind = kint) :: inod, l_gl, m_gl
+!
+      if(i_source .le. 0 .or. i_lowpass .le. 0) return
+!$omp parallel do private(inod,l_gl,m_gl)
+      do inod = 1, sph_rj%nnod_rj
+        l_gl = aint(sqrt(real(sph_rj%idx_global_rj(inod,2))))
+        m_gl = sph_rj%idx_global_rj(inod,2) - l_gl*(l_gl + 1)
+        if(l_gl .le. ltr .and. abs(m_gl) .le. mtr) then
+          rj_fld%d_fld(inod,i_lowpass:i_lowpass+2)                      &
+     &        = rj_fld%d_fld(inod,i_source:i_source+2)
+        else
+          rj_fld%d_fld(inod,i_lowpass:i_lowpass+2) = zero
+        end if
+      end do
+!$omp end parallel do
+!
+      end subroutine lowpass_vector_field_4_view
 !
 !-----------------------------------------------------------------------
 !

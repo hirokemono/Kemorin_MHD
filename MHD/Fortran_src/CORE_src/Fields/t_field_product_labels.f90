@@ -85,6 +85,10 @@
 !>        Start address for truncated magnetic field
 !!         @f$ \bar{B}_{i} @f$
         integer (kind=kint) :: i_truncated_B =    izero
+!>        Start address for output-only low-pass velocity
+        integer (kind=kint) :: i_lowpass_velo =   izero
+!>        Start address for output-only low-pass magnetic field
+        integer (kind=kint) :: i_lowpass_magne =  izero
 !
 !>        start address for electric field
 !!         @f$ E_{i} @f$
@@ -209,6 +213,10 @@
           prod_fld%i_geostrophic = i_phys
         else if (field_name .eq. truncated_magnetic_field%name) then
           prod_fld%i_truncated_B = i_phys
+        else if (field_name .eq. lowpass_velocity%name) then
+          prod_fld%i_lowpass_velo = i_phys
+        else if (field_name .eq. lowpass_magnetic_field%name) then
+          prod_fld%i_lowpass_magne = i_phys
         else if (field_name .eq. electric_field%name) then
           prod_fld%i_electric =    i_phys
         else if (field_name .eq. poynting_flux%name) then

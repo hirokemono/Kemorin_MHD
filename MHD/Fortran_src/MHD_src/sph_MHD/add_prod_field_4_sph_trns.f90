@@ -69,6 +69,12 @@
       call add_field_name_4_sph_trns_snap(d_rj,                         &
      &    ipol_prd%i_truncated_B, iphys_prd%i_truncated_B,              &
      &    b_trns_prd%i_truncated_B, trns)
+      call add_field_name_4_sph_trns_snap(d_rj,                         &
+     &    ipol_prd%i_lowpass_velo, iphys_prd%i_lowpass_velo,            &
+     &    b_trns_prd%i_lowpass_velo, trns)
+      call add_field_name_4_sph_trns_snap(d_rj,                         &
+     &    ipol_prd%i_lowpass_magne, iphys_prd%i_lowpass_magne,          &
+     &    b_trns_prd%i_lowpass_magne, trns)
 !
 !
       call add_field_name_4_sph_trns_snap(d_rj,                         &

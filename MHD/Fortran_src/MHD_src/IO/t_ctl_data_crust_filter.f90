@@ -26,6 +26,8 @@
 !!  begin dynamo_vizs_control
 !!    begin crustal_filtering_ctl
 !!      truncation_degree_ctl        13
+!!      lowpass_lmax_ctl             12
+!!      lowpass_mmax_ctl              5
 !!    end crustal_filtering_ctl
 !!  end dynamo_vizs_control
 !!
@@ -51,6 +53,10 @@
         character(len=kchara) :: block_name = 'crustal_filtering_ctl'
 !>        Truncation dgree by crustal field
         type(read_integer_item) :: crust_truncation_ctl
+!>        Maximum degree for output-only low-pass fields
+        type(read_integer_item) :: lowpass_lmax_ctl
+!>        Maximum absolute order for output-only low-pass fields
+        type(read_integer_item) :: lowpass_mmax_ctl
 !
         integer (kind=kint) :: i_crustal_filtering = 0
       end type clust_filtering_ctl
@@ -58,8 +64,12 @@
 !
       character(len=kchara), parameter                                  &
      &             :: hd_crustal_truncation = 'truncation_degree_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_lowpass_lmax = 'lowpass_lmax_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_lowpass_mmax = 'lowpass_mmax_ctl'
 !
-      private :: hd_crustal_truncation
+      private :: hd_crustal_truncation, hd_lowpass_lmax, hd_lowpass_mmax
 !
 !   --------------------------------------------------------------------
 !
@@ -90,6 +100,10 @@
 !
         call read_integer_ctl_type(c_buf, hd_crustal_truncation,        &
      &      crust_filter_c%crust_truncation_ctl)
+        call read_integer_ctl_type(c_buf, hd_lowpass_lmax,              &
+     &      crust_filter_c%lowpass_lmax_ctl)
+        call read_integer_ctl_type(c_buf, hd_lowpass_mmax,              &
+     &      crust_filter_c%lowpass_mmax_ctl)
        end do
        crust_filter_c%i_crustal_filtering = 1
 !
@@ -114,12 +128,17 @@
 !
       if(crust_filter_c%i_crustal_filtering .le. 0) return
 !
-      maxlen = len_trim(hd_crustal_truncation)
+      maxlen = max(len_trim(hd_crustal_truncation),                     &
+     &             len_trim(hd_lowpass_lmax), len_trim(hd_lowpass_mmax))
 !
       level = write_begin_flag_for_ctl(id_control, level,               &
      &                                 crust_filter_c%block_name)
       call write_integer_ctl_type(id_control, level, maxlen,            &
      &    crust_filter_c%crust_truncation_ctl)
+      call write_integer_ctl_type(id_control, level, maxlen,            &
+     &    crust_filter_c%lowpass_lmax_ctl)
+      call write_integer_ctl_type(id_control, level, maxlen,            &
+     &    crust_filter_c%lowpass_mmax_ctl)
       level =  write_end_flag_for_ctl(id_control, level,                &
      &                                crust_filter_c%block_name)
 !
@@ -135,6 +154,10 @@
       crust_filter_c%block_name = hd_block
       call init_int_ctl_item_label(hd_crustal_truncation,               &
      &    crust_filter_c%crust_truncation_ctl)
+      call init_int_ctl_item_label(hd_lowpass_lmax,                     &
+     &    crust_filter_c%lowpass_lmax_ctl)
+      call init_int_ctl_item_label(hd_lowpass_mmax,                     &
+     &    crust_filter_c%lowpass_mmax_ctl)
 !
       end subroutine init_crustal_filtering_ctl
 !
@@ -147,6 +170,8 @@
 !
 !
       crust_filter_c%crust_truncation_ctl%iflag = 0
+      crust_filter_c%lowpass_lmax_ctl%iflag = 0
+      crust_filter_c%lowpass_mmax_ctl%iflag = 0
       crust_filter_c%i_crustal_filtering = 0
 !
       end subroutine reset_crustal_filtering_ctl
