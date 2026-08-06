@@ -60,6 +60,19 @@
 !!       i = Nfft:     b_{Nfft/2-1}
 !!
 !! ------------------------------------------------------------------
+!!
+!!      subroutine copy_pin_fld_to_rocFFT_real(Ncomp_r, Nfft, X,        &
+!!     &                                       Nfft_r, X_rocFFT)
+!!        integer(c_size_t), intent(in) :: Ncomp_r
+!!        integer(c_size_t), intent(in) :: Nfft, Nfft_r
+!!        real(kind = kreal), intent(in) :: X(Nfft,Ncomp_r)
+!!        real(kind = kreal), intent(inout) :: X_rocFFT(Nfft_r,Ncomp_r)
+!!      subroutine copy_pin_fld_from_rocFFT_real(Ncomp_r, Nfft_r,       &
+!!     &                                         X_rocFFT, Nfft, X)
+!!        integer(c_size_t), intent(in) :: Ncomp_r
+!!        integer(c_size_t), intent(in) :: Nfft_r, Nfft
+!!        real(kind = kreal), intent(in) :: X_rocFFT(Nfft_r,Ncomp_r)
+!!        real(kind = kreal), intent(inout) :: X(Nfft,Ncomp_r)
 !!@endverbatim
 !
       module multi_pin_complex_rocFFT
@@ -221,20 +234,20 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine copy_pin_fld_to_rocFFT_real(Ncomp, Nfft, X,            &
+      subroutine copy_pin_fld_to_rocFFT_real(Ncomp_r, Nfft, X,          &
      &                                       Nfft_r, X_rocFFT)
 !
-      integer(c_size_t), intent(in) :: Ncomp
+      integer(c_size_t), intent(in) :: Ncomp_r
       integer(c_size_t), intent(in) :: Nfft, Nfft_r
-      real(kind = kreal), intent(in) :: X(Nfft,Ncomp)
+      real(kind = kreal), intent(in) :: X(Nfft,Ncomp_r)
 !
-      real(kind = kreal), intent(inout) :: X_rocFFT(Nfft_r,Ncomp)
+      real(kind = kreal), intent(inout) :: X_rocFFT(Nfft_r,Ncomp_r)
 !
       integer(c_size_t) :: nd, i
 !
 !
 !$omp parallel do private(nd,i)
-        do nd = 1, Ncomp
+        do nd = 1, Ncomp_r
           do i = 1, Nfft
             X_rocFFT(i,nd) = X(i,nd)
           end do
@@ -248,20 +261,20 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine copy_pin_fld_from_rocFFT_real(Ncomp, Nfft_r,           &
+      subroutine copy_pin_fld_from_rocFFT_real(Ncomp_r, Nfft_r,         &
      &                                         X_rocFFT, Nfft, X)
 !
-      integer(c_size_t), intent(in) :: Ncomp
+      integer(c_size_t), intent(in) :: Ncomp_r
       integer(c_size_t), intent(in) :: Nfft_r, Nfft
-      real(kind = kreal), intent(in) :: X_rocFFT(Nfft_r,Ncomp)
+      real(kind = kreal), intent(in) :: X_rocFFT(Nfft_r,Ncomp_r)
 !
-      real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
+      real(kind = kreal), intent(inout) :: X(Nfft,Ncomp_r)
 !
       integer(c_size_t) :: nd, i
 !
 !
 !$omp parallel do private(nd,i)
-      do nd = 1, Ncomp
+      do nd = 1, Ncomp_r
         do i = 1, Nfft
           X(i,nd) = X_rocFFT(i,nd)
         end do

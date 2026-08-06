@@ -108,7 +108,7 @@
      &          X, X_FFTPACK5, Mmax_smp, lSAVE, WSAVE, WORK,            &
      &          elapsed_fft, elapsed_cpy)
 !
-      use normalize_for_FFTPACK
+      use swap_prt_data_for_FFTPACK
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
@@ -121,8 +121,6 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
-      integer(kind = kint) :: ismp, num, nsize
-      integer(kind = kint) :: ierr
 !
 !
       start = OMP_GET_WTIME()
@@ -150,7 +148,7 @@
      &          X, X_FFTPACK5, Mmax_smp, lSAVE, WSAVE, WORK,            &
      &          elapsed_fft, elapsed_cpy)
 !
-      use normalize_for_FFTPACK
+      use swap_prt_data_for_FFTPACK
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
@@ -238,7 +236,6 @@
         nsize = num*Nfft
         if(num .le. 0) cycle
 !
-        st_f = OMP_GET_WTIME()
         call RFFTMB(num, ione, Nfft, num, X_FFTPACK5(1,ismp), nsize,    &
      &              WSAVE, lSAVE, WORK(1,ismp), nsize, ierr)
       end do

@@ -34,30 +34,30 @@
       type(calypso_rocFFT_work), target :: WK_rocFFT
       type(working_FFTPACK) :: WK_FFTPACK_T
 !
-      integer(kind = kint) :: ncomp_rocFFT
-      integer(kind = kint) :: ncomp_FFTW
+      integer(kind = kint) :: ncomp_GPU
+      integer(kind = kint) :: ncomp_CPU
       integer(kind = kint) :: max_4_smp
       integer(kind = kint), allocatable :: istack_FFTPACK(:)
       integer(kind = kint) :: i, nd, icou
 !
 !
-      ncomp_rocFFT = ratio_rocFFT * n_field
-      ncomp_FFTW =   n_field - ncomp_rocFFT
+      ncomp_GPU = ratio_rocFFT * n_field
+      ncomp_CPU =   n_field - ncomp_GPU
 !
       write(*,'(a)') '-----  Test rtp OpenMP rocFFT and FFTPACK -----'
       call init_fft_test_data(n_field, ngrid, ft1)
 !
       allocate(istack_FFTPACK(0:np_smp))
       istack_FFTPACK(0:np_smp) = 0
-      call count_number_4_smp(np_smp, (ncomp_rocFFT+1), n_field,        &
+      call count_number_4_smp(np_smp, (ncomp_GPU+1), n_field,           &
      &                        istack_FFTPACK, max_4_smp)
 !
-      write(*,*) 'ncomp_rocFFT, ncomp_FFTW', ncomp_rocFFT, ncomp_FFTW
+      write(*,*) 'ncomp_GPU, ncomp_CPU', ncomp_GPU, ncomp_CPU
       write(*,*) 'istack_FFTPACK', istack_FFTPACK
 !
 !   Initialize Fourier transform
       start = OMP_GET_WTIME()
-      call calypso_pout_rocFFT_init(ncomp_rocFFT, ncomp_rocFFT, ngrid,  &
+      call calypso_pout_rocFFT_init(ncomp_GPU, ncomp_GPU, ngrid,        &
      &                              fwd, bwd, WK_rocFFT)
       call init_WK_FFTPACK_t(np_smp, istack_FFTPACK,                    &
      &                       ngrid, WK_FFTPACK_T)
@@ -86,8 +86,7 @@
 !
 !   Backword transform
         call multi_pout_bwd_OMP_rocFFT2(n_field, istack_FFTPACK,        &
-     &      bwd, WK_rocFFT, WK_FFTPACK_T, ft1%f_x(1,1),                 &
-     &      elapsed(2:5))
+     &      bwd, WK_rocFFT, WK_FFTPACK_T, ft1%f_x(1,1), elapsed(2:5))
         if(icou .eq. 1) elapsed(6:9) = elapsed(2:5)
       end do
       elapsed(6) = elapsed(2) - elapsed(6)
@@ -107,7 +106,7 @@
       write(*, '(a,3i6)')                                               &
      &      "Num (point, field, loop):   ", ngrid, n_field, n_loop
       write(*, '(a,3i6)')                                               &
-     &      "Num (field_GPU, field_CPU):   ", ncomp_rocFFT, ncomp_FFTW
+     &      "Num (field_GPU, field_CPU):   ", ncomp_GPU, ncomp_CPU
       write(*, '("Time for Initialize:       ",1pE16.6e3)') elapsed(1)
       write(*, '("Time for FFT:              ",1pE16.6e3)') elapsed(2)
       write(*, '("Time for rocFFT w/o first: ",1pE16.6e3)') elapsed(6)
@@ -228,8 +227,8 @@
      &    Ncomp, X(1,1), WK_FFTPACK%X_FFTPACK5)
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
-      start = OMP_GET_WTIME()
 !!   1. Create a CPU thread team
+      start = OMP_GET_WTIME()
 !$omp parallel
 !!   2. Isolate a single thread to spawn the GPU work asynchronously
 !$omp single
@@ -253,7 +252,7 @@
       start = OMP_GET_WTIME()
       call copy_pout_fld_from_rocFFT                                    &
      &   (int(bwd%Ncomp), int(bwd%Nfft), WK_rocFFT%X_rocFFT(1),         &
-     &    Ncomp, int(bwd%Nfft), ione, X(1,1))
+     &    Ncomp, bwd%Nfft, ione, X(1,1))
       call copy_rtp_fld_from_RFFTMB                                     &
      &   (np_smp, istack_FFTPACK, WK_FFTPACK%Mmax_smp, int(bwd%Nfft),   &
      &    WK_FFTPACK%X_FFTPACK5, Ncomp, X(1,1))

@@ -179,35 +179,24 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
-      integer(kind = kint_gl) :: i, j, nd
 !
 !
-        start = OMP_GET_WTIME()
-!$omp parallel do private(nd,i,j)
-        do nd = 1, fwd%Ncomp
-          do i = 1, fwd%Nfft
-            j = i + (nd-1) * WK_fft%Nfft_r
-            WK_fft%X_rocFFT(j) = X(i,nd)
-          end do
-          do i = fwd%Nfft+1, WK_fft%Nfft_r
-            j = i + (nd-1) * WK_fft%Nfft_r
-            WK_fft%X_rocFFT(j) = zero
-          end do
-        end do
-!$omp end parallel do
-        elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+      start = OMP_GET_WTIME()
+      call copy_pin_fld_to_rocFFT_real(fwd%Ncomp, fwd%Nfft, X(1,1),     &
+     &                               WK_fft%Nfft_r, WK_fft%X_rocFFT(1))
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
-        start = OMP_GET_WTIME()
-        call calypso_fwd_OpenMP_rocFFT                                  &
-     &     (fwd%rocFFT_plan, fwd%rocFFT_wk_info, fwd%Ncomp,             &
-     &      WK_fft%aNfft, WK_fft%Nfft_r, WK_fft%X_rocFFT(1))
-        elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
+      start = OMP_GET_WTIME()
+      call calypso_fwd_OpenMP_rocFFT                                    &
+     &   (fwd%rocFFT_plan, fwd%rocFFT_wk_info, fwd%Ncomp,               &
+     &    WK_fft%aNfft, WK_fft%Nfft_r, WK_fft%X_rocFFT(1))
+      elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
-        start = OMP_GET_WTIME()
-        call norm_prt_from_fwd_rocFFT                                   &
-     &     (int(fwd%Ncomp), int(WK_fft%NFFT_r), WK_fft%X_rocFFT(1),     &
-     &      int(fwd%Nfft), X(1,1))
-        elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+      start = OMP_GET_WTIME()
+      call norm_prt_from_fwd_rocFFT                                     &
+     &   (int(fwd%Ncomp), int(WK_fft%NFFT_r), WK_fft%X_rocFFT(1),       &
+     &    int(fwd%Nfft), X(1,1))
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       end subroutine multi_pin_fwd_OMP_rocFFT
 !
