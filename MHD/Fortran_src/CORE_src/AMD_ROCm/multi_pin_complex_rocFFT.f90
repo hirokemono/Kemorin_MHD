@@ -148,6 +148,7 @@
 !
       use normalize_for_OMP_FFTW
       use calypso_multi_rocFFT
+      use copy_field_for_FFT
 !
       type(calypso_rocFFT_params), intent(in), target :: fwd
 !
@@ -160,8 +161,9 @@
 !
       if(fwd%Ncomp .le. 0) return
       start = OMP_GET_WTIME()
-      call copy_pin_fld_to_rocFFT_real(fwd%Ncomp, fwd%Nfft, X(1,1),     &
-     &                               WK_fft%Nfft_r, WK_fft%X_rocFFT(1))
+      call sel_copy_pin_field_to_FFT                                    &
+     &   (int(fwd%Ncomp), int(fwd%Nfft), X(1,1),                        &
+     &    int(WK_fft%Nfft_r), WK_fft%X_rocFFT(1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
