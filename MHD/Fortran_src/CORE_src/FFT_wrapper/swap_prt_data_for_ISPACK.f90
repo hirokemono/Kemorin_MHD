@@ -70,7 +70,7 @@
       do ismp = 1, Nsmp
         ist = Nstacksmp(ismp-1)
         num8 = Nstacksmp(ismp) - Nstacksmp(ismp-1)
-        if(num8 .le. 0) return
+        if(num8 .le. 0) cycle
 !
         call swap_prt_fld_to_FXRTFA_smp(ist, num8, Nfft, M, X,          &
      &                                  Mmax_smp, X_ispack(1,ismp))
@@ -97,7 +97,7 @@
       do ismp = 1, Nsmp
         ist = Nstacksmp(ismp-1)
         num8 = Nstacksmp(ismp) - Nstacksmp(ismp-1)
-        if(num8 .le. 0) return
+        if(num8 .le. 0) cycle
 !
         call swap_prt_spectr_from_FXRTFA_smp(ist, num8, Nfft, Mmax_smp, &
      &                                       X_ispack(1,ismp), M, X)
@@ -118,7 +118,6 @@
 !
       real(kind = kreal), intent(inout)                                 &
      &                              :: X_ispack(Mmax_smp*Nfft,Nsmp)
-      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       integer(kind = kint_gl) :: ismp, ist, num8
 !
@@ -127,7 +126,7 @@
       do ismp = 1, Nsmp
         ist = Nstacksmp(ismp-1)
         num8 = Nstacksmp(ismp) - Nstacksmp(ismp-1)
-        if(num8 .le. 0) return
+        if(num8 .le. 0) cycle
 !
         call swap_prt_spectr_to_FXRTBA_smp(ist, num8, Nfft, M, X,       &
      &                                     Mmax_smp, X_ispack(1,ismp))
@@ -150,11 +149,11 @@
       integer(kind = kint_gl) :: ismp, ist, num8
 !
 !
-!$omp parallel do private(ist,num8,st_c,st_f) reduction(+:ed_c,ed_f)
+!$omp parallel do private(ist,num8)
       do ismp = 1, Nsmp
         ist = Nstacksmp(ismp-1)
         num8 = Nstacksmp(ismp) - Nstacksmp(ismp-1)
-        if(num8 .le. 0) return
+        if(num8 .le. 0) cycle
 !
         call swap_prt_fld_from_FXRTBA_smp(ist, num8, Nfft, Mmax_smp,    &
      &                                    X_ispack(1,ismp), M, X)

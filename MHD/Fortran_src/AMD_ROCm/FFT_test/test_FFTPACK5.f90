@@ -60,7 +60,7 @@
       write(*,'(a,i4)') 'Number of threads:  ', np_smp
       write(*, '(a,3i6)')                                               &
      &        "Num (point, field, loop): ", ngrid, n_field, n_loop
-      write(*, '("Initialize:      ",1pE16.6e3)') ft1%elapsed(1)
+      write(*, '("Initialize:      ",1pE16.6e3)') ft1%e0lapsed(1)
       write(*, '("Wrapped FFTPACK: ",1pE16.6e3)') ft1%elapsed(2)
       write(*, '("Data copy:       ",1pE16.6e3)') ft1%elapsed(3)
 !
