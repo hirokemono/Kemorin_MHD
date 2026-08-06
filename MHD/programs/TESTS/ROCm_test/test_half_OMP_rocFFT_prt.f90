@@ -25,7 +25,7 @@
 !
       character(len=kchara), parameter                                  &
      &             :: file_name = 'prt_half_OMP_rocFFT_test.dat'
-      real(kind = kreal) :: start, finish, elapsed(4)
+      real(kind = kreal) :: start, elapsed(9)
 !
       type(fft_test_data) :: ft1
 !
@@ -36,6 +36,7 @@
 !
       integer(kind = kint) :: ncomp_GPU
       integer(kind = kint) :: ncomp_CPU
+      integer(kind = kint) :: max_4_smp
       integer(kind = kint), allocatable :: istack_FFTPACK(:)
       integer(kind = kint) :: i, nd, icou
 !
@@ -141,8 +142,6 @@
       integer(kind = kint), intent(in) :: istack_FFTPACK(0:np_smp)
       type(calypso_rocFFT_params), target :: fwd
 !
-      integer(kind = kint), intent(in) :: Ncomp
-!
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
       type(working_FFTPACK), intent(inout) :: WK_FFTPACK
 !
@@ -158,7 +157,7 @@
       call swap_prt_fld_to_RFFTMF                                       &
      &   (np_smp, istack_FFTPACK, WK_FFTPACK%Mmax_smp, int(fwd%Nfft),   &
      &    Ncomp, X(1,1), WK_FFTPACK%X_FFTPACK5)
-      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+      elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !!   1. Create a CPU thread team
       start = OMP_GET_WTIME()
@@ -193,7 +192,7 @@
       call swap_prt_spectr_from_RFFTMF                                  &
      &   (np_smp, istack_FFTPACK, WK_FFTPACK%Mmax_smp, int(fwd%Nfft),   &
      &    WK_FFTPACK%X_FFTPACK5, Ncomp, X(1,1))
-      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+      elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
       write(*,*) 'CPU FFT clock',   elapsed(3)
       write(*,*) 'GPU FFT clock',   elapsed(4)
@@ -230,7 +229,7 @@
       call swap_prt_spectr_to_RFFTMB                                    &
      &   (np_smp, istack_FFTPACK, WK_FFTPACK%Mmax_smp, int(bwd%Nfft),   &
      &    Ncomp, X(1,1), WK_FFTPACK%X_FFTPACK5)
-      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+      elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !      write(*,*) 'OMP parallel start', OMP_GET_WTIME()
 !!   1. Create a CPU thread team
@@ -262,7 +261,7 @@
       call swap_prt_fld_from_RFFTMB                                     &
      &   (np_smp, istack_FFTPACK, WK_FFTPACK%Mmax_smp, int(bwd%Nfft),   &
      &    WK_FFTPACK%X_FFTPACK5, Ncomp, X(1,1))
-      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+      elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
       write(*,*) 'CPU FFT clock',   elapsed(3)
       write(*,*) 'GPU FFT clock',   elapsed(4)
