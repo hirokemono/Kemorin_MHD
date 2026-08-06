@@ -205,7 +205,7 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call multi_pout_FTTRUB_smp(Nsmp, Nstacksmp, M, Nfft, X,           &
+      call multi_pout_FTTRUB(Nsmp, Nstacksmp, M, Nfft, X,               &
      &    WK%X_ispack, WK%Mmax_smp, WK%IT_ispack, WK%T_ispack,          &
      &    WK%WORK_ispack, elapsed_fft, elapsed_cpy)
 !

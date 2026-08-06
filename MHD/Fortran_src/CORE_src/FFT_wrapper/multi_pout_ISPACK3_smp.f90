@@ -18,9 +18,11 @@
 !! wrapper subroutine for initierize FFT for ISPACK
 !! ------------------------------------------------------------------
 !!
-!!      subroutine multi_pout_FXRTFA_smp(Nsmp, Nstacksmp, M, Nfft, X,   &
+!!      subroutine multi_pout_FXRTFA(Nsmp, Nstacksmp, M, Nfft, X,       &
 !!     &          X_ispack, Mmax_smp, IT_ispack, T_ispack,              &
 !!     &          elapsed_fft, elapsed_cpy)
+!!      subroutine multi_pout_FXRTFA_smp(Nsmp, Nstacksmp, Nfft,         &
+!!     &          X_ispack, Mmax_smp, IT_ispack, T_ispack)
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !!        integer(kind = kint_gl), intent(in) :: M, Mmax_smp
 !!        integer(kind = kint_gl), intent(in) :: Nfft
@@ -42,9 +44,11 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine multi_pout_FXRTBA_smp(Nsmp, Nstacksmp, M, Nfft, X,   &
+!!      subroutine multi_pout_FXRTBA(Nsmp, Nstacksmp, M, Nfft, X,       &
 !!     &          X_ispack, Mmax_smp, IT_ispack, T_ispack,              &
 !!     &          elapsed_fft, elapsed_cpy)
+!!      subroutine multi_pout_FXRTBA_smp(Nsmp, Nstacksmp, Mmax_smp,     &
+!!     &          Nfft, X_ispack, IT_ispack, T_ispack)
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !!        integer(kind = kint_gl), intent(in) :: M, Mmax_smp
 !!        integer(kind = kint_gl), intent(in) :: Nfft
@@ -116,7 +120,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine multi_pout_FXRTFA_smp(Nsmp, Nstacksmp, M, Nfft, X,     &
+      subroutine multi_pout_FXRTFA(Nsmp, Nstacksmp, M, Nfft, X,         &
      &          X_ispack, Mmax_smp, IT_ispack, T_ispack,                &
      &          elapsed_fft, elapsed_cpy)
 !
@@ -132,45 +136,31 @@
       real(kind = 8), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nsmp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
-      real(kind = kreal) :: start, ed_c, ed_f
-      integer(kind = kint_gl) :: num8
-      integer(kind = kint_gl) :: ismp, ist
-      integer(kind = kint_gl) :: inod_s, inod_c
+      real(kind = kreal) :: start
 !
 !
-      ed_c = 0.0d0
-      ed_f = 0.0d0
-!$omp parallel do private(ist,num8,inod_s,inod_c,start)                 &
-!$omp&            reduction(+:ed_c,ed_f)
-      do ismp = 1, Nsmp
-        ist = Nstacksmp(ismp-1)
-        num8 = Nstacksmp(ismp) - Nstacksmp(ismp-1)
+      start = OMP_GET_WTIME()
+      call copy_rtp_fld_to_FXRTFA(Nsmp, Nstacksmp, Mmax_smp, Nfft,      &
+     &                            M, X(1,1), X_ispack(1,1))
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
-        start = OMP_GET_WTIME()
-        call copy_rtp_fld_to_FXRTFA_smp(ist, num8, Nfft, M, X,          &
-     &                                  Mmax_smp, X_ispack(1,ismp))
-        ed_c = ed_c + OMP_GET_WTIME() - start
+      start = OMP_GET_WTIME()
+!$omp parallel
+      call multi_pout_FXRTFA_smp(Nsmp, Nstacksmp, Nfft, X_ispack,       &
+     &                           Mmax_smp, IT_ispack, T_ispack)
+!$omp end parallel
+      elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
-        start = OMP_GET_WTIME()
-        call FXRTFA(num8, Nfft, X_ispack(1,ismp),                       &
-     &              IT_ispack(1), T_ispack(1))
-        ed_f = ed_f + OMP_GET_WTIME() - start
+      start = OMP_GET_WTIME()
+      call norm_rtp_spectr_from_FXRTFA(Nsmp, Nstacksmp, Mmax_smp, Nfft, &
+     &                                 X_ispack(1,1), M, X(1,1))
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
-        start = OMP_GET_WTIME()
-        call norm_rtp_spectr_from_FXRTFA_smp(ist, num8,                 &
-     &      Nfft, Mmax_smp, X_ispack(1,ismp), M, X)
-        ed_c = ed_c + OMP_GET_WTIME() - start
-      end do
-!$omp end parallel do
-!
-      elapsed_fft = elapsed_fft + ed_f / dble(Nsmp)
-      elapsed_cpy = elapsed_cpy + ed_c / dble(Nsmp)
-!
-      end subroutine multi_pout_FXRTFA_smp
+      end subroutine multi_pout_FXRTFA
 !
 ! ------------------------------------------------------------------
 !
-      subroutine multi_pout_FXRTBA_smp(Nsmp, Nstacksmp, M, Nfft, X,     &
+      subroutine multi_pout_FXRTBA(Nsmp, Nstacksmp, M, Nfft, X,         &
      &          X_ispack, Mmax_smp, IT_ispack, T_ispack,                &
      &          elapsed_fft, elapsed_cpy)
 !
@@ -186,39 +176,84 @@
       real(kind = 8), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nsmp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
-      real(kind = kreal) :: start, ed_c, ed_f
-      integer(kind = kint_gl) :: num8
-      integer(kind = kint_gl) :: ismp, ist
-      integer(kind = kint_gl) :: inod_s, inod_c
+      real(kind = kreal) :: start
 !
 !
-      ed_c = 0.0d0
-      ed_f = 0.0d0
-!$omp parallel do private(ist,num8,inod_s,inod_c,start)                 &
-!$omp&                    reduction(+:ed_c,ed_f)
+      start = OMP_GET_WTIME()
+      call norm_rtp_spectr_to_FXRTBA(Nsmp, Nstacksmp, Mmax_smp, Nfft,   &
+     &                               M, X(1,1), X_ispack(1,1))
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+!
+      start = OMP_GET_WTIME()
+!$omp parallel
+      call multi_pout_FXRTBA_smp(Nsmp, Nstacksmp, Mmax_smp,             &
+     &    Nfft, X_ispack, IT_ispack, T_ispack)
+!$omp end parallel
+      elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
+!
+      start = OMP_GET_WTIME()
+      call copy_rtp_fld_from_FXRTBA(Nsmp, Nstacksmp, Mmax_smp, Nfft,    &
+     &                              X_ispack(1,1), M, X(1,1))
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+!
+      end subroutine multi_pout_FXRTBA
+!
+! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
+      subroutine multi_pout_FXRTFA_smp(Nsmp, Nstacksmp, Nfft,           &
+     &          X_ispack, Mmax_smp, IT_ispack, T_ispack)
+!
+      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint_gl), intent(in) :: Mmax_smp
+      integer(kind = kint_gl), intent(in) :: Nfft
+      integer(kind = kint_gl), intent(in) :: IT_ispack(Nfft/2)
+      real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
+!
+      real(kind = 8), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nsmp)
+!
+      integer(kind = kint_gl) :: ismp, ist, num8
+!
+!
+!$omp do private(ist,num8)
       do ismp = 1, Nsmp
         ist = Nstacksmp(ismp-1)
         num8 = Nstacksmp(ismp) - Nstacksmp(ismp-1)
+        if(num8 .le. 0) return
 !
-        start = OMP_GET_WTIME()
-        call norm_rtp_spectr_to_FXRTBA_smp(ist, num8, Nfft, M, X,       &
-     &                                     Mmax_smp, X_ispack(1,ismp))
-        ed_c = ed_c + OMP_GET_WTIME() - start
-!
-        start = OMP_GET_WTIME()
-        call FXRTBA(num8, Nfft, X_ispack(1,ismp),                       &
+        call FXRTFA(num8, Nfft, X_ispack(1,ismp),                       &
      &              IT_ispack(1), T_ispack(1))
-        ed_f = ed_f + OMP_GET_WTIME() - start
-!
-        start = OMP_GET_WTIME()
-        call copy_rtp_fld_from_FXRTBA_smp(ist, num8, Nfft, Mmax_smp,    &
-     &                                    X_ispack(1,ismp), M, X)
-        ed_c = ed_c + OMP_GET_WTIME() - start
       end do
 !$omp end parallel do
 !
-      elapsed_fft = elapsed_fft + ed_f / dble(Nsmp)
-      elapsed_cpy = elapsed_cpy + ed_c / dble(Nsmp)
+      end subroutine multi_pout_FXRTFA_smp
+!
+! ------------------------------------------------------------------
+!
+      subroutine multi_pout_FXRTBA_smp(Nsmp, Nstacksmp, Mmax_smp,       &
+     &          Nfft, X_ispack, IT_ispack, T_ispack)
+!
+      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint_gl), intent(in) :: M, Mmax_smp
+      integer(kind = kint_gl), intent(in) :: Nfft
+      integer(kind = kint_gl), intent(in) :: IT_ispack(Nfft/2)
+      real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
+!
+      real(kind = 8), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nsmp)
+!
+      integer(kind = kint_gl) :: ismp, ist, num8
+!
+!
+!$omp do private(ist,num8)
+      do ismp = 1, Nsmp
+        ist = Nstacksmp(ismp-1)
+        num8 = Nstacksmp(ismp) - Nstacksmp(ismp-1)
+        if(num8 .le. 0) return
+!
+        call FXRTBA(num8, Nfft, X_ispack(1,ismp),                       &
+     &              IT_ispack(1), T_ispack(1))
+      end do
+!$omp end parallel do
 !
       end subroutine multi_pout_FXRTBA_smp
 !

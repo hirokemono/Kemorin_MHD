@@ -41,9 +41,11 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine multi_pout_FTTRUB_smp(Nsmp, Nstacksmp, M, Nfft, X,   &
+!!      subroutine multi_pout_FTTRUB(Nsmp, Nstacksmp, M, Nfft, X,       &
 !!     &          X_ispack, Mmax_smp, IT_ispack, T_ispack, WORK_ispack, &
 !!     &          elapsed_fft, elapsed_cpy)
+!!      subroutine multi_pout_FTTRUB_smp(Nsmp, Nstacksmp, Mmax_smp,     &
+!!     &          Nfft, X_ispack, IT_ispack, T_ispack, WORK_ispack)
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !!        integer(kind = kint), intent(in) :: M, Nfft, Mmax_smp
 !!        integer(kind = 4), intent(in) :: IT_ispack(5)
@@ -142,40 +144,36 @@
       integer(kind = kint_gl) :: ismp, ist, num8
 !
 !
-      ed_c = 0.0d0
-      ed_f = 0.0d0
+      start = OMP_GET_WTIME()
+      call copy_rtp_fld_to_FXRTFA                                       &
+     &   (Nsmp, Nstacksmp, cast_long(Mmax_smp), cast_long(Nfft),        &
+     &    cast_long(M), X(1,1), X_ispack(1,1))
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+!
 !$omp parallel do private(ist,num8,start) reduction(+:ed_c,ed_f)
       do ismp = 1, Nsmp
         ist = Nstacksmp(ismp-1)
         num8 = Nstacksmp(ismp) - Nstacksmp(ismp-1)
-!
-        start = OMP_GET_WTIME()
-        call copy_rtp_fld_to_FXRTFA_smp                                 &
-     &     (ist, num8, cast_long(Nfft), cast_long(M), X,                &
-     &      cast_long(Mmax_smp), X_ispack(1,ismp))
-        ed_c = ed_c + OMP_GET_WTIME() - start
+        if(num8 .le. 0) return
 !
         start = OMP_GET_WTIME()
         call FTTRUF(int(num8), Nfft, X_ispack(1,ismp),                  &
      &      WORK_ispack(1,ismp), IT_ispack(1), T_ispack(1))
         ed_f = ed_f + OMP_GET_WTIME() - start
-!
-        start = OMP_GET_WTIME()
-        call norm_rtp_spectr_from_FXRTFA_smp                            &
-     &     (ist, num8, cast_long(Nfft), cast_long(Mmax_smp),            &
-     &      X_ispack(1,ismp), cast_long(M), X)
-        ed_c = ed_c + OMP_GET_WTIME() - start
       end do
 !$omp end parallel do
 !
-      elapsed_fft = elapsed_fft + ed_f / dble(Nsmp)
-      elapsed_cpy = elapsed_cpy + ed_c / dble(Nsmp)
+      start = OMP_GET_WTIME()
+      call norm_rtp_spectr_from_FXRTFA                                  &
+     &   (Nsmp, Nstacksmp, cast_long(Mmax_smp), cast_long(Nfft),        &
+     &    X_ispack(1,1), cast_long(M), X(1,1))
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       end subroutine multi_pout_FTTRUF_smp
 !
 ! ------------------------------------------------------------------
 !
-      subroutine multi_pout_FTTRUB_smp(Nsmp, Nstacksmp, M, Nfft, X,     &
+      subroutine multi_pout_FTTRUB(Nsmp, Nstacksmp, M, Nfft, X,         &
      &          X_ispack, Mmax_smp, IT_ispack, T_ispack, WORK_ispack,   &
      &          elapsed_fft, elapsed_cpy)
 !
@@ -194,38 +192,61 @@
       real(kind = 8), intent(inout) :: WORK_ispack(Mmax_smp*Nfft,Nsmp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
-      real(kind = kreal) :: start, ed_c, ed_f
+      real(kind = kreal) :: start
+!
+!
+      start = OMP_GET_WTIME()
+      call norm_rtp_spectr_to_FXRTBA                                    &
+     &   (Nsmp, Nstacksmp, cast_long(Mmax_smp), cast_long(Nfft),        &
+     &    cast_long(M), X(1,1), X_ispack(1,1))
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+!
+      start = OMP_GET_WTIME()
+!$omp parallel
+      call multi_pout_FTTRUB_smp(Nsmp, Nstacksmp, Mmax_smp, Nfft,       &
+     &    X_ispack, IT_ispack, T_ispack, WORK_ispack)
+!$omp end parallel
+      elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
+!
+      start = OMP_GET_WTIME()
+      call copy_rtp_fld_from_FXRTBA                                     &
+     &   (Nsmp, Nstacksmp, cast_long(Mmax_smp), cast_long(Nfft),        &
+     &    X_ispack(1,1), cast_long(M), X(1,1))
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+!
+      end subroutine multi_pout_FTTRUB
+!
+! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
+      subroutine multi_pout_FTTRUB_smp(Nsmp, Nstacksmp, Mmax_smp,       &
+     &          Nfft, X_ispack, IT_ispack, T_ispack, WORK_ispack)
+!
+      use ispack_0931
+!
+      integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) :: Nfft, Mmax_smp
+      integer(kind = 4), intent(in) :: IT_ispack(5)
+      real(kind = 8), intent(in) :: T_ispack(itwo*Nfft)
+!
+      real(kind = kreal), intent(inout)                                 &
+     &                              :: X_ispack(Mmax_smp*Nfft,Nsmp)
+      real(kind = 8), intent(inout) :: WORK_ispack(Mmax_smp*Nfft,Nsmp)
+!
       integer(kind = kint_gl) :: ismp, ist, num8
 !
 !
-      ed_c = 0.0d0
-      ed_f = 0.0d0
-!$omp parallel do private(ist,num8,start) reduction(+:ed_c,ed_f)
+!$omp do private(ist,num8)
       do ismp = 1, Nsmp
         ist = Nstacksmp(ismp-1)
         num8 = Nstacksmp(ismp) - Nstacksmp(ismp-1)
-!
-        start = OMP_GET_WTIME()
-        call norm_rtp_spectr_to_FXRTBA_smp                              &
-     &     (ist, num8, cast_long(Nfft), cast_long(M), X,                &
-     &      cast_long(Mmax_smp), X_ispack(1,ismp))
-        ed_c = ed_c + OMP_GET_WTIME() - start
+        if(num8 .le. 0) return
 !
         start = OMP_GET_WTIME()
         call FTTRUB(int(num8), Nfft, X_ispack(1,ismp),                  &
      &      WORK_ispack(1,ismp), IT_ispack(1), T_ispack(1))
-        ed_f = ed_f + OMP_GET_WTIME() - start
-!
-        start = OMP_GET_WTIME()
-        call copy_rtp_fld_from_FXRTBA_smp                               &
-     &     (ist, num8, cast_long(Nfft), cast_long(Mmax_smp),            &
-     &      X_ispack(1,ismp), cast_long(M), X)
-        ed_c = ed_c + OMP_GET_WTIME() - start
       end do
-!$omp end parallel do
-!
-      elapsed_fft = elapsed_fft + ed_f / dble(Nsmp)
-      elapsed_cpy = elapsed_cpy + ed_c / dble(Nsmp)
+!$omp end do nowait
 !
       end subroutine multi_pout_FTTRUB_smp
 !
