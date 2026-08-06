@@ -94,6 +94,7 @@
       use m_elapsed_labels_SPH_TRNS
       use calypso_multi_rocFFT
       use multi_pin_complex_rocFFT
+      use copy_field_for_FFT
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
 !      type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -114,9 +115,9 @@
       if(rocFFT_fwd%Ncomp .le. 0) return
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
-      call copy_pin_fld_to_rocFFT_real                                  &
-     &   (rocFFT_fwd%Ncomp, rocFFT_fwd%Nfft, X_rtp(1,1),                &
-     &    WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT)
+      call sel_copy_pin_field_to_FFT                                    &
+     &   (int(rocFFT_fwd%Ncomp), int(rocFFT_fwd%Nfft), X_rtp(1,1),      &
+     &    int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT)
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
@@ -150,6 +151,7 @@
       use calypso_multi_rocFFT
       use multi_pin_complex_rocFFT
       use copy_sph_FFTW_from_recv
+      use copy_field_for_FFT
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -185,9 +187,9 @@
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
-      call copy_pin_fld_from_rocFFT_real                                &
-     &   (rocFFT_bwd%Ncomp, WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT,       &
-     &    rocFFT_bwd%Nfft, X_rtp(1,1))
+      call sel_copy_pin_field_from_FFT                                  &
+     &   (int(rocFFT_bwd%Ncomp), int(WK_rocFFT%Nfft_r),                 &
+     &    WK_rocFFT%X_rocFFT(1), int(rocFFT_bwd%Nfft), X_rtp(1,1))
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
 !
       end subroutine prt_bwd_cplx_rocFFT_from_recv

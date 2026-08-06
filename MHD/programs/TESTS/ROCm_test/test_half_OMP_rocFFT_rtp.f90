@@ -129,6 +129,7 @@
       subroutine multi_pout_fwd_OMP_rocFFT2(Ncomp, istack_FFTPACK,      &
      &          fwd, WK_fft, WK_FFTPACK, X, elapsed)
 !
+      use copy_field_for_FFT
       use normalize_for_rocFFT
       use calypso_multi_rocFFT
 !
@@ -150,7 +151,7 @@
 !
 !
       start = OMP_GET_WTIME()
-      call copy_pout_fld_to_rocFFT(ione, Ncomp, int(fwd%Nfft), X(1,1),  &
+      call copy_pout_field_to_FFT(ione, Ncomp, int(fwd%Nfft), X(1,1),   &
      &    int(fwd%Ncomp), int(fwd%Nfft), WK_fft%X_rocFFT(1))
       call copy_rtp_fld_to_RFFTMF                                       &
      &   (np_smp, istack_FFTPACK, WK_FFTPACK%Mmax_smp, int(fwd%Nfft),   &
@@ -199,6 +200,7 @@
       subroutine multi_pout_bwd_OMP_rocFFT2(Ncomp, istack_FFTPACK,      &
      &          bwd, WK_rocFFT, WK_FFTPACK, X, elapsed)
 !
+      use copy_field_for_FFT
       use normalize_for_rocFFT
       use calypso_multi_rocFFT
 !
@@ -250,7 +252,7 @@
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
-      call copy_pout_fld_from_rocFFT                                    &
+      call copy_pout_field_from_FFT                                     &
      &   (int(bwd%Ncomp), int(bwd%Nfft), WK_rocFFT%X_rocFFT(1),         &
      &    Ncomp, bwd%Nfft, ione, X(1,1))
       call copy_rtp_fld_from_RFFTMB                                     &

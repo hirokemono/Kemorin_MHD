@@ -79,6 +79,7 @@
       subroutine multi_pout_fwd_rocFFT_r2r(Ncomp, fwd, WK_fft, X,       &
      &                                     elapsed_fft, elapsed_cpy)
 !
+      use copy_field_for_FFT
       use normalize_for_rocFFT
       use calypso_multi_rocFFT
 !
@@ -93,7 +94,7 @@
 !
 !
       start = OMP_GET_WTIME()
-      call copy_pout_fld_to_rocFFT(ione, Ncomp, int(fwd%Nfft), X(1,1),  &
+      call copy_pout_field_to_FFT(ione, Ncomp, int(fwd%Nfft), X(1,1),   &
      &    int(fwd%Ncomp), int(fwd%Nfft), WK_fft%X_rocFFT(1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
@@ -117,6 +118,7 @@
       subroutine multi_pout_bwd_rocFFT_r2r(Ncomp, bwd, WK_fft, X,       &
      &                                     elapsed_fft, elapsed_cpy)
 !
+      use copy_field_for_FFT
       use normalize_for_rocFFT
       use calypso_multi_rocFFT
 !
@@ -144,7 +146,7 @@
       elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
-      call copy_pout_fld_from_rocFFT                                    &
+      call copy_pout_field_from_FFT                                     &
      &   (int(bwd%Ncomp), int(bwd%Nfft), WK_fft%X_rocFFT(1),            &
      &    Ncomp, int(bwd%Nfft), ione, X(1,1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
@@ -157,6 +159,7 @@
       subroutine multi_pout_fwd_OMP_rocFFT(Ncomp, fwd, WK_fft, X,       &
      &                                     elapsed_fft, elapsed_cpy)
 !
+      use copy_field_for_FFT
       use normalize_for_rocFFT
       use calypso_multi_rocFFT
 !
@@ -171,7 +174,7 @@
 !
 !
       start = OMP_GET_WTIME()
-      call copy_pout_fld_to_rocFFT(ione, Ncomp, int(fwd%Nfft), X(1,1),  &
+      call copy_pout_field_to_FFT(ione, Ncomp, int(fwd%Nfft), X(1,1),   &
      &    int(fwd%Ncomp), int(fwd%Nfft), WK_fft%X_rocFFT(1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
@@ -194,6 +197,7 @@
       subroutine multi_pout_bwd_OMP_rocFFT(Ncomp, bwd, WK_fft, X,       &
      &                                     elapsed_fft, elapsed_cpy)
 !
+      use copy_field_for_FFT
       use normalize_for_rocFFT
       use calypso_multi_rocFFT
 !
@@ -220,7 +224,7 @@
       elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
-      call copy_pout_fld_from_rocFFT                                    &
+      call copy_pout_field_from_FFT                                     &
      &   (int(bwd%Ncomp), int(bwd%Nfft), WK_fft%X_rocFFT(1),            &
      &    Ncomp, int(bwd%Nfft), ione, X(1,1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start

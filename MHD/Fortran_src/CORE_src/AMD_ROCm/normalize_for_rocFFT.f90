@@ -31,19 +31,6 @@
 !!        integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_r
 !!        real(kind = kreal), intent(in) :: X(Nfft,Ncomp)
 !!        real(kind = kreal), intent(inout) :: X_FFT(NFFT_r,Ncomp)
-!!
-!!      subroutine copy_pout_fld_to_rocFFT(ist_comp, Ncomp, Nfft, X,    &
-!!     &                                   Ncomp_r, Nfft_r, X_fft)
-!!        integer(kind = kint), intent(in) :: ist_comp, Ncomp, Nfft
-!!        real(kind = kreal), intent(in) :: X(Ncomp,Nfft)
-!!        integer(kind = kint), intent(in) :: Ncomp_r, Nfft_r
-!!        real(kind = kreal), intent(inout) :: X_fft(Ncomp_r*Nfft_r)
-!!      subroutine copy_pout_fld_from_rocFFT(Ncomp_r, Nfft_r, X_fft     &
-!!     &                                     Ncomp, Nfft, ist_comp, X)
-!!        integer(kind = kint), intent(in) :: Ncomp_r, Nfft_r
-!!        real(kind = kreal), intent(in) :: X_fft(Ncomp_r*Nfft_r)
-!!        integer(kind = kint), intent(in) :: ist_comp, Ncomp, Nfft
-!!        real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
 !! ------------------------------------------------------------------
 !!@endverbatim
       module normalize_for_rocFFT
@@ -187,61 +174,6 @@
 !$omp end parallel do
 !
       end subroutine norm_prt_to_bwd_rocFFT
-!
-! ------------------------------------------------------------------
-! ------------------------------------------------------------------
-!
-      subroutine copy_pout_fld_to_rocFFT(ist_comp, Ncomp, Nfft, X,      &
-     &                                   Ncomp_r, Nfft_r, X_fft)
-!
-      integer(kind = kint), intent(in) :: ist_comp, Ncomp, Nfft
-      real(kind = kreal), intent(in) :: X(Ncomp,Nfft)
-!
-      integer(kind = kint), intent(in) :: Ncomp_r, Nfft_r
-      real(kind = kreal), intent(inout) :: X_fft(Ncomp_r*Nfft_r)
-!
-      integer(kind = kint) :: i, ist
-!
-!
-!$omp parallel do private(i,ist)
-      do i = 1, Nfft
-        ist = (i-1) * Ncomp_r
-        X_fft(ist+1:ist+Ncomp_r) = X(ist_comp:ist_comp+Ncomp_r-1,i)
-      end do
-!$omp end parallel do
-!
-      if(Nfft .ge. Nfft_r) return
-!$omp parallel do private(i,ist)
-      do i = Nfft+1, Nfft_r
-        ist = (i-1) * Ncomp_r
-        X_fft(ist+1:ist+Ncomp_r) = 0.0d0
-      end do
-!$omp end parallel do
-!
-      end subroutine copy_pout_fld_to_rocFFT
-!
-! ------------------------------------------------------------------
-!
-      subroutine copy_pout_fld_from_rocFFT(Ncomp_r, Nfft_r, X_fft,      &
-     &                                     Ncomp, Nfft, ist_comp, X)
-!
-      integer(kind = kint), intent(in) :: Ncomp_r, Nfft_r
-      real(kind = kreal), intent(in) :: X_fft(Ncomp_r*Nfft_r)
-!
-      integer(kind = kint), intent(in) :: ist_comp, Ncomp, Nfft
-      real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
-!
-      integer(kind = kint) :: i, ist
-!
-!
-!$omp parallel do private(i,ist)
-      do i = 1, Nfft
-        ist = (i-1) * Ncomp_r
-        X(ist_comp:ist_comp+Ncomp_r-1,i) = X_fft(ist+1:ist+Ncomp_r)
-      end do
-!$omp end parallel do
-!
-      end subroutine copy_pout_fld_from_rocFFT
 !
 ! ------------------------------------------------------------------
 !

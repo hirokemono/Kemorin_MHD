@@ -138,6 +138,8 @@
       use hipfort_check
       use hipfort_rocfft
 !
+      use copy_field_for_FFT
+!
       integer(kind = kint), intent(in) :: Ncomp
       integer(kind = kint), intent(in) :: istack_FFTPACK(0:np_smp)
       type(calypso_rocFFT_params), target :: fwd
@@ -152,8 +154,8 @@
 !
 !
       start = OMP_GET_WTIME()
-      call copy_pin_fld_to_rocFFT_real(fwd%Ncomp, fwd%Nfft, X(1,1),     &
-     &    WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT(1))
+      call sel_copy_pin_field_to_FFT(int(fwd%Ncomp), int(fwd%Nfft),     &
+     &    X(1,1), int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1))
       call swap_prt_fld_to_RFFTMF                                       &
      &   (np_smp, istack_FFTPACK, WK_FFTPACK%Mmax_smp, int(fwd%Nfft),   &
      &    Ncomp, X(1,1), WK_FFTPACK%X_FFTPACK5)
@@ -210,6 +212,8 @@
       use hipfort_check
       use hipfort_rocfft
 !
+      use copy_field_for_FFT
+!
       integer(kind = kint), intent(in) :: Ncomp
       integer(kind = kint), intent(in) :: istack_FFTPACK(0:np_smp)
       type(calypso_rocFFT_params), target :: bwd
@@ -255,9 +259,9 @@
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
-      call copy_pin_fld_from_rocFFT_real                                &
-     &   (bwd%Ncomp, WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT(1),           &
-     &    bwd%Nfft, X(1,1))
+      call sel_copy_pin_field_from_FFT                                  &
+     &   (int(bwd%Ncomp), int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1), &
+     &    int(bwd%Nfft), X(1,1))
       call swap_prt_fld_from_RFFTMB                                     &
      &   (np_smp, istack_FFTPACK, WK_FFTPACK%Mmax_smp, int(bwd%Nfft),   &
      &    WK_FFTPACK%X_FFTPACK5, Ncomp, X(1,1))
