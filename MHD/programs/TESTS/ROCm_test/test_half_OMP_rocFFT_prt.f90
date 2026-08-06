@@ -14,8 +14,9 @@
       use multi_pin_complex_rocFFT
       use multi_pin_real_rocFFT
 !
-      use t_single_FFTW_wrapper
-      use calypso_single_FFTW3
+      use t_FFTPACK5_wrapper
+      use calypso_multi_fftpack
+      use cal_minmax_and_stacks
 !
       implicit none
 !
