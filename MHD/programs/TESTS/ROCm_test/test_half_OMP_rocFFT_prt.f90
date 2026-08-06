@@ -171,7 +171,7 @@
       call calypso_fwd_OpenMP_rocFFT                                    &
      &   (fwd%rocFFT_plan, fwd%rocFFT_wk_info, fwd%Ncomp,               &
      &    WK_rocFFT%aNfft, WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT(1))
-      ed_g = ed_g + OMP_GET_WTIME() - st_g
+      elapsed(4) = elapsed(4) + OMP_GET_WTIME() - st_g
 !$omp end single nowait
 !
 !!   3. The rest of the CPU threads immediately and execute
