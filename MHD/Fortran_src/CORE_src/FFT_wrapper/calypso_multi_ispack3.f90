@@ -130,7 +130,7 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call multi_pin_FXRTFA_smp(Nsmp, Nstacksmp, M, Nfft, X,            &
+      call multi_pin_FXRTFA(Nsmp, Nstacksmp, M, Nfft, X,                &
      &    WK%X_ispack, WK%Mmax_smp, WK%IT_ispack, WK%T_ispack,          &
      &    elapsed_fft, elapsed_cpy)
 !
@@ -151,7 +151,7 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call multi_pin_FXRTBA_smp(Nsmp, Nstacksmp, M, Nfft, X,            &
+      call multi_pin_FXRTBA(Nsmp, Nstacksmp, M, Nfft, X,                &
      &    WK%X_ispack, WK%Mmax_smp, WK%IT_ispack, WK%T_ispack,          &
      &    elapsed_fft, elapsed_cpy)
 !

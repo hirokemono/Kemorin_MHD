@@ -81,6 +81,22 @@ LIB_FILES_FFTPACK_TEST = \
 '$$(LIB_MESH_FILE)'      \
 '$$(LIB_FFTPACK_FILE)'
 
+LIBS_ISPACK_TEST = \
+'$$(LIB_MESH)'      \
+'$$(LIB_ISPACK)'
+
+LIB_FILES_ISPACK_TEST = \
+'$$(LIB_MESH_FILE)'      \
+'$$(LIB_ISPACK_FILE)'
+
+LIBS_ISPACK3_TEST = \
+'$$(LIB_MESH)'      \
+'$$(LIB_ISPACK3)'
+
+LIB_FILES_ISPACK3_TEST = \
+'$$(LIB_MESH_FILE)'      \
+'$$(LIB_ISPACK3_FILE)'
+
 MOD_FFTPACK_TEST = \
 m_FFT_size.o      \
 t_fft_test_data.o \
@@ -95,32 +111,11 @@ test_prt_FFTPACK5.o
 
 
 MOD_ISPACK1_TEST = \
-m_precision.o \
-m_constants.o \
-m_machine_parameter.o \
-\
-transfer_to_long_integers.o \
-normalize_for_ISPACK.o \
-t_ispack_FFT_wrapper.o \
-multi_pin_ISPACK1_smp.o \
-multi_pout_ISPACK1_smp.o \
-calypso_multi_ispack.o \
-\
 m_FFT_size.o      \
 t_fft_test_data.o \
 test_ISPACK1_FFT.o
 
 MOD_ISPACK3_TEST = \
-m_precision.o \
-m_constants.o \
-m_machine_parameter.o \
-\
-normalize_for_ISPACK.o \
-multi_pout_ISPACK3_smp.o \
-multi_pin_ISPACK3_smp.o \
-t_ispack3_FFT_wrapper.o \
-calypso_multi_ispack3.o \
-\
 m_FFT_size.o      \
 t_fft_test_data.o \
 test_ISPACK3_FFT.o
@@ -231,17 +226,17 @@ target_task:
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_ISPACK1_TEST)': '$$(MOD_ISPACK1_TEST)' \
-	'$$(LIB_ISPACK_FILE)' >> $(MAKENAME)
+	'$$(LIB_FILES_ISPACK_TEST)' >> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_ISPACK1_TEST)' \
-	'$$(MOD_ISPACK1_TEST)  -L. $$(LIB_ISPACK)' \
+	'$$(MOD_ISPACK1_TEST)  -L. $$(LIBS_ISPACK_TEST)' \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_ISPACK3_TEST)': '$$(MOD_ISPACK3_TEST)' \
-	'$$(LIB_ISPACK3_FILE)' >> $(MAKENAME)
+	'$$(LIB_FILES_ISPACK3_TEST)' >> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_ISPACK3_TEST)' \
-	'$$(MOD_ISPACK3_TEST)  -L. $$(LIB_ISPACK3)' \
+	'$$(MOD_ISPACK3_TEST)  -L. $$(LIBS_ISPACK3_TEST)' \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_FFW3_F_TEST)': '$$(MOD_FFW3_F_TEST)' \
@@ -291,6 +286,16 @@ lib_name:
 	@echo  $(LIBS_FFTPACK_TEST)            >> $(MAKENAME)
 	@echo  LIB_FILES_FFTPACK_TEST=  \\     >> $(MAKENAME)
 	@echo  $(LIB_FILES_FFTPACK_TEST)       >> $(MAKENAME)
+	@echo  '#' >> $(MAKENAME)
+	@echo  LIBS_ISPACK_TEST=  \\          >> $(MAKENAME)
+	@echo  $(LIBS_ISPACK_TEST)            >> $(MAKENAME)
+	@echo  LIB_FILES_ISPACK_TEST=  \\     >> $(MAKENAME)
+	@echo  $(LIB_FILES_ISPACK_TEST)       >> $(MAKENAME)
+	@echo  '#' >> $(MAKENAME)
+	@echo  LIBS_ISPACK3_TEST=  \\          >> $(MAKENAME)
+	@echo  $(LIBS_ISPACK3_TEST)            >> $(MAKENAME)
+	@echo  LIB_FILES_ISPACK3_TEST=  \\     >> $(MAKENAME)
+	@echo  $(LIB_FILES_ISPACK3_TEST)       >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
 mod_list:

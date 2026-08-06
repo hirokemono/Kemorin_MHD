@@ -5,7 +5,7 @@
 !!@date Programmed in 20026
 !!
 !!
-!>@brief  Swap FFT dataarray for FFTPACK
+!>@brief  Swap FFT data array for FFTPACK
 !!
 !!@verbatim
 !!      subroutine swap_prt_fld_to_RFFTMF(Nsmp, Nstacksmp, Mmax_smp,    &

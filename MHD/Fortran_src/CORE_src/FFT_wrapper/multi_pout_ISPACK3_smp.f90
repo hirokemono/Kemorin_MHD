@@ -219,12 +219,12 @@
       do ismp = 1, Nsmp
         ist = Nstacksmp(ismp-1)
         num8 = Nstacksmp(ismp) - Nstacksmp(ismp-1)
-        if(num8 .le. 0) return
+        if(num8 .le. 0) cycle
 !
         call FXRTFA(num8, Nfft, X_ispack(1,ismp),                       &
      &              IT_ispack(1), T_ispack(1))
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine multi_pout_FXRTFA_smp
 !
@@ -234,7 +234,7 @@
      &          Nfft, X_ispack, IT_ispack, T_ispack)
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint_gl), intent(in) :: M, Mmax_smp
+      integer(kind = kint_gl), intent(in) :: Mmax_smp
       integer(kind = kint_gl), intent(in) :: Nfft
       integer(kind = kint_gl), intent(in) :: IT_ispack(Nfft/2)
       real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
@@ -248,12 +248,12 @@
       do ismp = 1, Nsmp
         ist = Nstacksmp(ismp-1)
         num8 = Nstacksmp(ismp) - Nstacksmp(ismp-1)
-        if(num8 .le. 0) return
+        if(num8 .le. 0) cycle
 !
         call FXRTBA(num8, Nfft, X_ispack(1,ismp),                       &
      &              IT_ispack(1), T_ispack(1))
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine multi_pout_FXRTBA_smp
 !
