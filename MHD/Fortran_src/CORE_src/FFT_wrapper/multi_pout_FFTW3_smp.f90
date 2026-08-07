@@ -221,6 +221,8 @@
       do ip = 1, Nsmp
         ist = Nstacksmp(ip-1)
         num = Nstacksmp(ip) - ist
+        if(num .le. 0) cycle
+!
         call dfftw_execute_dft_r2c(plan_forward_smp(ip),                &
      &                             X_FFTW(1,ist+1), C_FFTW(1,ist+1))
       end do
@@ -230,8 +232,8 @@
 !   normalization
       start = OMP_GET_WTIME()
       call normalize_fwd_OMP_FFTW(aNfft, Ncomp, NFFT_c, C_FFTW(1,1))
-      call swap_from_prt_fwd_OMP_FFTW(Ncomp, NFFT_c, C_FFTW(1,1),       &
-     &                                Nfft, X(1,1))
+      call swap_from_rtp_fwd_OMP_FFTW(Ncomp, NFFT_c, C_FFTW(1,1),       &
+     &                                Ncomp, Nfft, ione, X(1,1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       end subroutine multi_pout_fwd_FFTW3_smp
@@ -260,8 +262,8 @@
 !
 !   normalization
       start = OMP_GET_WTIME()
-      call norm_swap_to_prt_bwd_OMP_FFTW(Ncomp, Nfft, X(1,1),           &
-     &                                   NFFT_c, C_FFTW(1,1))
+      call norm_swap_to_prt_bwd_OMP_FFTW(Ncomp, Nfft, ione, X(1,1),     &
+     &                                   Ncomp, FFT_c, C_FFTW(1,1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
@@ -269,6 +271,8 @@
       do ip = 1, Nsmp
         ist = Nstacksmp(ip-1)
         num = Nstacksmp(ip) - ist
+        if(num .le. 0) cycle
+!
         call dfftw_execute_dft_c2r(plan_backward_smp(ip),               &
      &                             C_FFTW(1,ist+1), X_FFTW(1,ist+1))
       end do
