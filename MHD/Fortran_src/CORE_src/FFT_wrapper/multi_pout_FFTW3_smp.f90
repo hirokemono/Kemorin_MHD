@@ -263,7 +263,7 @@
 !   normalization
       start = OMP_GET_WTIME()
       call norm_swap_to_prt_bwd_OMP_FFTW(Ncomp, Nfft, ione, X(1,1),     &
-     &                                   Ncomp, FFT_c, C_FFTW(1,1))
+     &                                   Ncomp, NFFT_c, C_FFTW(1,1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()

@@ -86,7 +86,7 @@
 !
         ft0%start = OMP_GET_WTIME()
 !$omp parallel workshare
-        ft0%s_k(1:ft0%nfld,1:ft0%ngrd) = ft0%org(1:ft0%nfld,1:ft0%ngrd)
+        ft0%s_k(1:ft0%ngrd,1:ft0%nfld) = ft0%org(1:ft0%ngrd,1:ft0%nfld)
 !$omp end parallel workshare
         ft0%elapsed(3) = ft0%elapsed(3) + OMP_GET_WTIME() - ft0%start
 !
@@ -96,7 +96,7 @@
 !
         ft0%start = OMP_GET_WTIME()
 !$omp parallel workshare
-        ft0%f_x(1:ft0%nfld,1:ft0%ngrd) = ft0%s_k(1:ft0%nfld,1:ft0%ngrd)
+        ft0%f_x(1:ft0%ngrd,1:ft0%nfld) = ft0%s_k(1:ft0%ngrd,1:ft0%nfld)
 !$omp end parallel workshare
         ft0%elapsed(3) = ft0%elapsed(3) + OMP_GET_WTIME() - ft0%start
 !

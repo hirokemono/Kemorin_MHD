@@ -1,18 +1,18 @@
-!>@file   test_FFTW3.f90
-!!@brief  module test_FFTW3
+!>@file   test_prt_ISPACK3_FFT.f90
+!!@brief  module test_prt_ISPACK3_FFT
 !!
 !!@author H. Matsui
 !!@date Programmed in Aug., 2011
 !!      Modified in Aug., 2026
 !
-!> @brief Test program of FFTW3 with outer series array
+!> @brief Test program of ISPACK V.0.97 with outer series array
 !!
 !!@verbatim
 !! ----------------------------------------------------------------------
 !!     Control file example
 !! ----------------------------------------------------------------------
 !!  begin FFT_test_ctl
-!!    output_file_name    'mul_fftw_test.dat'
+!!    output_file_name    'prt_ISPACK3_test.dat'
 !!
 !!    FFT_length_ctl         128
 !!    num_series_ctl          24
@@ -21,7 +21,7 @@
 !!
 !! ----------------------------------------------------------------------
 !!@endverbatim
-      program test_FFTW3
+      program test_prt_ISPACK3_FFT
 !
       use omp_lib
 !
@@ -30,10 +30,10 @@
       use m_machine_parameter
       use m_FFT_size
 !
-      use t_multi_FFTW_wrapper
       use t_fft_test_data
+      use t_ispack3_FFT_wrapper
       use t_ctl_data_4_FFT_tests
-      use calypso_multi_FFTW3
+      use calypso_multi_ispack3
 !
       implicit none
 !
@@ -41,18 +41,18 @@
       type(FFT_tests_ctl), save :: fft_c1
 !
       character(len = kchara), parameter                                &
-     &                        :: def_file_name = 'mul_fftw_test.dat'
+     &                       :: def_file_name = 'prt_ISPACK3_test.dat'
 !
       character(len = kchara) :: file_name = def_file_name
       integer(kind = kint) :: nfft_test =  ngrid
       integer(kind = kint) :: ncomp_test = n_field
       integer(kind = kint) :: nloop_test = n_loop
 !
-      type(working_mul_FFTW) :: WK_MUL_FFTW_t
-      type(fft_test_data) :: ft3
+      integer(kind = kint_gl) :: Nfft8, nfld8
+!
+      type(working_ISPACK3) ::  WK_ISPACK3_t
+      type(fft_test_data) :: ft0
       integer(kind = kint) :: iloop = 0
-!
-!
 !
       if(command_argument_count() .ge. 1) then
         call get_command_argument(1, ctl_file_name)
@@ -75,51 +75,55 @@
         write(*,*) 'No control file name in command: Use default'
       end if
 !
-      write(*,'(a)') '-----  Test FFTW  -----'
       iflag_debug = 1
-      call init_fft_test_data(ncomp_test, nfft_test, ft3)
+      call init_fft_test_data(ncomp_test, nfft_test, ft0)
+      call swap_fft_test_input_to_pin(ft0)
 !
-      ft3%start = OMP_GET_WTIME()
-      call init_FFTW_mul_type                                           &
-     &   (np_smp, ft3%nstack, ft3%ngrd, WK_MUL_FFTW_t)
-      ft3%elapsed(1) = ft3%elapsed(1) + OMP_GET_WTIME() - ft3%start
+      Nfft8 = nfft_test
+      nfld8 = ncomp_test
 !
-      do iloop = 1, n_loop
+      ft0%start = OMP_GET_WTIME()
+      call init_wk_ispack3_t(np_smp, ft0%nstack, Nfft8, WK_ISPACK3_t)
+      ft0%elapsed(1) = ft0%elapsed(1) + OMP_GET_WTIME() - ft0%start
+!
+      do iloop = 1, nloop_test
         if(mod(iloop, 20) .eq. 0) write(*,*) 'loop count: ', iloop
 !
-        ft3%start = OMP_GET_WTIME()
+        ft0%start = OMP_GET_WTIME()
 !$omp parallel workshare
-        ft3%s_k(1:ft3%nfld,1:ft3%ngrd) = ft3%org(1:ft3%nfld,1:ft3%ngrd)
+        ft0%s_k(1:ft0%ngrd,1:ft0%nfld) = ft0%org(1:ft0%ngrd,1:ft0%nfld)
 !$omp end parallel workshare
-        ft3%elapsed(3) = ft3%elapsed(3) + OMP_GET_WTIME() - ft3%start
+        ft0%elapsed(3) = ft0%elapsed(3) + OMP_GET_WTIME() - ft0%start
 !
-        call calypso_multi_pout_fwd_FFTW3(np_smp, ft3%nstack,           &
-     &      ft3%nfld, ft3%ngrd, ft3%s_k, WK_MUL_FFTW_t,                 &
-     &      ft3%elapsed(2), ft3%elapsed(3))
+        call calypso_multi_pin_FXRTFA(np_smp, ft0%nstack, nfld8, Nfft8, &
+     &      ft0%s_k, WK_ISPACK3_t, ft0%elapsed(2), ft0%elapsed(3))
 !
-        ft3%start = OMP_GET_WTIME()
+        ft0%start = OMP_GET_WTIME()
 !$omp parallel workshare
-        ft3%f_x(1:ft3%nfld,1:ft3%ngrd) = ft3%s_k(1:ft3%nfld,1:ft3%ngrd)
+        ft0%f_x(1:ft0%ngrd,1:ft0%nfld) = ft0%s_k(1:ft0%ngrd,1:ft0%nfld)
 !$omp end parallel workshare
-        ft3%elapsed(3) = ft3%elapsed(3) + OMP_GET_WTIME() - ft3%start
+        ft0%elapsed(3) = ft0%elapsed(3) + OMP_GET_WTIME() - ft0%start
 !
-        call calypso_multi_pout_bwd_FFTW3(np_smp, ft3%nstack,           &
-     &      ft3%nfld, ft3%ngrd, ft3%f_x, WK_MUL_FFTW_t,                 &
-     &      ft3%elapsed(2), ft3%elapsed(3))
+        call calypso_multi_pin_FXRTBA(np_smp, ft0%nstack, nfld8, Nfft8, &
+     &      ft0%f_x, WK_ISPACK3_t, ft0%elapsed(2), ft0%elapsed(3))
       end do
 !
-      ft3%start = OMP_GET_WTIME()
-      if(n_loop .eq. 1) call write_fft_test_data(file_name, ft3)
-      call dealloc_fft_test_data(ft3)
-      ft3%elapsed(1) = ft3%elapsed(1) + OMP_GET_WTIME() - ft3%start
+      if(nloop_test .eq. 1) then
+        call swap_fft_test_data_to_pout(ft0)
+        call write_fft_test_data(file_name, ft0)
+      end if
+      call dealloc_fft_test_data(ft0)
 !
+      write(*,'(a)') '-----  Test ISPACK3 with inner series loop -----'
       write(*,'(a,i4)') 'Number of threads:  ', np_smp
       write(*, '(a,3i6)')  "Num (point, field, loop): ",                &
      &       nfft_test, ncomp_test, nloop_test
-      write(*, '("Initialize:      ",1pE16.6e3)') ft3%elapsed(1)
-      write(*, '("Wrapped FFTPACK: ",1pE16.6e3)') ft3%elapsed(2)
-      write(*, '("Data copy:       ",1pE16.6e3)') ft3%elapsed(3)
+      write(*, '("Initialize:      ",1pE16.6e3)') ft0%elapsed(1)
+      write(*, '("ISPACK3:         ",1pE16.6e3)') ft0%elapsed(2)
+      write(*, '("Data copy:       ",1pE16.6e3)') ft0%elapsed(3)
+      write(*,'(a)') '-----------------------------'
+      write(*,'(a)') ' '
 !
       stop 'finish'
-      end program test_FFTW3
+      end program test_prt_ISPACK3_FFT
 

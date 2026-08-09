@@ -159,7 +159,7 @@
 !
       real(kind = kreal), intent(inout) :: X(Nfft)
 !
-      integer(kind = kint) :: i, nd
+      integer(kind = kint) :: i
 !
 !
       X(1) = real(C_FFT(1))

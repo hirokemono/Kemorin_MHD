@@ -1,18 +1,18 @@
-!>@file   test_FFTW3.f90
-!!@brief  module test_FFTW3
+!>@file   test_prt_FFTW3.f90
+!!@brief  module test_prt_FFTW3
 !!
 !!@author H. Matsui
 !!@date Programmed in Aug., 2011
 !!      Modified in Aug., 2026
 !
-!> @brief Test program of FFTW3 with outer series array
+!> @brief Test program of FFTW3 with inner series array
 !!
 !!@verbatim
 !! ----------------------------------------------------------------------
 !!     Control file example
 !! ----------------------------------------------------------------------
 !!  begin FFT_test_ctl
-!!    output_file_name    'mul_fftw_test.dat'
+!!    output_file_name    'prt_fftw_test.dat'
 !!
 !!    FFT_length_ctl         128
 !!    num_series_ctl          24
@@ -21,7 +21,7 @@
 !!
 !! ----------------------------------------------------------------------
 !!@endverbatim
-      program test_FFTW3
+      program test_prt_FFTW3
 !
       use omp_lib
 !
@@ -41,7 +41,7 @@
       type(FFT_tests_ctl), save :: fft_c1
 !
       character(len = kchara), parameter                                &
-     &                        :: def_file_name = 'mul_fftw_test.dat'
+     &                        :: def_file_name = 'prt_fftw_test.dat'
 !
       character(len = kchara) :: file_name = def_file_name
       integer(kind = kint) :: nfft_test =  ngrid
@@ -78,6 +78,7 @@
       write(*,'(a)') '-----  Test FFTW  -----'
       iflag_debug = 1
       call init_fft_test_data(ncomp_test, nfft_test, ft3)
+      call swap_fft_test_input_to_pin(ft3)
 !
       ft3%start = OMP_GET_WTIME()
       call init_FFTW_mul_type                                           &
@@ -89,27 +90,30 @@
 !
         ft3%start = OMP_GET_WTIME()
 !$omp parallel workshare
-        ft3%s_k(1:ft3%nfld,1:ft3%ngrd) = ft3%org(1:ft3%nfld,1:ft3%ngrd)
+        ft3%s_k(1:ft3%ngrd,1:ft3%nfld) = ft3%org(1:ft3%ngrd,1:ft3%nfld)
 !$omp end parallel workshare
         ft3%elapsed(3) = ft3%elapsed(3) + OMP_GET_WTIME() - ft3%start
 !
-        call calypso_multi_pout_fwd_FFTW3(np_smp, ft3%nstack,           &
+        call calypso_multi_pin_fwd_FFTW3(np_smp, ft3%nstack,            &
      &      ft3%nfld, ft3%ngrd, ft3%s_k, WK_MUL_FFTW_t,                 &
      &      ft3%elapsed(2), ft3%elapsed(3))
 !
         ft3%start = OMP_GET_WTIME()
 !$omp parallel workshare
-        ft3%f_x(1:ft3%nfld,1:ft3%ngrd) = ft3%s_k(1:ft3%nfld,1:ft3%ngrd)
+        ft3%f_x(1:ft3%ngrd,1:ft3%nfld) = ft3%s_k(1:ft3%ngrd,1:ft3%nfld)
 !$omp end parallel workshare
         ft3%elapsed(3) = ft3%elapsed(3) + OMP_GET_WTIME() - ft3%start
 !
-        call calypso_multi_pout_bwd_FFTW3(np_smp, ft3%nstack,           &
+        call calypso_multi_pin_bwd_FFTW3(np_smp, ft3%nstack,            &
      &      ft3%nfld, ft3%ngrd, ft3%f_x, WK_MUL_FFTW_t,                 &
      &      ft3%elapsed(2), ft3%elapsed(3))
       end do
 !
       ft3%start = OMP_GET_WTIME()
-      if(n_loop .eq. 1) call write_fft_test_data(file_name, ft3)
+      if(n_loop .eq. 1) then
+        call swap_fft_test_data_to_pout(ft3)
+        call write_fft_test_data(file_name, ft3)
+      end if
       call dealloc_fft_test_data(ft3)
       ft3%elapsed(1) = ft3%elapsed(1) + OMP_GET_WTIME() - ft3%start
 !
@@ -121,5 +125,5 @@
       write(*, '("Data copy:       ",1pE16.6e3)') ft3%elapsed(3)
 !
       stop 'finish'
-      end program test_FFTW3
+      end program test_prt_FFTW3
 
