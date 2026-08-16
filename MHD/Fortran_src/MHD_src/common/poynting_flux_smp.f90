@@ -24,6 +24,10 @@
 !!     &          magne_advection)
 !!      subroutine cal_xyz_magnetic_advection(nnod, u_field,           &
 !!     &          grad_bx, grad_by, grad_bz, magne_advection)
+!!      subroutine cal_compatible_magnetic_terms                       &
+!!     &         (nnod, coef_induct, induction, grad_ub,               &
+!!     &          u_field, b_field, current, vorticity,                &
+!!     &          magne_advection, magne_streach)
 !!
 !!      subroutine cal_rtp_magnetic_streach_tmp                         &
 !!     &         (nnod, nri, nth, a_r_1d_rtp_r, cot_theta_1d_rtp,       &
@@ -202,6 +206,48 @@
 !$omp end parallel do
 !
       end subroutine cal_rtp_magnetic_advection
+!
+! -----------------------------------------------------------------------
+!
+      subroutine cal_compatible_magnetic_terms                         &
+     &         (nnod, coef_induct, induction, grad_ub,                 &
+     &          u_field, b_field, current, vorticity,                  &
+     &          magne_advection, magne_streach)
+!
+      integer(kind=kint), intent(in) :: nnod
+      real(kind=kreal), intent(in) :: coef_induct
+      real(kind=kreal), intent(in) :: induction(nnod,3), grad_ub(nnod,3)
+      real(kind=kreal), intent(in) :: u_field(nnod,3), b_field(nnod,3)
+      real(kind=kreal), intent(in) :: current(nnod,3), vorticity(nnod,3)
+      real(kind=kreal), intent(inout) :: magne_advection(nnod,3)
+      real(kind=kreal), intent(inout) :: magne_streach(nnod,3)
+!
+      integer(kind=kint) :: inod
+      real(kind=kreal) :: g(3), uxj(3), bxw(3)
+!
+!$omp parallel do private(inod,g,uxj,bxw)
+      do inod=1,nnod
+        uxj(1)=u_field(inod,2)*current(inod,3)                          &
+     &         -u_field(inod,3)*current(inod,2)
+        uxj(2)=u_field(inod,3)*current(inod,1)                          &
+     &         -u_field(inod,1)*current(inod,3)
+        uxj(3)=u_field(inod,1)*current(inod,2)                          &
+     &         -u_field(inod,2)*current(inod,1)
+        bxw(1)=b_field(inod,2)*vorticity(inod,3)                       &
+     &         -b_field(inod,3)*vorticity(inod,2)
+        bxw(2)=b_field(inod,3)*vorticity(inod,1)                       &
+     &         -b_field(inod,1)*vorticity(inod,3)
+        bxw(3)=b_field(inod,1)*vorticity(inod,2)                       &
+     &         -b_field(inod,2)*vorticity(inod,1)
+        g(1:3)=coef_induct*(grad_ub(inod,1:3)-uxj(1:3)-bxw(1:3))
+        magne_advection(inod,1:3)                                     &
+     &      =half*(induction(inod,1:3)-g(1:3))
+        magne_streach(inod,1:3)                                       &
+     &      =half*(induction(inod,1:3)+g(1:3))
+      end do
+!$omp end parallel do
+!
+      end subroutine cal_compatible_magnetic_terms
 !
 ! -----------------------------------------------------------------------
 !

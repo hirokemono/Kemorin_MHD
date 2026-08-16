@@ -203,28 +203,6 @@
      &      trns_f_eflux%fld_rtp(1,fe_trns_prod%i_poynting))
       end if
 !
-      if(fe_trns_frc%i_mag_stretch .gt. 0) then
-        call cal_rtp_magnetic_streach                                   &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), sph_rtp%nidx_rtp(2), &
-     &      sph_rtp%ar_1d_rtp, sph_rtp%cot_theta_1d_rtp,                &
-     &      trns_b_snap%fld_rtp(1,bs_trns_base%i_magne),                &
-     &      trns_b_snap%fld_rtp(1,bs_trns_base%i_velo),                 &
-     &      trns_b_difv%fld_rtp(1,bs_trns_diff_v%i_grad_vx),            &
-     &      trns_b_difv%fld_rtp(1,bs_trns_diff_v%i_grad_vy),            &
-     &      trns_b_difv%fld_rtp(1,bs_trns_diff_v%i_grad_vz),            &
-     &      trns_f_eflux%fld_rtp(1,fe_trns_frc%i_mag_stretch))
-      end if
-      if(fe_trns_frc%i_mag_advection .gt. 0) then
-        call cal_rtp_magnetic_advection                                &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), sph_rtp%nidx_rtp(2), &
-     &      sph_rtp%ar_1d_rtp, sph_rtp%cot_theta_1d_rtp,                &
-     &      trns_b_snap%fld_rtp(1,bs_trns_base%i_velo),                 &
-     &      trns_b_snap%fld_rtp(1,bs_trns_base%i_magne),                &
-     &      trns_b_difv%fld_rtp(1,bs_trns_diff_v%i_grad_bx),            &
-     &      trns_b_difv%fld_rtp(1,bs_trns_diff_v%i_grad_by),            &
-     &      trns_b_difv%fld_rtp(1,bs_trns_diff_v%i_grad_bz),            &
-     &      trns_f_eflux%fld_rtp(1,fe_trns_frc%i_mag_advection))
-      end if
 !
       end subroutine cal_magnetic_fluxes_rtp
 !
@@ -268,22 +246,6 @@
      &      trns_f_eflux%fld_pole(1,fe_trns_prod%i_poynting))
       end if
 !
-      if(fe_trns_frc%i_mag_stretch .gt. 0) then
-        call cal_xyz_magnetic_streach(sph_rtp%nnod_pole,                &
-     &      trns_b_snap%fld_pole(1,bs_trns_base%i_magne),               &
-     &      trns_b_difv%fld_pole(1,bs_trns_diff_v%i_grad_vx),           &
-     &      trns_b_difv%fld_pole(1,bs_trns_diff_v%i_grad_vy),           &
-     &      trns_b_difv%fld_pole(1,bs_trns_diff_v%i_grad_vz),           &
-     &      trns_f_eflux%fld_pole(1,fe_trns_frc%i_mag_stretch))
-      end if
-      if(fe_trns_frc%i_mag_advection .gt. 0) then
-        call cal_xyz_magnetic_advection(sph_rtp%nnod_pole,             &
-     &      trns_b_snap%fld_pole(1,bs_trns_base%i_velo),                &
-     &      trns_b_difv%fld_pole(1,bs_trns_diff_v%i_grad_bx),           &
-     &      trns_b_difv%fld_pole(1,bs_trns_diff_v%i_grad_by),           &
-     &      trns_b_difv%fld_pole(1,bs_trns_diff_v%i_grad_bz),           &
-     &      trns_f_eflux%fld_pole(1,fe_trns_frc%i_mag_advection))
-      end if
 !
       end subroutine cal_magnetic_fluxes_pole
 !

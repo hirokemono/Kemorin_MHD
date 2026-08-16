@@ -54,6 +54,7 @@
       private :: pressure_SGS_SPH_MHD, grad_of_filter_vectors_sph
       private :: enegy_fluxes_SPH_SGS_MHD, lead_SGS_terms_4_SPH
       private :: lead_filter_flds_by_sph_trans
+      private :: compatible_magnetic_terms_SPH
 !
 ! ----------------------------------------------------------------------
 !
@@ -395,6 +396,9 @@
      &    r_2nd, MHD_prop, sph_MHD_bc,                                  &
      &    trans_p, ipol, trns_MHD, trns_snap, trns_difv, trns_eflux,    &
      &    WK_leg, WK_FFTs, rj_fld, SR_sig, SR_r)
+      call compatible_magnetic_terms_SPH                               &
+     &   (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p, ipol, &
+     &    trns_snap, trns_eflux, WK_leg, WK_FFTs, rj_fld, SR_sig, SR_r)
 !
       if (iflag_debug.eq.1) write(*,*) 's_cal_force_with_SGS_rj'
       call s_cal_force_with_SGS_rj                                      &
@@ -437,6 +441,144 @@
      &    rj_fld, SR_sig, SR_r)
 !
       end subroutine enegy_fluxes_SPH_SGS_MHD
+!
+! ----------------------------------------------------------------------
+!
+      subroutine compatible_magnetic_terms_SPH                         &
+     &         (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p, &
+     &          ipol, trns_snap, trns_eflux, WK_leg, WK_FFTs,         &
+     &          rj_fld, SR_sig, SR_r)
+!
+      use const_sph_radial_grad
+      use sph_transforms_snapshot
+      use poynting_flux_smp
+!
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+      type(parameters_4_sph_trans), intent(in) :: trans_p
+      type(phys_address), intent(in) :: ipol
+      type(address_4_sph_trans), intent(in) :: trns_snap
+      type(address_4_sph_trans), intent(inout) :: trns_eflux
+      type(legendre_trns_works), intent(inout) :: WK_leg
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
+      type(phys_data), intent(inout) :: rj_fld
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+!
+      integer(kind=kint) :: i
+      real(kind=kreal), allocatable :: wk_scalar(:)
+      real(kind=kreal), allocatable :: save_ind_rj(:,:)
+      real(kind=kreal), allocatable :: save_ind_rtp(:,:)
+      real(kind=kreal), allocatable :: save_ind_pole(:,:)
+      real(kind=kreal), allocatable :: save_ujb_rtp(:)
+      real(kind=kreal), allocatable :: save_ujb_pole(:)
+!
+      if(trns_eflux%f_trns%forces%i_mag_stretch.le.0) return
+      if(trns_eflux%f_trns%forces%i_mag_advection.le.0) return
+      if(trns_eflux%f_trns%ene_flux%i_ujb.le.0) return
+      if(trns_eflux%b_trns%forces%i_induction.le.0) return
+!
+      allocate(wk_scalar(rj_fld%n_point))
+      allocate(save_ind_rj(rj_fld%n_point,3))
+      allocate(save_ind_rtp(sph%sph_rtp%nnod_rtp,3))
+      allocate(save_ind_pole(sph%sph_rtp%nnod_pole,3))
+      allocate(save_ujb_rtp(sph%sph_rtp%nnod_rtp))
+      allocate(save_ujb_pole(sph%sph_rtp%nnod_pole))
+!
+      save_ind_rj(1:rj_fld%n_point,1:3)                                &
+     & =rj_fld%d_fld(1:rj_fld%n_point,ipol%forces%i_induction:        &
+     &                                      ipol%forces%i_induction+2)
+      save_ind_rtp=trns_eflux%backward%fld_rtp(:,                     &
+     & trns_eflux%b_trns%forces%i_induction:                           &
+     & trns_eflux%b_trns%forces%i_induction+2)
+      if(sph%sph_rtp%nnod_pole.gt.0) save_ind_pole                    &
+     & =trns_eflux%backward%fld_pole(:,                               &
+     & trns_eflux%b_trns%forces%i_induction:                           &
+     & trns_eflux%b_trns%forces%i_induction+2)
+      save_ujb_rtp=trns_eflux%forward%fld_rtp(:,                      &
+     &                         trns_eflux%f_trns%ene_flux%i_ujb)
+      if(sph%sph_rtp%nnod_pole.gt.0) save_ujb_pole                    &
+     & =trns_eflux%forward%fld_pole(:,                                &
+     &                         trns_eflux%f_trns%ene_flux%i_ujb)
+!
+!     Use the existing Lorentz-work scalar transform slot temporarily
+!     for the true scalar h = u dot B.
+!$omp parallel do private(i)
+      do i=1,sph%sph_rtp%nnod_rtp
+        trns_eflux%forward%fld_rtp(i,                                 &
+     &        trns_eflux%f_trns%ene_flux%i_ujb)                       &
+     &   =sum(trns_snap%backward%fld_rtp(i,                           &
+     &        trns_snap%b_trns%base%i_velo:                           &
+     &        trns_snap%b_trns%base%i_velo+2)                         &
+     &       *trns_snap%backward%fld_rtp(i,                           &
+     &        trns_snap%b_trns%base%i_magne:                          &
+     &        trns_snap%b_trns%base%i_magne+2))
+      end do
+!$omp end parallel do
+!$omp parallel do private(i)
+      do i=1,sph%sph_rtp%nnod_pole
+        trns_eflux%forward%fld_pole(i,                                &
+     &        trns_eflux%f_trns%ene_flux%i_ujb)                       &
+     &   =sum(trns_snap%backward%fld_pole(i,                          &
+     &        trns_snap%b_trns%base%i_velo:                           &
+     &        trns_snap%b_trns%base%i_velo+2)                         &
+     &       *trns_snap%backward%fld_pole(i,                          &
+     &        trns_snap%b_trns%base%i_magne:                          &
+     &        trns_snap%b_trns%base%i_magne+2))
+      end do
+!$omp end parallel do
+!
+      call sph_forward_trans_snapshot_MHD(sph, comms_sph, trans_p,    &
+     &    trns_eflux%forward, WK_leg, WK_FFTs, rj_fld, SR_sig, SR_r)
+      call const_sph_gradient_no_bc(sph%sph_rj, r_2nd,                &
+     &    sph_MHD_bc%sph_bc_B, trans_p%leg%g_sph_rj,                  &
+     &    ipol%ene_flux%i_ujb, ipol%forces%i_induction,               &
+     &    wk_scalar, rj_fld)
+      call sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p,       &
+     &    rj_fld, trns_eflux%backward, WK_leg, WK_FFTs, SR_sig, SR_r)
+!
+      call cal_compatible_magnetic_terms                              &
+     &   (sph%sph_rtp%nnod_rtp, MHD_prop%cd_prop%coef_induct,         &
+     &    save_ind_rtp, trns_eflux%backward%fld_rtp(1,                &
+     &                  trns_eflux%b_trns%forces%i_induction),        &
+     &    trns_snap%backward%fld_rtp(1,trns_snap%b_trns%base%i_velo), &
+     &    trns_snap%backward%fld_rtp(1,trns_snap%b_trns%base%i_magne),&
+     &    trns_snap%backward%fld_rtp(1,trns_snap%b_trns%base%i_current),&
+     &    trns_snap%backward%fld_rtp(1,trns_snap%b_trns%base%i_vort), &
+     &    trns_eflux%forward%fld_rtp(1,                               &
+     &                  trns_eflux%f_trns%forces%i_mag_advection),    &
+     &    trns_eflux%forward%fld_rtp(1,                               &
+     &                  trns_eflux%f_trns%forces%i_mag_stretch))
+      if(sph%sph_rtp%nnod_pole.gt.0)                                  &
+     & call cal_compatible_magnetic_terms                             &
+     &   (sph%sph_rtp%nnod_pole, MHD_prop%cd_prop%coef_induct,        &
+     &    save_ind_pole, trns_eflux%backward%fld_pole(1,              &
+     &                  trns_eflux%b_trns%forces%i_induction),        &
+     &    trns_snap%backward%fld_pole(1,trns_snap%b_trns%base%i_velo),&
+     &    trns_snap%backward%fld_pole(1,trns_snap%b_trns%base%i_magne),&
+     &    trns_snap%backward%fld_pole(1,trns_snap%b_trns%base%i_current),&
+     &    trns_snap%backward%fld_pole(1,trns_snap%b_trns%base%i_vort),&
+     &    trns_eflux%forward%fld_pole(1,                              &
+     &                  trns_eflux%f_trns%forces%i_mag_advection),    &
+     &    trns_eflux%forward%fld_pole(1,                              &
+     &                  trns_eflux%f_trns%forces%i_mag_stretch))
+!
+!     Restore the native induction spectrum and the real Lorentz work.
+      rj_fld%d_fld(1:rj_fld%n_point,ipol%forces%i_induction:          &
+     & ipol%forces%i_induction+2)=save_ind_rj(1:rj_fld%n_point,1:3)
+      trns_eflux%forward%fld_rtp(:,                                   &
+     & trns_eflux%f_trns%ene_flux%i_ujb)=save_ujb_rtp
+      if(sph%sph_rtp%nnod_pole.gt.0)                                  &
+     & trns_eflux%forward%fld_pole(:,                                 &
+     & trns_eflux%f_trns%ene_flux%i_ujb)=save_ujb_pole
+!
+      deallocate(wk_scalar,save_ind_rj,save_ind_rtp,save_ind_pole)
+      deallocate(save_ujb_rtp,save_ujb_pole)
+!
+      end subroutine compatible_magnetic_terms_SPH
 !
 ! ----------------------------------------------------------------------
 !

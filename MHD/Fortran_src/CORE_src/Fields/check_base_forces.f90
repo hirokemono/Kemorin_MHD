@@ -41,6 +41,7 @@
       use m_diff_vector_labels
       use m_base_field_labels
       use m_base_force_labels
+      use m_energy_flux_labels
       use add_nodal_fields_ctl
 !
       type(ctl_array_c3), intent(inout) :: field_ctl
@@ -82,18 +83,18 @@
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(magnetic_field, field_ctl)
       end if
-      if(check_field_list_ctl(magnetic_stretch, field_ctl)) then
-        call add_phys_name_ctl(magnetic_field, field_ctl)
-        call add_phys_name_ctl(grad_v_1, field_ctl)
-        call add_phys_name_ctl(grad_v_2, field_ctl)
-        call add_phys_name_ctl(grad_v_3, field_ctl)
-      end if
-      if(check_field_list_ctl(magnetic_advection, field_ctl)) then
+      if(      check_field_list_ctl(magnetic_stretch, field_ctl)       &
+     &    .or. check_field_list_ctl(magnetic_advection, field_ctl)) then
         call add_phys_name_ctl(velocity, field_ctl)
         call add_phys_name_ctl(magnetic_field, field_ctl)
-        call add_phys_name_ctl(grad_b_1, field_ctl)
-        call add_phys_name_ctl(grad_b_2, field_ctl)
-        call add_phys_name_ctl(grad_b_3, field_ctl)
+        call add_phys_name_ctl(vorticity, field_ctl)
+        call add_phys_name_ctl(current_density, field_ctl)
+        call add_phys_name_ctl(magnetic_induction, field_ctl)
+        call add_phys_name_ctl(magnetic_stretch, field_ctl)
+        call add_phys_name_ctl(magnetic_advection, field_ctl)
+!       Lorentz_work is reused as a temporary scalar-transform slot for
+!       h = u dot B and restored before the final output transform.
+        call add_phys_name_ctl(Lorentz_work, field_ctl)
       end if
 !
       if(      check_field_list_ctl(heat_advect, field_ctl)             &
