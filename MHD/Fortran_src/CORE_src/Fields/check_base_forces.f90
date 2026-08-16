@@ -88,6 +88,13 @@
         call add_phys_name_ctl(grad_v_2, field_ctl)
         call add_phys_name_ctl(grad_v_3, field_ctl)
       end if
+      if(check_field_list_ctl(magnetic_advection, field_ctl)) then
+        call add_phys_name_ctl(velocity, field_ctl)
+        call add_phys_name_ctl(magnetic_field, field_ctl)
+        call add_phys_name_ctl(grad_b_1, field_ctl)
+        call add_phys_name_ctl(grad_b_2, field_ctl)
+        call add_phys_name_ctl(grad_b_3, field_ctl)
+      end if
 !
       if(      check_field_list_ctl(heat_advect, field_ctl)             &
      &    .or. check_field_list_ctl(heat_flux, field_ctl)) then

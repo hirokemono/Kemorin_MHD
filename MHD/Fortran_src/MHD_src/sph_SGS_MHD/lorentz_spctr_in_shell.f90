@@ -134,6 +134,8 @@
         ncomp_rj = pwr%istack_comp_sq(j_fld)                            &
      &            - pwr%istack_comp_sq(j_fld-1)
         if(      icomp_st .eq. ipol%forces%i_induction                  &
+     &      .or. icomp_st .eq. ipol%forces%i_mag_stretch                &
+     &      .or. icomp_st .eq. ipol%forces%i_mag_advection              &
      &      .or. icomp_st .eq. ipol%forces_by_sym_sym%i_induction       &
      &      .or. icomp_st .eq. ipol%forces_by_asym_asym%i_induction     &
      &      .or. icomp_st .eq. ipol%forces_by_sym_asym%i_induction      &
@@ -159,5 +161,5 @@
       end subroutine sum_sph_layerd_lorentz_wk
 !
 ! -----------------------------------------------------------------------
-!
+
       end module lorentz_spctr_in_shell

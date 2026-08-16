@@ -239,6 +239,9 @@
       call add_field_name_4_sph_trns_snap(d_rj,                         &
      &    ipol_frc%i_mag_stretch, iphys_frc%i_mag_stretch,              &
      &    f_trns_frc%i_mag_stretch, trns)
+      call add_field_name_4_sph_trns_snap(d_rj,                         &
+     &    ipol_frc%i_mag_advection, iphys_frc%i_mag_advection,          &
+     &    f_trns_frc%i_mag_advection, trns)
 !
       end subroutine add_base_force_fwd_trns_snap
 !

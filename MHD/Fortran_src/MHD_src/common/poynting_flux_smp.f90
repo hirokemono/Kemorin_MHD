@@ -18,6 +18,12 @@
 !!     &          magne_streach)
 !!      subroutine cal_xyz_magnetic_streach(nnod, b_field,              &
 !!     &          grad_ux, grad_uy, grad_uz, magne_streach)
+!!      subroutine cal_rtp_magnetic_advection                          &
+!!     &         (nnod, nri, nth, a_r_1d_rtp_r, cot_theta_1d_rtp,       &
+!!     &          u_field, b_field, grad_bx, grad_by, grad_bz,          &
+!!     &          magne_advection)
+!!      subroutine cal_xyz_magnetic_advection(nnod, u_field,           &
+!!     &          grad_bx, grad_by, grad_bz, magne_advection)
 !!
 !!      subroutine cal_rtp_magnetic_streach_tmp                         &
 !!     &         (nnod, nri, nth, a_r_1d_rtp_r, cot_theta_1d_rtp,       &
@@ -149,6 +155,82 @@
 !$omp end parallel do
 !
       end subroutine cal_rtp_magnetic_streach
+!
+! -----------------------------------------------------------------------
+!
+      subroutine cal_rtp_magnetic_advection                            &
+     &         (nnod, nri, nth, a_r_1d_rtp_r, cot_theta_1d_rtp,         &
+     &          u_field, b_field, grad_bx, grad_by, grad_bz,            &
+     &          magne_advection)
+!
+      integer (kind=kint), intent(in) :: nnod, nri, nth
+      real (kind=kreal), intent(in) :: a_r_1d_rtp_r(nri)
+      real (kind=kreal), intent(in) :: cot_theta_1d_rtp(nth)
+      real (kind=kreal), intent(in) :: grad_bx(nnod,3), grad_by(nnod,3)
+      real (kind=kreal), intent(in) :: grad_bz(nnod,3)
+      real (kind=kreal), intent(in) :: u_field(nnod,3), b_field(nnod,3)
+      real (kind=kreal), intent(inout) :: magne_advection(nnod,3)
+!
+      integer(kind = kint) :: inod, lt, kr, lnod
+!
+!$omp parallel do private(inod,kr,lnod,lt)
+      do inod = 1, nnod
+        kr =   ione + mod( (inod-ione),nri)
+        lnod = ione + (inod - kr) / nri
+        lt =   ione + mod( (lnod-ione),nth)
+!
+        magne_advection(inod,1)                                       &
+     &      = -(grad_bx(inod,1)*u_field(inod,1)                        &
+     &        + grad_bx(inod,2)*u_field(inod,2)                        &
+     &        + grad_bx(inod,3)*u_field(inod,3)                        &
+     &        - (u_field(inod,2)*b_field(inod,2)                       &
+     &         + u_field(inod,3)*b_field(inod,3))*a_r_1d_rtp_r(kr))
+        magne_advection(inod,2)                                       &
+     &      = -(grad_by(inod,1)*u_field(inod,1)                        &
+     &        + grad_by(inod,2)*u_field(inod,2)                        &
+     &        + grad_by(inod,3)*u_field(inod,3)                        &
+     &        - (u_field(inod,3)*b_field(inod,3)*cot_theta_1d_rtp(lt) &
+     &         - u_field(inod,2)*b_field(inod,1))*a_r_1d_rtp_r(kr))
+        magne_advection(inod,3)                                       &
+     &      = -(grad_bz(inod,1)*u_field(inod,1)                        &
+     &        + grad_bz(inod,2)*u_field(inod,2)                        &
+     &        + grad_bz(inod,3)*u_field(inod,3)                        &
+     &        + (u_field(inod,3)*b_field(inod,1)                       &
+     &         + u_field(inod,3)*b_field(inod,2)*cot_theta_1d_rtp(lt))&
+     &        * a_r_1d_rtp_r(kr))
+      end do
+!$omp end parallel do
+!
+      end subroutine cal_rtp_magnetic_advection
+!
+! -----------------------------------------------------------------------
+!
+      subroutine cal_xyz_magnetic_advection(nnod, u_field,             &
+     &          grad_bx, grad_by, grad_bz, magne_advection)
+!
+      integer (kind=kint), intent(in) :: nnod
+      real (kind=kreal), intent(in) :: grad_bx(nnod,3), grad_by(nnod,3)
+      real (kind=kreal), intent(in) :: grad_bz(nnod,3)
+      real (kind=kreal), intent(in) :: u_field(nnod,3)
+      real (kind=kreal), intent(inout) :: magne_advection(nnod,3)
+!
+      integer(kind = kint) :: inod
+!
+!$omp parallel do private(inod)
+      do inod = 1, nnod
+        magne_advection(inod,1) = -(grad_bx(inod,1)*u_field(inod,1)    &
+     &                            + grad_bx(inod,2)*u_field(inod,2)    &
+     &                            + grad_bx(inod,3)*u_field(inod,3))
+        magne_advection(inod,2) = -(grad_by(inod,1)*u_field(inod,1)    &
+     &                            + grad_by(inod,2)*u_field(inod,2)    &
+     &                            + grad_by(inod,3)*u_field(inod,3))
+        magne_advection(inod,3) = -(grad_bz(inod,1)*u_field(inod,1)    &
+     &                            + grad_bz(inod,2)*u_field(inod,2)    &
+     &                            + grad_bz(inod,3)*u_field(inod,3))
+      end do
+!$omp end parallel do
+!
+      end subroutine cal_xyz_magnetic_advection
 !
 ! -----------------------------------------------------------------------
 !

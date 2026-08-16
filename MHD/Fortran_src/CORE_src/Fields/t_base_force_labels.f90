@@ -107,6 +107,9 @@
 !>        start address for magnetic stretch term
 !!         @f$ B_{j} \partial_{j} u_{i} @f$
         integer (kind=kint) :: i_mag_stretch =     izero
+!>        start address for magnetic advection term
+!!         @f$ -u_{j} \partial_{j} B_{i} @f$
+        integer (kind=kint) :: i_mag_advection =   izero
 !
 !>        start address for advection for temperature
 !!         @f$ u_{i} \partial_{i} T @f$
@@ -191,6 +194,8 @@
           forces%i_induction =   i_phys
         else if(field_name .eq. magnetic_stretch%name) then
           forces%i_mag_stretch = i_phys
+        else if(field_name .eq. magnetic_advection%name) then
+          forces%i_mag_advection = i_phys
 !
         else if(field_name .eq. heat_advect%name) then
           forces%i_h_advect =  i_phys

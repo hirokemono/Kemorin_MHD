@@ -20,7 +20,7 @@
 !!        Address for solution: is_grad
 !!
 !!      subroutine const_sph_gradient_no_bc(sph_rj, r_2nd, sph_bc,      &
-!!     &          g_sph_rj, is_fld, is_grad, rj_fld)
+!!     &          g_sph_rj, is_fld, is_grad, wk_scalar, rj_fld)
 !!        Address for input:    is_fld
 !!        Address for solution: is_grad, it_grad, ids_grad
 !!
@@ -99,7 +99,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_sph_gradient_no_bc(sph_rj, r_2nd, sph_bc,        &
-     &          g_sph_rj, is_fld, is_grad, rj_fld)
+     &          g_sph_rj, is_fld, is_grad, wk_scalar, rj_fld)
 !
       use sph_exp_no_condition_ICB
       use sph_exp_no_condition_CMB
@@ -111,21 +111,25 @@
       integer(kind = kint), intent(in) :: is_fld, is_grad
 !
       type(phys_data), intent(inout) :: rj_fld
+      real(kind = kreal), intent(inout) :: wk_scalar(rj_fld%n_point)
 !
+      wk_scalar(1:rj_fld%n_point) = rj_fld%d_fld(1:rj_fld%n_point,      &
+     &                                           is_fld)
 !
       call cal_sph_nod_nobc_in_grad2                                    &
      &   (sph_rj%nidx_rj(2), g_sph_rj, sph_bc%kr_in,                    &
      &    sph_bc%r_ICB, sph_bc%fdm2_fix_fld_ICB, rj_fld%n_point,        &
-     &    rj_fld%d_fld(1,is_fld), rj_fld%d_fld(1,is_grad))
+     &    wk_scalar(1), rj_fld%d_fld(1,is_grad))
       call cal_sph_nod_nobc_out_grad2                                   &
      &   (sph_rj%nidx_rj(2), g_sph_rj, sph_bc%kr_out,                   &
      &    sph_bc%r_CMB, sph_bc%fdm2_fix_fld_CMB, rj_fld%n_point,        &
-     &    rj_fld%d_fld(1,is_fld), rj_fld%d_fld(1,is_grad))
+     &    wk_scalar(1), rj_fld%d_fld(1,is_grad))
 !
-      call cal_sph_nod_gradient_2(sph_bc%kr_in, sph_bc%kr_out,          &
-     &    is_fld, is_grad, sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,       &
+      call cal_sph_nod_gradient_2_w_src                                 &
+     &   (sph_bc%kr_in, sph_bc%kr_out, is_grad, sph_rj%nidx_rj,         &
+     &    sph_rj%radius_1d_rj_r,                                        &
      &    g_sph_rj, r_2nd%fdm(1)%dmat,                                  &
-     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &    rj_fld%n_point, rj_fld%ntot_phys, wk_scalar, rj_fld%d_fld)
       call normalize_sph_average_grad(is_grad,                          &
      &    sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj,                    &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)

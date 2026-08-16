@@ -58,27 +58,32 @@
 !
       type(phys_data), intent(inout) :: rj_fld
 !
+      real(kind = kreal), allocatable :: wk_scalar(:)
 !
+      allocate(wk_scalar(rj_fld%n_point))
+
       call overwrt_grad_of_vector_sph                                   &
      &   (sph%sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, leg%g_sph_rj,         &
      &    ipol_dv%i_grad_vx, ipol_dv%i_grad_vy, ipol_dv%i_grad_vz,      &
-     &    rj_fld)
+     &    wk_scalar, rj_fld)
       call overwrt_grad_of_vector_sph                                   &
      &   (sph%sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, leg%g_sph_rj,         &
      &    ipol_dv%i_grad_wx, ipol_dv%i_grad_wy, ipol_dv%i_grad_wz,      &
-     &    rj_fld)
+     &    wk_scalar, rj_fld)
       call overwrt_grad_of_vector_sph                                   &
      &   (sph%sph_rj, r_2nd, sph_MHD_bc%sph_bc_B, leg%g_sph_rj,         &
      &    ipol_dv%i_grad_ax, ipol_dv%i_grad_ay, ipol_dv%i_grad_az,      &
-     &    rj_fld)
+     &    wk_scalar, rj_fld)
       call overwrt_grad_of_vector_sph                                   &
      &   (sph%sph_rj, r_2nd, sph_MHD_bc%sph_bc_B, leg%g_sph_rj,         &
      &    ipol_dv%i_grad_bx, ipol_dv%i_grad_by, ipol_dv%i_grad_bz,      &
-     &    rj_fld)
+     &    wk_scalar, rj_fld)
       call overwrt_grad_of_vector_sph                                   &
      &   (sph%sph_rj, r_2nd, sph_MHD_bc%sph_bc_B, leg%g_sph_rj,         &
      &    ipol_dv%i_grad_jx, ipol_dv%i_grad_jy, ipol_dv%i_grad_jz,      &
-     &    rj_fld)
+     &    wk_scalar, rj_fld)
+
+      deallocate(wk_scalar)
 !
       end subroutine overwrt_grad_of_vectors_sph
 !
@@ -128,7 +133,7 @@
 !
       subroutine overwrt_grad_of_vector_sph                             &
      &         (sph_rj, r_2nd, sph_bc, g_sph_rj,                        &
-     &          i_grad_vx, i_grad_vy, i_grad_vz, rj_fld)
+     &          i_grad_vx, i_grad_vy, i_grad_vz, wk_scalar, rj_fld)
 !
       use const_sph_radial_grad
 !
@@ -140,19 +145,20 @@
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       type(phys_data), intent(inout) :: rj_fld
+      real(kind = kreal), intent(inout) :: wk_scalar(rj_fld%n_point)
 !
 !
       if(i_grad_vx .gt. 0) then
         call const_sph_gradient_no_bc(sph_rj, r_2nd, sph_bc, g_sph_rj,  &
-     &      i_grad_vx, i_grad_vx, rj_fld)
+     &      i_grad_vx, i_grad_vx, wk_scalar, rj_fld)
       end if
       if(i_grad_vy .gt. 0) then
         call const_sph_gradient_no_bc(sph_rj, r_2nd, sph_bc, g_sph_rj,  &
-     &      i_grad_vy, i_grad_vy, rj_fld)
+     &      i_grad_vy, i_grad_vy, wk_scalar, rj_fld)
       end if
       if(i_grad_vz .gt. 0) then
         call const_sph_gradient_no_bc(sph_rj, r_2nd, sph_bc, g_sph_rj,  &
-     &      i_grad_vz, i_grad_vz, rj_fld)
+     &      i_grad_vz, i_grad_vz, wk_scalar, rj_fld)
       end if
 !
       end subroutine overwrt_grad_of_vector_sph

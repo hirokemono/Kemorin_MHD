@@ -137,6 +137,12 @@
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'magnetic_stretch',                        &
      &                math = '$ B_{j} \partial_{j} u_{i} $')
+!>        Field label for magnetic advection term
+!!         @f$ -u_{j} \partial_{j} B_{i} @f$
+      type(field_def), parameter :: magnetic_advection                  &
+     &    = field_def(n_comp = n_vector,                                &
+     &                name = 'magnetic_advection',                      &
+     &                math = '$ -u_{j} \partial_{j} B_{i} $')
 !
 !
 !>        Field label for advection for temperature
@@ -248,6 +254,7 @@
      &   .or. (field_name .eq. vecp_induction%name)                     &
      &   .or. (field_name .eq. magnetic_induction%name)                 &
      &   .or. (field_name .eq. magnetic_stretch%name)                   &
+     &   .or. (field_name .eq. magnetic_advection%name)                 &
 !
      &   .or. (field_name .eq. heat_flux%name)                          &
      &   .or. (field_name .eq. pert_heat_flux%name)                     &
@@ -302,6 +309,7 @@
       call set_field_label_to_ctl(magnetic_induction, array_c2i)
       call set_field_label_to_ctl(vecp_induction,     array_c2i)
       call set_field_label_to_ctl(magnetic_stretch,   array_c2i)
+      call set_field_label_to_ctl(magnetic_advection, array_c2i)
       call set_field_label_to_ctl(heat_advect,        array_c2i)
       call set_field_label_to_ctl(pert_heat_advect,   array_c2i)
       call set_field_label_to_ctl(composition_advect, array_c2i)
