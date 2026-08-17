@@ -1,4 +1,26 @@
+!>@file   test_OMP_FFTW3.f90
+!!@brief  module test_OMP_FFTW3
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2011
+!!      Modified in Aug., 2026
 !
+!> @brief Test program of OpenMP FFTW3 with outer series array
+!!
+!!@verbatim
+!! ----------------------------------------------------------------------
+!!     Control file example
+!! ----------------------------------------------------------------------
+!!  begin FFT_test_ctl
+!!    output_file_name    'mul_fftw_test.dat'
+!!
+!!    FFT_length_ctl         128
+!!    num_series_ctl          24
+!!    num_test_loop_ctl       10
+!!  end FFT_test_ctl
+!!
+!! ----------------------------------------------------------------------
+!!@endverbatim
       program test_OMP_FFTW3
 !
       use omp_lib
