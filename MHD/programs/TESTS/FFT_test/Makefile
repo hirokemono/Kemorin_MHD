@@ -163,19 +163,10 @@ t_ctl_data_4_FFT_tests.o \
 test_prt_FFTW3.o
 
 MOD_OMP_FFW3_TEST = \
-m_precision.o \
-m_constants.o \
-m_machine_parameter.o \
-\
-skip_comment_f.o \
-normalize_for_OMP_FFTW.o \
-m_fftw_parameters.o \
-m_OMP_FFTW3_counter.o \
-OMP_FFTW3_wrapper.o \
-t_OMP_FFTW_wrapper.o \
 \
 m_FFT_size.o      \
 t_fft_test_data.o \
+t_ctl_data_4_FFT_tests.o \
 test_OMP_FFTW3.o
 
 MOD_SGL_FFW3_TEST = \
@@ -303,10 +294,10 @@ target_task:
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_OMP_FFW3_TEST)': '$$(MOD_OMP_FFW3_TEST)' \
-	>> $(MAKENAME)
+	'$$(LIB_MESH_FILE)' >> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_OMP_FFW3_TEST)' \
-	'$$(MOD_OMP_FFW3_TEST)' \
+	'$$(MOD_OMP_FFW3_TEST) -L. $$(LIB_MESH)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_CMPR_FFT_TEST)': '$$(MOD_CMPR_FFT_TEST)' \
@@ -361,6 +352,8 @@ mod_list:
 	@echo  $(MOD_ISPACK1_TEST)         >> $(MAKENAME)
 	@echo  MOD_ISPACK3_TEST=       \\  >> $(MAKENAME)
 	@echo  $(MOD_ISPACK3_TEST)         >> $(MAKENAME)
+	@echo  MOD_FFW3_F_TEST=        \\  >> $(MAKENAME)
+	@echo  $(MOD_FFW3_F_TEST)          >> $(MAKENAME)
 	@echo  MOD_PRT_FFTPACK_TEST=   \\  >> $(MAKENAME)
 	@echo  $(MOD_PRT_FFTPACK_TEST)     >> $(MAKENAME)
 	@echo  MOD_PRT_ISPACK1_TEST=   \\  >> $(MAKENAME)

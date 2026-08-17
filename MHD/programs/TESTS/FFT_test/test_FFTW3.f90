@@ -84,7 +84,7 @@
      &   (np_smp, ft3%nstack, ft3%ngrd, WK_MUL_FFTW_t)
       ft3%elapsed(1) = ft3%elapsed(1) + OMP_GET_WTIME() - ft3%start
 !
-      do iloop = 1, n_loop
+      do iloop = 1, nloop_test
         if(mod(iloop, 20) .eq. 0) write(*,*) 'loop count: ', iloop
 !
         ft3%start = OMP_GET_WTIME()
@@ -109,7 +109,7 @@
       end do
 !
       ft3%start = OMP_GET_WTIME()
-      if(n_loop .eq. 1) call write_fft_test_data(file_name, ft3)
+      if(nloop_test .eq. 1) call write_fft_test_data(file_name, ft3)
       call dealloc_fft_test_data(ft3)
       ft3%elapsed(1) = ft3%elapsed(1) + OMP_GET_WTIME() - ft3%start
 !
