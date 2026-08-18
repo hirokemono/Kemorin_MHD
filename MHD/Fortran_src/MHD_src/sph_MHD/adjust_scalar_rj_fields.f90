@@ -262,8 +262,8 @@
 !$omp parallel do private(kr,inod)
       do kr = 1, sph_rj%nidx_rj(1)
         inod = (kr-1) * sph_rj%nidx_rj(2) + sph_rj%idx_rj_degree_one(0)
-        d_rj_part(inod,2) = d_vect(inod,1)
-        d_rj_part(inod,3) = d_vect(inod,2)
+        d_rj_part(inod,1) = d_vect(inod,1)
+        d_rj_part(inod,2) = d_vect(inod,2)
       end do
 !$omp end parallel do
 !
