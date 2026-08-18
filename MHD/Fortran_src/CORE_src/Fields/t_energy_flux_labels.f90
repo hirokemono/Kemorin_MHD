@@ -103,6 +103,10 @@
 !>        Field label of energy flux of magnetic stretch term
 !!       @f$ B_{i} \left(B_{j} \partial_{j} u_{i} \right)@f$
         integer (kind=kint) :: i_mag_stretch_flux = izero
+!>        Work density of magnetic advection for the axial dipole
+        integer (kind=kint) :: i_axial_dipole_mag_advect = izero
+!>        Work density of magnetic stretching for the axial dipole
+        integer (kind=kint) :: i_axial_dipole_mag_stretch = izero
 !
 !>        Field address of temperature flux
 !!         @f$ T (u_{i} \partial_{i}) T @f$
@@ -167,6 +171,12 @@
           ene_flux%i_me_gen =           i_phys
         else if(field_name .eq. magnetic_stretch_flux%name) then
           ene_flux%i_mag_stretch_flux = i_phys
+        else if(field_name                                              &
+     &      .eq. axial_dipole_magnetic_advection_flux%name) then
+          ene_flux%i_axial_dipole_mag_advect = i_phys
+        else if(field_name                                              &
+     &      .eq. axial_dipole_magnetic_stretch_flux%name) then
+          ene_flux%i_axial_dipole_mag_stretch = i_phys
 !
         else if(field_name .eq. temp_generation%name) then
           ene_flux%i_temp_gen =  i_phys

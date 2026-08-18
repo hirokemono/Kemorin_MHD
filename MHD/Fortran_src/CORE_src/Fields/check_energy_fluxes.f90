@@ -32,6 +32,7 @@
       use m_base_force_labels
       use m_diffusion_term_labels
       use m_energy_flux_labels
+      use m_field_product_labels
       use add_nodal_fields_ctl
 !
       type(ctl_array_c3), intent(inout) :: field_ctl
@@ -71,6 +72,16 @@
       end if
       if(check_field_list_ctl(magnetic_stretch_flux, field_ctl)) then
         call add_phys_name_ctl(magnetic_field, field_ctl)
+        call add_phys_name_ctl(magnetic_stretch, field_ctl)
+      end if
+      if(check_field_list_ctl                                           &
+     &     (axial_dipole_magnetic_advection_flux, field_ctl)) then
+        call add_phys_name_ctl(magnetic_dipole, field_ctl)
+        call add_phys_name_ctl(magnetic_advection, field_ctl)
+      end if
+      if(check_field_list_ctl                                           &
+     &     (axial_dipole_magnetic_stretch_flux, field_ctl)) then
+        call add_phys_name_ctl(magnetic_dipole, field_ctl)
         call add_phys_name_ctl(magnetic_stretch, field_ctl)
       end if
 !

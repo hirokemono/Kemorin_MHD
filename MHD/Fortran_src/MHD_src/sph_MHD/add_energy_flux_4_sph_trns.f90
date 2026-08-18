@@ -59,6 +59,14 @@
       call add_field_name_4_sph_trns_snap(d_rj,                         &
      &    ipol_efx%i_nega_ujb, iphys_efx%i_nega_ujb,                    &
      &    f_trns_efx%i_nega_ujb, trns)
+      call add_field_name_4_sph_trns_snap(d_rj,                         &
+     &    ipol_efx%i_axial_dipole_mag_advect,                           &
+     &    iphys_efx%i_axial_dipole_mag_advect,                          &
+     &    f_trns_efx%i_axial_dipole_mag_advect, trns)
+      call add_field_name_4_sph_trns_snap(d_rj,                         &
+     &    ipol_efx%i_axial_dipole_mag_stretch,                          &
+     &    iphys_efx%i_axial_dipole_mag_stretch,                         &
+     &    f_trns_efx%i_axial_dipole_mag_stretch, trns)
 !
       call add_field_name_4_sph_trns_snap(d_rj,                         &
      &    ipol_efx%i_t_buo_gen, iphys_efx%i_t_buo_gen,                  &

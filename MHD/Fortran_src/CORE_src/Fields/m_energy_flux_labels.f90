@@ -132,6 +132,20 @@
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'magnetic_stretch_flux',                   &
      &                math = '$ B_{i} (B_{j} \partial_{j} u_{i} $')
+!>        Field label of energy flux of magnetic advection for the axial dipole
+!!        @f$ - B_{D,i} u_{j} \partial_{j} B_{i} @f$
+      type(field_def), parameter                                  &
+     &        :: axial_dipole_magnetic_advection_flux             &
+     &    = field_def(n_comp = n_scalar,                          &
+     &        name = 'axial_dipole_magnetic_advection_flux',      &
+     &        math = '$ - B_{D,i} u_{j} \partial_{j} B_{i} $')
+!>        Field label of energy flux of magnetic stretching for the axial dipole
+!!        @f$ B_{D,i} B_{j} \partial_{j} u_{i} @f$
+      type(field_def), parameter                                  &
+     &        :: axial_dipole_magnetic_stretch_flux               &
+     &    = field_def(n_comp = n_scalar,                          &
+     &        name = 'axial_dipole_magnetic_stretch_flux',        &
+     &        math = '$ B_{D,i} B_{j} \partial_{j} u_{i} $')
 !
 !>        Field label of temperature flux
 !!         @f$ T (u_{i} \partial_{i}) T @f$
@@ -203,6 +217,10 @@
 !
      &   .or. (field_name .eq. magnetic_ene_generation%name)            &
      &   .or. (field_name .eq. magnetic_stretch_flux%name)              &
+     &   .or. (field_name                                               &
+     &              .eq. axial_dipole_magnetic_advection_flux%name)     &
+     &   .or. (field_name                                               &
+     &              .eq. axial_dipole_magnetic_stretch_flux%name)       &
 !
      &   .or. (field_name .eq. temp_generation%name)                    &
      &   .or. (field_name .eq. pert_temp_generation%name)               &
@@ -236,6 +254,10 @@
       call set_field_label_to_ctl(buoyancy_flux,            array_c2i)
       call set_field_label_to_ctl(magnetic_ene_generation,  array_c2i)
       call set_field_label_to_ctl(magnetic_stretch_flux,    array_c2i)
+      call set_field_label_to_ctl                                        &
+     &   (axial_dipole_magnetic_advection_flux, array_c2i)
+      call set_field_label_to_ctl                                        &
+     &   (axial_dipole_magnetic_stretch_flux, array_c2i)
       call set_field_label_to_ctl(temp_generation,          array_c2i)
       call set_field_label_to_ctl(pert_temp_generation,     array_c2i)
       call set_field_label_to_ctl(comp_generation,          array_c2i)

@@ -55,6 +55,9 @@
       private :: enegy_fluxes_SPH_SGS_MHD, lead_SGS_terms_4_SPH
       private :: lead_filter_flds_by_sph_trans
       private :: compatible_magnetic_terms_SPH
+      private :: cal_axial_dipole_magnetic_work
+      private :: compatible_magnetic_terms_by_sym_SPH
+      private :: compatible_one_magnetic_interaction
 !
 ! ----------------------------------------------------------------------
 !
@@ -399,6 +402,13 @@
       call compatible_magnetic_terms_SPH                               &
      &   (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p, ipol, &
      &    trns_snap, trns_eflux, WK_leg, WK_FFTs, rj_fld, SR_sig, SR_r)
+      call cal_axial_dipole_magnetic_work                              &
+     &   (sph%sph_rtp, trns_snap%b_trns%prod_fld,                      &
+     &    trns_eflux%f_trns%forces, trns_eflux%f_trns%ene_flux,       &
+     &    trns_snap%backward, trns_eflux%forward)
+      call compatible_magnetic_terms_by_sym_SPH                        &
+     &   (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p, ipol, &
+     &    trns_snap, trns_eflux, WK_leg, WK_FFTs, rj_fld, SR_sig, SR_r)
 !
       if (iflag_debug.eq.1) write(*,*) 's_cal_force_with_SGS_rj'
       call s_cal_force_with_SGS_rj                                      &
@@ -579,6 +589,223 @@
       deallocate(save_ujb_rtp,save_ujb_pole)
 !
       end subroutine compatible_magnetic_terms_SPH
+!
+! ----------------------------------------------------------------------
+!
+      subroutine cal_axial_dipole_magnetic_work                       &
+     &         (sph_rtp, bs_trns_prod, fs_trns_frc, fs_trns_eflux,    &
+     &          trns_b_snap, trns_f_eflux)
+!
+      use cal_vector_products
+      use t_spheric_rtp_data
+      use t_field_product_labels
+      use t_base_force_labels
+      use t_energy_flux_labels
+      use t_addresses_sph_transform
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(phys_products_address), intent(in) :: bs_trns_prod
+      type(base_force_address), intent(in) :: fs_trns_frc
+      type(energy_flux_address), intent(in) :: fs_trns_eflux
+      type(spherical_transform_data), intent(in) :: trns_b_snap
+      type(spherical_transform_data), intent(inout) :: trns_f_eflux
+!
+!
+      if(bs_trns_prod%i_dipole_B .le. 0) return
+!
+      if(      fs_trns_eflux%i_axial_dipole_mag_advect .gt. 0         &
+     &   .and. fs_trns_frc%i_mag_advection .gt. 0) then
+        call cal_dot_product_no_coef(sph_rtp%nnod_rtp,                 &
+     &      trns_b_snap%fld_rtp(1,bs_trns_prod%i_dipole_B),            &
+     &      trns_f_eflux%fld_rtp(1,fs_trns_frc%i_mag_advection),       &
+     &      trns_f_eflux%fld_rtp(1,                                   &
+     &                   fs_trns_eflux%i_axial_dipole_mag_advect))
+        call cal_dot_product_no_coef(sph_rtp%nnod_pole,                &
+     &      trns_b_snap%fld_pole(1,bs_trns_prod%i_dipole_B),           &
+     &      trns_f_eflux%fld_pole(1,fs_trns_frc%i_mag_advection),      &
+     &      trns_f_eflux%fld_pole(1,                                  &
+     &                   fs_trns_eflux%i_axial_dipole_mag_advect))
+      end if
+!
+      if(      fs_trns_eflux%i_axial_dipole_mag_stretch .gt. 0        &
+     &   .and. fs_trns_frc%i_mag_stretch .gt. 0) then
+        call cal_dot_product_no_coef(sph_rtp%nnod_rtp,                 &
+     &      trns_b_snap%fld_rtp(1,bs_trns_prod%i_dipole_B),            &
+     &      trns_f_eflux%fld_rtp(1,fs_trns_frc%i_mag_stretch),         &
+     &      trns_f_eflux%fld_rtp(1,                                   &
+     &                   fs_trns_eflux%i_axial_dipole_mag_stretch))
+        call cal_dot_product_no_coef(sph_rtp%nnod_pole,                &
+     &      trns_b_snap%fld_pole(1,bs_trns_prod%i_dipole_B),           &
+     &      trns_f_eflux%fld_pole(1,fs_trns_frc%i_mag_stretch),        &
+     &      trns_f_eflux%fld_pole(1,                                  &
+     &                   fs_trns_eflux%i_axial_dipole_mag_stretch))
+      end if
+!
+      end subroutine cal_axial_dipole_magnetic_work
+!
+! ----------------------------------------------------------------------
+!
+      subroutine compatible_magnetic_terms_by_sym_SPH                 &
+     &         (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p, &
+     &          ipol, trns_snap, trns_eflux, WK_leg, WK_FFTs,         &
+     &          rj_fld, SR_sig, SR_r)
+!
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+      type(parameters_4_sph_trans), intent(in) :: trans_p
+      type(phys_address), intent(in) :: ipol
+      type(address_4_sph_trans), intent(in) :: trns_snap
+      type(address_4_sph_trans), intent(inout) :: trns_eflux
+      type(legendre_trns_works), intent(inout) :: WK_leg
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
+      type(phys_data), intent(inout) :: rj_fld
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+!
+!
+      call compatible_one_magnetic_interaction                        &
+     &   (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p, ipol, &
+     &    ipol%sym_fld, ipol%sym_fld, ipol%forces_by_sym_sym,         &
+     &    trns_snap%b_trns%sym_fld, trns_snap%b_trns%sym_fld,         &
+     &    trns_eflux%b_trns%forces_by_sym_sym,                        &
+     &    trns_eflux%f_trns%forces_by_sym_sym, trns_snap, trns_eflux,&
+     &    WK_leg, WK_FFTs, rj_fld, SR_sig, SR_r)
+      call compatible_one_magnetic_interaction                        &
+     &   (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p, ipol, &
+     &    ipol%asym_fld, ipol%asym_fld, ipol%forces_by_asym_asym,     &
+     &    trns_snap%b_trns%asym_fld, trns_snap%b_trns%asym_fld,       &
+     &    trns_eflux%b_trns%forces_by_asym_asym,                      &
+     &    trns_eflux%f_trns%forces_by_asym_asym, trns_snap,trns_eflux,&
+     &    WK_leg, WK_FFTs, rj_fld, SR_sig, SR_r)
+      call compatible_one_magnetic_interaction                        &
+     &   (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p, ipol, &
+     &    ipol%sym_fld, ipol%asym_fld, ipol%forces_by_sym_asym,       &
+     &    trns_snap%b_trns%sym_fld, trns_snap%b_trns%asym_fld,        &
+     &    trns_eflux%b_trns%forces_by_sym_asym,                       &
+     &    trns_eflux%f_trns%forces_by_sym_asym, trns_snap, trns_eflux,&
+     &    WK_leg, WK_FFTs, rj_fld, SR_sig, SR_r)
+      call compatible_one_magnetic_interaction                        &
+     &   (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p, ipol, &
+     &    ipol%asym_fld, ipol%sym_fld, ipol%forces_by_asym_sym,       &
+     &    trns_snap%b_trns%asym_fld, trns_snap%b_trns%sym_fld,        &
+     &    trns_eflux%b_trns%forces_by_asym_sym,                       &
+     &    trns_eflux%f_trns%forces_by_asym_sym, trns_snap, trns_eflux,&
+     &    WK_leg, WK_FFTs, rj_fld, SR_sig, SR_r)
+!
+      end subroutine compatible_magnetic_terms_by_sym_SPH
+!
+! ----------------------------------------------------------------------
+!
+      subroutine compatible_one_magnetic_interaction                  &
+     &         (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p, &
+     &          ipol, ipol_u, ipol_b, ipol_frc, bs_u, bs_b, be_frc,   &
+     &          fe_frc, trns_snap, trns_eflux, WK_leg, WK_FFTs,       &
+     &          rj_fld, SR_sig, SR_r)
+!
+      use const_sph_radial_grad
+      use sph_transforms_snapshot
+      use poynting_flux_smp
+!
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+      type(parameters_4_sph_trans), intent(in) :: trans_p
+      type(phys_address), intent(in) :: ipol
+      type(base_field_address), intent(in) :: ipol_u, ipol_b
+      type(base_force_address), intent(in) :: ipol_frc
+      type(base_field_address), intent(in) :: bs_u, bs_b
+      type(base_force_address), intent(in) :: be_frc, fe_frc
+      type(address_4_sph_trans), intent(in) :: trns_snap
+      type(address_4_sph_trans), intent(inout) :: trns_eflux
+      type(legendre_trns_works), intent(inout) :: WK_leg
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
+      type(phys_data), intent(inout) :: rj_fld
+      type(send_recv_status), intent(inout) :: SR_sig
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+!
+      integer(kind=kint) :: i
+      real(kind=kreal), allocatable :: wk_scalar(:), save_ind_rj(:,:)
+      real(kind=kreal), allocatable :: save_ind_rtp(:,:), save_ind_pole(:,:)
+      real(kind=kreal), allocatable :: save_ujb_rtp(:), save_ujb_pole(:)
+!
+      if(ipol_frc%i_mag_stretch.le.0) return
+      if(ipol_frc%i_mag_advection.le.0) return
+      if(ipol_frc%i_induction.le.0 .or. be_frc%i_induction.le.0) return
+      if(fe_frc%i_mag_stretch.le.0 .or. fe_frc%i_mag_advection.le.0) return
+      if(bs_u%i_velo.le.0 .or. bs_u%i_vort.le.0) return
+      if(bs_b%i_magne.le.0 .or. bs_b%i_current.le.0) return
+!
+      allocate(wk_scalar(rj_fld%n_point),save_ind_rj(rj_fld%n_point,3))
+      allocate(save_ind_rtp(sph%sph_rtp%nnod_rtp,3))
+      allocate(save_ind_pole(sph%sph_rtp%nnod_pole,3))
+      allocate(save_ujb_rtp(sph%sph_rtp%nnod_rtp))
+      allocate(save_ujb_pole(sph%sph_rtp%nnod_pole))
+      save_ind_rj=rj_fld%d_fld(:,ipol_frc%i_induction:                &
+     &                              ipol_frc%i_induction+2)
+      save_ind_rtp=trns_eflux%backward%fld_rtp(:,be_frc%i_induction:  &
+     &                                             be_frc%i_induction+2)
+      if(sph%sph_rtp%nnod_pole.gt.0) save_ind_pole=                   &
+     & trns_eflux%backward%fld_pole(:,be_frc%i_induction:             &
+     &                                             be_frc%i_induction+2)
+      save_ujb_rtp=trns_eflux%forward%fld_rtp(:,                      &
+     &                         trns_eflux%f_trns%ene_flux%i_ujb)
+      if(sph%sph_rtp%nnod_pole.gt.0) save_ujb_pole=                   &
+     & trns_eflux%forward%fld_pole(:,trns_eflux%f_trns%ene_flux%i_ujb)
+!
+!$omp parallel do private(i)
+      do i=1,sph%sph_rtp%nnod_rtp
+        trns_eflux%forward%fld_rtp(i,trns_eflux%f_trns%ene_flux%i_ujb)&
+     &   =sum(trns_snap%backward%fld_rtp(i,bs_u%i_velo:bs_u%i_velo+2)&
+     &       *trns_snap%backward%fld_rtp(i,bs_b%i_magne:bs_b%i_magne+2))
+      end do
+!$omp end parallel do
+!$omp parallel do private(i)
+      do i=1,sph%sph_rtp%nnod_pole
+        trns_eflux%forward%fld_pole(i,trns_eflux%f_trns%ene_flux%i_ujb)&
+     &   =sum(trns_snap%backward%fld_pole(i,bs_u%i_velo:bs_u%i_velo+2)&
+     &       *trns_snap%backward%fld_pole(i,bs_b%i_magne:bs_b%i_magne+2))
+      end do
+!$omp end parallel do
+      call sph_forward_trans_snapshot_MHD(sph, comms_sph, trans_p,    &
+     &    trns_eflux%forward, WK_leg, WK_FFTs, rj_fld, SR_sig, SR_r)
+      call const_sph_gradient_no_bc(sph%sph_rj, r_2nd,                &
+     &    sph_MHD_bc%sph_bc_B, trans_p%leg%g_sph_rj,                  &
+     &    ipol%ene_flux%i_ujb, ipol_frc%i_induction, wk_scalar,rj_fld)
+      call sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p,       &
+     &    rj_fld, trns_eflux%backward, WK_leg, WK_FFTs, SR_sig, SR_r)
+      call cal_compatible_magnetic_terms                              &
+     &   (sph%sph_rtp%nnod_rtp,MHD_prop%cd_prop%coef_induct,save_ind_rtp,&
+     &    trns_eflux%backward%fld_rtp(1,be_frc%i_induction),          &
+     &    trns_snap%backward%fld_rtp(1,bs_u%i_velo),                  &
+     &    trns_snap%backward%fld_rtp(1,bs_b%i_magne),                 &
+     &    trns_snap%backward%fld_rtp(1,bs_b%i_current),               &
+     &    trns_snap%backward%fld_rtp(1,bs_u%i_vort),                  &
+     &    trns_eflux%forward%fld_rtp(1,fe_frc%i_mag_advection),       &
+     &    trns_eflux%forward%fld_rtp(1,fe_frc%i_mag_stretch))
+      if(sph%sph_rtp%nnod_pole.gt.0) call cal_compatible_magnetic_terms&
+     &   (sph%sph_rtp%nnod_pole,MHD_prop%cd_prop%coef_induct,save_ind_pole,&
+     &    trns_eflux%backward%fld_pole(1,be_frc%i_induction),          &
+     &    trns_snap%backward%fld_pole(1,bs_u%i_velo),                  &
+     &    trns_snap%backward%fld_pole(1,bs_b%i_magne),                 &
+     &    trns_snap%backward%fld_pole(1,bs_b%i_current),               &
+     &    trns_snap%backward%fld_pole(1,bs_u%i_vort),                  &
+     &    trns_eflux%forward%fld_pole(1,fe_frc%i_mag_advection),       &
+     &    trns_eflux%forward%fld_pole(1,fe_frc%i_mag_stretch))
+      rj_fld%d_fld(:,ipol_frc%i_induction:ipol_frc%i_induction+2)    &
+     &     =save_ind_rj
+      trns_eflux%forward%fld_rtp(:,trns_eflux%f_trns%ene_flux%i_ujb) &
+     &     =save_ujb_rtp
+      if(sph%sph_rtp%nnod_pole.gt.0) trns_eflux%forward%fld_pole(:,  &
+     & trns_eflux%f_trns%ene_flux%i_ujb)=save_ujb_pole
+      deallocate(wk_scalar,save_ind_rj,save_ind_rtp,save_ind_pole)
+      deallocate(save_ujb_rtp,save_ujb_pole)
+!
+      end subroutine compatible_one_magnetic_interaction
 !
 ! ----------------------------------------------------------------------
 !
