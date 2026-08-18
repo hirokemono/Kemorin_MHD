@@ -52,6 +52,7 @@
       use volume_average_4_sph
       use cal_ave_4_rms_vector_sph
       use sum_sph_rms_data
+      use calypso_mpi
       use cal_rms_fields_by_sph
 !
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -140,6 +141,14 @@
      &      .or. icomp_st .eq. ipol%forces_by_asym_asym%i_induction     &
      &      .or. icomp_st .eq. ipol%forces_by_sym_asym%i_induction      &
      &      .or. icomp_st .eq. ipol%forces_by_asym_sym%i_induction      &
+     &      .or. icomp_st .eq. ipol%forces_by_sym_sym%i_mag_stretch     &
+     &      .or. icomp_st .eq. ipol%forces_by_sym_sym%i_mag_advection   &
+     &      .or. icomp_st .eq. ipol%forces_by_asym_asym%i_mag_stretch   &
+     &      .or. icomp_st .eq. ipol%forces_by_asym_asym%i_mag_advection &
+     &      .or. icomp_st .eq. ipol%forces_by_sym_asym%i_mag_stretch    &
+     &      .or. icomp_st .eq. ipol%forces_by_sym_asym%i_mag_advection  &
+     &      .or. icomp_st .eq. ipol%forces_by_asym_sym%i_mag_stretch    &
+     &      .or. icomp_st .eq. ipol%forces_by_asym_sym%i_mag_advection  &
      &      .or. icomp_st .eq. ipol%prod_fld%i_zonal_induction          &
      &      .or. icomp_st .eq. ipol%prod_fld%i_sym_zonal_induction      &
      &      .or. icomp_st .eq. ipol%prod_fld%i_asym_zonal_induction     &

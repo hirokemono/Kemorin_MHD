@@ -325,6 +325,31 @@
      &                  name = 'Basym_nabla_usym',                      &
      &                  math = '$ (B_{asym} \cdot \nabla) u_{sym} $')
 !
+!>        Field label of compatible magnetic advection term
+!!         @f$ -(u_{sym} \cdot \nabla) B_{sym} @f$
+      type(field_def), parameter :: mns_usym_nabla_Bsym                &
+     &    = field_def(n_comp = n_vector,                               &
+     &                  name = 'mns_usym_nabla_Bsym',                  &
+     &                  math = '$ -(u_{sym} \cdot \nabla) B_{sym} $')
+!>        Field label of compatible magnetic advection term
+!!         @f$ -(u_{asym} \cdot \nabla) B_{asym} @f$
+      type(field_def), parameter :: mns_uasym_nabla_Basym              &
+     &    = field_def(n_comp = n_vector,                               &
+     &                  name = 'mns_uasym_nabla_Basym',                &
+     &              math = '$ -(u_{asym} \cdot \nabla) B_{asym} $')
+!>        Field label of compatible magnetic advection term
+!!         @f$ -(u_{sym} \cdot \nabla) B_{asym} @f$
+      type(field_def), parameter :: mns_usym_nabla_Basym               &
+     &    = field_def(n_comp = n_vector,                               &
+     &                  name = 'mns_usym_nabla_Basym',                 &
+     &                 math = '$ -(u_{sym} \cdot \nabla) B_{asym} $')
+!>        Field label of compatible magnetic advection term
+!!         @f$ -(u_{asym} \cdot \nabla) B_{sym} @f$
+      type(field_def), parameter :: mns_uasym_nabla_Bsym               &
+     &    = field_def(n_comp = n_vector,                               &
+     &                  name = 'mns_uasym_nabla_Bsym',                 &
+     &                 math = '$ -(u_{asym} \cdot \nabla) B_{sym} $')
+!
 !>        Field label of Tensor of magnetic induction
 !!         @f$ u_{sym} B_{sym}  - B_{sym} u_{sym} @f$
       type(field_def), parameter :: usym_Bsym                           &
@@ -632,6 +657,10 @@
      &   .or. (field_name .eq. Basym_nabla_uasym%name)                  &
      &   .or. (field_name .eq. Bsym_nabla_uasym%name)                   &
      &   .or. (field_name .eq. Basym_nabla_usym%name)                   &
+     &   .or. (field_name .eq. mns_usym_nabla_Bsym%name)                &
+     &   .or. (field_name .eq. mns_uasym_nabla_Basym%name)              &
+     &   .or. (field_name .eq. mns_usym_nabla_Basym%name)               &
+     &   .or. (field_name .eq. mns_uasym_nabla_Bsym%name)               &
 !
      &   .or. (field_name .eq. heat_flux_sym_sym%name)                  &
      &   .or. (field_name .eq. heat_flux_asym_asym%name)                &
@@ -738,6 +767,10 @@
       call set_field_label_to_ctl(Basym_nabla_uasym,        array_c2i)
       call set_field_label_to_ctl(Bsym_nabla_uasym,         array_c2i)
       call set_field_label_to_ctl(Basym_nabla_usym,         array_c2i)
+      call set_field_label_to_ctl(mns_usym_nabla_Bsym,      array_c2i)
+      call set_field_label_to_ctl(mns_uasym_nabla_Basym,    array_c2i)
+      call set_field_label_to_ctl(mns_usym_nabla_Basym,     array_c2i)
+      call set_field_label_to_ctl(mns_uasym_nabla_Bsym,     array_c2i)
 !
       call set_field_label_to_ctl(usym_nabla_Tsym,          array_c2i)
       call set_field_label_to_ctl(uasym_nabla_Tasym,        array_c2i)

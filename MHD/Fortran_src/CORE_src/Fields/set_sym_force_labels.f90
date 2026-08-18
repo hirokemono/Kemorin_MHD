@@ -165,6 +165,8 @@
               force_by_sym_sym%i_induction =   i_phys
             else if(field_name .eq. Bsym_nabla_usym%name) then
               force_by_sym_sym%i_mag_stretch = i_phys
+            else if(field_name .eq. mns_usym_nabla_Bsym%name) then
+              force_by_sym_sym%i_mag_advection = i_phys
 !
             else if (field_name .eq. usym_nabla_Tsym%name) then
               force_by_sym_sym%i_h_advect =    i_phys
@@ -227,6 +229,8 @@
               force_by_asym_asym%i_induction =  i_phys
             else if(field_name .eq. Basym_nabla_uasym%name) then
               force_by_asym_asym%i_mag_stretch =  i_phys
+            else if(field_name .eq. mns_uasym_nabla_Basym%name) then
+              force_by_asym_asym%i_mag_advection = i_phys
 !
             else if (field_name .eq. uasym_nabla_Tasym%name) then
               force_by_asym_asym%i_h_advect =    i_phys
@@ -296,6 +300,8 @@
               force_by_sym_asym%i_induction =   i_phys
             else if(field_name .eq. Bsym_nabla_uasym%name) then
               force_by_sym_asym%i_mag_stretch = i_phys
+            else if(field_name .eq. mns_usym_nabla_Basym%name) then
+              force_by_sym_asym%i_mag_advection = i_phys
 !
             else if (field_name .eq. usym_nabla_Tasym%name) then
               force_by_sym_asym%i_h_advect =    i_phys
@@ -358,6 +364,8 @@
               force_by_asym_sym%i_induction =  i_phys
             else if(field_name .eq. Basym_nabla_usym%name) then
               force_by_asym_sym%i_mag_stretch =  i_phys
+            else if(field_name .eq. mns_uasym_nabla_Bsym%name) then
+              force_by_asym_sym%i_mag_advection = i_phys
 !
             else if (field_name .eq. uasym_nabla_Tsym%name) then
               force_by_asym_sym%i_h_advect =    i_phys

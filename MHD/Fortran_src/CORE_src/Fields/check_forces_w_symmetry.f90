@@ -21,6 +21,7 @@
 !
       use t_base_force_labels
       use m_base_force_labels
+      use m_energy_flux_labels
       use m_field_w_symmetry_labels
       use m_force_w_sym_labels
 !
@@ -71,9 +72,19 @@
       if( check_field_list_ctl(usym_x_Bsym, field_ctl)                  &
      &    .or. check_field_list_ctl(rot_usym_x_Bsym, field_ctl)         &
      &    .or. check_field_list_ctl(Bsym_nabla_usym, field_ctl)         &
+     &    .or. check_field_list_ctl(mns_usym_nabla_Bsym, field_ctl)     &
      &    .or. check_field_list_ctl(usym_Bsym, field_ctl) ) then
         call add_phys_name_ctl(sym_velocity, field_ctl)
         call add_phys_name_ctl(sym_magnetic_field, field_ctl)
+      end if
+      if(      check_field_list_ctl(Bsym_nabla_usym, field_ctl)         &
+     &    .or. check_field_list_ctl(mns_usym_nabla_Bsym, field_ctl)) then
+        call add_phys_name_ctl(sym_vorticity, field_ctl)
+        call add_phys_name_ctl(sym_current_density, field_ctl)
+        call add_phys_name_ctl(rot_usym_x_Bsym, field_ctl)
+        call add_phys_name_ctl(Bsym_nabla_usym, field_ctl)
+        call add_phys_name_ctl(mns_usym_nabla_Bsym, field_ctl)
+        call add_phys_name_ctl(Lorentz_work, field_ctl)
       end if
 !
       if( check_field_list_ctl(usym_nabla_Tsym, field_ctl)              &
@@ -142,9 +153,19 @@
 !
       if( check_field_list_ctl(uasym_x_Basym, field_ctl)                &
      &    .or. check_field_list_ctl(Basym_nabla_uasym, field_ctl)       &
+     &    .or. check_field_list_ctl(mns_uasym_nabla_Basym, field_ctl)   &
      &    .or. check_field_list_ctl(uasym_Basym, field_ctl) ) then
         call add_phys_name_ctl(asym_velocity, field_ctl)
         call add_phys_name_ctl(asym_magnetic_field, field_ctl)
+      end if
+      if(      check_field_list_ctl(Basym_nabla_uasym, field_ctl)       &
+     &    .or. check_field_list_ctl(mns_uasym_nabla_Basym, field_ctl)) then
+        call add_phys_name_ctl(asym_vorticity, field_ctl)
+        call add_phys_name_ctl(asym_current_density, field_ctl)
+        call add_phys_name_ctl(rot_uasym_x_Basym, field_ctl)
+        call add_phys_name_ctl(Basym_nabla_uasym, field_ctl)
+        call add_phys_name_ctl(mns_uasym_nabla_Basym, field_ctl)
+        call add_phys_name_ctl(Lorentz_work, field_ctl)
       end if
       if( check_field_list_ctl(uasym_nabla_Tasym, field_ctl)            &
      &    .or. check_field_list_ctl(heat_flux_asym_asym, field_ctl)     &
@@ -210,9 +231,19 @@
 !
       if( check_field_list_ctl(usym_x_Basym, field_ctl)                 &
      &    .or. check_field_list_ctl(Bsym_nabla_uasym, field_ctl)        &
+     &    .or. check_field_list_ctl(mns_usym_nabla_Basym, field_ctl)    &
      &    .or. check_field_list_ctl(usym_Basym, field_ctl) ) then
         call add_phys_name_ctl(sym_velocity, field_ctl)
         call add_phys_name_ctl(asym_magnetic_field, field_ctl)
+      end if
+      if(      check_field_list_ctl(Bsym_nabla_uasym, field_ctl)        &
+     &    .or. check_field_list_ctl(mns_usym_nabla_Basym, field_ctl)) then
+        call add_phys_name_ctl(sym_vorticity, field_ctl)
+        call add_phys_name_ctl(asym_current_density, field_ctl)
+        call add_phys_name_ctl(rot_usym_x_Basym, field_ctl)
+        call add_phys_name_ctl(Bsym_nabla_uasym, field_ctl)
+        call add_phys_name_ctl(mns_usym_nabla_Basym, field_ctl)
+        call add_phys_name_ctl(Lorentz_work, field_ctl)
       end if
 !
       if( check_field_list_ctl(usym_nabla_Tasym, field_ctl)             &
@@ -259,9 +290,19 @@
 !
       if( check_field_list_ctl(uasym_x_Bsym, field_ctl)                 &
      &    .or. check_field_list_ctl(Basym_nabla_usym, field_ctl)        &
+     &    .or. check_field_list_ctl(mns_uasym_nabla_Bsym, field_ctl)    &
      &    .or. check_field_list_ctl(uasym_Bsym, field_ctl)) then
         call add_phys_name_ctl(asym_velocity, field_ctl)
         call add_phys_name_ctl(sym_magnetic_field, field_ctl)
+      end if
+      if(      check_field_list_ctl(Basym_nabla_usym, field_ctl)        &
+     &    .or. check_field_list_ctl(mns_uasym_nabla_Bsym, field_ctl)) then
+        call add_phys_name_ctl(asym_vorticity, field_ctl)
+        call add_phys_name_ctl(sym_current_density, field_ctl)
+        call add_phys_name_ctl(rot_uasym_x_Bsym, field_ctl)
+        call add_phys_name_ctl(Basym_nabla_usym, field_ctl)
+        call add_phys_name_ctl(mns_uasym_nabla_Bsym, field_ctl)
+        call add_phys_name_ctl(Lorentz_work, field_ctl)
       end if
 !
       if( check_field_list_ctl(uasym_nabla_Tsym, field_ctl)             &

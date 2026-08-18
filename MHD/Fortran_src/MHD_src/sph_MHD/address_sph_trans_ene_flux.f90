@@ -159,6 +159,18 @@
 !      Vector
       call add_base_force_fwd_trns_snap                                 &
      &   (d_rj, ipol%forces, iphys%forces, f_trns%forces, trns_fwd)
+      call add_base_force_fwd_trns_snap                                 &
+     &   (d_rj, ipol%forces_by_sym_sym, iphys%forces_by_sym_sym,       &
+     &    f_trns%forces_by_sym_sym, trns_fwd)
+      call add_base_force_fwd_trns_snap                                 &
+     &   (d_rj, ipol%forces_by_asym_asym, iphys%forces_by_asym_asym,   &
+     &    f_trns%forces_by_asym_asym, trns_fwd)
+      call add_base_force_fwd_trns_snap                                 &
+     &   (d_rj, ipol%forces_by_sym_asym, iphys%forces_by_sym_asym,     &
+     &    f_trns%forces_by_sym_asym, trns_fwd)
+      call add_base_force_fwd_trns_snap                                 &
+     &   (d_rj, ipol%forces_by_asym_sym, iphys%forces_by_asym_sym,     &
+     &    f_trns%forces_by_asym_sym, trns_fwd)
       call add_prod_vector_sph_trns_snap                                &
      &   (d_rj, ipol%prod_fld, iphys%prod_fld, f_trns%prod_fld,         &
      &    trns_fwd)
