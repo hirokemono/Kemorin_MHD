@@ -185,7 +185,7 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call multi_pin_bwd_FFTW3_smp(WK%plan_back_mul, Nsmp, Nstacksmp,   &
+      call multi_pin_bwd_FFTW3(WK%plan_back_mul, Nsmp, Nstacksmp,       &
      &    Ncomp, Nfft, WK%Nfft_c, X, WK%C_FFTW_mul,                     &
      &    elapsed_fft, elapsed_cpy)
 !

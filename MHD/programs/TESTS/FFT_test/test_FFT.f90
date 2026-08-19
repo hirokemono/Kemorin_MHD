@@ -55,8 +55,10 @@
       write(*, '(a,3i6)')                                               &
      &        "Num (point, field, loop): ", ngrid, n_field, n_loop
       write(*, '("Initialize:      ",1pE16.6e3)') ft0%elapsed(1)
-      write(*, '("Wrapped FFTPACK: ",1pE16.6e3)') ft0%elapsed(2)
+      write(*, '("Wrapped FFT:     ",1pE16.6e3)') ft0%elapsed(2)
       write(*, '("Data copy:       ",1pE16.6e3)') ft0%elapsed(3)
+      write(*,'(a)') '-----------------------------'
+      write(*,'(a)') ' '
 !
       stop
       end program test_FFT

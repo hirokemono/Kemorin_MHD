@@ -174,12 +174,11 @@
 !
       real(kind = kreal), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nsmp)
 !
-      integer(kind = kint_gl) :: ismp, ist, num8
+      integer(kind = kint_gl) :: ismp, num8
 !
 !
-!$omp do private(ist,num8)
+!$omp do private(num8)
       do ismp = 1, Nsmp
-        ist = Nstacksmp(ismp-1)
         num8 = Nstacksmp(ismp) - Nstacksmp(ismp-1)
         if(num8 .le. 0) cycle
 !
@@ -203,12 +202,11 @@
       real(kind = kreal), intent(inout)                                 &
      &                              :: X_ispack(Mmax_smp*Nfft,Nsmp)
 !
-      integer(kind = kint_gl) :: ismp, ist, num8
+      integer(kind = kint_gl) :: ismp, num8
 !
 !
-!$omp do private(ist,num8)
+!$omp do private(num8)
       do ismp = 1, Nsmp
-        ist = Nstacksmp(ismp-1)
         num8 = Nstacksmp(ismp) - Nstacksmp(ismp-1)
         if(num8 .le. 0) cycle
 !

@@ -124,7 +124,7 @@
 !
 !$omp parallel do private(ist,num8)
       do ismp = 1, Nsmp
-        ist = Nstacksmp(ismp-1)
+        ist =  Nstacksmp(ismp-1)
         num8 = Nstacksmp(ismp) - Nstacksmp(ismp-1)
         if(num8 .le. 0) cycle
 !

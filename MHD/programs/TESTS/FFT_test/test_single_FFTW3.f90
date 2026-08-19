@@ -62,6 +62,8 @@
       write(*, '("Initialize:      ",1pE16.6e3)') ft3%elapsed(1)
       write(*, '("single FFTW:     ",1pE16.6e3)') ft3%elapsed(2)
       write(*, '("Data normalize:  ",1pE16.6e3)') ft3%elapsed(3)
+      write(*,'(a)') '-----------------------------'
+      write(*,'(a)') ' '
 !
       stop
       end program test_single_FFTW3

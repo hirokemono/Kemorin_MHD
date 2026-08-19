@@ -64,7 +64,7 @@
       write(*, '(a,3i6)')                                               &
      &        "Num (point, field, loop): ", ngrid, n_field, n_loop
       write(*, '("Initialize:      ",1pE16.6e3)') ft3%elapsed(1)
-      write(*, '("Wrapped FFTPACK: ",1pE16.6e3)') ft3%elapsed(2)
+      write(*, '("Wrapped FFTW3:   ",1pE16.6e3)') ft3%elapsed(2)
       write(*, '("Data copy:       ",1pE16.6e3)') ft3%elapsed(3)
 !
       stop 'finish'

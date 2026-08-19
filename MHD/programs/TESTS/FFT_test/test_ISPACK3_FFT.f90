@@ -41,7 +41,7 @@
       type(FFT_tests_ctl), save :: fft_c1
 !
       character(len = kchara), parameter                                &
-     &                       :: def_file_name = 'ISPACK3_test.dat'
+     &                       :: def_file_name = 'rtp_ISPACK3_test.dat'
 !
       character(len = kchara) :: file_name = def_file_name
       integer(kind = kint) :: nfft_test =  ngrid
@@ -114,8 +114,10 @@
       write(*, '(a,3i6)')  "Num (point, field, loop): ",                &
      &       nfft_test, ncomp_test, nloop_test
       write(*, '("Initialize:      ",1pE16.6e3)') ft0%elapsed(1)
-      write(*, '("Wrapped FFTPACK: ",1pE16.6e3)') ft0%elapsed(2)
+      write(*, '("Wrapped ISPACK3: ",1pE16.6e3)') ft0%elapsed(2)
       write(*, '("Data copy:       ",1pE16.6e3)') ft0%elapsed(3)
+      write(*,'(a)') '-----------------------------'
+      write(*,'(a)') ' '
 !
       stop 'finish'
       end program test_ISPACK3_FFT

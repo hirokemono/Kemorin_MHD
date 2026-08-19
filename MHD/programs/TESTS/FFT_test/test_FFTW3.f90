@@ -117,8 +117,10 @@
       write(*, '(a,3i6)')  "Num (point, field, loop): ",                &
      &       nfft_test, ncomp_test, nloop_test
       write(*, '("Initialize:      ",1pE16.6e3)') ft3%elapsed(1)
-      write(*, '("Wrapped FFTPACK: ",1pE16.6e3)') ft3%elapsed(2)
+      write(*, '("Wrapped FFTW3:   ",1pE16.6e3)') ft3%elapsed(2)
       write(*, '("Data copy:       ",1pE16.6e3)') ft3%elapsed(3)
+      write(*,'(a)') '-----------------------------'
+      write(*,'(a)') ' '
 !
       stop 'finish'
       end program test_FFTW3
