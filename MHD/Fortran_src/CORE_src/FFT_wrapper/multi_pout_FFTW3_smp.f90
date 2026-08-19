@@ -204,11 +204,13 @@
       end subroutine destroy_FFTW_mul_smp
 !
 ! ------------------------------------------------------------------
+! ------------------------------------------------------------------
 !
       subroutine multi_pout_fwd_FFTW3(plan_forward_smp,                 &
      &          Nsmp, Nstacksmp, Ncomp, Nfft, aNfft, Nfft_c,            &
      &          X, X_FFTW, C_FFTW, elapsed_fft, elapsed_cpy)
 !
+      use swap_rtp_data_for_FFTW
       use normalize_for_FFTW
 !
       integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
@@ -253,6 +255,7 @@
      &          Nsmp, Nstacksmp, Ncomp, Nfft, Nfft_c,                   &
      &          X, X_FFTW, C_FFTW, elapsed_fft, elapsed_cpy)
 !
+      use swap_rtp_data_for_FFTW
       use normalize_for_FFTW
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
@@ -270,8 +273,8 @@
 !
 !   normalization
       start = OMP_GET_WTIME()
-      call norm_swap_to_prt_bwd_OMP_FFTW(Ncomp, Nfft, ione, X(1,1),     &
-     &                                   Ncomp, NFFT_c, C_FFTW(1,1))
+      call swap_to_rtp_bwd_OMP_FFTW(Ncomp, Nfft, ione, X(1,1),          &
+     &                              Ncomp, NFFT_c, C_FFTW(1,1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
@@ -348,51 +351,6 @@
 !$omp end do nowait
 !
       end subroutine multi_pout_bwd_FFTW3_smp
-!
-! ------------------------------------------------------------------
-! ------------------------------------------------------------------
-!
-      subroutine swap_to_rtp_fwd_FFTW(ist_comp, Ncomp, Nfft, X,         &
-     &                                Ncomp_r, Nfft_r, X_FFTW)
-!
-      integer(kind = kint), intent(in) :: Ncomp_r, Nfft_r
-      integer(kind = kint), intent(in) :: Ncomp, Nfft, ist_comp
-      real(kind = kreal), intent(in) :: X(Ncomp, Nfft)
-!
-      real(kind = kreal), intent(inout) :: X_FFTW(Nfft_r,Ncomp_r)
-!
-      integer(kind = kint) :: j
-!
-!
-!$omp parallel do
-      do j = 1, Ncomp_r
-        X_FFTW(1:Nfft,j) = X(ist_comp+j-1,1:Nfft)
-      end do
-!$omp end parallel do
-!
-      end subroutine swap_to_rtp_fwd_FFTW
-!
-! ------------------------------------------------------------------
-!
-      subroutine swap_from_rtp_bwd_FFTW(Ncomp_r, Nfft_r, X_FFTW,        &
-     &                                  ist_comp, Ncomp, Nfft, X)
-!
-      integer(kind = kint), intent(in) :: Ncomp_r, Nfft_r
-      integer(kind = kint), intent(in) :: Ncomp, Nfft, ist_comp
-      real(kind = kreal), intent(in) :: X_FFTW(Nfft_r,Ncomp_r)
-!
-      real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
-!
-      integer(kind = kint) :: i
-!
-!
-!$omp parallel do
-      do i = 1, Nfft
-        X(ist_comp:ist_comp+Ncomp_r-1,i) = X_FFTW(i,1:Ncomp_r)
-      end do
-!$omp end parallel do
-!
-      end subroutine swap_from_rtp_bwd_FFTW
 !
 ! ------------------------------------------------------------------
 !

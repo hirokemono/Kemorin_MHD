@@ -200,8 +200,8 @@
 !
 !   normalization
           start = OMP_GET_WTIME()
-          call swap_from_rtp_fwd_FFTW(j, Ncomp, NFFT_c, C_FFTW(1,ip),   &
-     &                                Nfft, X(1,1))
+          call swap_from_fwd_single_FFTW(j, Ncomp, NFFT_c,              &
+     &                                   C_FFTW(1,ip), Nfft, X(1,1))
           ed_c = ed_c + OMP_GET_WTIME() - start
         end do
       end do
@@ -244,7 +244,7 @@
         do j = ist, ied
 !   normalization
           start = OMP_GET_WTIME()
-          call norm_swap_to_prt_bwd_FFTW(j, Ncomp, Nfft, X(1,1),        &
+          call norm_prt_bwd_single_FFTW(j, Ncomp, Nfft, X(1,1),         &
      &                                   NFFT_c, C_FFTW(1,ip))
           ed_c = ed_c + OMP_GET_WTIME() - start
 !

@@ -15,17 +15,11 @@
 !!        real(kind = kreal), intent(in) :: aNfft
 !!        complex(kind = kreal), intent(inout) :: C_FFT(NFFT_c*Ncomp_smp)
 !!
-!!      subroutine swap_from_rtp_fwd_FFTW(nd, Ncomp, NFFT_c, C_FFT,     &
-!!     &                                  Nfft, X)
+!!      subroutine swap_from_fwd_single_FFTW(nd, Ncomp, NFFT_c, C_FFT,  &
+!!     &                                     Nfft, X)
 !!        integer(kind = kint), intent(in) :: nd
 !!        integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_c
 !!        complex(kind = kreal), intent(in) :: C_FFT(NFFT_c)
-!!        real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
-!!      subroutine swap_from_rtp_fwd_OMP_FFTW(Ncomp_c, NFFT_c, C_FFT,   &
-!!     &                                      Ncomp, Nfft, ist_comp, X)
-!!        integer(kind = kint), intent(in) :: Ncomp_c, NFFT_c
-!!        integer(kind = kint), intent(in) :: Ncomp, Nfft, ist_comp
-!!        complex(kind = kreal), intent(in) :: C_FFT(NFFT_c,Ncomp)
 !!        real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
 !!      subroutine copy_from_prt_fwd_FFTW(NFFT_c, C_FFT, Nfft, X)
 !!        integer(kind = kint), intent(in) :: Nfft, NFFT_c
@@ -38,18 +32,12 @@
 !!        complex(kind = kreal), intent(in) :: C_FFT(NFFT_c,Ncomp_c)
 !!        real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
 !!
-!!      subroutine norm_swap_to_prt_bwd_FFTW(nd, Ncomp, Nfft, X,        &
-!!     &                                     NFFT_c, C_FFT)
+!!      subroutine norm_prt_bwd_single_FFTW(nd, Ncomp, Nfft, X,         &
+!!     &                                    NFFT_c, C_FFT)
 !!        integer(kind = kint), intent(in) :: nd
 !!        integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_c
 !!        real(kind = kreal), intent(in) :: X(Ncomp,Nfft)
 !!        complex(kind = kreal), intent(inout) :: C_FFT(NFFT_c)
-!!      subroutine norm_swap_to_prt_bwd_OMP_FFTW                        &
-!!     &         (Ncomp, Nfft, ist_comp, X, Ncomp_c, NFFT_c, C_FFT)
-!!        integer(kind = kint), intent(in) :: Ncomp, Nfft, ist_comp
-!!        integer(kind = kint), intent(in) :: Ncomp_c, NFFT_c
-!!        real(kind = kreal), intent(in) :: X(Ncomp,Nfft)
-!!        complex(kind = kreal), intent(inout) :: C_FFT(NFFT_c,Ncomp)
 !!      subroutine norm_copy_to_prt_bwd_FFTW(Nfft, X, NFFT_c, C_FFT)
 !!        integer(kind = kint), intent(in) :: Nfft, NFFT_c
 !!        real(kind = kreal), intent(in) :: X(Nfft)
@@ -103,8 +91,8 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine swap_from_rtp_fwd_FFTW(nd, Ncomp, NFFT_c, C_FFT,       &
-     &                                  Nfft, X)
+      subroutine swap_from_fwd_single_FFTW(nd, Ncomp, NFFT_c, C_FFT,    &
+     &                                     Nfft, X)
 !
       integer(kind = kint), intent(in) :: nd
       integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_c
@@ -122,34 +110,8 @@
         X(nd,2*i  ) = -two * imag(C_FFT(i))
       end do
 !
-      end subroutine swap_from_rtp_fwd_FFTW
+      end subroutine swap_from_fwd_single_FFTW
 !
-! ------------------------------------------------------------------
-!
-      subroutine swap_from_rtp_fwd_OMP_FFTW(Ncomp_c, NFFT_c, C_FFT,     &
-     &                                      Ncomp, Nfft, ist_comp, X)
-!
-      integer(kind = kint), intent(in) :: Ncomp_c, NFFT_c
-      integer(kind = kint), intent(in) :: Ncomp, Nfft, ist_comp
-      complex(kind = kreal), intent(in) :: C_FFT(NFFT_c,Ncomp)
-!
-      real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
-!
-      integer(kind = kint) :: i
-!
-!
-      X(ist_comp:ist_comp+Ncomp_c-1,1) = real(C_FFT(1,     1:Ncomp_c))
-      X(ist_comp:ist_comp+Ncomp_c-1,2) = real(C_FFT(NFFT_c,1:Ncomp_c))
-      do i = 2, NFFT_c - 1
-        X(ist_comp:ist_comp+Ncomp_c-1,2*i-1)                            &
-     &          =  two * real(C_FFT(i,1:Ncomp_c))
-        X(ist_comp:ist_comp+Ncomp_c-1,2*i  )                            &
-     &          = -two * imag(C_FFT(i,1:Ncomp_c))
-      end do 
-!
-      end subroutine swap_from_rtp_fwd_OMP_FFTW
-!
-! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
       subroutine copy_from_prt_fwd_FFTW(NFFT_c, C_FFT, Nfft, X)
@@ -201,8 +163,8 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine norm_swap_to_prt_bwd_FFTW(nd, Ncomp, Nfft, X,          &
-     &                                     NFFT_c, C_FFT)
+      subroutine norm_prt_bwd_single_FFTW(nd, Ncomp, Nfft, X,           &
+     &                                    NFFT_c, C_FFT)
 !
       integer(kind = kint), intent(in) :: nd
       integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_c
@@ -219,37 +181,8 @@
       end do
       C_FFT(NFFT_c) = cmplx(X(nd,2), zero, kind(0d0))
 !
-      end subroutine norm_swap_to_prt_bwd_FFTW
+      end subroutine norm_prt_bwd_single_FFTW
 !
-! ------------------------------------------------------------------
-!
-      subroutine norm_swap_to_prt_bwd_OMP_FFTW                          &
-     &         (Ncomp, Nfft, ist_comp, X, Ncomp_c, NFFT_c, C_FFT)
-!
-      integer(kind = kint), intent(in) :: Ncomp, Nfft, ist_comp
-      integer(kind = kint), intent(in) :: Ncomp_c, NFFT_c
-      real(kind = kreal), intent(in) :: X(Ncomp,Nfft)
-!
-      complex(kind = kreal), intent(inout) :: C_FFT(NFFT_c,Ncomp)
-!
-      integer(kind = kint) :: i, nd, icomp
-!
-!
-!$omp parallel do private(nd,i,icomp)
-      do nd = 1, Ncomp_c
-        icomp = nd + ist_comp - 1
-        C_FFT(1,nd) = cmplx(X(icomp,1), zero, kind(0d0))
-        do i = 2, NFFT_c - 1
-          C_FFT(i,nd) = half * cmplx( X(icomp,2*i-1),                   &
-     &                               -X(icomp,2*i), kind(0d0))
-        end do
-        C_FFT(NFFT_c,nd) = cmplx(X(icomp,2), zero, kind(0d0))
-      end do
-!$omp end parallel do
-!
-      end subroutine norm_swap_to_prt_bwd_OMP_FFTW
-!
-! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
       subroutine norm_copy_to_prt_bwd_FFTW(Nfft, X, NFFT_c, C_FFT)
