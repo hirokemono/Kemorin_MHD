@@ -164,7 +164,7 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call multi_pin_fwd_FFTW3_smp(WK%plan_fowd_mul, Nsmp, Nstacksmp,   &
+      call multi_pin_fwd_FFTW3(WK%plan_fowd_mul, Nsmp, Nstacksmp,       &
      &    Ncomp, Nfft, WK%aNfft, WK%Nfft_c, X, WK%C_FFTW_mul,           &
      &    elapsed_fft, elapsed_cpy)
 !
@@ -205,7 +205,7 @@
       type(working_mul_FFTW), intent(inout) :: WK
 !
 !
-      call multi_pout_fwd_FFTW3_smp(WK%plan_fowd_mul,                   &
+      call multi_pout_fwd_FFTW3(WK%plan_fowd_mul,                       &
      &    Nsmp, Nstacksmp, Ncomp, Nfft, WK%aNfft, WK%Nfft_c, X,         &
      &    WK%X_FFTW_mul, WK%C_FFTW_mul, elapsed_fft, elapsed_cpy)
 !
@@ -224,7 +224,7 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call multi_pout_bwd_FFTW3_smp(WK%plan_back_mul,                   &
+      call multi_pout_bwd_FFTW3(WK%plan_back_mul,                       &
      &    Nsmp, Nstacksmp, Ncomp, Nfft, WK%Nfft_c, X,                   &
      &    WK%X_FFTW_mul, WK%C_FFTW_mul, elapsed_fft, elapsed_cpy)
 !
