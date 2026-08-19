@@ -21,6 +21,16 @@
 !!      subroutine MHD_multi_fwd_FFTW_to_send                           &
 !!     &         (ncomp_fwd, nnod_rtp, nidx_rtp, irt_rtp_smp_stack,     &
 !!     &          n_WS, irev_sr_rtp, X_rtp, WS, FFTW_t)
+!!        integer(kind = kint), intent(in) :: nnod_rtp
+!!        integer(kind = kint), intent(in) :: nidx_rtp(3)
+!!        integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
+!!        integer(kind = kint), intent(in) :: ncomp_fwd
+!!        real(kind = kreal), intent(in)                                &
+!!     &      :: X_rtp(nidx_rtp(3),irt_rtp_smp_stack(np_smp)*ncomp_fwd)
+!!        integer(kind = kint), intent(in) :: n_WS
+!!        integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
+!!        real(kind = kreal), intent(inout):: WS(n_WS)
+!!        type(work_for_sgl_FFTW), intent(inout) :: FFTW_t
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by FFTW3
@@ -37,6 +47,16 @@
 !!      subroutine MHD_multi_back_FFTW_from_recv                        &
 !!     &         (ncomp_bwd, nnod_rtp, nidx_rtp, irt_rtp_smp_stack,     &
 !!     &          n_WR, irev_sr_rtp, WR, X_rtp, FFTW_t)
+!!        integer(kind = kint), intent(in) :: nnod_rtp
+!!        integer(kind = kint), intent(in) :: nidx_rtp(3)
+!!        integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
+!!        integer(kind = kint), intent(in) :: ncomp_bwd
+!!        integer(kind = kint), intent(in) :: n_WR
+!!        integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
+!!        real(kind = kreal), intent(inout):: WR(n_WR)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &      :: X_rtp(nidx_rtp(3),irt_rtp_smp_stack(np_smp)*ncomp_bwd)
+!!        type(work_for_sgl_FFTW), intent(inout) :: FFTW_t
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by FFTW3
@@ -196,7 +216,7 @@
 !
       integer(kind = kint), intent(in) :: n_WS
       integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
-      real (kind=kreal), intent(inout):: WS(n_WS)
+      real(kind = kreal), intent(inout):: WS(n_WS)
       type(work_for_sgl_FFTW), intent(inout) :: FFTW_t
 !
       integer(kind = kint) ::  m, j, ip, ist, ied, nd, icou
@@ -253,11 +273,10 @@
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
-!
       integer(kind = kint), intent(in) :: ncomp_bwd
       integer(kind = kint), intent(in) :: n_WR
       integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
-      real (kind=kreal), intent(inout):: WR(n_WR)
+      real(kind = kreal), intent(inout):: WR(n_WR)
 !
       real(kind = kreal), intent(inout)                                 &
      &      :: X_rtp(nidx_rtp(3),irt_rtp_smp_stack(np_smp)*ncomp_bwd)

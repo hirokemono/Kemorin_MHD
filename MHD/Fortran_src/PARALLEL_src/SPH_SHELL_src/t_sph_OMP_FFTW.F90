@@ -269,7 +269,7 @@
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
       call dfftw_execute_dft_r2c(OFFTW%plan_fwd,                        &
-     &                            OFFTW%X, OFFTW%C)
+     &                           OFFTW%X, OFFTW%C)
       call normalize_fwd_OMP_FFTW(OFFTW%aNfft, ncomp, OFFTW%Nfft_c,     &
      &                            OFFTW%C)
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)

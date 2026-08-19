@@ -305,8 +305,8 @@
      &                              elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
       else if(iflag_FFT .eq. (iflag_FFTW + iflag_once_fft)) then
-        call calypso_multi_pout_fwd_FFTW3(Nsmp, Nstacksmp, M, Nfft, X,  &
-     &      WKS%WK_MUL_FFTW, elapsed_fft, elapsed_cpy)
+        call calypso_multi_pout_fwd_FFTW3(M, Nfft, X, WKS%WK_MUL_FFTW,  &
+     &                                    elapsed_fft, elapsed_cpy)
       else if(iflag_FFT .eq. (iflag_FFTW + iflag_single_fft)) then
         call FFTW_forward_type(Nsmp, Nstacksmp, M, Nfft, X,             &
      &      WKS%WK_FFTW, elapsed_fft, elapsed_cpy)
@@ -362,8 +362,8 @@
      &                              elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
       else if(iflag_FFT .eq. (iflag_FFTW + iflag_once_fft)) then
-        call calypso_multi_pout_bwd_FFTW3(Nsmp, Nstacksmp, M, Nfft, X,  &
-     &      WKS%WK_MUL_FFTW, elapsed_fft, elapsed_cpy)
+        call calypso_multi_pout_bwd_FFTW3(M, Nfft, X, WKS%WK_MUL_FFTW,  &
+     &                                    elapsed_fft, elapsed_cpy)
       else if(iflag_FFT .eq. (iflag_FFTW + iflag_single_fft)) then
         call FFTW_backward_type(Nsmp, Nstacksmp, M,                     &
      &                          Nfft, X, WKS%WK_FFTW,                   &

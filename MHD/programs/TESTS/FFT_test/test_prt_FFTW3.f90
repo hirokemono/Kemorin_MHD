@@ -94,9 +94,8 @@
 !$omp end parallel workshare
         ft3%elapsed(3) = ft3%elapsed(3) + OMP_GET_WTIME() - ft3%start
 !
-        call calypso_multi_pin_fwd_FFTW3(np_smp, ft3%nstack,            &
-     &      ft3%nfld, ft3%ngrd, ft3%s_k, WK_MUL_FFTW_t,                 &
-     &      ft3%elapsed(2), ft3%elapsed(3))
+        call calypso_multi_pin_fwd_FFTW3(ft3%nfld, ft3%ngrd, ft3%s_k,   &
+     &      WK_MUL_FFTW_t, ft3%elapsed(2), ft3%elapsed(3))
 !
         ft3%start = OMP_GET_WTIME()
 !$omp parallel workshare
@@ -104,9 +103,8 @@
 !$omp end parallel workshare
         ft3%elapsed(3) = ft3%elapsed(3) + OMP_GET_WTIME() - ft3%start
 !
-        call calypso_multi_pin_bwd_FFTW3(np_smp, ft3%nstack,            &
-     &      ft3%nfld, ft3%ngrd, ft3%f_x, WK_MUL_FFTW_t,                 &
-     &      ft3%elapsed(2), ft3%elapsed(3))
+        call calypso_multi_pin_bwd_FFTW3(ft3%nfld, ft3%ngrd, ft3%f_x,   &
+     &      WK_MUL_FFTW_t, ft3%elapsed(2), ft3%elapsed(3))
       end do
 !
       ft3%start = OMP_GET_WTIME()

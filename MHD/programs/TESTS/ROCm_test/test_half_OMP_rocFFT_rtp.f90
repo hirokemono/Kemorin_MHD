@@ -343,8 +343,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine pout_fwd_OMP_rocFFT_FFTW3(Ncomp, istack_FFTW,          &
-     &          fwd, WK_rocFFT, WK_FFTW, X, elapsed)
+      subroutine pout_fwd_OMP_rocFFT_FFTW3(Ncomp, Ncomp_CPU, fwd,       &
+     &          WK_rocFFT, WK_FFTW, X, elapsed)
 !
       use copy_field_for_FFT
       use normalize_for_rocFFT
@@ -354,10 +354,8 @@
       use normalize_for_ISPACK
       use transfer_to_long_integers
 !
-      integer(kind = kint), intent(in) :: Ncomp
+      integer(kind = kint), intent(in) :: Ncomp, Ncomp_CPU
       type(calypso_rocFFT_params), intent(in), target :: fwd
-!
-      integer(kind = kint), intent(in) :: istack_FFTW(0:np_smp)
 !
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
       type(working_mul_FFTW), intent(inout) :: WK_FFTW
@@ -389,8 +387,8 @@
 !
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
-      call multi_pout_fwd_FFTW3_smp                                     &
-     &   (WK_FFTW%plan_fowd_mul, np_smp, istack_FFTW,                   &
+      call multi_pout_fwd_FFTW3_smp(WK_FFTW%plan_fowd_mul,              &
+     &    WK_FFTW%Nplan, WK_FFTW%istack_smp_FFTW,                       &
      &    Ncomp_CPU, fwd%Nfft, WK_FFTW%X_FFTW_mul(1,1),                 &
      &    WK_FFTW%Nfft_c, WK_FFTW%C_FFTW_mul(1,1))
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
@@ -417,7 +415,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine pout_fwd_OMP_rocFFT_OMP_FFTW3(Ncomp, istack_FFTW,      &
+      subroutine pout_fwd_OMP_rocFFT_OMP_FFTW3(Ncomp, Ncomp_CPU,        &
      &          fwd, WK_rocFFT, WK_OMP_FFTW, X, elapsed)
 !
       use copy_field_for_FFT
@@ -428,10 +426,8 @@
       use normalize_for_ISPACK
       use transfer_to_long_integers
 !
-      integer(kind = kint), intent(in) :: Ncomp
+      integer(kind = kint), intent(in) :: Ncomp, Ncomp_CPU
       type(calypso_rocFFT_params), intent(in), target :: fwd
-!
-      integer(kind = kint), intent(in) :: istack_FFTW(0:np_smp)
 !
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
       type(working_mul_FFTW), intent(inout) :: WK_OMP_FFTW
@@ -706,7 +702,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine pout_bwd_OMP_rocFFT_FFTW3(Ncomp, Ncomp_CPU,            &
-     &          istack_FFTW, bwd, WK_rocFFT, WK_FFTW, X, elapsed)
+     &          bwd, WK_rocFFT, WK_FFTW, X, elapsed)
 !
       use copy_field_for_FFT
       use normalize_for_rocFFT
@@ -716,7 +712,6 @@
       use normalize_for_ISPACK
 !
       integer(kind = kint), intent(in) :: Ncomp, Ncomp_CPU
-      integer(kind = kint), intent(in) :: istack_FFTW(0:np_smp)
       type(calypso_rocFFT_params), intent(in), target :: bwd
 !
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
@@ -751,8 +746,8 @@
 !
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
-      call multi_pout_bwd_FFTW3_smp                                     &
-     &   (WK_FFTW%plan_back_mul, np_smp, istack_FFTW,                   &
+      call multi_pout_bwd_FFTW3_smp(WK_FFTW%plan_back_mul,              &
+     &    WK_FFTW%Nplan, WK_FFTW%istack_smp_FFTW,                       &
      &    Ncomp_CPU, WK_FFTW%Nfft_c, WK_FFTW%C_FFTW_mul(1,1),           &
      &    bwd%Nfft, WK_FFTW%X_FFTW_mul(1,1))
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
@@ -777,7 +772,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine pout_bwd_OMP_rocFFT_OMP_FFTW3(Ncomp, Ncomp_CPU,        &
-     &          istack_FFTW, bwd, WK_rocFFT, WK_OMP_FFTW, X, elapsed)
+     &          bwd, WK_rocFFT, WK_OMP_FFTW, X, elapsed)
 !
       use copy_field_for_FFT
       use normalize_for_rocFFT
@@ -787,7 +782,6 @@
       use normalize_for_ISPACK
 !
       integer(kind = kint), intent(in) :: Ncomp, Ncomp_CPU
-      integer(kind = kint), intent(in) :: istack_FFTW(0:np_smp)
       type(calypso_rocFFT_params), intent(in), target :: bwd
 !
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT

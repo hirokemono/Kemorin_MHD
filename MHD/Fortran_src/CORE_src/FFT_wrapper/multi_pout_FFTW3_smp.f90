@@ -8,15 +8,17 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine init_4_FFTW_mul_smp                                  &
+!!      subroutine init_pout_FFTW_mul_smp                               &
 !!     &         (Nsmp, Nstacksmp, Ncomp, Nfft, Nfft_c,                 &
-!!     &          plan_forward_smp, plan_backward_smp, X_FFTW, C_FFTW)
+!!     &          plan_forward_smp, plan_backward_smp, istack_smp_FFTW, &
+!!     &          X_FFTW, C_FFTW)
 !!        integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
 !!        integer(kind = kint), intent(in) :: Nfft, Nfft_c, Ncomp
 !!        integer(kind = fftw_plan), intent(inout)                      &
 !!     &                          :: plan_forward_smp(Nsmp)
 !!        integer(kind = fftw_plan), intent(inout)                      &
 !!     &                          :: plan_backward_smp(Nsmp)
+!!        integer(kind = kint), intent(inout) :: istack_smp_FFTW(0:Nsmp)
 !!        real(kind = kreal), intent(inout) :: X_FFTW(Nfft,Ncomp)
 !!        complex(kind = fftw_complex), intent(inout)                   &
 !!     &                          :: C_FFTW(Nfft_c,Ncomp)
@@ -130,8 +132,6 @@
 !
       implicit none
 !
-      real(kind = kreal) :: elapsed_fftw(3) = (/0.0,0.0,0.0/)
-!
       integer, parameter :: IONE_4 = 1
       integer, parameter :: inembed = 0
       integer, parameter :: istride = 1
@@ -144,9 +144,10 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_4_FFTW_mul_smp                                    &
+      subroutine init_pout_FFTW_mul_smp                                 &
      &         (Nsmp, Nstacksmp, Ncomp, Nfft, Nfft_c,                   &
-     &          plan_forward_smp, plan_backward_smp, X_FFTW, C_FFTW)
+     &          plan_forward_smp, plan_backward_smp, istack_smp_FFTW,   &
+     &          X_FFTW, C_FFTW)
 !
       integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: Nfft, Nfft_c, Ncomp
@@ -155,6 +156,7 @@
      &                          :: plan_forward_smp(Nsmp)
       integer(kind = fftw_plan), intent(inout)                          &
      &                          :: plan_backward_smp(Nsmp)
+      integer(kind = kint), intent(inout) :: istack_smp_FFTW(0:Nsmp)
       real(kind = kreal), intent(inout) :: X_FFTW(Nfft,Ncomp)
       complex(kind = fftw_complex), intent(inout)                       &
      &                          :: C_FFTW(Nfft_c,Ncomp)
@@ -163,9 +165,11 @@
       integer(kind = 4) :: Nfft4, howmany, idist_r, idist_c
 !
 !
+      istack_smp_FFTW(0:Nsmp) = Nstacksmp(0:Nsmp)
+!
       Nfft4 = int(Nfft,KIND(Nfft4))
       do ip = 1, Nsmp
-        ist = Nstacksmp(ip-1) + 1
+        ist =     Nstacksmp(ip-1) + 1
         howmany = int(Nstacksmp(ip  ) - Nstacksmp(ip-1), KIND(howmany))
         idist_r = int(Nfft, KIND(idist_r))
         idist_c = int(Nfft, KIND(idist_c))/2 + 1
@@ -180,7 +184,7 @@
      &      X_FFTW(1,ist), inembed, istride, idist_r, FFTW_KEMO_EST)
       end do
 !
-      end subroutine init_4_FFTW_mul_smp
+      end subroutine init_pout_FFTW_mul_smp
 !
 ! ------------------------------------------------------------------
 !

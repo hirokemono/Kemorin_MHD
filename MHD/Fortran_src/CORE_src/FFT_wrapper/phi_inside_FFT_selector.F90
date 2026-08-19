@@ -302,8 +302,8 @@
      &                              elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
       else if(abs(iflag_FFT) .eq. (iflag_FFTW + iflag_once_fft)) then
-        call calypso_multi_pin_fwd_FFTW3(Nsmp, Nstacksmp, M, Nfft, X,   &
-     &      WKS%WK_MUL_FFTW, elapsed_fft, elapsed_cpy)
+        call calypso_multi_pin_fwd_FFTW3(M, Nfft, X, WKS%WK_MUL_FFTW,   &
+     &                                   elapsed_fft, elapsed_cpy)
       else if(abs(iflag_FFT) .eq. (iflag_FFTW + iflag_single_fft)) then
         write(*,*) 'calypso_single_pin_fwd_FFTW3'
         call calypso_single_pin_fwd_FFTW3(Nsmp, Nstacksmp, M, Nfft, X,  &
@@ -364,8 +364,8 @@
      &                              elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
       else if(abs(iflag_FFT) .eq. (iflag_FFTW + iflag_once_fft)) then
-        call calypso_multi_pin_bwd_FFTW3(Nsmp, Nstacksmp, M, Nfft, X,   &
-     &      WKS%WK_MUL_FFTW, elapsed_fft, elapsed_cpy)
+        call calypso_multi_pin_bwd_FFTW3(M, Nfft, X, WKS%WK_MUL_FFTW,   &
+     &                                   elapsed_fft, elapsed_cpy)
       else if(abs(iflag_FFT) .eq. (iflag_FFTW + iflag_single_fft)) then
         call calypso_single_pin_bwd_FFTW3(Nsmp, Nstacksmp, M,           &
      &                                    Nfft, X, WKS%WK_FFTW,         &

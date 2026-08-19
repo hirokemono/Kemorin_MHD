@@ -17,16 +17,15 @@
 !!        type(working_mul_FFTW), intent(inout) :: WK
 !! ------------------------------------------------------------------
 !!
-!!      subroutine calypso_multi_pin_fwd_FFTW3(Nsmp, Nstacksmp,         &
-!!     &          Ncomp, Nfft, X, WK, elapsed_fft, elapsed_cpy)
+!!      subroutine calypso_multi_pin_fwd_FFTW3(Ncomp, Nfft, X, WK,      &
+!!     &                                       elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !!        integer(kind = kint), intent(in) :: Ncomp, Nfft
 !!        real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
 !!        type(working_mul_FFTW), intent(inout) :: WK
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!!      subroutine calypso_multi_pout_fwd_FFTW3(Nsmp, Nstacksmp,        &
-!!     &          Ncomp, Nfft, X, WK, elapsed_fft, elapsed_cpy)
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!      subroutine calypso_multi_pout_fwd_FFTW3(Ncomp, Nfft, X, WK,     &
+!!     &                                       elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) :: Ncomp, Nfft
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !!        real(kind = kreal), intent(inout) :: X(Ncomp, Nfft)
@@ -44,16 +43,14 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine calypso_multi_pin_bwd_FFTW3(Nsmp, Nstacksmp,         &
-!!     &          Ncomp, Nfft, X, WK, elapsed_fft, elapsed_cpy)
-!!        integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
+!!      subroutine calypso_multi_pin_bwd_FFTW3(Ncomp, Nfft, X, WK,      &
+!!     &                                       elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) :: Ncomp, Nfft
 !!        real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
 !!        type(working_mul_FFTW), intent(inout) :: WK
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!!      subroutine calypso_multi_pout_bwd_FFTW3(Nsmp, Nstacksmp,        &
-!!     &          Ncomp, Nfft, X, WK, elapsed_fft, elapsed_cpy)
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!      subroutine calypso_multi_pout_bwd_FFTW3(Ncomp, Nfft, X, WK,     &
+!!     &                                       elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) :: Ncomp, Nfft
 !!        real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
 !!        type(working_mul_FFTW), intent(inout) :: WK
@@ -104,9 +101,9 @@
 !
 !
       call alloc_mul_FFTW_plan_t(Nsmp, Nstacksmp(Nsmp), Nfft, WK)
-      call init_4_FFTW_mul_smp                                          &
+      call init_pout_FFTW_mul_smp                                       &
      &   (Nsmp, Nstacksmp, Nstacksmp(Nsmp), Nfft, WK%Nfft_c,            &
-     &    WK%plan_fowd_mul, WK%plan_back_mul,                           &
+     &    WK%plan_fowd_mul, WK%plan_back_mul, WK%istack_smp_FFTW,       &
      &    WK%X_FFTW_mul, WK%C_FFTW_mul)
 !
       end subroutine init_FFTW_mul_type
@@ -141,7 +138,7 @@
         return
       end if
 !
-      if( WK%iflag_fft_mul_len .ne. Nfft*Nstacksmp(Nsmp)) then
+      if(WK%iflag_fft_mul_len .ne. Nfft*Nstacksmp(Nsmp)) then
         call finalize_FFTW_mul_type(Nsmp, WK)
         call init_FFTW_mul_type(Nsmp, Nstacksmp, Nfft, WK)
       end if
@@ -151,12 +148,11 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_multi_pin_fwd_FFTW3(Nsmp, Nstacksmp,           &
-     &          Ncomp, Nfft, X, WK, elapsed_fft, elapsed_cpy)
+      subroutine calypso_multi_pin_fwd_FFTW3(Ncomp, Nfft, X, WK,        &
+     &                                       elapsed_fft, elapsed_cpy)
 !
       use multi_pin_FFTW3_smp
 !
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: Ncomp, Nfft
 !
       real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
@@ -164,20 +160,19 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call multi_pin_fwd_FFTW3(WK%plan_fowd_mul, Nsmp, Nstacksmp,       &
-     &    Ncomp, Nfft, WK%aNfft, WK%Nfft_c, X, WK%C_FFTW_mul,           &
-     &    elapsed_fft, elapsed_cpy)
+      call multi_pin_fwd_FFTW3(WK%plan_fowd_mul, WK%Nplan,              &
+     &    WK%istack_smp_FFTW, Ncomp, Nfft, WK%aNfft, WK%Nfft_c, X,      &
+     &    WK%C_FFTW_mul, elapsed_fft, elapsed_cpy)
 !
       end subroutine calypso_multi_pin_fwd_FFTW3
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_multi_pin_bwd_FFTW3(Nsmp, Nstacksmp,           &
-     &          Ncomp, Nfft, X, WK, elapsed_fft, elapsed_cpy)
+      subroutine calypso_multi_pin_bwd_FFTW3(Ncomp, Nfft, X, WK,        &
+     &                                       elapsed_fft, elapsed_cpy)
 !
       use multi_pin_FFTW3_smp
 !
-      integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: Ncomp, Nfft
 !
       real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
@@ -185,8 +180,8 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call multi_pin_bwd_FFTW3(WK%plan_back_mul, Nsmp, Nstacksmp,       &
-     &    Ncomp, Nfft, WK%Nfft_c, X, WK%C_FFTW_mul,                     &
+      call multi_pin_bwd_FFTW3(WK%plan_back_mul, WK%Nplan,              &
+     &    WK%istack_smp_FFTW, Ncomp, Nfft, WK%Nfft_c, X, WK%C_FFTW_mul, &
      &    elapsed_fft, elapsed_cpy)
 !
       end subroutine calypso_multi_pin_bwd_FFTW3
@@ -194,10 +189,9 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_multi_pout_fwd_FFTW3(Nsmp, Nstacksmp,          &
-     &          Ncomp, Nfft, X, WK, elapsed_fft, elapsed_cpy)
+      subroutine calypso_multi_pout_fwd_FFTW3(Ncomp, Nfft, X, WK,       &
+     &                                        elapsed_fft, elapsed_cpy)
 !
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: Ncomp, Nfft
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
@@ -205,18 +199,17 @@
       type(working_mul_FFTW), intent(inout) :: WK
 !
 !
-      call multi_pout_fwd_FFTW3(WK%plan_fowd_mul,                       &
-     &    Nsmp, Nstacksmp, Ncomp, Nfft, WK%aNfft, WK%Nfft_c, X,         &
+      call multi_pout_fwd_FFTW3(WK%plan_fowd_mul, WK%Nplan,             &
+     &    WK%istack_smp_FFTW, Ncomp, Nfft, WK%aNfft, WK%Nfft_c, X,      &
      &    WK%X_FFTW_mul, WK%C_FFTW_mul, elapsed_fft, elapsed_cpy)
 !
       end subroutine calypso_multi_pout_fwd_FFTW3
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_multi_pout_bwd_FFTW3(Nsmp, Nstacksmp,          &
-     &          Ncomp, Nfft, X, WK, elapsed_fft, elapsed_cpy)
+      subroutine calypso_multi_pout_bwd_FFTW3(Ncomp, Nfft, X, WK,       &
+     &                                        elapsed_fft, elapsed_cpy)
 !
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: Ncomp, Nfft
 !
       real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
@@ -224,8 +217,8 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call multi_pout_bwd_FFTW3(WK%plan_back_mul,                       &
-     &    Nsmp, Nstacksmp, Ncomp, Nfft, WK%Nfft_c, X,                   &
+      call multi_pout_bwd_FFTW3(WK%plan_back_mul, WK%Nplan,             &
+     &    WK%istack_smp_FFTW, Ncomp, Nfft, WK%Nfft_c, X,                &
      &    WK%X_FFTW_mul, WK%C_FFTW_mul, elapsed_fft, elapsed_cpy)
 !
       end subroutine calypso_multi_pout_bwd_FFTW3

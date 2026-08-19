@@ -63,11 +63,15 @@
 !
 !>      structure for working data for FFTW
       type working_mul_FFTW
+!>        number of FT plans for SMP
+        integer(kind = kint) :: Nplan = 1
 !>        plan ID for backward transform
         integer(kind = fftw_plan), allocatable :: plan_back_mul(:)
 !>        plan ID for forward transform
         integer(kind = fftw_plan), allocatable :: plan_fowd_mul(:)
 !
+!>        number of component for each FFT
+        integer(kind = kint), allocatable :: istack_FFTW(:)
 !>        number of component for complex data
         integer(kind = kint) :: Nfft_c
 !>        normalization parameter for FFTW (= 1 / Nfft)
@@ -92,14 +96,18 @@
       type(working_mul_FFTW), intent(inout) :: WK
 !
 !
+      WK%Nplan = Nplan
       allocate(WK%plan_fowd_mul(Nplan))
       allocate(WK%plan_back_mul(Nplan))
+!
+      allocate(WK%istack_FFTW(0:Nplan))
+      WK%istack_FFTW(0:Nplan) = 0
 !
       WK%iflag_fft_mul_len = Nfft*Ncomp
       WK%Nfft_c = (Nfft+1)/2 + 1
       WK%aNfft =  one / dble(Nfft)
-      allocate( WK%X_FFTW_mul(Nfft,Ncomp) )
-      allocate( WK%C_FFTW_mul(WK%Nfft_c,Ncomp) )
+      allocate(WK%X_FFTW_mul(Nfft,Ncomp))
+      allocate(WK%C_FFTW_mul(WK%Nfft_c,Ncomp))
       WK%X_FFTW_mul = 0.0d0
       WK%C_FFTW_mul = 0.0d0
 !
@@ -112,6 +120,7 @@
       type(working_mul_FFTW), intent(inout) :: WK
 !
       deallocate(WK%X_FFTW_mul, WK%C_FFTW_mul)
+      deallocate(WK%istack_FFTW)
       deallocate(WK%plan_fowd_mul, WK%plan_back_mul)
       WK%iflag_fft_mul_len = 0
 !
