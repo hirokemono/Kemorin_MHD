@@ -188,11 +188,11 @@
 !
       st = OMP_GET_WTIME()
       call dfftw_execute_dft_r2c(plan_forward, X, C_FFTW)
-      call normalize_fwd_OMP_FFTW(aNfft, Ncomp, Nfft_c, C_FFTW)
       elapsed_fft = elapsed_fft + OMP_GET_WTIME() - st
 !
 !   normalization
       st = OMP_GET_WTIME()
+      call normalize_fwd_OMP_FFTW(aNfft, Ncomp, Nfft_c, C_FFTW)
       call norm_rtp_from_fwd_OMP_FFTW(Ncomp, NFFT_c, C_FFTW,            &
      &                                Ncomp, Nfft, ione, X)
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - st
@@ -219,7 +219,8 @@
 !
 !   normalization
       st = OMP_GET_WTIME()
-      call norm_rtp_to_bwd_OMP_FFTW(Ncomp, Nfft, X, NFFT_c, C_FFTW)
+      call norm_rtp_to_bwd_OMP_FFTW(ione, Ncomp, Nfft, X,               &
+     &                              Ncomp, NFFT_c, C_FFTW)
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - st
 !
       st = OMP_GET_WTIME()

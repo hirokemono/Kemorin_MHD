@@ -20,9 +20,10 @@
 !!        complex(kind = kreal), intent(in) :: C_FFT(Nfft_c,Ncomp)
 !!        real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
 !!
-!!      subroutine norm_rtp_to_bwd_OMP_FFTW(Ncomp, Nfft, X,             &
-!!     &                                    NFFT_c, C_FFT)
-!!        integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_c
+!!      subroutine norm_rtp_to_bwd_OMP_FFTW(ist_comp, Ncomp, Nfft, X,   &
+!!     &                                    Ncomp_c, NFFT_c, C_FFT)
+!!        integer(kind = kint), intent(in) :: ist_comp, Ncomp, Nfft
+!!        integer(kind = kint), intent(in) :: Ncomp_c, NFFT_c
 !!        real(kind = kreal), intent(in) :: X(Ncomp,Nfft)
 !!        complex(kind = kreal), intent(inout) :: C_FFT(Ncomp,Nfft_c)
 !!      subroutine norm_prt_to_bwd_OMP_FFTW(Ncomp, Nfft, X,             &
@@ -99,10 +100,11 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine norm_rtp_to_bwd_OMP_FFTW(Ncomp, Nfft, X,               &
-     &                                    NFFT_c, C_FFT)
+      subroutine norm_rtp_to_bwd_OMP_FFTW(ist_comp, Ncomp, Nfft, X,     &
+     &                                    Ncomp_c, NFFT_c, C_FFT)
 !
-      integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_c
+      integer(kind = kint), intent(in) :: ist_comp, Ncomp, Nfft
+      integer(kind = kint), intent(in) :: Ncomp_c, NFFT_c
       real(kind = kreal), intent(in) :: X(Ncomp,Nfft)
 !
       complex(kind = kreal), intent(inout) :: C_FFT(Ncomp,Nfft_c)
@@ -111,15 +113,18 @@
 !
 !$omp parallel
 !$omp workshare
-      C_FFT(1:Ncomp,1     ) = cmplx(X(1:Ncomp,1), zero, kind(0d0))
+      C_FFT(1:Ncomp_c,1     )                                           &
+     &     = cmplx(X(ist_comp:ist_comp+Ncomp_c-1,1), zero, kind(0d0))
 !$omp end workshare nowait
       do i = 2, Nfft_c-1
 !$omp workshare
-        C_FFT(1:Ncomp,i) = half * cmplx( X(1:Ncomp,2*i-1),              &
-     &                                  -X(1:Ncomp,2*i  ),kind(0d0))
+        C_FFT(1:Ncomp_c,i) = half                                       &
+     &         * cmplx( X(ist_comp:ist_comp+Ncomp_c-1,2*i-1),           &
+     &                 -X(ist_comp:ist_comp+Ncomp_c-1,2*i  ),kind(0d0))
 !$omp end workshare nowait
 !$omp workshare
-        C_FFT(1:Ncomp,Nfft_c) = cmplx(X(1:Ncomp,2), zero, kind(0d0))
+        C_FFT(1:Ncomp_c,Nfft_c)                                         &
+     &    = cmplx(X(ist_comp:ist_comp+Ncomp_c-1,2), zero, kind(0d0))
 !$omp end workshare nowait
       end do
 !$omp end parallel

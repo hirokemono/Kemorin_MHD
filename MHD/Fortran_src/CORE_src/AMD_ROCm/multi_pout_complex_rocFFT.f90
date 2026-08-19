@@ -204,8 +204,8 @@
 !
       if(bwd%Ncomp .le. 0) return
       start = OMP_GET_WTIME()
-      call norm_rtp_to_bwd_OMP_FFTW(Ncomp, int(bwd%Nfft), X(1,1),       &
-     &    int(WK_fft%NFFT_c), WK_fft%C_rocFFT(1))
+      call norm_rtp_to_bwd_OMP_FFTW(ione, Ncomp, int(bwd%Nfft), X(1,1), &
+     &    Ncomp, int(WK_fft%NFFT_c), WK_fft%C_rocFFT(1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()

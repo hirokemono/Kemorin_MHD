@@ -130,8 +130,10 @@
 !
 !
       start = OMP_GET_WTIME()
+!$omp parallel
       call multi_pin_fwd_FFTW3_smp(plan_forward_smp, Nsmp, Nstacksmp,   &
      &                             Ncomp, Nfft, Nfft_c, X, C_FFTW)
+!$omp end parallel
       elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
 !   normalization
@@ -196,16 +198,16 @@
       integer(kind = kint) :: ip, ist, num
 !
 !
-!$omp parallel do private(ip,ist,num)
+!$omp do private(ip,ist,num)
       do ip = 1, Nsmp
-        ist = Nstacksmp(ip-1)
-        num = Nstacksmp(ip  ) - ist
+        num = Nstacksmp(ip  ) - Nstacksmp(ip-1)
         if(num .le. 0) cycle
 !
+        ist = Nstacksmp(ip-1) - Nstacksmp(0)
         call dfftw_execute_dft_r2c(plan_forward_smp(ip),                &
      &                             X(1,ist+1), C_FFTW(1,ist+1))
       end do
-!$omp end parallel do
+!$omp end do nowait
 !
       end subroutine multi_pin_fwd_FFTW3_smp
 !
@@ -228,10 +230,10 @@
 !
 !$omp do private(ip,ist,num)
       do ip = 1, Nsmp
-        ist = Nstacksmp(ip-1)
-        num = Nstacksmp(ip) - ist
+        num = Nstacksmp(ip) - Nstacksmp(ip-1)
         if(num .le. 0) cycle
 !
+        ist = Nstacksmp(ip-1) - Nstacksmp(0)
         call dfftw_execute_dft_c2r(plan_backward_smp(ip),               &
      &                             C_FFTW(1,ist+1), X(1,ist+1))
       end do
