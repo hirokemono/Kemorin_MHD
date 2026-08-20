@@ -17,6 +17,10 @@
 !!        integer(kind = kint), intent(in) :: Nsmp, nmax_comp, Nfft
 !!        type(working_ISPACK), intent(inout) :: WK
 !!
+!!      subroutine count_ispack_smp(Nsmp, Nstacksmp, WK)
+!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!        type(working_ISPACK), intent(inout) :: WK
+!!
 !! ------------------------------------------------------------------
 !!
 !! i = 1:     a_{0}
@@ -109,13 +113,7 @@
           call dealloc_const_ispack_t(WK)
           call alloc_const_ispack_t(Nsmp, Nfft, WK)
         end if
-!
-        WK%istack_ISPACK(0:Nsmp) = Nstacksmp(0:Nsmp)
-        WK%Mmax_smp = 0
-        do ip = 1, Nsmp
-          WK%Mmax_smp                                                   &
-     &      = max(WK%Mmax_smp, (Nstacksmp(ip) - Nstacksmp(ip-1)))
-        end do
+        call count_ispack_smp(Nsmp, Nstacksmp, WK)
 !
         call FTTRUI_kemo( Nfft, WK%IT_ispack, WK%T_ispack )
       end if
@@ -187,6 +185,25 @@
       WK%iflag_fft_len = 0
 !
       end subroutine dealloc_const_ispack_t
+!
+! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
+      subroutine count_ispack_smp(Nsmp, Nstacksmp, WK)
+!
+      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+      type(working_ISPACK), intent(inout) :: WK
+!
+      integer(kind = kint) :: ip
+!
+      WK%istack_ISPACK(0:Nsmp) = Nstacksmp(0:Nsmp)
+      WK%Mmax_smp = 0
+      do ip = 1, Nsmp
+        WK%Mmax_smp                                                     &
+     &        = max(WK%Mmax_smp, (Nstacksmp(ip) - Nstacksmp(ip-1)))
+      end do
+!
+      end subroutine count_ispack_smp
 !
 ! ------------------------------------------------------------------
 !

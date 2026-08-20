@@ -19,6 +19,10 @@
 !!      subroutine alloc_const_4_FFTPACK_t(nfft, WK)
 !!        integer(kind = kint), intent(in) :: Nsmp, Nfft
 !!        type(working_FFTPACK), intent(inout) :: WK
+!!
+!!      subroutine count_FFTPACK_smp(Nsmp, Nstacksmp, WK)
+!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!        type(working_FFTPACK), intent(inout) :: WK
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT
 !! ------------------------------------------------------------------
@@ -53,6 +57,10 @@
 !
 !>      structure for working data for FFTPACK5
       type working_FFTPACK
+!>        number of FT plans for SMP
+        integer(kind = kint) :: Nplan_FFTPACK = 1
+!>        number of component for each FFT
+        integer(kind = kint), allocatable :: istack_FFTPACK(:)
 !>        Maximum nuber of components for each SMP process
         integer(kind = kint) :: Mmax_smp
 !>        Data for multiple Fourier transform
@@ -99,23 +107,16 @@
 !
       type(working_FFTPACK), intent(inout) :: WK
 !
-      integer(kind = kint) :: ip
-!
-!
-      WK%Mmax_smp = Nstacksmp(1)
-      do ip = 1, Nsmp
-        WK%Mmax_smp                                                     &
-     &      = max(WK%Mmax_smp, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
-      end do
 !
       if(WK%iflag_fft_len .ne. Nfft) then
 !
         if(WK%iflag_fft_len .lt. 0) then
-          call alloc_const_4_FFTPACK_t(Nfft, WK)
+          call alloc_const_4_FFTPACK_t(Nsmp, Nfft, WK)
         else if( Nfft .gt. WK%iflag_fft_comp ) then
           call dealloc_const_FFTPACK_t(WK)
-          call alloc_const_4_FFTPACK_t(Nfft, WK)
+          call alloc_const_4_FFTPACK_t(Nsmp, Nfft, WK)
         end if
+        call count_FFTPACK_smp(Nsmp, Nstacksmp, WK)
 !
         call init_CALYPSO_FFTPACK                                       &
      &     (Nfft, WK%lsave_FFTPACK, WK%WSAVE_FFTPACK)
@@ -140,24 +141,29 @@
 !
 !
       WK%iflag_fft_comp = WK%Mmax_smp * Nfft
-      allocate( WK%X_FFTPACK5(WK%iflag_fft_comp,Nsmp) )
-      allocate( WK%WORK_FFTPACK(WK%iflag_fft_comp,Nsmp) )
+      allocate(WK%X_FFTPACK5(WK%iflag_fft_comp,Nsmp))
+      allocate(WK%WORK_FFTPACK(WK%iflag_fft_comp,Nsmp))
       WK%WORK_FFTPACK = 0.0d0
 !
       end subroutine alloc_work_4_FFTPACK_t
 !
 ! ------------------------------------------------------------------
 !
-      subroutine alloc_const_4_FFTPACK_t(nfft, WK)
+      subroutine alloc_const_4_FFTPACK_t(Nsmp, nfft, WK)
 !
-      integer(kind = kint), intent(in) :: nfft
+      integer(kind = kint), intent(in) :: Nsmp, nfft
       type(working_FFTPACK), intent(inout) :: WK
 !
 !
       WK%iflag_fft_len = nfft
+      WK%Nplan_FFTPACK = Nsmp
       WK%lsave_FFTPACK = Nfft                                           &
      &                + int ( log ( real(Nfft) ) / log(two) ) + ifour
-      allocate(WK%WSAVE_FFTPACK(WK%lsave_FFTPACK) )
+!
+      allocate(WK%istack_FFTPACK(0:Nsmp))
+      WK%istack_FFTPACK(0:Nsmp) = 0
+!
+      allocate(WK%WSAVE_FFTPACK(WK%lsave_FFTPACK))
       WK%WSAVE_FFTPACK = 0.0d0
 !
       end subroutine alloc_const_4_FFTPACK_t
@@ -186,6 +192,26 @@
       WK%iflag_fft_len = 0
 !
       end subroutine dealloc_const_FFTPACK_t
+!
+! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
+      subroutine count_FFTPACK_smp(Nsmp, Nstacksmp, WK)
+!
+      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!
+      type(working_FFTPACK), intent(inout) :: WK
+!
+      integer(kind = kint) :: ip
+!
+      WK%istack_FFTPACK(0:Nsmp) = Nstacksmp(0:Nsmp)
+      WK%Mmax_smp = 0
+      do ip = 1, Nsmp
+        WK%Mmax_smp                                                     &
+     &        = max(WK%Mmax_smp, (Nstacksmp(ip) - Nstacksmp(ip-1)))
+      end do
+!
+      end subroutine count_FFTPACK_smp
 !
 ! ------------------------------------------------------------------
 !

@@ -148,16 +148,13 @@
      &   (ithree, leg_circ%ltr_circle, leg_circ%vcirc_rtm,              &
      &    circle%mphi_circle, circle%v_rtp_circle(1,1))
 !
-      call backward_FFT_select                                          &
-     &   (iflag_FFT, np_smp, leg_circ%istack_circfft_smp, ione,         &
+      call backward_FFT_select(iflag_FFT, ione,                         &
      &    circle%mphi_circle, circle%v_rtp_circle(1,1),                 &
      &    WK_circle_fft, elapsed_fft, elapsed_cpy)
-      call backward_FFT_select                                          &
-     &   (iflag_FFT, np_smp, leg_circ%istack_circfft_smp, ione,         &
+      call backward_FFT_select(iflag_FFT, ione,                         &
      &    circle%mphi_circle, circle%v_rtp_circle(1,2),                 &
      &    WK_circle_fft, elapsed_fft, elapsed_cpy)
-      call backward_FFT_select                                          &
-     &   (iflag_FFT, np_smp, leg_circ%istack_circfft_smp, ione,         &
+      call backward_FFT_select(iflag_FFT, ione,                         &
      &    circle%mphi_circle, circle%v_rtp_circle(1,3),                 &
      &    WK_circle_fft, elapsed_fft, elapsed_cpy)
 !
@@ -197,8 +194,7 @@
      &   (ione, leg_circ%ltr_circle, leg_circ%vcirc_rtm,                &
      &    circle%mphi_circle, circle%v_rtp_circle(1,1))
 !
-      call backward_FFT_select                                          &
-     &   (iflag_FFT, np_smp, leg_circ%istack_circfft_smp, ione,         &
+      call backward_FFT_select(iflag_FFT, ione,                         &
      &    circle%mphi_circle, circle%v_rtp_circle(1,1),                 &
      &    WK_circle_fft, elapsed_fft, elapsed_cpy)
 !

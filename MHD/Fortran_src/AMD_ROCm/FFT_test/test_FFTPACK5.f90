@@ -41,8 +41,8 @@
 !$omp end parallel workshare
         ft1%elapsed(3) = ft1%elapsed(3) + OMP_GET_WTIME() - ft1%start
 !
-        call CALYPSO_RFFTMF_t(np_smp, ft1%nstack, ft1%nfld, ft1%ngrd,   &
-     &      ft1%s_k, WK_FFTPACK_T, ft1%elapsed(2), ft1%elapsed(3))
+        call CALYPSO_RFFTMF_t(ft1%nfld, ft1%ngrd, ft1%s_k,              &
+     &      WK_FFTPACK_T, ft1%elapsed(2), ft1%elapsed(3))
 !
         ft1%start = OMP_GET_WTIME()
 !$omp parallel workshare
@@ -50,8 +50,8 @@
 !$omp end parallel workshare
         ft1%elapsed(3) = ft1%elapsed(3) + OMP_GET_WTIME() - ft1%start
 !
-        call CALYPSO_RFFTMB_t(np_smp, ft1%nstack, ft1%nfld, ft1%ngrd,   &
-     &      ft1%f_x, WK_FFTPACK_T, ft1%elapsed(2), ft1%elapsed(3))
+        call CALYPSO_RFFTMB_t(ft1%nfld, ft1%ngrd, ft1%f_x,              &
+     &      WK_FFTPACK_T, ft1%elapsed(2), ft1%elapsed(3))
       end do
 !
       if(n_loop .eq. 1) call write_fft_test_data(file_name, ft1)

@@ -26,7 +26,7 @@
       call init_fft_test_data(n_field, ngrid, ft3)
 !
       ft3%start = OMP_GET_WTIME()
-      call init_FFTW_type(np_smp, ft3%ngrd, WK_FFTW_t)
+      call init_FFTW_type(np_smp, ft3%nstack, ft3%ngrd, WK_FFTW_t)
       ft3%elapsed(1) = ft3%elapsed(1) + OMP_GET_WTIME() - ft3%start
 !
       do iloop = 1, n_loop
@@ -38,8 +38,7 @@
 !$omp end parallel workshare
         ft3%elapsed(3) = ft3%elapsed(3) + OMP_GET_WTIME() - ft3%start
 !
-        call FFTW_forward_type(np_smp, ft3%nstack,                      &
-     &                         ft3%nfld, ft3%ngrd, ft3%s_k, WK_FFTW_t,  &
+        call FFTW_forward_type(ft3%nfld, ft3%ngrd, ft3%s_k, WK_FFTW_t,  &
      &                         ft3%elapsed(2), ft3%elapsed(3))
 !
         ft3%start = OMP_GET_WTIME()
@@ -48,9 +47,8 @@
 !$omp end parallel workshare
         ft3%elapsed(3) = ft3%elapsed(3) + OMP_GET_WTIME() - ft3%start
 !
-        call FFTW_backward_type(np_smp, ft3%nstack,                     &
-     &                          ft3%nfld, ft3%ngrd, ft3%f_x, WK_FFTW_t, &
-     &                         ft3%elapsed(2), ft3%elapsed(3))
+        call FFTW_backward_type(ft3%nfld, ft3%ngrd, ft3%f_x, WK_FFTW_t, &
+     &                          ft3%elapsed(2), ft3%elapsed(3))
       end do
 !
       if(n_loop .eq. 1) call write_fft_test_data(sgl_fftw_test, ft3)

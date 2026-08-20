@@ -95,17 +95,9 @@
 !
       type(working_ISPACK3), intent(inout) :: WK
 !
-      integer(kind = kint) :: ip
-!
 !
       call alloc_const_ispack3_t(Nsmp, Nfft, WK)
-!
-      WK%istack_ISPACK3(0:Nsmp) = Nstacksmp(0:Nsmp)
-      WK%Mmax_smp = 0
-      do ip = 1, Nsmp
-        WK%Mmax_smp                                                     &
-     &      = max(WK%Mmax_smp, (Nstacksmp(ip) - Nstacksmp(ip-1)))
-      end do
+      call count_ISPACK3_smp(Nsmp, Nstacksmp, WK)
 !
       call FXRINI_kemo(Nfft, WK%IT_ispack, WK%T_ispack)
 !

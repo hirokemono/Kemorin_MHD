@@ -58,9 +58,8 @@
 !$omp end parallel workshare
         ft%elapsed(3) = ft%elapsed(3) + OMP_GET_WTIME() - ft%start
 !
-        call forward_FFT_select(iflag_FFT, np_smp, ft%nstack,           &
-     &                          ft%nfld, ft%ngrd, ft%s_k, WK_FFT,       &
-     &                          ft%elapsed(2), ft%elapsed(3))
+        call forward_FFT_select(iflag_FFT, ft%nfld, ft%ngrd, ft%s_k,    &
+     &                          WK_FFT, ft%elapsed(2), ft%elapsed(3))
 !
         ft%start = OMP_GET_WTIME()
 !$omp parallel workshare
@@ -68,9 +67,8 @@
 !$omp end parallel workshare
         ft%elapsed(3) = ft%elapsed(3) + OMP_GET_WTIME() - ft%start
 !
-        call backward_FFT_select(iflag_FFT, np_smp, ft%nstack,          &
-     &                           ft%nfld, ft%ngrd, ft%f_x, WK_FFT,      &
-     &                           ft%elapsed(2), ft%elapsed(3))
+        call backward_FFT_select(iflag_FFT, ft%nfld, ft%ngrd, ft%f_x,   &
+     &                           WK_FFT, ft%elapsed(2), ft%elapsed(3))
       end do
 !
       end subroutine FFT_test_with_phi_out_data
@@ -103,9 +101,8 @@
 !$omp end parallel workshare
         ft%elapsed(3) = ft%elapsed(3) + OMP_GET_WTIME() - ft%start
 !
-        call fwd_pin_FFT_select(iflag_FFT, np_smp, ft%nstack,           &
-     &                          ft%nfld, ft%ngrd, ft%s_k, WK_FFT,       &
-     &                          ft%elapsed(2), ft%elapsed(3))
+        call fwd_pin_FFT_select(iflag_FFT, ft%nfld, ft%ngrd, ft%s_k,    &
+     &                          WK_FFT, ft%elapsed(2), ft%elapsed(3))
 !
         ft%start = OMP_GET_WTIME()
 !$omp parallel workshare
@@ -113,9 +110,8 @@
 !$omp end parallel workshare
         ft%elapsed(3) = ft%elapsed(3) + OMP_GET_WTIME() - ft%start
 !
-        call back_pin_FFT_select(iflag_FFT, np_smp, ft%nstack,          &
-     &                           ft%nfld, ft%ngrd, ft%f_x, WK_FFT,      &
-     &                           ft%elapsed(2), ft%elapsed(3))
+        call back_pin_FFT_select(iflag_FFT, ft%nfld, ft%ngrd, ft%f_x,   &
+     &                           WK_FFT, ft%elapsed(2), ft%elapsed(3))
       end do
 !
       call swap_fft_test_data_to_pout(ft)

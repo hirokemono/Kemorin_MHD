@@ -94,9 +94,8 @@
 !$omp end parallel workshare
         ft1%elapsed(3) = ft1%elapsed(3) + OMP_GET_WTIME() - ft1%start
 !
-        call calypso_multi_pin_RFFTMF                                   &
-     &     (np_smp, ft1%nstack, ft1%nfld, ft1%ngrd,                     &
-     &      ft1%s_k, WK_FFTPACK_T, ft1%elapsed(2), ft1%elapsed(3))
+        call calypso_multi_pin_RFFTMF(ft1%nfld, ft1%ngrd, ft1%s_k,      &
+     &      WK_FFTPACK_T, ft1%elapsed(2), ft1%elapsed(3))
 !
         ft1%start = OMP_GET_WTIME()
 !$omp parallel workshare
@@ -104,9 +103,8 @@
 !$omp end parallel workshare
         ft1%elapsed(3) = ft1%elapsed(3) + OMP_GET_WTIME() - ft1%start
 !
-        call calypso_multi_pin_RFFTMB                                   &
-     &     (np_smp, ft1%nstack, ft1%nfld, ft1%ngrd,                     &
-     &      ft1%f_x, WK_FFTPACK_T, ft1%elapsed(2), ft1%elapsed(3))
+        call calypso_multi_pin_RFFTMB(ft1%nfld, ft1%ngrd, ft1%f_x,      &
+     &      WK_FFTPACK_T, ft1%elapsed(2), ft1%elapsed(3))
       end do
 !
       if(nloop_test .eq. 1) then

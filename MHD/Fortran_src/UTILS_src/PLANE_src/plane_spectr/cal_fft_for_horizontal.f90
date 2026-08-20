@@ -107,8 +107,8 @@
 !
       call verify_FFT_select(iflag_FFT, num_fft, Nstacksmp,             &
      &    kx_max, WK_FFTS)
-      call forward_FFT_select(iflag_FFT, Nsmp, Nstacksmp,               &
-     &    n1, kx_max, wk_pfft, WK_FFTS, elapsed_fft, elapsed_cpy)
+      call forward_FFT_select(iflag_FFT, n1, kx_max, wk_pfft, WK_FFTS,  &
+     &                        elapsed_fft, elapsed_cpy)
 !
 !    swap array
 !
@@ -159,8 +159,8 @@
 !
       call verify_FFT_select(iflag_FFT, num_fft, Nstacksmp,             &
      &    ky_max, WK_FFTS)
-      call forward_FFT_select(iflag_FFT, Nsmp, Nstacksmp,               &
-     &    n1, ky_max, wk_pfft, WK_FFTS, elapsed_fft, elapsed_cpy)
+      call forward_FFT_select(iflag_FFT, n1, ky_max, wk_pfft, WK_FFTS,  &
+     &                        elapsed_fft, elapsed_cpy)
 !
 !    swap array
 !

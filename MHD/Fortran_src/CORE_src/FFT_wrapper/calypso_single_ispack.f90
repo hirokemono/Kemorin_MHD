@@ -106,17 +106,9 @@
 !
       type(working_ISPACK), intent(inout) :: WK
 !
-      integer(kind = kint) :: ip
-!
 !
       call alloc_const_ispack_t(Nsmp, Nfft, WK)
-!
-      WK%istack_ISPACK(0:Nsmp) = Nstacksmp(0:Nsmp)
-      WK%Mmax_smp = 0
-      do ip = 1, Nsmp
-        WK%Mmax_smp                                                     &
-     &      = max(WK%Mmax_smp, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
-      end do
+      call count_ispack_smp(Nsmp, Nstacksmp, WK)
 !
       call FTTRUI_kemo(Nfft, WK%IT_ispack, WK%T_ispack)
 !
