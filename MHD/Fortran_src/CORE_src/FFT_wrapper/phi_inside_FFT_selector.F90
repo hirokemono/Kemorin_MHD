@@ -284,22 +284,22 @@
 !
 !
       if(abs(iflag_FFT) .eq. (iflag_ISPACK0 + iflag_once_fft)) then
-        call calypso_multi_pin_FTTRUF(Nsmp, Nstacksmp, M, Nfft, X,      &
-     &      WKS%WK_ISPACK1, elapsed_fft, elapsed_cpy)
+        call calypso_multi_pin_FTTRUF(M, Nfft, X, WKS%WK_ISPACK1,       &
+     &                                elapsed_fft, elapsed_cpy)
       else if(abs(iflag_FFT)                                            &
      &         .eq. (iflag_ISPACK0 + iflag_single_fft)) then
-        call calypso_single_pin_FTTRUF(Nsmp, Nstacksmp, M, Nfft, X,     &
-     &      WKS%WK_ISPACK1, elapsed_fft, elapsed_cpy)
+        call calypso_single_pin_FTTRUF(M, Nfft, X, WKS%WK_ISPACK1,      &
+     &                                 elapsed_fft, elapsed_cpy)
       else if(abs(iflag_FFT)                                            &
      &         .eq. (iflag_ISPACK3 + iflag_once_fft)) then
-        call calypso_multi_pin_FXRTFA(Nsmp, Nstacksmp, cast_long(M),    &
-     &                              cast_long(Nfft), X, WKS%WK_ISPACK3, &
-     &                              elapsed_fft, elapsed_cpy)
+        call calypso_multi_pin_FXRTFA(cast_long(M), cast_long(Nfft),    &
+     &                                X, WKS%WK_ISPACK3,                &
+     &                                elapsed_fft, elapsed_cpy)
       else if(abs(iflag_FFT) .eq. (iflag_ISPACK3 + iflag_single_fft)) then
         write(*,*) 'calypso_single_pin_FXRTFA'
-        call calypso_single_pin_FXRTFA(Nsmp, Nstacksmp, cast_long(M),   &
-     &                              cast_long(Nfft), X, WKS%WK_ISPACK3, &
-     &                              elapsed_fft, elapsed_cpy)
+        call calypso_single_pin_FXRTFA(cast_long(M), cast_long(Nfft),   &
+     &                                 X, WKS%WK_ISPACK3,               &
+     &                                 elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
       else if(abs(iflag_FFT) .eq. (iflag_FFTW + iflag_once_fft)) then
         call calypso_multi_pin_fwd_FFTW3(M, Nfft, X, WKS%WK_MUL_FFTW,   &
@@ -346,22 +346,22 @@
 !
 !
       if(abs(iflag_FFT) .eq. (iflag_ISPACK0 + iflag_once_fft)) then
-        call calypso_multi_pin_FTTRUB(Nsmp, Nstacksmp, M, Nfft, X,      &
-     &      WKS%WK_ISPACK1, elapsed_fft, elapsed_cpy)
+        call calypso_multi_pin_FTTRUB(M, Nfft, X, WKS%WK_ISPACK1,       &
+     &                                elapsed_fft, elapsed_cpy)
       else if(abs(iflag_FFT)                                            &
      &          .eq. (iflag_ISPACK0 + iflag_single_fft)) then
-        call calypso_single_pin_FTTRUB(Nsmp, Nstacksmp, M, Nfft, X,     &
-     &      WKS%WK_ISPACK1, elapsed_fft, elapsed_cpy)
+        call calypso_single_pin_FTTRUB(M, Nfft, X, WKS%WK_ISPACK1,      &
+     &                                 elapsed_fft, elapsed_cpy)
       else if(abs(iflag_FFT)                                            &
      &          .eq. (iflag_ISPACK3 + iflag_once_fft)) then
-        call calypso_multi_pin_FXRTBA(Nsmp, Nstacksmp, cast_long(M),    &
-     &                              cast_long(Nfft), X, WKS%WK_ISPACK3, &
-     &                              elapsed_fft, elapsed_cpy)
+        call calypso_multi_pin_FXRTBA(cast_long(M), cast_long(Nfft),    &
+     &                                X, WKS%WK_ISPACK3,                &
+     &                                elapsed_fft, elapsed_cpy)
       else if(abs(iflag_FFT)                                            &
      &          .eq. (iflag_ISPACK3 + iflag_single_fft)) then
-        call calypso_single_pin_FXRTBA(Nsmp, Nstacksmp, cast_long(M),   &
-     &                              cast_long(Nfft), X, WKS%WK_ISPACK3, &
-     &                              elapsed_fft, elapsed_cpy)
+        call calypso_single_pin_FXRTBA(cast_long(M), cast_long(Nfft),   &
+     &                                 X, WKS%WK_ISPACK3,               &
+     &                                 elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
       else if(abs(iflag_FFT) .eq. (iflag_FFTW + iflag_once_fft)) then
         call calypso_multi_pin_bwd_FFTW3(M, Nfft, X, WKS%WK_MUL_FFTW,   &

@@ -13,7 +13,7 @@
 !!      subroutine finalize_wk_ispack_t(WK)
 !!      subroutine verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WK)
 !!      subroutine alloc_work_ispack_t(Nsmp, nmax_comp, Nfft, WK)
-!!      subroutine alloc_const_ispack_t(nfft, WK)
+!!      subroutine alloc_const_ispack_t(Nsmp, nfft, WK)
 !!        integer(kind = kint), intent(in) :: Nsmp, nmax_comp, Nfft
 !!        type(working_ISPACK), intent(inout) :: WK
 !!
@@ -49,6 +49,10 @@
 !
 !>      structure for working data for ISPACK
       type working_ISPACK
+!>        Number of FFT call (generally number of SMP threads)
+        integer(kind = kint) :: Nplan_ISPACK = 1
+!>        Stack for FFT
+        integer(kind = kint), allocatable :: istack_ISPACK(:)
 !>        Maximum nuber of components for each SMP process
         integer(kind = kint) :: Mmax_smp
 !>        Data for multiple Fourier transform
@@ -97,25 +101,26 @@
       integer(kind = kint) :: ip
 !
 !
-      WK%Mmax_smp = Nstacksmp(1)
-      do ip = 1, Nsmp
-        WK%Mmax_smp                                                     &
-     &      = max(WK%Mmax_smp, (Nstacksmp(ip) - Nstacksmp(ip-1)))
-      end do
+      if(WK%iflag_fft_len .ne. Nfft) then
 !
-      if( WK%iflag_fft_len .ne. Nfft) then
-!
-        if( WK%iflag_fft_len .lt. 0) then
-          call alloc_const_ispack_t(Nfft, WK)
+        if(WK%iflag_fft_len .lt. 0) then
+          call alloc_const_ispack_t(Nsmp, Nfft, WK)
         else if( Nfft .gt. WK%iflag_fft_comp ) then
           call dealloc_const_ispack_t(WK)
-          call alloc_const_ispack_t(Nfft, WK)
+          call alloc_const_ispack_t(Nsmp, Nfft, WK)
         end if
+!
+        WK%istack_ISPACK(0:Nsmp) = Nstacksmp(0:Nsmp)
+        WK%Mmax_smp = 0
+        do ip = 1, Nsmp
+          WK%Mmax_smp                                                   &
+     &      = max(WK%Mmax_smp, (Nstacksmp(ip) - Nstacksmp(ip-1)))
+        end do
 !
         call FTTRUI_kemo( Nfft, WK%IT_ispack, WK%T_ispack )
       end if
 !
-      if( WK%iflag_fft_comp .lt. 0) then
+      if(WK%iflag_fft_comp .lt. 0) then
         call alloc_work_ispack_t(Nsmp, WK%Mmax_smp, Nfft, WK)
       else if( (WK%Mmax_smp*Nfft) .gt. WK%iflag_fft_comp ) then
         call dealloc_work_ispack_t(WK)
@@ -142,13 +147,18 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine alloc_const_ispack_t(nfft, WK)
+      subroutine alloc_const_ispack_t(Nsmp, nfft, WK)
 !
-      integer(kind = kint), intent(in) :: nfft
+      integer(kind = kint), intent(in) :: Nsmp, nfft
       type(working_ISPACK), intent(inout) :: WK
 !
+      WK%Nplan_ISPACK = Nsmp
       WK%iflag_fft_len = nfft
-      allocate( WK%T_ispack(2*nfft) )
+!
+      allocate(WK%istack_ISPACK(0:Nsmp))
+      WK%istack_ISPACK(0:Nsmp) = 0
+!
+      allocate(WK%T_ispack(2*nfft))
       WK%T_ispack = 0.0d0
 !
       end subroutine alloc_const_ispack_t

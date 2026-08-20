@@ -95,8 +95,8 @@
 !$omp end parallel workshare
         ft0%elapsed(3) = ft0%elapsed(3) + OMP_GET_WTIME() - ft0%start
 !
-        call calypso_multi_pin_FXRTFA(np_smp, ft0%nstack, nfld8, Nfft8, &
-     &      ft0%s_k, WK_ISPACK3_t, ft0%elapsed(2), ft0%elapsed(3))
+        call calypso_multi_pin_FXRTFA(nfld8, Nfft8, ft0%s_k,            &
+     &      WK_ISPACK3_t, ft0%elapsed(2), ft0%elapsed(3))
 !
         ft0%start = OMP_GET_WTIME()
 !$omp parallel workshare
@@ -104,8 +104,8 @@
 !$omp end parallel workshare
         ft0%elapsed(3) = ft0%elapsed(3) + OMP_GET_WTIME() - ft0%start
 !
-        call calypso_multi_pin_FXRTBA(np_smp, ft0%nstack, nfld8, Nfft8, &
-     &      ft0%f_x, WK_ISPACK3_t, ft0%elapsed(2), ft0%elapsed(3))
+        call calypso_multi_pin_FXRTBA(nfld8, Nfft8, ft0%f_x,            &
+     &      WK_ISPACK3_t, ft0%elapsed(2), ft0%elapsed(3))
       end do
 !
       if(nloop_test .eq. 1) then

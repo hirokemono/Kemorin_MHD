@@ -103,7 +103,7 @@
       call alloc_mul_FFTW_plan_t(Nsmp, Nstacksmp(Nsmp), Nfft, WK)
       call init_pout_FFTW_mul_smp                                       &
      &   (Nsmp, Nstacksmp, Nstacksmp(Nsmp), Nfft, WK%Nfft_c,            &
-     &    WK%plan_fowd_mul, WK%plan_back_mul, WK%istack_smp_FFTW,       &
+     &    WK%plan_fowd_mul, WK%plan_back_mul, WK%istack_FFTW,           &
      &    WK%X_FFTW_mul, WK%C_FFTW_mul)
 !
       end subroutine init_FFTW_mul_type
@@ -160,8 +160,8 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call multi_pin_fwd_FFTW3(WK%plan_fowd_mul, WK%Nplan,              &
-     &    WK%istack_smp_FFTW, Ncomp, Nfft, WK%aNfft, WK%Nfft_c, X,      &
+      call multi_pin_fwd_FFTW3(WK%plan_fowd_mul, WK%Nplan_FFTW,         &
+     &    WK%istack_FFTW, Ncomp, Nfft, WK%aNfft, WK%Nfft_c, X,          &
      &    WK%C_FFTW_mul, elapsed_fft, elapsed_cpy)
 !
       end subroutine calypso_multi_pin_fwd_FFTW3
@@ -180,8 +180,8 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call multi_pin_bwd_FFTW3(WK%plan_back_mul, WK%Nplan,              &
-     &    WK%istack_smp_FFTW, Ncomp, Nfft, WK%Nfft_c, X, WK%C_FFTW_mul, &
+      call multi_pin_bwd_FFTW3(WK%plan_back_mul, WK%Nplan_FFTW,         &
+     &    WK%istack_FFTW, Ncomp, Nfft, WK%Nfft_c, X, WK%C_FFTW_mul,     &
      &    elapsed_fft, elapsed_cpy)
 !
       end subroutine calypso_multi_pin_bwd_FFTW3
@@ -199,8 +199,8 @@
       type(working_mul_FFTW), intent(inout) :: WK
 !
 !
-      call multi_pout_fwd_FFTW3(WK%plan_fowd_mul, WK%Nplan,             &
-     &    WK%istack_smp_FFTW, Ncomp, Nfft, WK%aNfft, WK%Nfft_c, X,      &
+      call multi_pout_fwd_FFTW3(WK%plan_fowd_mul, WK%Nplan_FFTW,        &
+     &    WK%istack_FFTW, Ncomp, Nfft, WK%aNfft, WK%Nfft_c, X,          &
      &    WK%X_FFTW_mul, WK%C_FFTW_mul, elapsed_fft, elapsed_cpy)
 !
       end subroutine calypso_multi_pout_fwd_FFTW3
@@ -217,8 +217,8 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call multi_pout_bwd_FFTW3(WK%plan_back_mul, WK%Nplan,             &
-     &    WK%istack_smp_FFTW, Ncomp, Nfft, WK%Nfft_c, X,                &
+      call multi_pout_bwd_FFTW3(WK%plan_back_mul, WK%Nplan_FFTW,        &
+     &    WK%istack_FFTW, Ncomp, Nfft, WK%Nfft_c, X,                    &
      &    WK%X_FFTW_mul, WK%C_FFTW_mul, elapsed_fft, elapsed_cpy)
 !
       end subroutine calypso_multi_pout_bwd_FFTW3

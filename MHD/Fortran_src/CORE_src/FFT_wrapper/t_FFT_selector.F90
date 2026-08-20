@@ -290,19 +290,18 @@
 !
 !
       if(iflag_FFT .eq. (iflag_ISPACK0 + iflag_once_fft)) then
-        call FTTRUF_kemo_t(Nsmp, Nstacksmp, M, Nfft, X,                 &
-     &      WKS%WK_ISPACK1, elapsed_fft, elapsed_cpy)
-      else if(iflag_FFT .eq. (iflag_ISPACK0 + iflag_single_fft)) then
-        call calypso_single_pout_FTTRUF(Nsmp, Nstacksmp, M, Nfft, X,    &
-     &      WKS%WK_ISPACK1, elapsed_fft, elapsed_cpy)
-      else if(iflag_FFT .eq. (iflag_ISPACK3 + iflag_once_fft)) then
-        call FXRTFA_kemo_t(Nsmp, Nstacksmp, cast_long(M),               &
-     &                     cast_long(Nfft), X, WKS%WK_ISPACK3,          &
+        call FTTRUF_kemo_t(M, Nfft, X, WKS%WK_ISPACK1,                  &
      &                     elapsed_fft, elapsed_cpy)
+      else if(iflag_FFT .eq. (iflag_ISPACK0 + iflag_single_fft)) then
+        call calypso_single_pout_FTTRUF(M, Nfft, X, WKS%WK_ISPACK1,     &
+     &                                  elapsed_fft, elapsed_cpy)
+      else if(iflag_FFT .eq. (iflag_ISPACK3 + iflag_once_fft)) then
+        call FXRTFA_kemo_t(cast_long(M), cast_long(Nfft), X,            &
+     &                     WKS%WK_ISPACK3, elapsed_fft, elapsed_cpy)
       else if(iflag_FFT .eq. (iflag_ISPACK3 + iflag_single_fft)) then
-        call calypso_single_pout_FXRTFA(Nsmp, Nstacksmp, cast_long(M),  &
-     &                              cast_long(Nfft), X, WKS%WK_ISPACK3, &
-     &                              elapsed_fft, elapsed_cpy)
+        call calypso_single_pout_FXRTFA(cast_long(M), cast_long(Nfft),  &
+     &                                  X, WKS%WK_ISPACK3,              &
+     &                                  elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
       else if(iflag_FFT .eq. (iflag_FFTW + iflag_once_fft)) then
         call calypso_multi_pout_fwd_FFTW3(M, Nfft, X, WKS%WK_MUL_FFTW,  &
@@ -347,19 +346,18 @@
 !
 !
       if(iflag_FFT .eq. (iflag_ISPACK0 + iflag_once_fft)) then
-        call FTTRUB_kemo_t(Nsmp, Nstacksmp, M, Nfft, X,                 &
-     &       WKS%WK_ISPACK1, elapsed_fft, elapsed_cpy)
-      else if(iflag_FFT .eq. iflag_ISPACK1_SINGLE + iflag_single_fft) then
-        call calypso_single_pout_FTTRUB(Nsmp, Nstacksmp, M, Nfft, X,    &
-     &      WKS%WK_ISPACK1, elapsed_fft, elapsed_cpy)
-      else if(iflag_FFT .eq. (iflag_ISPACK3 + iflag_once_fft)) then
-        call FXRTBA_kemo_t(Nsmp, Nstacksmp, cast_long(M),               &
-     &                     cast_long(Nfft), X, WKS%WK_ISPACK3,          &
+        call FTTRUB_kemo_t(M, Nfft, X, WKS%WK_ISPACK1,                  &
      &                     elapsed_fft, elapsed_cpy)
+      else if(iflag_FFT .eq. iflag_ISPACK1_SINGLE + iflag_single_fft) then
+        call calypso_single_pout_FTTRUB(M, Nfft, X, WKS%WK_ISPACK1,     &
+     &                                  elapsed_fft, elapsed_cpy)
+      else if(iflag_FFT .eq. (iflag_ISPACK3 + iflag_once_fft)) then
+        call FXRTBA_kemo_t(cast_long(M), cast_long(Nfft), X,            &
+     &                     WKS%WK_ISPACK3, elapsed_fft, elapsed_cpy)
       else if(iflag_FFT .eq. (iflag_ISPACK3 + iflag_single_fft)) then
-        call calypso_single_pout_FXRTBA(Nsmp, Nstacksmp, cast_long(M),  &
-     &                              cast_long(Nfft), X, WKS%WK_ISPACK3, &
-     &                              elapsed_fft, elapsed_cpy)
+        call calypso_single_pout_FXRTBA(cast_long(M), cast_long(Nfft),  &
+     &                                  X, WKS%WK_ISPACK3,              &
+     &                                  elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
       else if(iflag_FFT .eq. (iflag_FFTW + iflag_once_fft)) then
         call calypso_multi_pout_bwd_FFTW3(M, Nfft, X, WKS%WK_MUL_FFTW,  &

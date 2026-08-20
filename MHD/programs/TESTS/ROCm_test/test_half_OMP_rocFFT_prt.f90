@@ -204,8 +204,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine pin_fwd_OMP_rocFFT_ISPACK1(Ncomp, istack_ISPACK,      &
-     &          fwd, WK_rocFFT, WK_ISPACK1, X, elapsed)
+      subroutine pin_fwd_OMP_rocFFT_ISPACK1(Ncomp, fwd, WK_rocFFT,      &
+     &                                      WK_ISPACK1, X, elapsed)
 !
       use iso_c_binding
       use hipfort
@@ -218,7 +218,6 @@
       use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: Ncomp
-      integer(kind = kint), intent(in) :: istack_ISPACK(0:np_smp)
       type(calypso_rocFFT_params), target :: fwd
 !
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
@@ -233,8 +232,8 @@
       start = OMP_GET_WTIME()
       call sel_copy_pin_field_to_FFT(int(fwd%Ncomp), int(fwd%Nfft),     &
      &    X(1,1), int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1))
-      call swap_prt_fld_to_FXRTFA                                       &
-     &   (np_smp, istack_ISPACK, cast_long(WK_ISPACK1%Mmax_smp),        &
+      call swap_prt_fld_to_FXRTFA(WK_ISPACK1%Nplan_ISPACK,              &
+     &    WK_ISPACK1%istack_ISPACK, cast_long(WK_ISPACK1%Mmax_smp),     &
      &    fwd%Nfft, cast_long(Ncomp), X(1,1), WK_ISPACK1%X_ispack(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
@@ -256,8 +255,8 @@
 !!   3. The rest of the CPU threads immediately and execute
 !      write(*,*) 'FFT loop start', OMP_GET_WTIME() - start
       st_c = OMP_GET_WTIME()
-      call multi_pin_FTTRUF_smp                                         &
-     &   (np_smp, istack_ISPACK, WK_ISPACK1%Mmax_smp, int(fwd%Nfft),    &
+      call multi_pin_FTTRUF_smp(WK_ISPACK1%Nplan_ISPACK,                &
+     &    WK_ISPACK1%istack_ISPACK, WK_ISPACK1%Mmax_smp, int(fwd%Nfft), &
      &    WK_ISPACK1%X_ispack, WK_ISPACK1%IT_ispack,                    &
      &    WK_ISPACK1%T_ispack, WK_ISPACK1%WORK_ispack)
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
@@ -268,9 +267,9 @@
       call norm_prt_from_fwd_rocFFT                                     &
      &   (int(fwd%Ncomp), int(WK_rocFFT%NFFT_r), WK_rocFFT%X_rocFFT,    &
      &    int(fwd%Nfft), X(1,1))
-      call swap_prt_spectr_from_FXRTFA(np_smp, istack_ISPACK,           &
-     &    cast_long(WK_ISPACK1%Mmax_smp), fwd%Nfft,                     &
-     &    WK_ISPACK1%X_ispack(1,1), cast_long(Ncomp), X(1,1))
+      call swap_prt_spectr_from_FXRTFA(WK_ISPACK1%Nplan_ISPACK,         &
+     &    WK_ISPACK1%istack_ISPACK,cast_long(WK_ISPACK1%Mmax_smp),      &
+     &    fwd%Nfft, WK_ISPACK1%X_ispack(1,1), cast_long(Ncomp), X(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
       write(*,*) 'CPU FFT clock',   elapsed(3)
@@ -281,8 +280,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine pin_fwd_OMP_rocFFT_ISPACK3(Ncomp, istack_ISPACK,      &
-     &          fwd, WK_rocFFT, WK_ISPACK3, X, elapsed)
+      subroutine pin_fwd_OMP_rocFFT_ISPACK3(Ncomp, fwd, WK_rocFFT,      &
+     &                                      WK_ISPACK3, X, elapsed)
 !
       use iso_c_binding
       use hipfort
@@ -294,7 +293,6 @@
       use multi_pin_ISPACK3_smp
 !
       integer(kind = kint), intent(in) :: Ncomp
-      integer(kind = kint), intent(in) :: istack_ISPACK(0:np_smp)
       type(calypso_rocFFT_params), target :: fwd
 !
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
@@ -309,8 +307,8 @@
       start = OMP_GET_WTIME()
       call sel_copy_pin_field_to_FFT(int(fwd%Ncomp), int(fwd%Nfft),     &
      &    X(1,1), int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1))
-      call swap_prt_fld_to_FXRTFA                                       &
-     &   (np_smp, istack_ISPACK, WK_ISPACK3%Mmax_smp, fwd%Nfft,         &
+      call swap_prt_fld_to_FXRTFA(WK_ISPACK3%Nplan_ISPACK3,             &
+     &    WK_ISPACK3%istack_ISPACK3, WK_ISPACK3%Mmax_smp, fwd%Nfft,     &
      &    Ncomp, X(1,1), WK_ISPACK3%X_ispack(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
@@ -332,8 +330,8 @@
 !!   3. The rest of the CPU threads immediately and execute
 !      write(*,*) 'FFT loop start', OMP_GET_WTIME() - start
       st_c = OMP_GET_WTIME()
-      call multi_pin_FXRTFA_smp                                         &
-     &   (np_smp, istack_ISPACK, WK_ISPACK3%Mmax_smp, fwd%Nfft,         &
+      call multi_pin_FXRTFA_smp(WK_ISPACK3%Nplan_ISPACK3,               &
+     &    WK_ISPACK3%istack_ISPACK3, WK_ISPACK3%Mmax_smp, fwd%Nfft,     &
      &    WK_ISPACK3%X_ispack, WK_ISPACK3%IT_ispack,                    &
      &    WK_ISPACK3%T_ispack)
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
@@ -344,9 +342,9 @@
       call norm_prt_from_fwd_rocFFT                                     &
      &   (int(fwd%Ncomp), int(WK_rocFFT%NFFT_r), WK_rocFFT%X_rocFFT,    &
      &    int(fwd%Nfft), X(1,1))
-      call swap_prt_spectr_from_FXRTFA(np_smp, istack_ISPACK,           &
-     &    WK_ISPACK3%Mmax_smp, fwd%Nfft, WK_ISPACK3%X_ispack(1,1),      &
-     &    Ncomp, X(1,1))
+      call swap_prt_spectr_from_FXRTFA(WK_ISPACK3%Nplan_ISPACK3,        &
+     &    WK_ISPACK3%istack_ISPACK3, WK_ISPACK3%Mmax_smp,               &
+     &    fwd%Nfft, WK_ISPACK3%X_ispack(1,1), Ncomp, X(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
       write(*,*) 'CPU FFT clock',   elapsed(3)
@@ -406,7 +404,7 @@
 !      write(*,*) 'FFT loop start', OMP_GET_WTIME() - start
       st_c = OMP_GET_WTIME()
       call multi_pin_fwd_FFTW3_smp(WK_FFTW%plan_fowd_mul,               &
-     &    WK_FFTW%Nplan, WK_FFTW%istack_smp_FFTW, Ncomp, fwd%Nfft,      &
+     &    WK_FFTW%Nplan_FFTW, WK_FFTW%istack_FFTW, Ncomp, fwd%Nfft,     &
      &    WK_FFTW%Nfft_c, X(1,fwd%Ncomp+1), WK_FFTW%C_FFTW_mul(1,1))
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
 !$omp end parallel
@@ -504,8 +502,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine pin_bwd_OMP_rocFFT_ISPACK1(Ncomp, istack_ISPACK,       &
-     &          bwd, WK_rocFFT, WK_FFTPACK, X, elapsed)
+      subroutine pin_bwd_OMP_rocFFT_ISPACK1(Ncomp, bwd, WK_rocFFT,      &
+     &                                      WK_FFTPACK, X, elapsed)
 !
       use iso_c_binding
       use hipfort
@@ -518,7 +516,6 @@
       use multi_pin_ISPACK1_smp
 !
       integer(kind = kint), intent(in) :: Ncomp
-      integer(kind = kint), intent(in) :: istack_ISPACK(0:np_smp)
       type(calypso_rocFFT_params), target :: bwd
 !
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
@@ -533,8 +530,8 @@
       call norm_prt_to_bwd_rocFFT                                       &
      &   (int(bwd%Ncomp), int(bwd%Nfft), X(1,1),                        &
      &    int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1))
-      call swap_prt_spectr_to_FXRTBA                                    &
-     &   (np_smp, istack_ISPACK, cast_long(WK_ISPACK1%Mmax_smp),        &
+      call swap_prt_spectr_to_FXRTBA(WK_ISPACK1%Nplan_ISPACK,           &
+     &    WK_ISPACK1%istack_ISPACK, cast_long(WK_ISPACK1%Mmax_smp),     &
      &    bwd%Nfft, cast_long(Ncomp), X(1,1), WK_ISPACK1%X_ispack(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
@@ -554,8 +551,8 @@
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
      &          )
-      call multi_pin_FTTRUB_smp                                         &
-     &   (np_smp, istack_ISPACK, WK_ISPACK1%Mmax_smp, int(bwd%Nfft),    &
+      call multi_pin_FTTRUB_smp(WK_ISPACK1%Nplan_ISPACK,                &
+     &    WK_ISPACK1%istack_ISPACK, WK_ISPACK1%Mmax_smp, int(bwd%Nfft), &
      &    WK_ISPACK1%X_ispack, WK_ISPACK1%IT_ispack,                    &
      &    WK_ISPACK1%T_ispack, WK_ISPACK1%WORK_ispack)
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
@@ -566,8 +563,8 @@
       call sel_copy_pin_field_from_FFT                                  &
      &   (int(bwd%Ncomp), int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1), &
      &    int(bwd%Nfft), X(1,1))
-      call swap_prt_fld_from_FXRTBA                                     &
-     &   (np_smp, istack_ISPACK, cast_long(WK_ISPACK1%Mmax_smp),        &
+      call swap_prt_fld_from_FXRTBA(WK_ISPACK1%Nplan_ISPACK,            &
+     &    WK_ISPACK1%istack_ISPACK, cast_long(WK_ISPACK1%Mmax_smp),     &
      &    bwd%Nfft, WK_ISPACK1%X_ispack(1,1), cast_long(Ncomp), X(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
@@ -579,7 +576,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine pin_bwd_OMP_rocFFT_ISPACK3(Ncomp, istack_ISPACK,       &
+      subroutine pin_bwd_OMP_rocFFT_ISPACK3(Ncomp, Ncomp_CPU,           &
      &          bwd, WK_rocFFT, WK_FFTPACK, X, elapsed)
 !
       use iso_c_binding
@@ -591,12 +588,12 @@
       use copy_field_for_FFT
       use multi_pin_ISPACK3_smp
 !
-      integer(kind = kint), intent(in) :: Ncomp
-      integer(kind = kint), intent(in) :: istack_ISPACK(0:np_smp)
+      integer(kind = kint), intent(in) :: Ncomp, Ncomp_CPU
       type(calypso_rocFFT_params), target :: bwd
 !
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
       type(working_ISPACK3), intent(inout) :: WK_ISPACK3
+!
       real(kind = kreal), intent(inout) :: X(bwd%Nfft,Ncomp)
       real(kind = kreal), intent(inout) :: elapsed(4)
 !
@@ -607,8 +604,8 @@
       call norm_prt_to_bwd_rocFFT                                       &
      &   (int(bwd%Ncomp), int(bwd%Nfft), X(1,1),                        &
      &    int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1))
-      call swap_prt_spectr_to_FXRTBA                                    &
-     &   (np_smp, istack_ISPACK, cast_long(WK_ISPACK3%Mmax_smp),        &
+      call swap_prt_spectr_to_FXRTBA(WK_ISPACK3%Nplan_ISPACK3,          &
+     &    WK_ISPACK3%istack_ISPACK3, cast_long(WK_ISPACK3%Mmax_smp),    &
      &    bwd%Nfft, cast_long(Ncomp), X(1,1), WK_ISPACK3%X_ispack(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
@@ -627,8 +624,8 @@
 !
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
-      call multi_pin_FXRTBA_smp                                         &
-     &   (np_smp, istack_ISPACK, WK_ISPACK3%Mmax_smp, bwd%Nfft,         &
+      call multi_pin_FXRTBA_smp(WK_ISPACK3%Nplan_ISPACK3,               &
+     &    WK_ISPACK3%istack_ISPACK3, WK_ISPACK3%Mmax_smp, bwd%Nfft,     &
      &    WK_ISPACK3%X_ispack, WK_ISPACK3%IT_ispack,                    &
      &    WK_ISPACK3%T_ispack)
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
@@ -639,10 +636,10 @@
       call sel_copy_pin_field_from_FFT                                  &
      &   (int(bwd%Ncomp), int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1), &
      &    int(bwd%Nfft), X(1,1))
-      call swap_prt_fld_from_FXRTBA                                     &
-     &   (np_smp, istack_ISPACK, cast_long(WK_ISPACK3%Mmax_smp),        &
+      call swap_prt_fld_from_FXRTBA(WK_ISPACK3%Nplan_ISPACK3,           &
+     &    WK_ISPACK3%istack_ISPACK3, cast_long(WK_ISPACK3%Mmax_smp),    &
      &    bwd%Nfft, WK_ISPACK3%X_ispack(1,1),                           &
-     &    cast_long(istack_ISPACK(np_smp)), X(1,bwd%Ncomp+1))
+     &    cast_long(Ncomp_CPU), X(1,bwd%Ncomp+1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
       write(*,*) 'CPU FFT clock',   elapsed(3)
@@ -701,7 +698,7 @@
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
       call multi_pin_bwd_FFTW3_smp(WK_FFTW%plan_back_mul,               &
-     &    WK_FFTW%Nplan, WK_FFTW%istack_smp_FFTW,                       &
+     &    WK_FFTW%Nplan_FFTW, WK_FFTW%istack_FFTW,                      &
      &    Ncomp_CPU, WK_FFTW%Nfft_c, WK_FFTW%C_FFTW_mul(1,1),           &
      &    bwd%Nfft, X(1,bwd%Ncomp+1))
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c

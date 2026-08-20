@@ -17,7 +17,7 @@
 !!        type(working_ISPACK3), intent(inout) :: WK
 !!
 !!      subroutine alloc_work_ispack3_t(Nsmp, nmax_comp, Nfft, WK)
-!!      subroutine alloc_const_ispack3_t(nfft, WK)
+!!      subroutine alloc_const_ispack3_t(Nsmp, nfft, WK)
 !!        integer(kind = kint), intent(in) :: Nsmp
 !!        integer(kind = kint_gl), intent(in) :: Nfft, nmax_comp
 !!        type(working_ISPACK3), intent(inout) :: WK
@@ -55,6 +55,10 @@
 !
 !>      structure for working data for ISPACK-3
       type working_ISPACK3
+!>        Number of FFT call (generally number of SMP threads)
+        integer(kind = kint) :: Nplan_ISPACK3 = 1
+!>        Stack for FFT
+        integer(kind = kint), allocatable :: istack_ISPACK3(:)
 !>        Maximum nuber of components for each SMP process
         integer(kind = kint_gl) :: Mmax_smp
 !>        Data for multiple Fourier transform
@@ -102,20 +106,21 @@
       integer(kind = kint) :: ip
 !
 !
-      WK%Mmax_smp = Nstacksmp(1)
-      do ip = 1, Nsmp
-        WK%Mmax_smp                                                     &
-     &      = max(WK%Mmax_smp, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
-      end do
-!
-      if( WK%iflag_fft_len .ne. Nfft) then
+      if(WK%iflag_fft_len .ne. Nfft) then
 !
         if( WK%iflag_fft_len .lt. 0) then
-          call alloc_const_ispack3_t(Nfft, WK)
+          call alloc_const_ispack3_t(Nsmp, Nfft, WK)
         else if( Nfft .gt. WK%iflag_fft_comp ) then
           call dealloc_const_ispack3_t(WK)
-          call alloc_const_ispack3_t(Nfft, WK)
+          call alloc_const_ispack3_t(Nsmp, Nfft, WK)
         end if
+!
+        WK%istack_ISPACK3(0:Nsmp) = Nstacksmp(0:Nsmp)
+        WK%Mmax_smp = 0
+        do ip = 1, Nsmp
+          WK%Mmax_smp                                                   &
+     &      = max(WK%Mmax_smp, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
+        end do
 !
         call FXRINI_kemo(Nfft, WK%IT_ispack, WK%T_ispack)
       end if
@@ -140,18 +145,25 @@
 !
 !
       WK%iflag_fft_comp = nmax_comp * Nfft
-      allocate( WK%X_ispack(WK%iflag_fft_comp,Nsmp) )
+      allocate(WK%X_ispack(WK%iflag_fft_comp,Nsmp))
 !
       end subroutine alloc_work_ispack3_t
 !
 ! ------------------------------------------------------------------
 !
-      subroutine alloc_const_ispack3_t(nfft, WK)
+      subroutine alloc_const_ispack3_t(Nsmp, nfft, WK)
 !
+      integer(kind = kint), intent(in) :: Nsmp
       integer(kind = kint_gl), intent(in) :: nfft
       type(working_ISPACK3), intent(inout) :: WK
 !
+!
       WK%iflag_fft_len = nfft
+      WK%Nplan_ISPACK3 = Nsmp
+!
+      allocate(WK%istack_ISPACK3(0:Nsmp))
+      WK%istack_ISPACK3(0:Nsmp) = 0
+!
       allocate( WK%iT_ispack(nfft/2) )
       allocate( WK%T_ispack(nfft+nfft/2) )
       WK%T_ispack = 0.0d0
@@ -179,6 +191,7 @@
       type(working_ISPACK3), intent(inout) :: WK
 !
 !
+      deallocate(WK%istack_ISPACK3)
       deallocate(WK%T_ispack, WK%iT_ispack)
       WK%iflag_fft_len = 0
 !

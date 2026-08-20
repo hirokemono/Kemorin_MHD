@@ -16,16 +16,15 @@
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !!        type(working_ISPACK3), intent(inout) :: WK
 !!
-!!      subroutine calypso_single_pin_FXRTFA(Nsmp, Nstacksmp,           &
-!!     &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
+!!      subroutine calypso_single_pin_FXRTFA(M, Nfft, X, WK,            &
+!!     &                                     elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !!        integer(kind = kint_gl), intent(in) :: M, Nfft
 !!        real(kind = kreal), intent(inout) :: X(Nfft,M)
 !!        type(working_ISPACK3), intent(inout) :: WK
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!!      subroutine calypso_single_pout_FXRTFA(Nsmp, Nstacksmp,          &
-!!     &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!      subroutine calypso_single_pout_FXRTFA(M, Nfft, X, WK,           &
+!!     &                                      elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint_gl), intent(in) :: M, Nfft
 !!        real(kind = kreal), intent(inout) :: X(M, Nfft)
 !!        type(working_ISPACK3), intent(inout) :: WK
@@ -43,16 +42,14 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine calypso_single_pin_FXRTBA(Nsmp, Nstacksmp,           &
-!!     &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!      subroutine calypso_single_pin_FXRTBA(M, Nfft, X, WK,            &
+!!     &                                     elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint_gl), intent(in) :: M, Nfft
 !!        real(kind = kreal), intent(inout) :: X(Nfft,M)
 !!        type(working_ISPACK3), intent(inout) :: WK
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!!      subroutine calypso_single_pout_FXRTBA(Nsmp, Nstacksmp,          &
-!!     &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!      subroutine calypso_single_pout_FXRTBA(M, Nfft, X, WK,           &
+!!     &                                      elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint_gl), intent(in) :: M, Nfft
 !!        real(kind = kreal), intent(inout) :: X(M,Nfft)
 !!        type(working_ISPACK3), intent(inout) :: WK
@@ -114,13 +111,15 @@
       integer(kind = kint) :: ip
 !
 !
-      WK%Mmax_smp = Nstacksmp(1)
+      call alloc_const_ispack3_t(Nsmp, Nfft, WK)
+!
+      WK%istack_ISPACK3(0:Nsmp) = Nstacksmp(0:Nsmp)
+      WK%Mmax_smp = 0
       do ip = 1, Nsmp
         WK%Mmax_smp                                                     &
      &      = max(WK%Mmax_smp, (Nstacksmp(ip) - Nstacksmp(ip-1)) )
       end do
 !
-      call alloc_const_ispack3_t(Nfft, WK)
       call FXRINI_kemo(Nfft, WK%IT_ispack, WK%T_ispack)
 !
       call alloc_work_ispack3_t(Nsmp, cast_long(ione), Nfft, WK)
@@ -130,12 +129,11 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_single_pin_FXRTFA(Nsmp, Nstacksmp,             &
-     &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
+      subroutine calypso_single_pin_FXRTFA(M, Nfft, X, WK,              &
+     &                                     elapsed_fft, elapsed_cpy)
 !
       use single_pin_ISPACK3_smp
 !
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint_gl), intent(in) :: M, Nfft
 !
       real(kind = kreal), intent(inout) :: X(Nfft,M)
@@ -143,19 +141,19 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call single_pin_FXRTFA_smp(Nsmp, Nstacksmp, M, Nfft, X,           &
-     &    WK%IT_ispack, WK%T_ispack, elapsed_fft, elapsed_cpy)
+      call single_pin_FXRTFA_smp(WK%Nplan_ISPACK3, WK%istack_ISPACK3,   &
+     &                           M, Nfft, X, WK%IT_ispack, WK%T_ispack, &
+     &                           elapsed_fft, elapsed_cpy)
 !
       end subroutine calypso_single_pin_FXRTFA
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_single_pin_FXRTBA(Nsmp, Nstacksmp,             &
-     &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
+      subroutine calypso_single_pin_FXRTBA(M, Nfft, X, WK,              &
+     &                                     elapsed_fft, elapsed_cpy)
 !
       use single_pin_ISPACK3_smp
 !
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint_gl), intent(in) :: M, Nfft
 !
       real(kind = kreal), intent(inout) :: X(Nfft,M)
@@ -163,20 +161,20 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
 !
-      call single_pin_FXRTBA_smp(Nsmp, Nstacksmp, M, Nfft, X,           &
-     &    WK%IT_ispack, WK%T_ispack, elapsed_fft, elapsed_cpy)
+      call single_pin_FXRTBA_smp(WK%Nplan_ISPACK3, WK%istack_ISPACK3,   &
+     &                           M, Nfft, X, WK%IT_ispack, WK%T_ispack, &
+     &                           elapsed_fft, elapsed_cpy)
 !
       end subroutine calypso_single_pin_FXRTBA
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_single_pout_FXRTFA(Nsmp, Nstacksmp,            &
-     &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
+      subroutine calypso_single_pout_FXRTFA(M, Nfft, X, WK,             &
+     &                                      elapsed_fft, elapsed_cpy)
 !
       use single_pout_ISPACK3_smp
 !
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint_gl), intent(in) :: M, Nfft
 !
       real(kind = kreal), intent(inout) :: X(M, Nfft)
@@ -185,7 +183,7 @@
 !
 !
       write(*,*) 'single_pout_FXRTFA_smp'
-      call single_pout_FXRTFA_smp(Nsmp, Nstacksmp,                      &
+      call single_pout_FXRTFA_smp(WK%Nplan_ISPACK3, WK%istack_ISPACK3,  &
      &    M, Nfft, X, WK%X_ispack, WK%IT_ispack, WK%T_ispack,           &
      &    elapsed_fft, elapsed_cpy)
 !
@@ -193,12 +191,11 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_single_pout_FXRTBA(Nsmp, Nstacksmp,            &
-     &          M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
+      subroutine calypso_single_pout_FXRTBA(M, Nfft, X, WK,             &
+     &                                      elapsed_fft, elapsed_cpy)
 !
       use single_pout_ISPACK3_smp
 !
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint_gl), intent(in) :: M, Nfft
 !
       real(kind = kreal), intent(inout) :: X(M,Nfft)
@@ -207,7 +204,7 @@
 !
 !
       write(*,*) 'single_pout_FXRTBA_smp'
-      call single_pout_FXRTBA_smp(Nsmp, Nstacksmp,                      &
+      call single_pout_FXRTBA_smp(WK%Nplan_ISPACK3, WK%istack_ISPACK3,  &
      &    M, Nfft, X, WK%X_ispack, WK%IT_ispack, WK%T_ispack,           &
      &    elapsed_fft, elapsed_cpy)
 !

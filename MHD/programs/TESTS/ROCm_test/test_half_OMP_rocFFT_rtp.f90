@@ -197,8 +197,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine pout_fwd_OMP_rocFFT_ISPACK1(Ncomp, istack_ISPACK,      &
-     &          fwd, WK_rocFFT, WK_ISPACK1, X, elapsed)
+      subroutine pout_fwd_OMP_rocFFT_ISPACK1(Ncomp, fwd, WK_rocFFT,     &
+     &                                       WK_ISPACK1, X, elapsed)
 !
       use copy_field_for_FFT
       use normalize_for_rocFFT
@@ -212,8 +212,6 @@
       integer(kind = kint), intent(in) :: Ncomp
       type(calypso_rocFFT_params), intent(in), target :: fwd
 !
-      integer(kind = kint), intent(in) :: istack_ISPACK(0:np_smp)
-!
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
       type(working_ISPACK), intent(inout) :: WK_ISPACK1
       real(kind = kreal), intent(inout) :: X(Ncomp,fwd%Nfft)
@@ -226,8 +224,8 @@
       start = OMP_GET_WTIME()
       call copy_pout_field_to_FFT(ione, Ncomp, int(fwd%Nfft), X(1,1),   &
      &    int(fwd%Ncomp), int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1))
-      call copy_rtp_fld_to_FXRTFA                                       &
-     &   (np_smp, istack_ISPACK, cast_long(WK_ISPACK1%Mmax_smp),        &
+      call copy_rtp_fld_to_FXRTFA(WK_ISPACK1%Nplan_ISPACK,              &
+     &    WK_ISPACK1%istack_ISPACK, cast_long(WK_ISPACK1%Mmax_smp),     &
      &    fwd%Nfft, cast_long(Ncomp), X(1,1), WK_ISPACK1%X_ispack(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
@@ -245,8 +243,8 @@
 !
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
-      call multi_pout_FTTRUF_smp                                        &
-     &   (np_smp, istack_ISPACK, WK_ISPACK1%Mmax_smp, int(fwd%Nfft),    &
+      call multi_pout_FTTRUF_smp(WK_ISPACK1%Nplan_ISPACK,               &
+     &    WK_ISPACK1%istack_ISPACK, WK_ISPACK1%Mmax_smp, int(fwd%Nfft), &
      &    WK_ISPACK1%X_ispack, WK_ISPACK1%IT_ispack,                    &
      &    WK_ISPACK1%T_ispack, WK_ISPACK1%WORK_ispack)
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
@@ -257,8 +255,8 @@
       call norm_rtp_from_fwd_rocFFT                                     &
      &   (int(fwd%Ncomp), int(WK_rocFFT%NFFT_r), WK_rocFFT%X_rocFFT(1), &
      &    Ncomp, int(fwd%Nfft), X(1,1))
-      call norm_rtp_spectr_from_FXRTFA                                  &
-     &   (np_smp, istack_ISPACK, cast_long(WK_ISPACK1%Mmax_smp),        &
+      call norm_rtp_spectr_from_FXRTFA(WK_ISPACK1%Nplan_ISPACK,         &
+     &    WK_ISPACK1%istack_ISPACK, cast_long(WK_ISPACK1%Mmax_smp),     &
      &    fwd%Nfft,  WK_ISPACK1%X_ispack(1,1), cast_long(Ncomp),        &
      &    X(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
@@ -271,8 +269,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine pout_fwd_OMP_rocFFT_ISPACK3(Ncomp, istack_ISPACK,      &
-     &          fwd, WK_rocFFT, WK_ISPACK3, X, elapsed)
+      subroutine pout_fwd_OMP_rocFFT_ISPACK3(Ncomp, fwd, WK_rocFFT,     &
+     &          WK_ISPACK3, X, elapsed)
 !
       use copy_field_for_FFT
       use normalize_for_rocFFT
@@ -284,8 +282,6 @@
 !
       integer(kind = kint), intent(in) :: Ncomp
       type(calypso_rocFFT_params), intent(in), target :: fwd
-!
-      integer(kind = kint), intent(in) :: istack_ISPACK(0:np_smp)
 !
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
       type(working_ISPACK3), intent(inout) :: WK_ISPACK3
@@ -299,8 +295,8 @@
       start = OMP_GET_WTIME()
       call copy_pout_field_to_FFT(ione, Ncomp, int(fwd%Nfft), X(1,1),   &
      &    int(fwd%Ncomp), int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1))
-      call copy_rtp_fld_to_FXRTFA                                       &
-     &   (np_smp, istack_ISPACK, WK_ISPACK3%Mmax_smp, fwd%Nfft,         &
+      call copy_rtp_fld_to_FXRTFA(WK_ISPACK3%Nplan_ISPACK3,             &
+     &    WK_ISPACK3%istack_ISPACK3, WK_ISPACK3%Mmax_smp, fwd%Nfft,     &
      &    cast_long(Ncomp), X(1,1), WK_ISPACK3%X_ispack(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
@@ -318,8 +314,8 @@
 !
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
-      call multi_pout_FXRTBA_smp                                        &
-     &   (np_smp, istack_ISPACK, WK_ISPACK3%Mmax_smp, fwd%Nfft,         &
+      call multi_pout_FXRTBA_smp(WK_ISPACK3%Nplan_ISPACK3,              &
+     &    WK_ISPACK3%istack_ISPACK3, WK_ISPACK3%Mmax_smp, fwd%Nfft,     &
      &    WK_ISPACK3%X_ispack, WK_ISPACK3%IT_ispack,                    &
      &    WK_ISPACK3%T_ispack)
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
@@ -330,9 +326,9 @@
       call norm_rtp_from_fwd_rocFFT                                     &
      &   (int(fwd%Ncomp), int(WK_rocFFT%NFFT_r), WK_rocFFT%X_rocFFT(1), &
      &    Ncomp, int(fwd%Nfft), X(1,1))
-      call norm_rtp_spectr_from_FXRTFA                                  &
-     &   (np_smp, istack_ISPACK, WK_ISPACK3%Mmax_smp, fwd%Nfft,         &
-     &     WK_ISPACK3%X_ispack(1,1), cast_long(Ncomp), X(1,1))
+      call norm_rtp_spectr_from_FXRTFA(WK_ISPACK3%Nplan_ISPACK3,        &
+     &    WK_ISPACK3%istack_ISPACK3, WK_ISPACK3%Mmax_smp, fwd%Nfft,     &
+     &    WK_ISPACK3%X_ispack(1,1), cast_long(Ncomp), X(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
       write(*,*) 'CPU FFT clock',   elapsed(3)
@@ -388,7 +384,7 @@
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
       call multi_pout_fwd_FFTW3_smp(WK_FFTW%plan_fowd_mul,              &
-     &    WK_FFTW%Nplan, WK_FFTW%istack_smp_FFTW,                       &
+     &    WK_FFTW%Nplan_FFTW, WK_FFTW%istack_FFTW,                      &
      &    Ncomp_CPU, fwd%Nfft, WK_FFTW%X_FFTW_mul(1,1),                 &
      &    WK_FFTW%Nfft_c, WK_FFTW%C_FFTW_mul(1,1))
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
@@ -558,8 +554,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine pout_bwd_OMP_rocFFT_ISPACK1(Ncomp, istack_ISPACK,      &
-     &          bwd, WK_rocFFT, WK_ISPACK1, X, elapsed)
+      subroutine pout_bwd_OMP_rocFFT_ISPACK1(Ncomp, bwd, WK_rocFFT,     &
+     &                                       WK_ISPACK1, X, elapsed)
 !
       use copy_field_for_FFT
       use normalize_for_rocFFT
@@ -570,7 +566,6 @@
       use multi_pout_ISPACK1_smp
 !
       integer(kind = kint), intent(in) :: Ncomp
-      integer(kind = kint), intent(in) :: istack_ISPACK(0:np_smp)
       type(calypso_rocFFT_params), intent(in), target :: bwd
 !
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
@@ -586,8 +581,8 @@
       start = OMP_GET_WTIME()
       call norm_rtp_to_bwd_rocFFT(ione, Ncomp, int(bwd%Nfft), X(1,1),   &
      &    int(bwd%Ncomp), int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1))
-      call norm_rtp_spectr_to_FXRTBA                                    &
-     &   (np_smp, istack_ISPACK, cast_long(WK_ISPACK1%Mmax_smp),        &
+      call norm_rtp_spectr_to_FXRTBA(WK_ISPACK1%Nplan_ISPACK,           &
+     &    WK_ISPACK1%istack_ISPACK, cast_long(WK_ISPACK1%Mmax_smp),     &
      &    bwd%Nfft, cast_long(Ncomp), X(1,1), WK_ISPACK1%X_ispack(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
@@ -605,8 +600,8 @@
 !
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
-      call multi_pout_FTTRUB_smp                                        &
-     &   (np_smp, istack_ISPACK, WK_ISPACK1%Mmax_smp, int(bwd%Nfft),    &
+      call multi_pout_FTTRUB_smp(WK_ISPACK1%Nplan_ISPACK,               &
+     &    WK_ISPACK1%istack_ISPACK, WK_ISPACK1%Mmax_smp, int(bwd%Nfft), &
      &    WK_ISPACK1%X_ispack, WK_ISPACK1%IT_ispack,                    &
      &    WK_ISPACK1%T_ispack, WK_ISPACK1%WORK_ispack)
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
@@ -617,8 +612,8 @@
       call copy_pout_field_from_FFT                                     &
      &   (int(bwd%Ncomp), int(bwd%Nfft_r), WK_rocFFT%X_rocFFT(1),       &
      &    Ncomp, bwd%Nfft, ione, X(1,1))
-      call copy_rtp_fld_from_FXRTBA                                     &
-     &   (np_smp, istack_ISPACK, cast_long(WK_ISPACK1%Mmax_smp),        &
+      call copy_rtp_fld_from_FXRTBA(WK_ISPACK1%Nplan_ISPACK,            &
+     &    WK_ISPACK1%istack_ISPACK, cast_long(WK_ISPACK1%Mmax_smp),     &
      &    bwd%Nfft, X_ispack(1,1), cast_long(Ncomp), X(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
@@ -630,8 +625,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine pout_bwd_OMP_rocFFT_ISPACK3(Ncomp, istack_ISPACK,      &
-     &          bwd, WK_rocFFT, WK_ISPACK3, X, elapsed)
+      subroutine pout_bwd_OMP_rocFFT_ISPACK3(Ncomp, bwd, WK_rocFFT,     &
+     &                                       WK_ISPACK3, X, elapsed)
 !
       use copy_field_for_FFT
       use normalize_for_rocFFT
@@ -641,7 +636,6 @@
       use normalize_for_ISPACK
 !
       integer(kind = kint), intent(in) :: Ncomp
-      integer(kind = kint), intent(in) :: istack_ISPACK(0:np_smp)
       type(calypso_rocFFT_params), intent(in), target :: bwd
 !
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
@@ -657,8 +651,8 @@
       start = OMP_GET_WTIME()
       call norm_rtp_to_bwd_rocFFT(ione, Ncomp, int(bwd%Nfft), X(1,1),   &
      &    int(bwd%Ncomp), int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1))
-      call norm_rtp_spectr_to_FXRTBA                                    &
-     &   (np_smp, istack_ISPACK, cast_long(WK_ISPACK3%Mmax_smp),        &
+      call norm_rtp_spectr_to_FXRTBA(WK_ISPACK3%Nplan_ISPACK3,          &
+     &    WK_ISPACK3%istack_ISPACK3, cast_long(WK_ISPACK3%Mmax_smp),    &
      &    bwd%Nfft, cast_long(Ncomp), X(1,1), WK_ISPACK3%X_ispack(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
@@ -676,9 +670,9 @@
 !
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
-      call multi_pout_FXRTBA_smp                                        &
-     &   (np_smp, istack_ISPACK, WK_ISPACK3%Mmax_smp, int(bwd%Nfft),    &
-     &    WK_ISPACK3%X_ispack, WK_ISPACK3%IT_ispack,                    &
+      call multi_pout_FXRTBA_smp(WK_ISPACK3%Nplan_ISPACK3,              &
+     &    WK_ISPACK3%istack_ISPACK3, WK_ISPACK3%Mmax_smp,               &
+     &    int(bwd%Nfft), WK_ISPACK3%X_ispack, WK_ISPACK3%IT_ispack,     &
      &    WK_ISPACK3%T_ispack)
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
 !$omp end parallel
@@ -688,8 +682,8 @@
       call copy_pout_field_from_FFT                                     &
      &   (int(bwd%Ncomp), int(bwd%Nfft_r), WK_rocFFT%X_rocFFT(1),       &
      &    Ncomp, bwd%Nfft, ione, X(1,1))
-      call copy_rtp_fld_from_FXRTBA                                     &
-     &   (np_smp, istack_ISPACK, cast_long(WK_ISPACK3%Mmax_smp),        &
+      call copy_rtp_fld_from_FXRTBA(WK_ISPACK3%Nplan_ISPACK3,           &
+     &    WK_ISPACK3%istack_ISPACK3, cast_long(WK_ISPACK3%Mmax_smp),    &
      &    bwd%Nfft, X_ispack(1,1), cast_long(Ncomp), X(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
@@ -747,7 +741,7 @@
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
       call multi_pout_bwd_FFTW3_smp(WK_FFTW%plan_back_mul,              &
-     &    WK_FFTW%Nplan, WK_FFTW%istack_smp_FFTW,                       &
+     &    WK_FFTW%Nplan_FFTW, WK_FFTW%istack_FFTW,                      &
      &    Ncomp_CPU, WK_FFTW%Nfft_c, WK_FFTW%C_FFTW_mul(1,1),           &
      &    bwd%Nfft, WK_FFTW%X_FFTW_mul(1,1))
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c

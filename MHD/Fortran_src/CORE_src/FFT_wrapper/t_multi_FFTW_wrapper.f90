@@ -64,7 +64,7 @@
 !>      structure for working data for FFTW
       type working_mul_FFTW
 !>        number of FT plans for SMP
-        integer(kind = kint) :: Nplan = 1
+        integer(kind = kint) :: Nplan_FFTW = 1
 !>        plan ID for backward transform
         integer(kind = fftw_plan), allocatable :: plan_back_mul(:)
 !>        plan ID for forward transform
@@ -96,7 +96,7 @@
       type(working_mul_FFTW), intent(inout) :: WK
 !
 !
-      WK%Nplan = Nplan
+      WK%Nplan_FFTW = Nplan
       allocate(WK%plan_fowd_mul(Nplan))
       allocate(WK%plan_back_mul(Nplan))
 !
