@@ -154,6 +154,7 @@
 !
       use normalize_for_rocFFT
       use calypso_multi_rocFFT
+      use copy_field_for_FFT
 !
       type(calypso_rocFFT_params), intent(in), target :: fwd
 !
