@@ -39,7 +39,7 @@
 !!        real(kind = kreal), intent(inout) :: X(Ncomp,bwd_rocFFT%Nfft)
 !!        real(kind = kreal), intent(inout) :: elapsed(4)
 !!@endverbatim
-      module pout_real_rocFFT_FFTPACK
+      module pout_cplx_rocFFT_FFTPACK
 !
       use t_multi_rocFFT_wrapper
       use t_FFTPACK5_wrapper
@@ -200,7 +200,7 @@
       start = OMP_GET_WTIME()
       call norm_rtp_to_bwd_OMP_FFTW                                     &
      &   (ione, Ncomp, int(bwd_rocFFT%Nfft), X(1,1),                    &
-     &    int(bwd_rocFFT%Ncomp), int(WK_rocFFT%Nfft_r),                 &
+     &    int(bwd_rocFFT%Ncomp), int(WK_rocFFT%Nfft_c),                 &
      &    WK_rocFFT%C_rocFFT(1))
       call copy_rtp_spectr_to_RFFTMB(WK_FFTPACK%Nplan_FFTPACK,          &
      &   WK_FFTPACK%istack_FFTPACK, WK_FFTPACK%Mmax_smp,                &

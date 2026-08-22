@@ -25,7 +25,7 @@
 !!        integer(kind = kint), intent(in) :: ist_comp, Ncomp, Nfft
 !!        integer(kind = kint), intent(in) :: Ncomp_c, NFFT_c
 !!        real(kind = kreal), intent(in) :: X(Ncomp,Nfft)
-!!        complex(kind = kreal), intent(inout) :: C_FFT(Ncomp,Nfft_c)
+!!        complex(kind = kreal), intent(inout) :: C_FFT(Ncomp_c,Nfft_c)
 !!      subroutine norm_prt_to_bwd_OMP_FFTW(Ncomp, Nfft, X,             &
 !!     &                                    NFFT_c, C_FFT)
 !!        integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_c
@@ -107,7 +107,7 @@
       integer(kind = kint), intent(in) :: Ncomp_c, NFFT_c
       real(kind = kreal), intent(in) :: X(Ncomp,Nfft)
 !
-      complex(kind = kreal), intent(inout) :: C_FFT(Ncomp,Nfft_c)
+      complex(kind = kreal), intent(inout) :: C_FFT(Ncomp_c,Nfft_c)
 !
       integer(kind = kint) :: i
 !
@@ -122,11 +122,11 @@
      &         * cmplx( X(ist_comp:ist_comp+Ncomp_c-1,2*i-1),           &
      &                 -X(ist_comp:ist_comp+Ncomp_c-1,2*i  ),kind(0d0))
 !$omp end workshare nowait
+      end do
 !$omp workshare
         C_FFT(1:Ncomp_c,Nfft_c)                                         &
      &    = cmplx(X(ist_comp:ist_comp+Ncomp_c-1,2), zero, kind(0d0))
-!$omp end workshare nowait
-      end do
+!$omp end workshare
 !$omp end parallel
 !
       end subroutine norm_rtp_to_bwd_OMP_FFTW
