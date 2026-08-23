@@ -21,6 +21,8 @@ TARGET_HALF_REAL_ROCFFT_RTP_TEST = test_half_real_rocFFT_rtp
 TARGET_HALF_CPLX_ROCFFT_PRT_TEST = test_half_cplx_rocFFT_prt
 TARGET_HALF_CPLX_ROCFFT_RTP_TEST = test_half_cplx_rocFFT_rtp
 
+TARGET_OMP_ROCFFT_FFTW_RTP_TEST = test_OMP_rocFFT_FFTW_rtp
+
 TARGET_SGL_CP_ROCFFT_PRT_TEST = test_sgl_cplx_rocFFT_prt
 TARGET_SGL_CP_ROCFFT_RTP_TEST = test_sgl_cplx_rocFFT_rtp
 TARGET_SGL_RL_ROCFFT_PRT_TEST = test_sgl_real_rocFFT_prt
@@ -50,84 +52,106 @@ DGEMM_test_openmp.o
 MOD_HIPM_DGEMM_TEST = test_HIPmBLAS_DGEMM
 
 MOD_CPLX_ROCFFT_PRT_TEST = \
-test_cplx_rocFFT_prt.o \
-m_FFT_size.o \
-t_fft_test_data.o
+t_parameters_FFT_tests.o \
+t_ctl_data_4_FFT_tests.o \
+t_fft_test_data.o \
+test_cplx_rocFFT_prt.o
 
 MOD_CPLX_ROCFFT_RTP_TEST = \
-test_cplx_rocFFT_rtp.o \
-m_FFT_size.o \
-t_fft_test_data.o
+t_parameters_FFT_tests.o \
+t_ctl_data_4_FFT_tests.o \
+t_fft_test_data.o \
+test_cplx_rocFFT_rtp.o
 
 MOD_REAL_ROCFFT_PRT_TEST = \
-test_real_rocFFT_prt.o \
-m_FFT_size.o \
-t_fft_test_data.o
+t_parameters_FFT_tests.o \
+t_ctl_data_4_FFT_tests.o \
+t_fft_test_data.o \
+test_real_rocFFT_prt.o
 
 MOD_REAL_ROCFFT_RTP_TEST = \
-test_real_rocFFT_rtp.o \
-m_FFT_size.o \
-t_fft_test_data.o
+t_parameters_FFT_tests.o \
+t_ctl_data_4_FFT_tests.o \
+t_fft_test_data.o \
+test_real_rocFFT_rtp.o
 
 MOD_OMP_ROCFFT_PRT_TEST = \
-test_OMP_rocFFT_prt.o \
-m_FFT_size.o \
-t_fft_test_data.o
+t_parameters_FFT_tests.o \
+t_ctl_data_4_FFT_tests.o \
+t_fft_test_data.o \
+test_OMP_rocFFT_prt.o
 
 MOD_OMP_ROCFFT_RTP_TEST = \
-test_OMP_rocFFT_rtp.o \
-m_FFT_size.o \
-t_fft_test_data.o
+t_parameters_FFT_tests.o \
+t_ctl_data_4_FFT_tests.o \
+t_fft_test_data.o \
+test_OMP_rocFFT_rtp.o
 
 MOD_SGL_CP_ROCFFT_PRT_TEST = \
-test_sgl_cplx_rocFFT_prt.o \
-m_FFT_size.o \
-t_fft_test_data.o
+t_parameters_FFT_tests.o \
+t_ctl_data_4_FFT_tests.o \
+t_fft_test_data.o \
+test_sgl_cplx_rocFFT_prt.o
 
 MOD_SGL_CP_ROCFFT_RTP_TEST = \
-test_sgl_cplx_rocFFT_rtp.o \
-m_FFT_size.o \
-t_fft_test_data.o
+t_parameters_FFT_tests.o \
+t_ctl_data_4_FFT_tests.o \
+t_fft_test_data.o \
+test_sgl_cplx_rocFFT_rtp.o
 
 MOD_SGL_RL_ROCFFT_PRT_TEST = \
-test_sgl_real_rocFFT_prt.o \
-m_FFT_size.o \
-t_fft_test_data.o
+t_parameters_FFT_tests.o \
+t_ctl_data_4_FFT_tests.o \
+t_fft_test_data.o \
+test_sgl_real_rocFFT_prt.o
 
 MOD_SGL_RL_ROCFFT_RTP_TEST = \
-test_sgl_real_rocFFT_rtp.o \
-m_FFT_size.o \
-t_fft_test_data.o
+t_parameters_FFT_tests.o \
+t_ctl_data_4_FFT_tests.o \
+t_fft_test_data.o \
+test_sgl_real_rocFFT_rtp.o
 
 MOD_HALF_OMP_ROCFFT_PRT_TEST = \
-test_half_OMP_rocFFT_prt.o \
-m_FFT_size.o \
-t_fft_test_data.o
+t_parameters_FFT_tests.o \
+t_ctl_data_4_FFT_tests.o \
+t_fft_test_data.o \
+test_half_OMP_rocFFT_prt.o
 
 MOD_HALF_OMP_ROCFFT_RTP_TEST = \
-test_half_OMP_rocFFT_rtp.o \
-m_FFT_size.o \
-t_fft_test_data.o
+t_parameters_FFT_tests.o \
+t_ctl_data_4_FFT_tests.o \
+t_fft_test_data.o \
+test_half_OMP_rocFFT_rtp.o
 
 MOD_HALF_REAL_ROCFFT_PRT_TEST = \
-test_half_real_rocFFT_prt.o \
-m_FFT_size.o \
-t_fft_test_data.o
+t_parameters_FFT_tests.o \
+t_ctl_data_4_FFT_tests.o \
+t_fft_test_data.o \
+test_half_real_rocFFT_prt.o
 
 MOD_HALF_REAL_ROCFFT_RTP_TEST = \
-test_half_real_rocFFT_rtp.o \
-m_FFT_size.o \
-t_fft_test_data.o
+t_parameters_FFT_tests.o \
+t_ctl_data_4_FFT_tests.o \
+t_fft_test_data.o \
+test_half_real_rocFFT_rtp.o
 
 MOD_HALF_CPLX_ROCFFT_PRT_TEST = \
-test_half_cplx_rocFFT_prt.o \
-m_FFT_size.o \
-t_fft_test_data.o
+t_parameters_FFT_tests.o \
+t_ctl_data_4_FFT_tests.o \
+t_fft_test_data.o \
+test_half_cplx_rocFFT_prt.o
 
 MOD_HALF_CPLX_ROCFFT_RTP_TEST = \
-test_half_cplx_rocFFT_rtp.o \
-m_FFT_size.o \
-t_fft_test_data.o
+t_parameters_FFT_tests.o \
+t_ctl_data_4_FFT_tests.o \
+t_fft_test_data.o \
+test_half_cplx_rocFFT_rtp.o
+
+MOD_OMP_ROCFFT_FFTW_RTP_TEST = \
+t_parameters_FFT_tests.o \
+t_ctl_data_4_FFT_tests.o \
+t_fft_test_data.o \
+test_OMP_rocFFT_FFTW3_rtp.o
 
 #
 #  ------------------------------------------------------------------
@@ -166,6 +190,8 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_HALF_CPLX_ROCFFT_RTP_TEST = $$(TEST_BUILD_DIR)/$(TARGET_HALF_CPLX_ROCFFT_RTP_TEST)' \
 	>> $(MAKENAME)
+	@echo 'TARGET_OMP_ROCFFT_FFTW_RTP_TEST =  $$(TEST_BUILD_DIR)/$(TARGET_OMP_ROCFFT_FFTW_RTP_TEST)' \
+	>> $(MAKENAME)
 	@echo 'TARGET_SGL_CP_ROCFFT_PRT_TEST= $$(TEST_BUILD_DIR)/$(TARGET_SGL_CP_ROCFFT_PRT_TEST)' \
 	>> $(MAKENAME)
 	@echo 'TARGET_SGL_CP_ROCFFT_RTP_TEST= $$(TEST_BUILD_DIR)/$(TARGET_SGL_CP_ROCFFT_RTP_TEST)' \
@@ -185,6 +211,7 @@ target_task:
 	'$$(TARGET_HALF_OMP_ROCFFT_PRT_TEST)   $$(TARGET_HALF_OMP_ROCFFT_RTP_TEST)' \
 	'$$(TARGET_HALF_REAL_ROCFFT_PRT_TEST)  $$(TARGET_HALF_REAL_ROCFFT_RTP_TEST)' \
 	'$$(TARGET_HALF_CPLX_ROCFFT_PRT_TEST)  $$(TARGET_HALF_CPLX_ROCFFT_RTP_TEST)' \
+	'$$(TARGET_OMP_ROCFFT_FFTW_RTP_TEST)' \
 	'$$(TARGET_SGL_CP_ROCFFT_PRT_TEST)     $$(TARGET_SGL_CP_ROCFFT_RTP_TEST)' \
 	'$$(TARGET_SGL_RL_ROCFFT_PRT_TEST)     $$(TARGET_SGL_RL_ROCFFT_RTP_TEST)' \
 	 >> $(MAKENAME)
@@ -293,6 +320,14 @@ target_task:
 	'-L. $$(LIBS_ROCM_TEST)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_OMP_ROCFFT_FFTW_RTP_TEST): $$(MOD_OMP_ROCFFT_FFTW_RTP_TEST) $$(LIB_FILES_ROCM_TEST)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_OMP_ROCFFT_FFTW_RTP_TEST)' \
+	'$$(MOD_OMP_ROCFFT_FFTW_RTP_TEST)' \
+	'-L. $$(LIBS_ROCM_TEST)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_SGL_CP_ROCFFT_PRT_TEST): $$(MOD_SGL_CP_ROCFFT_PRT_TEST) $$(LIB_FILES_ROCM_TEST)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
@@ -373,6 +408,8 @@ mod_list:
 	@echo  $(MOD_HALF_CPLX_ROCFFT_PRT_TEST)  >> $(MAKENAME)
 	@echo  MOD_HALF_CPLX_ROCFFT_RTP_TEST= \\ >> $(MAKENAME)
 	@echo  $(MOD_HALF_CPLX_ROCFFT_RTP_TEST)  >> $(MAKENAME)
+	@echo  MOD_OMP_ROCFFT_FFTW_RTP_TEST= \\  >> $(MAKENAME)
+	@echo  $(MOD_OMP_ROCFFT_FFTW_RTP_TEST)   >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
 depends:

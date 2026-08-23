@@ -8,8 +8,9 @@
       use m_constants
       use m_machine_parameter
 !
-      use m_FFT_size
       use t_fft_test_data
+      use t_parameters_FFT_tests
+      use t_ctl_data_4_FFT_tests
       use t_multi_rocFFT_wrapper
       use t_FFTPACK5_wrapper
       use pout_real_rocFFT_FFTPACK
@@ -19,11 +20,17 @@
 !
       real(kind = kreal), parameter :: ratio_rocFFT = 0.5
 !
-      character(len=kchara), parameter                                  &
-     &             :: file_name = 'rtp_half_real_rocFFT_test.dat'
-      real(kind = kreal) :: start, elapsed(9)
+      character(len = kchara), parameter                                &
+     &             :: test_name = 'rtp_real_rocFFT_FFTPACK'
+      character(len = kchara), parameter                                &
+     &             :: def_fname = 'rtp_half_real_rocFFT_test.dat'
+!
+      character(len = kchara) :: ctl_file_name
+      type(FFT_tests_ctl), save :: fft_c1
+      type(FFT_test_parameters), save :: fft_test_p1
 !
       type(fft_test_data) :: ft1
+      real(kind = kreal) :: start, elapsed(9)
 !
       type(calypso_rocFFT_params), target :: fwd
       type(calypso_rocFFT_params), target :: bwd
@@ -37,25 +44,36 @@
       integer(kind = kint) :: i, nd, icou
 !
 !
-      ncomp_GPU = ratio_rocFFT * n_field
-      ncomp_CPU =   n_field - ncomp_GPU
-      write(*,*) 'ncomp_GPU, ncomp_CPU', ncomp_GPU, ncomp_CPU
-!
       write(*,'(a)') '-----  Test rtp real rocFFT and FFTPACK -----'
-      call init_fft_test_data(n_field, ngrid, ft1)
+!
+      call default_FFT_test_parameters(test_name, def_fname,            &
+     &                                 fft_test_p1)
+      if(command_argument_count() .ge. 1) then
+        call get_command_argument(1, ctl_file_name)
+        call read_control_file_FFT_tests(ctl_file_name, fft_c1)
+        call set_FFT_test_parameters(fft_c1, fft_test_p1)
+      else
+        write(*,*) 'No control file name in command: Use default'
+      end if
+      iflag_debug = 1
+!
+      ncomp_GPU = ratio_rocFFT * fft_test_p1%Ncomp_test
+      ncomp_CPU = fft_test_p1%Ncomp_test - ncomp_GPU
+      call init_fft_test_data                                           &
+     &   (fft_test_p1%Ncomp_test, fft_test_p1%Nfft_test, ft1)
 !
 !   Initialize Fourier transform
       start = OMP_GET_WTIME()
       allocate(istack_FFTPACK(0:np_smp))
       istack_FFTPACK(0:np_smp) = 0
-      call init_pout_real_rocFFT_FFTPACK(n_field, Ncomp_GPU, Ncomp_CPU, &
-     &                               ngrid, np_smp, istack_FFTPACK,     &
-     &                               fwd, bwd, WK_rocFFT, WK_FFTPACK_T)
+      call init_pout_real_rocFFT_FFTPACK                                &
+     &   (ft1%nfld, Ncomp_GPU, Ncomp_CPU, ft1%ngrd,                     &
+     &    np_smp, istack_FFTPACK, fwd, bwd, WK_rocFFT, WK_FFTPACK_T)
       write(*,*) 'istack_FFTPACK', istack_FFTPACK
       elapsed(1) = OMP_GET_WTIME() - start
 !
       elapsed(2:6) = zero
-      do icou = 1, n_loop+1
+      do icou = 1, fft_test_p1%Nloop_test + 1
         if(mod(icou, 20) .eq. 0) write(*,*) 'loop count: ', icou
 !
         start = OMP_GET_WTIME()
@@ -65,7 +83,7 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Forward transform
-        call pout_fwd_real_rocFFT_FFTPACK(n_field, fwd, WK_rocFFT,      &
+        call pout_fwd_real_rocFFT_FFTPACK(ft1%nfld, fwd, WK_rocFFT,     &
      &      WK_FFTPACK_T, ft1%s_k(1,1), elapsed(2:5))
 !
         start = OMP_GET_WTIME()
@@ -75,7 +93,7 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Backword transform
-        call pout_bwd_real_rocFFT_FFTPACK(n_field, bwd, WK_rocFFT,      &
+        call pout_bwd_real_rocFFT_FFTPACK(ft1%nfld, bwd, WK_rocFFT,     &
      &      WK_FFTPACK_T, ft1%f_x(1,1), elapsed(2:5))
         if(icou .eq. 1) elapsed(6:9) = elapsed(2:5)
       end do
@@ -89,24 +107,12 @@
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
   10  continue
-      if(n_loop .eq. 1) call write_fft_test_data(file_name, ft1)
+      if(fft_test_p1%nloop_test .eq. 1) then
+        call write_fft_test_data(fft_test_p1%file_name, ft1)
+      end if
       call dealloc_fft_test_data(ft1)
 !
-      write(*,'(a,i4)') 'Number of threads:  ', np_smp
-      write(*, '(a,3i6)')                                               &
-     &      "Num (point, field, loop):   ", ngrid, n_field, n_loop
-      write(*, '(a,3i6)')                                               &
-     &      "Num (field_GPU, field_CPU):   ", ncomp_GPU, ncomp_CPU
-      write(*, '("Time for Initialize:       ",1pE16.6e3)') elapsed(1)
-      write(*, '("Time for FFT:              ",1pE16.6e3)') elapsed(2)
-      write(*, '("Time for rocFFT w/o first: ",1pE16.6e3)') elapsed(6)
-      write(*, '("Time for FFT on CPU:       ",1pE16.6e3)') elapsed(8)
-      write(*, '("Time for FFT on GPU:       ",1pE16.6e3)') elapsed(9)
-      write(*, '("Time for Data copy:        ",1pE16.6e3)') elapsed(3)
-      write(*, '("Total FFT:                 ",1pE16.6e3)')             &
-     &                           elapsed(2) + elapsed(3)
-      write(*,'(a)') '-----------------------------'
-      write(*,'(a)') ' '
+      call write_sharing_FFT_test_elapsed(fft_test_p1, elapsed)
 !
       stop 'finish'
 !

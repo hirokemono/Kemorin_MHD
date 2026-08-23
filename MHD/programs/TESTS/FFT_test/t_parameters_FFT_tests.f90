@@ -87,7 +87,7 @@
       real(kind = kreal), intent(in) :: elapsed(3)
 !
 !
-      write(*,'(a,i4)') 'Number of threads:  ', np_smp
+      write(*, '(a,i4)') 'Number of threads:  ', np_smp
       write(*, '(a,3i6)')  'Num (point, field, loop): ',                &
      &                   fft_test_p%nfft_test, fft_test_p%Ncomp_test,   &
      &                   fft_test_p%nloop_test
@@ -95,10 +95,67 @@
       write(*, '(2a,1pE16.6e3)') trim(fft_test_p%test_name),            &
      &                                         ': ', elapsed(2)
       write(*, '(a,1pE16.6e3)') 'Data copy:       ', elapsed(3)
+      write(*, '(a,1pE16.6e3)') 'Total FFT:       ',                    &
+     &                                 (elapsed(2) + elapsed(3))
       write(*,'(a)') '-----------------------------'
       write(*,'(a)') ' '
 !
       end subroutine write_fft_test_elapsed
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine write_rocFFT_test_elapsed(fft_test_p, elapsed)
+!
+      use m_machine_parameter
+!
+      type(FFT_test_parameters), intent(in) :: fft_test_p
+      real(kind = kreal), intent(in) :: elapsed(4)
+!
+!
+      write(*, '(a,i4)') 'Number of threads:  ', np_smp
+      write(*, '(a,3i6)')  'Num (point, field, loop): ',                &
+     &                   fft_test_p%nfft_test, fft_test_p%Ncomp_test,   &
+     &                   fft_test_p%nloop_test
+      write(*, '(a,1pE16.6e3)') 'Initialize:      ', elapsed(1)
+      write(*, '(2a,1pE16.6e3)') trim(fft_test_p%test_name),            &
+     &                                         ': ', elapsed(2)
+      write(*, '(a,1pE16.6e3)')                                         &
+     &                'Time for rocFFT w/o first: ', elapsed(4)
+      write(*, '(a,1pE16.6e3)') 'Data copy:       ', elapsed(3)
+      write(*, '(a,1pE16.6e3)') 'Total FFT:       ',                    &
+     &                                 (elapsed(2) + elapsed(3))
+      write(*,'(a)') '-----------------------------'
+      write(*,'(a)') ' '
+!
+      end subroutine write_rocFFT_test_elapsed
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine write_sharing_FFT_test_elapsed(fft_test_p, elapsed)
+!
+      use m_machine_parameter
+!
+      type(FFT_test_parameters), intent(in) :: fft_test_p
+      real(kind = kreal), intent(in) :: elapsed(9)
+!
+!
+      write(*,'(a,i4)') 'Number of threads:  ', np_smp
+      write(*,'(a,3i6)')  'Num (point, field, loop): ',                 &
+     &                   fft_test_p%nfft_test, fft_test_p%Ncomp_test,   &
+     &                   fft_test_p%nloop_test
+      write(*,'(a,1pE16.6e3)') 'Initialize:      ', elapsed(1)
+      write(*,'(2a,1pE16.6e3)') trim(fft_test_p%test_name),             &
+     &                                         ': ', elapsed(2)
+      write(*,'(a,1pE16.6e3)') 'Time for rocFFT w/o first: ',elapsed(6)
+      write(*,'(a,1pE16.6e3)') 'Time for FFT on CPU:       ',elapsed(8)
+      write(*,'(a,1pE16.6e3)') 'Time for FFT on GPU:       ',elapsed(9)
+      write(*,'(a,1pE16.6e3)') 'Data copy:       ', elapsed(3)
+      write(*,'(a,1pE16.6e3)') 'Total FFT:       ',                     &
+     &                                 (elapsed(2) + elapsed(3))
+      write(*,'(a)') '-----------------------------'
+      write(*,'(a)') ' '
+!
+      end subroutine write_sharing_FFT_test_elapsed
 !
 !  ---------------------------------------------------------------------
 !
