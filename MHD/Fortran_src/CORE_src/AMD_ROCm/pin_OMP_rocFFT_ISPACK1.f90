@@ -59,7 +59,6 @@
       use multi_pin_complex_rocFFT
       use calypso_multi_ispack
       use cal_minmax_and_stacks
-      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: Nsmp
       integer(kind = kint), intent(in) :: Ncomp, Ncomp_GPU, Ncomp_CPU
@@ -79,8 +78,7 @@
 !
       call calypso_pin_rocFFT_init(Ncomp_GPU, Ncomp_GPU, Nfft,          &
      &                             fwd_rocFFT, bwd_rocFFT, WK_rocFFT)
-      call init_wk_ispack_t(Nsmp, Nstacksmp, cast_long(Nfft),           &
-     &                      WK_ISPACK1)
+      call init_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WK_ISPACK1)
 !
       end subroutine init_pin_OMP_rocFFT_ISPACK1
 !

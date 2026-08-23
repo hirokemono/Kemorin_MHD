@@ -207,7 +207,7 @@
 !
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
-      call dfftw_execute_dft_r2c(WK_OMP_FFTW%omp_plan_bwd,              &
+      call dfftw_execute_dft_c2r(WK_OMP_FFTW%omp_plan_bwd,              &
      &    WK_OMP_FFTW%C_FFTW_mul(1,1), WK_OMP_FFTW%X_FFTW_mul(1,1))
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
 !$omp end parallel

@@ -196,7 +196,6 @@
 !
       real(kind = kreal) :: start
       real(kind = kreal) :: st_c, st_g
-      integer(kind = kint) :: i, ist
 !
 !
       start = OMP_GET_WTIME()
@@ -206,7 +205,7 @@
      &    WK_rocFFT%X_rocFFT(1))
       call norm_rtp_spectr_to_FXRTBA(WK_ISPACK3%Nplan_ISPACK3,          &
      &    WK_ISPACK3%istack_ISPACK3, WK_ISPACK3%Mmax_smp,               &
-     &    int(bwd_rocFFT%Nfft), cast_long(Ncomp), X(1,1),               &
+     &    bwd_rocFFT%Nfft, cast_long(Ncomp), X(1,1),                    &
      &    WK_ISPACK3%X_ispack(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
@@ -226,7 +225,7 @@
       st_c = OMP_GET_WTIME()
       call multi_pout_FXRTBA_smp(WK_ISPACK3%Nplan_ISPACK3,              &
      &    WK_ISPACK3%istack_ISPACK3, WK_ISPACK3%Mmax_smp,               &
-     &    int(bwd_rocFFT%Nfft), WK_ISPACK3%X_ispack,                    &
+     &    bwd_rocFFT%Nfft, WK_ISPACK3%X_ispack,                         &
      &    WK_ISPACK3%IT_ispack, WK_ISPACK3%T_ispack)
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
 !$omp end parallel
@@ -238,7 +237,7 @@
      &    Ncomp, int(bwd_rocFFT%Nfft), ione, X(1,1))
       call copy_rtp_fld_from_FXRTBA(WK_ISPACK3%Nplan_ISPACK3,           &
      &    WK_ISPACK3%istack_ISPACK3, WK_ISPACK3%Mmax_smp,               &
-     &    int(bwd_rocFFT%Nfft), WK_ISPACK3%X_ispack(1,1),               &
+     &    bwd_rocFFT%Nfft, WK_ISPACK3%X_ispack(1,1),                    &
      &    cast_long(Ncomp), X(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !

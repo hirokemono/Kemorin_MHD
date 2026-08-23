@@ -134,7 +134,7 @@
      &    int(fwd_rocFFT%Ncomp), int(WK_rocFFT%Nfft_r),                 &
      &    WK_rocFFT%X_rocFFT(1))
       call swap_to_rtp_fwd_FFTW                                         &
-     &   ((fwd_rocFFT%Ncomp+1), Ncomp, int(fwd_rocFFT%Nfft), X(1,1),    &
+     &   (int(fwd_rocFFT%Ncomp+1), Ncomp, int(fwd_rocFFT%Nfft), X(1,1), &
      &    Ncomp_CPU, int(fwd_rocFFT%Nfft), WK_FFTW%X_FFTW_mul(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
@@ -169,7 +169,7 @@
      &    WK_FFTW%Nfft_c, WK_FFTW%C_FFTW_mul(1,1))
       call swap_from_rtp_fwd_OMP_FFTW                                   &
      &   (Ncomp_CPU, WK_FFTW%Nfft_c, WK_FFTW%C_FFTW_mul(1,1),           &
-     &    Ncomp, int(fwd_rocFFT%Nfft), (fwd_rocFFT%Ncomp+1), X(1,1))
+     &    Ncomp, int(fwd_rocFFT%Nfft), int(fwd_rocFFT%Ncomp+1), X(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
       write(*,*) 'CPU FFT clock',   elapsed(3)
@@ -199,7 +199,6 @@
 !
       real(kind = kreal) :: start
       real(kind = kreal) :: st_c, st_g
-      integer(kind = kint) :: i, ist
 !
 !
       start = OMP_GET_WTIME()
@@ -208,7 +207,7 @@
      &    int(bwd_rocFFT%Ncomp), int(WK_rocFFT%Nfft_r),                 &
      &    WK_rocFFT%X_rocFFT(1))
       call swap_to_rtp_bwd_OMP_FFTW                                     &
-     &   (Ncomp, int(bwd_rocFFT%Nfft), (bwd_rocFFT%Ncomp+1), X(1,1),    &
+     &   (Ncomp, int(bwd_rocFFT%Nfft), int(bwd_rocFFT%Ncomp+1), X(1,1), &
      &    Ncomp_CPU, WK_FFTW%Nfft_c, WK_FFTW%C_FFTW_mul(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
@@ -240,7 +239,7 @@
      &    Ncomp, int(bwd_rocFFT%Nfft), ione, X(1,1))
       call swap_from_rtp_bwd_FFTW                                       &
      &   (Ncomp_CPU, int(bwd_rocFFT%Nfft), WK_FFTW%X_FFTW_mul(1,1),     &
-     &    (bwd_rocFFT%Ncomp+1), Ncomp, int(bwd_rocFFT%Nfft), X)
+     &    int(bwd_rocFFT%Ncomp+1), Ncomp, int(bwd_rocFFT%Nfft), X)
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
       write(*,*) 'CPU FFT clock',   elapsed(3)

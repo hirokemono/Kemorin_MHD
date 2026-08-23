@@ -12,7 +12,7 @@
 !!     Control file example
 !! ----------------------------------------------------------------------
 !!  begin FFT_test_ctl
-!!    output_file_name    'mul_fftw_test.dat'
+!!    output_file_name    'omp_fftw_test.dat'
 !!
 !!    FFT_length_ctl         128
 !!    num_series_ctl          24
@@ -27,60 +27,49 @@
 !
       use m_precision
       use m_constants
-      use m_FFT_size
 !
       use t_OMP_FFTW_wrapper
       use t_fft_test_data
+      use t_parameters_FFT_tests
       use t_ctl_data_4_FFT_tests
 !
       implicit none
 !
+      character(len = kchara), parameter                                &
+     &                        :: test_name = 'OpenMP_FFTW'
+      character(len = kchara), parameter                                &
+     &                        :: def_fname = 'omp_fftw_test.dat'
+!
       character(len = kchara) :: ctl_file_name
       type(FFT_tests_ctl), save :: fft_c1
-!
-      character(len = kchara), parameter                                &
-     &                        :: mul_fftw_test = 'omp_fftw_test.dat'
-!
-      character(len = kchara) :: file_name = mul_fftw_test
-      integer(kind = kint) :: nfft_test =  ngrid
-      integer(kind = kint) :: ncomp_test = n_field
-      integer(kind = kint) :: nloop_test = n_loop
+      type(FFT_test_parameters), save :: fft_test_p1
 !
       type(working_OMP_FFTW) :: WK_OMP_FFTW_t
       type(fft_test_data) :: ft3
       integer(kind = kint) :: iloop = 0
 !
 !
+      write(*,'(a)') '-----  Test rtp FFTW include OpenMP  -----'
+!
+      call default_FFT_test_parameters(test_name, def_fname,            &
+     &                                 fft_test_p1)
       if(command_argument_count() .ge. 1) then
         call get_command_argument(1, ctl_file_name)
         call read_control_file_FFT_tests(ctl_file_name, fft_c1)
-!
-        if(fft_c1%FFT_test_output_ctl%iflag .gt. 0) then
-          file_name = fft_c1%FFT_test_output_ctl%charavalue
-        end if
-        if(fft_c1%FFT_length_ctl%iflag .gt. 0) then
-          nfft_test = fft_c1%FFT_length_ctl%intvalue
-        end if
-        if(fft_c1%num_series_ctl%iflag .gt. 0) then
-          nloop_test = fft_c1%num_series_ctl%intvalue
-        end if
-        if(fft_c1%loop_counts_ctl%iflag .gt. 0) then
-          nloop_test = fft_c1%loop_counts_ctl%intvalue
-        end if
-!
+        call set_FFT_test_parameters(fft_c1, fft_test_p1)
       else
         write(*,*) 'No control file name in command: Use default'
       end if
 !
-      write(*,'(a)') '-----  Test FFTW include OpenMP  -----'
       iflag_debug = 1
-      call init_fft_test_data(ncomp_test, nfft_test, ft3)
+      call init_fft_test_data                                           &
+     &   (fft_test_p1%Ncomp_test, fft_test_p1%Nfft_test, ft3)
 !
       ft3%start = OMP_GET_WTIME()
       call init_OMP_FFTW_type(ft3%nfld, ft3%ngrd, WK_OMP_FFTW_t)
       ft3%elapsed(1) = ft3%elapsed(1) + OMP_GET_WTIME() - ft3%start
 !
-      do iloop = 1, nloop_test
+      do iloop = 1, fft_test_p1%nloop_test
         if(mod(iloop, 20) .eq. 0) write(*,*) 'loop count: ', iloop
 !
         ft3%start = OMP_GET_WTIME()
@@ -104,17 +93,12 @@
      &      ft3%elapsed(2), ft3%elapsed(3))
       end do
 !
-      if(nloop_test .eq. 1) call write_fft_test_data(file_name, ft3)
+      if(fft_test_p1%nloop_test .eq. 1) then
+        call write_fft_test_data(fft_test_p1%file_name, ft3)
+      end if
       call dealloc_fft_test_data(ft3)
 !
-      write(*,'(a,i4)')   'Number of threads:  ', np_smp
-      write(*, '(a,3i6)') "Num (point, field, loop): ",                 &
-     &                    nfft_test, ncomp_test, nloop_test
-      write(*, '("Initialize:           ",1pE16.6e3)') ft3%elapsed(1)
-      write(*, '("Wrapped OpenMP FFTW3: ",1pE16.6e3)') ft3%elapsed(2)
-      write(*, '("Data copy:            ",1pE16.6e3)') ft3%elapsed(3)
-      write(*,'(a)') '-----------------------------'
-      write(*,'(a)') ' '
+      call write_fft_test_elapsed(fft_test_p1, ft3%elapsed(1))
 !
       stop 'finish'
       end program test_OMP_FFTW3

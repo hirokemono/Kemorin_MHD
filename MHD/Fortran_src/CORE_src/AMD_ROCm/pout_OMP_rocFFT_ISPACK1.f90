@@ -79,8 +79,7 @@
 !
       call calypso_pout_rocFFT_init(Ncomp_GPU, Ncomp_GPU, Nfft,         &
      &                              fwd_rocFFT, bwd_rocFFT, WK_rocFFT)
-      call init_wk_ispack_t(Nsmp, Nstacksmp, cast_long(Nfft),           &
-     &                      WK_ISPACK1)
+      call init_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WK_ISPACK1)
 !
       end subroutine init_pout_OMP_rocFFT_ISPACK1
 !

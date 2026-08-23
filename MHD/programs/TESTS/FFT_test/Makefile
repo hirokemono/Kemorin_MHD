@@ -112,78 +112,64 @@ LIB_FILES_FFTW_TEST = \
 '$$(LIB_ISPACK3_FILE)'
 
 MOD_FFTPACK_TEST = \
-m_FFT_size.o      \
 t_fft_test_data.o \
+t_parameters_FFT_tests.o \
 t_ctl_data_4_FFT_tests.o \
 test_FFTPACK5.o
 
 MOD_PRT_FFTPACK_TEST = \
-m_FFT_size.o      \
 t_fft_test_data.o \
+t_parameters_FFT_tests.o \
 t_ctl_data_4_FFT_tests.o \
 test_prt_FFTPACK5.o
 
 
 MOD_ISPACK1_TEST = \
-m_FFT_size.o      \
 t_fft_test_data.o \
+t_parameters_FFT_tests.o \
 t_ctl_data_4_FFT_tests.o \
 test_ISPACK1_FFT.o
 
 MOD_PRT_ISPACK1_TEST = \
-m_FFT_size.o      \
 t_fft_test_data.o \
+t_parameters_FFT_tests.o \
 t_ctl_data_4_FFT_tests.o \
 test_prt_ISPACK1_FFT.o
 
 MOD_ISPACK3_TEST = \
-m_FFT_size.o      \
 t_fft_test_data.o \
+t_parameters_FFT_tests.o \
 t_ctl_data_4_FFT_tests.o \
 test_ISPACK3_FFT.o
 
 MOD_PRT_ISPACK3_TEST = \
-m_FFT_size.o      \
 t_fft_test_data.o \
+t_parameters_FFT_tests.o \
 t_ctl_data_4_FFT_tests.o \
 test_prt_ISPACK3_FFT.o
 
 MOD_FFW3_F_TEST = \
-\
-m_FFT_size.o      \
 t_fft_test_data.o \
+t_parameters_FFT_tests.o \
 t_ctl_data_4_FFT_tests.o \
 test_FFTW3.o
 
 MOD_PRT_FFW3_F_TEST = \
-\
-m_FFT_size.o      \
 t_fft_test_data.o \
+t_parameters_FFT_tests.o \
 t_ctl_data_4_FFT_tests.o \
 test_prt_FFTW3.o
 
 MOD_OMP_FFW3_TEST = \
-\
-m_FFT_size.o      \
 t_fft_test_data.o \
+t_parameters_FFT_tests.o \
 t_ctl_data_4_FFT_tests.o \
 test_OMP_FFTW3.o
 
 MOD_SGL_FFW3_TEST = \
-m_precision.o \
-m_constants.o \
-m_machine_parameter.o \
-\
-skip_comment_f.o \
-m_fftw_parameters.o \
-t_single_FFTW_wrapper.o \
-normalize_for_FFTW.o \
-single_pin_FFTW3_smp.o \
-single_pout_FFTW3_smp.o \
-calypso_single_FFTW3.o \
-\
-m_FFT_size.o      \
 t_fft_test_data.o \
+t_parameters_FFT_tests.o \
+t_ctl_data_4_FFT_tests.o \
 test_single_FFTW3.o
 
 MOD_CMPR_FFT_TEST = \
@@ -192,7 +178,6 @@ m_constants.o \
 m_machine_parameter.o \
 \
 compare_FFT_test.o \
-m_FFT_size.o      \
 t_fft_test_data.o
 
 MOD_FFT_LABEL_CHECK = \
@@ -287,10 +272,10 @@ target_task:
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_SGL_FFW3_TEST)': '$$(MOD_SGL_FFW3_TEST)' \
-	>> $(MAKENAME)
+	'$$(LIB_MESH_FILE)' >> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_SGL_FFW3_TEST)' \
-	'$$(MOD_SGL_FFW3_TEST)' \
+	'$$(MOD_SGL_FFW3_TEST) -L. $$(LIB_MESH)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_OMP_FFW3_TEST)': '$$(MOD_OMP_FFW3_TEST)' \
