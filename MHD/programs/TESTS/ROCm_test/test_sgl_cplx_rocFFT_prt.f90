@@ -54,7 +54,7 @@
       call swap_fft_test_input_to_pin(ft1)
 !
       start = OMP_GET_WTIME()
-      call calypso_sgl_rocFFT_init(int(fft_test_p1%Nfft_test), WK_fft)
+      call calypso_sgl_rocFFT_init(fft_test_p1%Nfft_test, WK_fft)
       elapsed(1) = OMP_GET_WTIME() - start
 !
       elapsed(2:3) = 0.0d0

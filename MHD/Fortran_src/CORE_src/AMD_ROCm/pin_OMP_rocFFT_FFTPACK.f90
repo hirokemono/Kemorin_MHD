@@ -104,6 +104,7 @@
       subroutine pin_fwd_OMP_rocFFT_FFTPACK                             &
      &         (Ncomp, fwd_rocFFT, WK_rocFFT, WK_FFTPACK, X, elapsed)
 !
+      use calypso_multi_rocFFT
       use calypso_multi_fftpack
       use multi_pin_FFTPACK_smp
       use normalize_for_rocFFT
@@ -178,6 +179,7 @@
       subroutine pin_bwd_OMP_rocFFT_FFTPACK                             &
      &         (Ncomp, bwd_rocFFT, WK_rocFFT, WK_FFTPACK, X, elapsed)
 !
+      use calypso_multi_rocFFT
       use calypso_multi_fftpack
       use multi_pin_FFTPACK_smp
       use normalize_for_rocFFT
