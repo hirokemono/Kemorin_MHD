@@ -21,8 +21,8 @@
 !!      subroutine multi_pout_FXRTFA(Nsmp, Nstacksmp, M, Nfft, X,       &
 !!     &          X_ispack, Mmax_smp, IT_ispack, T_ispack,              &
 !!     &          elapsed_fft, elapsed_cpy)
-!!      subroutine multi_pout_FXRTFA_smp(Nsmp, Nstacksmp, Nfft,         &
-!!     &          X_ispack, Mmax_smp, IT_ispack, T_ispack)
+!!      subroutine multi_pout_FXRTFA_smp(Nsmp, Nstacksmp, Mmax_smp,     &
+!!     &          Nfft, X_ispack, IT_ispack, T_ispack)
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !!        integer(kind = kint_gl), intent(in) :: M, Mmax_smp
 !!        integer(kind = kint_gl), intent(in) :: Nfft
@@ -146,8 +146,8 @@
 !
       start = OMP_GET_WTIME()
 !$omp parallel
-      call multi_pout_FXRTFA_smp(Nsmp, Nstacksmp, Nfft, X_ispack,       &
-     &                           Mmax_smp, IT_ispack, T_ispack)
+      call multi_pout_FXRTFA_smp(Nsmp, Nstacksmp, Mmax_smp,             &
+     &                           Nfft, X_ispack, IT_ispack, T_ispack)
 !$omp end parallel
       elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
@@ -201,8 +201,8 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine multi_pout_FXRTFA_smp(Nsmp, Nstacksmp, Nfft,           &
-     &          X_ispack, Mmax_smp, IT_ispack, T_ispack)
+      subroutine multi_pout_FXRTFA_smp(Nsmp, Nstacksmp, Mmax_smp,       &
+     &          Nfft, X_ispack, IT_ispack, T_ispack)
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint_gl), intent(in) :: Mmax_smp
