@@ -17,9 +17,6 @@
 !
       implicit none
 !
-!
-      real(kind = kreal), parameter :: ratio_rocFFT = 0.5
-!
       character(len = kchara), parameter                                &
      &             :: test_name = 'rtp_real_rocFFT_FFTPACK'
       character(len = kchara), parameter                                &
@@ -39,8 +36,6 @@
 !
       integer(kind = kint) :: ncomp_GPU
       integer(kind = kint) :: ncomp_CPU
-      integer(kind = kint) :: max_4_smp
-      integer(kind = kint), allocatable :: istack_FFTPACK(:)
       integer(kind = kint) :: i, nd, icou
 !
 !
@@ -57,19 +52,16 @@
       end if
       iflag_debug = 1
 !
-      ncomp_GPU = ratio_rocFFT * fft_test_p1%Ncomp_test
+      ncomp_GPU = fft_test_p1%ratio_rocFFT * fft_test_p1%Ncomp_test
       ncomp_CPU = fft_test_p1%Ncomp_test - ncomp_GPU
       call init_fft_test_data                                           &
      &   (fft_test_p1%Ncomp_test, fft_test_p1%Nfft_test, ft1)
 !
 !   Initialize Fourier transform
       start = OMP_GET_WTIME()
-      allocate(istack_FFTPACK(0:np_smp))
-      istack_FFTPACK(0:np_smp) = 0
       call init_pout_real_rocFFT_FFTPACK                                &
      &   (ft1%nfld, Ncomp_GPU, Ncomp_CPU, ft1%ngrd,                     &
-     &    np_smp, istack_FFTPACK, fwd, bwd, WK_rocFFT, WK_FFTPACK_T)
-      write(*,*) 'istack_FFTPACK', istack_FFTPACK
+     &    np_smp, fwd, bwd, WK_rocFFT, WK_FFTPACK_T)
       elapsed(1) = OMP_GET_WTIME() - start
 !
       elapsed(2:6) = zero

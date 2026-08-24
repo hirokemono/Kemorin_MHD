@@ -9,20 +9,19 @@
 !!
 !!@verbatim
 !!      subroutine init_pin_OMP_rocFFT_FFTW3                            &
-!!     &         (Ncomp, Ncomp_GPU, Ncomp_CPU, Nfft, Nsmp, Nstacksmp,   &
+!!     &         (Ncomp, Ncomp_GPU, Ncomp_CPU, Nfft, Nsmp,              &
 !!     &          fwd_rocFFT, bwd_rocFFT, WK_rocFFT, WK_FFTW)
 !!      subroutine finalize_OMP_rocFFT_FFTW3                            &
 !!     &         (Nsmp, fwd_rocFFT, bwd_rocFFT, WK_rocFFT, WK_FFTW)
 !!        integer(kind = kint), intent(in) :: Nsmp
 !!        integer(kind = kint), intent(in) :: Ncomp, Ncomp_GPU, Ncomp_CPU
 !!        integer(kind = kint), intent(in) :: Nfft
-!!        integer(kind = kint), intent(inout) :: Nstacksmp(0:Nsmp)
 !!        type(calypso_rocFFT_params), intent(inout) :: fwd_rocFFT
 !!        type(calypso_rocFFT_params), intent(inout) :: bwd_rocFFT
 !!        type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
 !!        type(working_mul_FFTW), intent(inout) :: WK_FFTW
 !!
-!!      subroutine pin_fwd_OMP_rocFFT_FFTW(Ncomp, Ncomp_CPU,            &
+!!      subroutine pin_fwd_OMP_rocFFT_FFTW3(Ncomp, Ncomp_CPU,           &
 !!     &          fwd_rocFFT, WK_rocFFT, WK_FFTW, X, elapsed)
 !!        integer(kind = kint), intent(in) :: Ncomp, Ncomp_CPU
 !!        type(calypso_rocFFT_params), target :: fwd_rocFFT
@@ -53,7 +52,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine init_pin_OMP_rocFFT_FFTW3                              &
-     &         (Ncomp, Ncomp_GPU, Ncomp_CPU, Nfft, Nsmp, Nstacksmp,     &
+     &         (Ncomp, Ncomp_GPU, Ncomp_CPU, Nfft, Nsmp,                &
      &          fwd_rocFFT, bwd_rocFFT, WK_rocFFT, WK_FFTW)
 !
       use multi_pin_complex_rocFFT
@@ -64,21 +63,25 @@
       integer(kind = kint), intent(in) :: Ncomp, Ncomp_GPU, Ncomp_CPU
       integer(kind = kint), intent(in) :: Nfft
 !
-      integer(kind = kint), intent(inout) :: Nstacksmp(0:Nsmp)
       type(calypso_rocFFT_params), intent(inout) :: fwd_rocFFT
       type(calypso_rocFFT_params), intent(inout) :: bwd_rocFFT
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
       type(working_mul_FFTW), intent(inout) :: WK_FFTW
 !
+      integer(kind = kint), allocatable :: istack_smp(:)
       integer(kind = kint) :: max_4_smp = 0
 !
 !
+      allocate(istack_smp(0:Nsmp))
+      istack_smp(0:Nsmp) = 0
+!
       call count_number_4_smp(Nsmp, (Ncomp_GPU+1), Ncomp,               &
-     &                        Nstacksmp, max_4_smp)
+     &                        istack_smp, max_4_smp)
 !
       call calypso_pin_rocFFT_init(Ncomp_GPU, Ncomp_GPU, Nfft,          &
      &                             fwd_rocFFT, bwd_rocFFT, WK_rocFFT)
-      call init_FFTW_mul_type(Nsmp, Nstacksmp, Nfft, WK_FFTW)
+      call init_FFTW_mul_type(Nsmp, istack_smp, Nfft, WK_FFTW)
+      deallocate(istack_smp)
 !
       end subroutine init_pin_OMP_rocFFT_FFTW3
 !
@@ -104,7 +107,7 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine pin_fwd_OMP_rocFFT_FFTW(Ncomp, Ncomp_CPU,              &
+      subroutine pin_fwd_OMP_rocFFT_FFTW3(Ncomp, Ncomp_CPU,             &
      &          fwd_rocFFT, WK_rocFFT, WK_FFTW, X, elapsed)
 !
       use calypso_multi_rocFFT
@@ -169,11 +172,7 @@
      &    Ncomp_CPU, int(fwd_rocFFT%Nfft), X(1,fwd_rocFFT%Ncomp+1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
-      write(*,*) 'CPU FFT clock',   elapsed(3)
-      write(*,*) 'GPU FFT clock',   elapsed(4)
-      write(*,*) 'Total FFT clock', elapsed(1)
-!
-      end subroutine pin_fwd_OMP_rocFFT_FFTW
+      end subroutine pin_fwd_OMP_rocFFT_FFTW3
 !
 ! ------------------------------------------------------------------
 !
@@ -234,10 +233,6 @@
      &    int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1),                 &
      &    int(bwd_rocFFT%Nfft), X(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
-!
-      write(*,*) 'CPU FFT clock',   elapsed(3)
-      write(*,*) 'GPU FFT clock',   elapsed(4)
-      write(*,*) 'Total FFT clock', elapsed(1)
 !
       end subroutine pin_bwd_OMP_rocFFT_FFTW3
 !

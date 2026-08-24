@@ -17,9 +17,6 @@
 !
       implicit none
 !
-!
-      real(kind = kreal), parameter :: ratio_rocFFT = 0.5
-!
       character(len = kchara), parameter                                &
      &             :: test_name = 'rtp_OpenMP_rocFFT_FFTW'
       character(len = kchara), parameter                                &
@@ -39,12 +36,10 @@
 !
       integer(kind = kint) :: ncomp_GPU
       integer(kind = kint) :: ncomp_CPU
-      integer(kind = kint) :: max_4_smp
-      integer(kind = kint), allocatable :: istack_FFTPACK(:)
       integer(kind = kint) :: i, nd, icou
 !
 !
-      write(*,'(a)') '-----  Test rtp OpenMP rocFFT and FFTPACK -----'
+      write(*,'(a)') '-----  Test rtp OpenMP rocFFT and FFTW -----'
 !
       call default_FFT_test_parameters(test_name, def_fname,            &
      &                                 fft_test_p1)
@@ -57,19 +52,15 @@
       end if
       iflag_debug = 1
 !
-      ncomp_GPU = ratio_rocFFT * fft_test_p1%Ncomp_test
+      ncomp_GPU = fft_test_p1%ratio_rocFFT * fft_test_p1%Ncomp_test
       ncomp_CPU = fft_test_p1%Ncomp_test - ncomp_GPU
       call init_fft_test_data                                           &
      &   (fft_test_p1%Ncomp_test, fft_test_p1%Nfft_test, ft1)
 !
 !   Initialize Fourier transform
       start = OMP_GET_WTIME()
-      allocate(istack_FFTPACK(0:np_smp))
-      istack_FFTPACK(0:np_smp) = 0
       call init_pout_OMP_rocFFT_FFTW3(ft1%nfld, Ncomp_GPU, Ncomp_CPU,   &
-     &                               ft1%ngrd, np_smp, istack_FFTPACK,  &
-     &                               fwd, bwd, WK_rocFFT, WK_FFTW1)
-      write(*,*) 'istack_FFTPACK', istack_FFTPACK
+     &    ft1%ngrd, np_smp, fwd, bwd, WK_rocFFT, WK_FFTW1)
       elapsed(1) = OMP_GET_WTIME() - start
 !
       elapsed(2:6) = zero
@@ -93,7 +84,7 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Backword transform
-        call pout_fwd_OMP_rocFFT_FFTW3(ft1%nfld, Ncomp_CPU,             &
+        call pout_bwd_OMP_rocFFT_FFTW3(ft1%nfld, Ncomp_CPU,             &
      &      bwd, WK_rocFFT, WK_FFTW1, ft1%f_x(1,1), elapsed(2:5))
         if(icou .eq. 1) elapsed(6:9) = elapsed(2:5)
       end do

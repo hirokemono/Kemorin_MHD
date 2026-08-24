@@ -9,14 +9,13 @@
 !!
 !!@verbatim
 !!      subroutine init_pin_real_rocFFT_FFTPACK                         &
-!!     &         (Ncomp, Ncomp_GPU, Ncomp_CPU, Nfft, Nsmp, Nstacksmp,   &
+!!     &         (Ncomp, Ncomp_GPU, Ncomp_CPU, Nfft, Nsmp,              &
 !!     &          fwd_rocFFT, bwd_rocFFT, WK_rocFFT, WK_FFTPACK)
 !!      subroutine finalize_real_rocFFT_FFTPACK(fwd_rocFFT, bwd_rocFFT, &
 !!     &                                        WK_rocFFT, WK_FFTPACK)
 !!        integer(kind = kint), intent(in) :: Nsmp
 !!        integer(kind = kint), intent(in) :: Ncomp, Ncomp_GPU, Ncomp_CPU
 !!        integer(kind = kint), intent(in) :: Nfft
-!!        integer(kind = kint), intent(inout) :: Nstacksmp(0:Nsmp)
 !!        type(calypso_rocFFT_params), intent(inout) :: fwd_rocFFT
 !!        type(calypso_rocFFT_params), intent(inout) :: bwd_rocFFT
 !!        type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
@@ -53,7 +52,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine init_pin_real_rocFFT_FFTPACK                           &
-     &         (Ncomp, Ncomp_GPU, Ncomp_CPU, Nfft, Nsmp, Nstacksmp,     &
+     &         (Ncomp, Ncomp_GPU, Ncomp_CPU, Nfft, Nsmp,                &
      &          fwd_rocFFT, bwd_rocFFT, WK_rocFFT, WK_FFTPACK)
 !
       use multi_pin_complex_rocFFT
@@ -64,21 +63,25 @@
       integer(kind = kint), intent(in) :: Ncomp, Ncomp_GPU, Ncomp_CPU
       integer(kind = kint), intent(in) :: Nfft
 !
-      integer(kind = kint), intent(inout) :: Nstacksmp(0:Nsmp)
       type(calypso_rocFFT_params), intent(inout) :: fwd_rocFFT
       type(calypso_rocFFT_params), intent(inout) :: bwd_rocFFT
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
       type(working_FFTPACK), intent(inout) :: WK_FFTPACK
 !
+      integer(kind = kint), allocatable :: istack_smp(:)
       integer(kind = kint) :: max_4_smp = 0
 !
 !
+      allocate(istack_smp(0:Nsmp))
+      istack_smp(0:Nsmp) = 0
+!
       call count_number_4_smp(Nsmp, (Ncomp_GPU+1), Ncomp,               &
-     &                        Nstacksmp, max_4_smp)
+     &                        istack_smp, max_4_smp)
 !
       call calypso_pin_rocFFT_init(Ncomp_GPU, Ncomp_GPU, Nfft,          &
      &                             fwd_rocFFT, bwd_rocFFT, WK_rocFFT)
-      call init_WK_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WK_FFTPACK)
+      call init_WK_FFTPACK_t(Nsmp, istack_smp, Nfft, WK_FFTPACK)
+      deallocate(istack_smp)
 !
       end subroutine init_pin_real_rocFFT_FFTPACK
 !
