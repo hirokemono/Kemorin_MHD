@@ -70,7 +70,7 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Forward transform
-        call multi_pout_fwd_rocFFT_r2c(n_field, fwd, WK_fft,            &
+        call multi_pout_fwd_rocFFT_r2c(ft1%nfld, fwd, WK_fft,           &
      &      ft1%s_k(1,1), elapsed(2), elapsed(3))
 !
         start = OMP_GET_WTIME()
@@ -80,7 +80,7 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Backword transform
-        call multi_pout_bwd_rocFFT_c2r(n_field, bwd, WK_fft,            &
+        call multi_pout_bwd_rocFFT_c2r(ft1%nfld, bwd, WK_fft,           &
      &      ft1%f_x(1,1), elapsed(2), elapsed(3))
         if(icou .eq. 1) elapsed(4) = elapsed(2)
       end do
