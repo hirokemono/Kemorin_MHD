@@ -29,9 +29,9 @@
 !!        type(working_ISPACK), intent(inout) :: WK_ISPACK1
 !!        real(kind = kreal), intent(inout) :: X(fwd_rocFFT%Nfft,Ncomp)
 !!        real(kind = kreal), intent(inout) :: elapsed(4)
-!!      subroutine pin_bwd_OMP_rocFFT_ISPACK1                           &
-!!     &         (Ncomp, bwd_rocFFT, WK_rocFFT, WK_ISPACK1, X, elapsed)
-!!        integer(kind = kint), intent(in) :: Ncomp
+!!      subroutine pin_bwd_OMP_rocFFT_ISPACK1(Ncomp, Ncomp_CPU,         &
+!!     &          bwd_rocFFT, WK_rocFFT, WK_ISPACK1, X, elapsed)
+!!        integer(kind = kint), intent(in) :: Ncomp, Ncomp_CPU
 !!        type(calypso_rocFFT_params), intent(in), target :: bwd_rocFFT
 !!        type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
 !!        type(working_ISPACK), intent(inout) :: WK_ISPACK1
@@ -181,8 +181,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine pin_bwd_OMP_rocFFT_ISPACK1                             &
-     &         (Ncomp, bwd_rocFFT, WK_rocFFT, WK_ISPACK1, X, elapsed)
+      subroutine pin_bwd_OMP_rocFFT_ISPACK1(Ncomp, Ncomp_CPU,           &
+     &          bwd_rocFFT, WK_rocFFT, WK_ISPACK1, X, elapsed)
 !
       use calypso_multi_rocFFT
       use multi_pin_ISPACK1_smp
@@ -191,7 +191,7 @@
       use copy_field_for_FFT
       use transfer_to_long_integers
 !
-      integer(kind = kint), intent(in) :: Ncomp
+      integer(kind = kint), intent(in) :: Ncomp, Ncomp_CPU
       type(calypso_rocFFT_params), intent(in), target :: bwd_rocFFT
 !
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
@@ -208,8 +208,8 @@
      &    int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1))
       call swap_prt_spectr_to_FXRTBA(WK_ISPACK1%Nplan_ISPACK,           &
      &    WK_ISPACK1%istack_ISPACK, cast_long(WK_ISPACK1%Mmax_smp),     &
-     &    bwd_rocFFT%Nfft, cast_long(Ncomp), X(1,1),                    &
-     &    WK_ISPACK1%X_ispack(1,1))
+     &    bwd_rocFFT%Nfft, cast_long(Ncomp_CPU),                        &
+     &    X(1,bwd_rocFFT%Ncomp+1), WK_ISPACK1%X_ispack(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !      write(*,*) 'OMP parallel start', OMP_GET_WTIME()
@@ -243,7 +243,7 @@
       call swap_prt_fld_from_FXRTBA(WK_ISPACK1%Nplan_ISPACK,            &
      &    WK_ISPACK1%istack_ISPACK, cast_long(WK_ISPACK1%Mmax_smp),     &
      &    bwd_rocFFT%Nfft, WK_ISPACK1%X_ispack(1,1),                    &
-     &    cast_long(Ncomp), X(1,1))
+     &    cast_long(Ncomp_CPU), X(1,bwd_rocFFT%Ncomp+1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
       write(*,*) 'CPU FFT clock',   elapsed(3)

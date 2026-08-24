@@ -86,8 +86,8 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Backword transform
-        call pin_bwd_OMP_rocFFT_ISPACK1(ft1%nfld, bwd, WK_rocFFT,       &
-     &      WK_ISPACK1, ft1%f_x(1,1), elapsed(2:5))
+        call pin_bwd_OMP_rocFFT_ISPACK1(ft1%nfld, ncomp_CPU,            &
+     &      bwd, WK_rocFFT, WK_ISPACK1, ft1%f_x(1,1), elapsed(2:5))
         if(icou .eq. 1) elapsed(6:9) = elapsed(2:5)
       end do
       elapsed(6) = elapsed(2) - elapsed(6)

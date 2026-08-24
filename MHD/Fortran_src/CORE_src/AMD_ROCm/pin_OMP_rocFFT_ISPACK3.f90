@@ -212,8 +212,8 @@
      &    int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1))
       call swap_prt_spectr_to_FXRTBA(WK_ISPACK3%Nplan_ISPACK3,          &
      &    WK_ISPACK3%istack_ISPACK3, WK_ISPACK3%Mmax_smp,               &
-     &    bwd_rocFFT%Nfft, cast_long(Ncomp), X(1,1),                    &
-     &    WK_ISPACK3%X_ispack(1,1))
+     &    bwd_rocFFT%Nfft, cast_long(Ncomp_CPU),                        &
+     &    X(1,bwd_rocFFT%Ncomp+1), WK_ISPACK3%X_ispack(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !      write(*,*) 'OMP parallel start', OMP_GET_WTIME()
