@@ -11,7 +11,7 @@
 !!   wrapper subroutine for initierize FFT by FFTW
 !!      subroutine calypso_sgl_rocFFT_init(Nfft, WK_fft)
 !!      subroutine calypso_sgl_rocFFT_fin(WK_fft)
-!!        integer(c_size_t), intent(in) :: Nfft
+!!        integer(kind = kint), intent(in) :: Nfft
 !!        type(single_rocFFT_work), intent(inout), target :: WK_fft
 !! ------------------------------------------------------------------
 !!
@@ -90,7 +90,7 @@
 !
       use calypso_single_rocFFT
 !
-      integer(c_size_t), intent(in) :: Nfft
+      integer(kind = kint), intent(in) :: Nfft
       type(single_rocFFT_work), intent(inout), target :: WK_fft
 !
 !
@@ -100,9 +100,11 @@
       call hipCheck(hipMalloc(WK_fft%data_ptr, WK_fft%Nbytes))
 !
 !   Initialize Forward transform
-      call calypso_sgl_fwd_rocFFT_init(Nfft, WK_fft%rocFFT_fwd_plan)
+      call calypso_sgl_fwd_rocFFT_init(WK_fft%Nfft,                     &
+     &                                 WK_fft%rocFFT_fwd_plan)
 !   Initialize Backword transform
-      call calypso_sgl_bwd_rocFFT_init(Nfft, WK_fft%rocFFT_bwd_plan)
+      call calypso_sgl_bwd_rocFFT_init(WK_fft%Nfft,                     &
+     &                                 WK_fft%rocFFT_bwd_plan)
 !
       end subroutine calypso_sgl_rocFFT_init
 !
@@ -129,7 +131,7 @@
 !
       subroutine calypso_sgl_rocFFT_set_size(Nfft, WK_fft)
 !
-      integer(c_size_t), intent(in) :: Nfft
+      integer(kind = kint), intent(in) :: Nfft
       type(single_rocFFT_work), intent(inout), target :: WK_fft
 !
       WK_fft%Nfft =   Nfft
