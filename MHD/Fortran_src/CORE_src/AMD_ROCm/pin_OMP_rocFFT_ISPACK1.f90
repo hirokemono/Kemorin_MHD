@@ -173,9 +173,9 @@
      &    cast_long(Ncomp), X(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
-      write(*,*) 'CPU FFT clock',   elapsed(3)
-      write(*,*) 'GPU FFT clock',   elapsed(4)
-      write(*,*) 'Total FFT clock', elapsed(1)
+!      write(*,*) 'CPU FFT clock',   elapsed(3)
+!      write(*,*) 'GPU FFT clock',   elapsed(4)
+!      write(*,*) 'Total FFT clock', elapsed(1)
 !
       end subroutine pin_fwd_OMP_rocFFT_ISPACK1
 !
@@ -246,9 +246,9 @@
      &    cast_long(Ncomp_CPU), X(1,bwd_rocFFT%Ncomp+1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
-      write(*,*) 'CPU FFT clock',   elapsed(3)
-      write(*,*) 'GPU FFT clock',   elapsed(4)
-      write(*,*) 'Total FFT clock', elapsed(1)
+!      write(*,*) 'CPU FFT clock',   elapsed(3)
+!      write(*,*) 'GPU FFT clock',   elapsed(4)
+!      write(*,*) 'Total FFT clock', elapsed(1)
 !
       end subroutine pin_bwd_OMP_rocFFT_ISPACK1
 !

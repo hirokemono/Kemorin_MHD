@@ -153,7 +153,7 @@
 !
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
-      call multi_pout_FXRTBA_smp(WK_ISPACK3%Nplan_ISPACK3,              &
+      call multi_pout_FXRTFA_smp(WK_ISPACK3%Nplan_ISPACK3,              &
      &    WK_ISPACK3%istack_ISPACK3, WK_ISPACK3%Mmax_smp,               &
      &    fwd_rocFFT%Nfft, WK_ISPACK3%X_ispack, WK_ISPACK3%IT_ispack,   &
      &    WK_ISPACK3%T_ispack)
@@ -171,9 +171,9 @@
      &    cast_long(Ncomp), X(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
-      write(*,*) 'CPU FFT clock',   elapsed(3)
-      write(*,*) 'GPU FFT clock',   elapsed(4)
-      write(*,*) 'Total FFT clock', elapsed(1)
+!      write(*,*) 'CPU FFT clock',   elapsed(3)
+!      write(*,*) 'GPU FFT clock',   elapsed(4)
+!      write(*,*) 'Total FFT clock', elapsed(1)
 !
       end subroutine pout_fwd_OMP_rocFFT_ISPACK3
 !
@@ -244,9 +244,9 @@
      &    cast_long(Ncomp), X(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
-      write(*,*) 'CPU FFT clock',   elapsed(3)
-      write(*,*) 'GPU FFT clock',   elapsed(4)
-      write(*,*) 'Total FFT clock', elapsed(1)
+!      write(*,*) 'CPU FFT clock',   elapsed(3)
+!      write(*,*) 'GPU FFT clock',   elapsed(4)
+!      write(*,*) 'Total FFT clock', elapsed(1)
 !
       end subroutine pout_bwd_OMP_rocFFT_ISPACK3
 !

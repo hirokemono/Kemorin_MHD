@@ -168,9 +168,9 @@
      &    int(fwd_rocFFT%Nfft), WK_FFTPACK%X_FFTPACK5, Ncomp, X(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
-      write(*,*) 'CPU FFT clock',   elapsed(3)
-      write(*,*) 'GPU FFT clock',   elapsed(4)
-      write(*,*) 'Total FFT clock', elapsed(1)
+!      write(*,*) 'CPU FFT clock',   elapsed(3)
+!      write(*,*) 'GPU FFT clock',   elapsed(4)
+!      write(*,*) 'Total FFT clock', elapsed(1)
 !
       end subroutine pout_fwd_OMP_rocFFT_FFTPACK
 !
@@ -240,9 +240,9 @@
      &    int(bwd_rocFFT%Nfft), WK_FFTPACK%X_FFTPACK5, Ncomp, X(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
-      write(*,*) 'CPU FFT clock',   elapsed(3)
-      write(*,*) 'GPU FFT clock',   elapsed(4)
-      write(*,*) 'Total FFT clock', elapsed(1)
+!      write(*,*) 'CPU FFT clock',   elapsed(3)
+!      write(*,*) 'GPU FFT clock',   elapsed(4)
+!      write(*,*) 'Total FFT clock', elapsed(1)
 !
       end subroutine pout_bwd_OMP_rocFFT_FFTPACK
 !
