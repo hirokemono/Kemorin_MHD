@@ -28,11 +28,13 @@ TARGET_SGL_CP_ROCFFT_RTP_TEST = test_sgl_cplx_rocFFT_rtp
 TARGET_SGL_RL_ROCFFT_PRT_TEST = test_sgl_real_rocFFT_prt
 TARGET_SGL_RL_ROCFFT_RTP_TEST = test_sgl_real_rocFFT_rtp
 
-LIBS_ROCM_TEST = \
-'$$(LIB_MESH)'
+LIBS_ROCM_TEST =    \
+'$$(LIB_MESH)'      \
+'$$(LIB_FFTPACK)'
 
-LIB_FILES_ROCM_TEST = \
-'$$(LIB_MESH_FILE)'
+LIB_FILES_ROCM_TEST =   \
+'$$(LIB_MESH_FILE)'     \
+'$$(LIB_FFTPACK_FILE)'
 
 ifdef FORTRAN_C_CONNECT
   LIBS_ROCM_TEST+=        '$$(LIB_KEMO_C)'
