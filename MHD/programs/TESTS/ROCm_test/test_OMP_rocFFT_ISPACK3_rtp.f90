@@ -59,7 +59,7 @@
 !
 !   Initialize Fourier transform
       start = OMP_GET_WTIME()
-      call init_pout_OMP_rocFFT_FFTW3(ft1%nfld, Ncomp_GPU, Ncomp_CPU,   &
+      call init_pout_OMP_rocFFT_ISPACK3(ft1%nfld, Ncomp_GPU, Ncomp_CPU, &
      &    ft1%ngrd, np_smp, fwd, bwd, WK_rocFFT, WK_ISPACK3)
       elapsed(1) = OMP_GET_WTIME() - start
 !

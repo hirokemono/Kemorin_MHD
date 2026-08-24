@@ -59,7 +59,7 @@
 !
 !   Initialize Fourier transform
       start = OMP_GET_WTIME()
-      call init_pout_OMP_rocFFT_FFTW3(ft1%nfld, Ncomp_GPU, Ncomp_CPU,   &
+      call init_pout_OMP_rocFFT_ISPACK1(ft1%nfld, Ncomp_GPU, Ncomp_CPU, &
      &    ft1%ngrd, np_smp, fwd, bwd, WK_rocFFT, WK_ISPACK1)
       elapsed(1) = OMP_GET_WTIME() - start
 !
@@ -74,8 +74,8 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Forward transform
-        call pout_fwd_OMP_rocFFT_FFTW3(ft1%nfld, Ncomp_CPU,             &
-     &      fwd, WK_rocFFT, WK_ISPACK1, ft1%s_k(1,1), elapsed(2:5))
+        call pout_fwd_OMP_rocFFT_ISPACK1(ft1%nfld, fwd, WK_rocFFT,      &
+     &      WK_ISPACK1, ft1%s_k(1,1), elapsed(2:5))
 !
         start = OMP_GET_WTIME()
 !$omp parallel workshare
@@ -84,8 +84,8 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Backword transform
-        call pout_fwd_OMP_rocFFT_FFTW3(ft1%nfld, Ncomp_CPU,             &
-     &      bwd, WK_rocFFT, WK_ISPACK1, ft1%f_x(1,1), elapsed(2:5))
+        call pout_bwd_OMP_rocFFT_ISPACK1(ft1%nfld, bwd, WK_rocFFT,      &
+     &      WK_ISPACK1, ft1%f_x(1,1), elapsed(2:5))
         if(icou .eq. 1) elapsed(6:9) = elapsed(2:5)
       end do
       elapsed(6) = elapsed(2) - elapsed(6)
@@ -94,8 +94,7 @@
 !
 !   Finalize
       start = OMP_GET_WTIME()
-      call finalize_OMP_rocFFT_FFTW3                                    &
-     &   (np_smp, fwd, bwd, WK_rocFFT, WK_ISPACK1)
+      call finalize_OMP_rocFFT_ISPACK1(fwd, bwd, WK_rocFFT, WK_ISPACK1)
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
   10  continue
