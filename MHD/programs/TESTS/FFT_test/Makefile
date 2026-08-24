@@ -205,7 +205,7 @@ target_task:
 	'$$(MOD_PRT_ISPACK1_TEST) $$(MOD_FFT_TEST)' \
 	'-L. $$(LIBS_ISPACK_TEST)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_ISPACK3_TEST)' \
+	@echo '$$(TARGET_ISPACK3_TEST):' \
 	'$$(MOD_ISPACK3_TEST) $$(MOD_FFT_TEST)'  \
 	'$$(LIB_FILES_ISPACK3_TEST)' >> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \

@@ -34,7 +34,7 @@
         integer(kind = kint) :: Nloop_test = n_loop
 !
 !>        Ratio of Number of FFT on GPU
-        real(kind = kreal), parameter :: ratio_rocFFT = 0.5
+        real(kind = kreal) :: ratio_rocFFT = 0.5
       end type FFT_test_parameters
 !
 ! -----------------------------------------------------------------------

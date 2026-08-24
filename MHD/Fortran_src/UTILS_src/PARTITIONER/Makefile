@@ -13,8 +13,7 @@ UPPER_MODULES=
 SUBDIRS = \
 part_kemo     \
 decomposition \
-IO \
-periodic_model
+IO
 
 #
 #  -------------------------------------------------------------------------
