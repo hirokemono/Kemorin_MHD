@@ -18,9 +18,9 @@
       implicit none
 !
       character(len = kchara), parameter                                &
-     &             :: test_name = 'prt_OpenMP_rocFFT_FFTW'
+     &             :: test_name = 'prt_OpenMP_rocFFT_ISPACK3'
       character(len = kchara), parameter                                &
-     &             :: def_fname = 'prt_OpenMP_rocFFT_FFTW_test.dat'
+     &             :: def_fname = 'prt_OpenMP_rocFFT_ISPACK3_test.dat'
 !
       character(len = kchara) :: ctl_file_name
       type(FFT_tests_ctl), save :: fft_c1
@@ -39,7 +39,7 @@
       integer(kind = kint) :: i, nd, icou
 !
 !
-      write(*,'(a)') '-----  Test prt OpenMP rocFFT and FFTW -----'
+      write(*,'(a)') '----- Test prt OpenMP rocFFT and ISPACK v3 -----'
 !
       call default_FFT_test_parameters(test_name, def_fname,            &
      &                                 fft_test_p1)
@@ -95,7 +95,7 @@
 !
 !   Finalize
       start = OMP_GET_WTIME()
-      call finalize_OMP_rocFFT_ISPACK3(fwd, bwd, WK_rocFFT, WK_ISPACK3)
+!      call finalize_OMP_rocFFT_ISPACK3(fwd, bwd, WK_rocFFT, WK_ISPACK3)
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
   10  continue

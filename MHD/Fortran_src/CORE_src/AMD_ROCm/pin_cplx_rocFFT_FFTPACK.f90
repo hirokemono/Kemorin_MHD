@@ -174,9 +174,9 @@
      &   int(fwd_rocFFT%Nfft), WK_FFTPACK%X_FFTPACK5, Ncomp, X(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
-      write(*,*) 'CPU FFT clock',   elapsed(3)
-      write(*,*) 'GPU FFT clock',   elapsed(4)
-      write(*,*) 'Total FFT clock', elapsed(1)
+!      write(*,*) 'CPU FFT clock',   elapsed(3)
+!      write(*,*) 'GPU FFT clock',   elapsed(4)
+!      write(*,*) 'Total FFT clock', elapsed(1)
 !
       end subroutine pin_fwd_cplx_rocFFT_FFTPACK
 !
@@ -219,7 +219,6 @@
 !!   2. Isolate a single thread to spawn the GPU work asynchronously
 !$omp single
       st_g = OMP_GET_WTIME()
-      write(*,*) 'calypso_backward_rocFFT_c2r'
       call calypso_backward_rocFFT_c2r(bwd_rocFFT%rocFFT_plan,          &
      &    bwd_rocFFT%rocFFT_wk_info, bwd_rocFFT%Ncomp,                  &
      &    WK_rocFFT%Nfft_c, WK_rocFFT%C_rocFFT(1),                      &
@@ -248,9 +247,9 @@
      &    int(bwd_rocFFT%Nfft), WK_FFTPACK%X_FFTPACK5, Ncomp, X(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
-      write(*,*) 'CPU FFT clock',   elapsed(3)
-      write(*,*) 'GPU FFT clock',   elapsed(4)
-      write(*,*) 'Total FFT clock', elapsed(1)
+!      write(*,*) 'CPU FFT clock',   elapsed(3)
+!      write(*,*) 'GPU FFT clock',   elapsed(4)
+!      write(*,*) 'Total FFT clock', elapsed(1)
 !
       end subroutine pin_bwd_cplx_rocFFT_FFTPACK
 !

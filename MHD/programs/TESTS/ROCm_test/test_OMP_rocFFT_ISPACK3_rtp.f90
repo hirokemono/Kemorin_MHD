@@ -18,9 +18,9 @@
       implicit none
 !
       character(len = kchara), parameter                                &
-     &             :: test_name = 'rtp_OpenMP_rocFFT_FFTW'
+     &             :: test_name = 'rtp_OpenMP_rocFFT_ISPACK3'
       character(len = kchara), parameter                                &
-     &             :: def_fname = 'rtp_OpenMP_rocFFT_FFTW_test.dat'
+     &             :: def_fname = 'rtp_OpenMP_rocFFT_ISPACK3_test.dat'
 !
       character(len = kchara) :: ctl_file_name
       type(FFT_tests_ctl), save :: fft_c1
