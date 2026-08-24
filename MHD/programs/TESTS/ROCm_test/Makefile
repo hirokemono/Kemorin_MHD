@@ -36,10 +36,14 @@ TARGET_SGL_RL_ROCFFT_RTP_TEST = test_sgl_real_rocFFT_rtp
 
 LIBS_ROCM_TEST =    \
 '$$(LIB_MESH)'      \
+'$$(LIB_ISPACK)'    \
+'$$(LIB_ISPACK3)'   \
 '$$(LIB_FFTPACK)'
 
-LIB_FILES_ROCM_TEST =   \
-'$$(LIB_MESH_FILE)'     \
+LIB_FILES_ROCM_TEST =    \
+'$$(LIB_MESH_FILE)'      \
+'$$(LIB_ISPACK_FILE)'    \
+'$$(LIB_ISPACK3_FILE)'   \
 '$$(LIB_FFTPACK_FILE)'
 
 ifdef FORTRAN_C_CONNECT
