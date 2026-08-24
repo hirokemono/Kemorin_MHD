@@ -147,7 +147,7 @@
 !
       start = OMP_GET_WTIME()
       call copy_pout_field_from_FFT                                     &
-     &   (int(bwd%Ncomp), int(bwd%Nfft), WK_fft%X_rocFFT(1),            &
+     &   (int(bwd%Ncomp), int(WK_fft%Nfft_r), WK_fft%X_rocFFT(1),       &
      &    Ncomp, int(bwd%Nfft), ione, X(1,1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
@@ -225,7 +225,7 @@
 !
       start = OMP_GET_WTIME()
       call copy_pout_field_from_FFT                                     &
-     &   (int(bwd%Ncomp), int(bwd%Nfft), WK_fft%X_rocFFT(1),            &
+     &   (int(bwd%Ncomp), int(WK_fft%Nfft_r), WK_fft%X_rocFFT(1),       &
      &    Ncomp, int(bwd%Nfft), ione, X(1,1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
