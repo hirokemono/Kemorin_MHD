@@ -150,7 +150,7 @@ target_task:
 	'-L. $$(LIBS_ROCM_TEST)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_CPLX_ROCFFT_PRT_TEST):' \ 
+	@echo '$$(TARGET_CPLX_ROCFFT_PRT_TEST):' \
 	'$$(MOD_CPLX_ROCFFT_PRT_TEST) $$(MOD_FFT_TEST)' \
 	'$$(LIB_FILES_ROCM_TEST)' >> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
@@ -214,7 +214,7 @@ target_task:
 	'$$(MOD_HALF_OMP_ROCFFT_RTP_TEST) $$(MOD_FFT_TEST)' \
 	'-L. $$(LIBS_ROCM_TEST) $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_HALF_REAL_ROCFFT_PRT_TEST):' \ 
+	@echo '$$(TARGET_HALF_REAL_ROCFFT_PRT_TEST):' \
 	'$$(MOD_HALF_REAL_ROCFFT_PRT_TEST) $$(MOD_FFT_TEST)' \
 	'$$(LIB_FILES_ROCM_TEST)' >> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
