@@ -24,13 +24,13 @@
 !!        real(kind = kreal), intent(inout) :: X(Ncomp,bwd_rocFFT%Nfft)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !!
-!!      subroutine sel_pout_forward_rocFFT(iflag_FFT, fwd_rocFFT,       &
-!!     &                                   WK_rocFFT)
+!!      subroutine select_forward_rocFFT(iflag_FFT, fwd_rocFFT,         &
+!!     &                                 WK_rocFFT)
 !!        integer(kind = kint), intent(in) :: iflag_FFT
 !!        type(calypso_rocFFT_params), intent(in), target :: fwd_rocFFT
 !!        type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
-!!      subroutine sel_pout_backward_rocFFT(iflag_fft, bwd_rocFFT,      &
-!!     &                                    WK_rocFFT)
+!!      subroutine select_backward_rocFFT(iflag_fft, bwd_rocFFT,        &
+!!     &                                  WK_rocFFT)
 !!        integer(kind = kint), intent(in) :: iflag_fft
 !!        type(calypso_rocFFT_params), intent(in), target :: bwd_rocFFT
 !!        type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
@@ -120,7 +120,7 @@
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
-      call sel_pout_forward_rocFFT(iflag_FFT, fwd_rocFFT, WK_rocFFT)
+      call select_forward_rocFFT(iflag_FFT, fwd_rocFFT, WK_rocFFT)
       elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
@@ -154,7 +154,7 @@
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
-      call sel_pout_backward_rocFFT(iflag_FFT, bwd_rocFFT, WK_rocFFT)
+      call select_backward_rocFFT(iflag_FFT, bwd_rocFFT, WK_rocFFT)
       elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
@@ -168,8 +168,8 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine sel_pout_forward_rocFFT(iflag_FFT, fwd_rocFFT,         &
-     &                                   WK_rocFFT)
+      subroutine select_forward_rocFFT(iflag_FFT, fwd_rocFFT,           &
+     &                                 WK_rocFFT)
 !
       use calypso_multi_rocFFT
 !
@@ -179,7 +179,7 @@
 !
 !
       if((iflag_FFT/10) .eq. (iflag_rocFFT/10)) then
-!        write(*,*) 'calypso_forward_rocFFT_r2c'
+        write(*,*) 'calypso_forward_rocFFT_r2c'
         call calypso_forward_rocFFT_r2c                                 &
      &     (fwd_rocFFT%rocFFT_plan, fwd_rocFFT%rocFFT_wk_info,          &
      &      fwd_rocFFT%Ncomp, WK_rocFFT%aNfft,                          &
@@ -187,25 +187,25 @@
      &      WK_rocFFT%Nfft_c, WK_rocFFT%C_rocFFT(1),                    &
      &      fwd_rocFFT%Nbytes, WK_rocFFT%data_ptr)
       else if((iflag_FFT/10) .eq. (iflag_real_rocFFT/10)) then
-!        write(*,*) 'calypso_forward_rocFFT_r2r'
+        write(*,*) 'calypso_forward_rocFFT_r2r'
         call calypso_forward_rocFFT_r2r(fwd_rocFFT%rocFFT_plan,         &
      &      fwd_rocFFT%rocFFT_wk_info, fwd_rocFFT%Ncomp,                &
      &      WK_rocFFT%aNfft, WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT(1),   &
      &      fwd_rocFFT%Nbytes, WK_rocFFT%data_ptr)
 !      else if((iflag_FFT/10) .eq. (iflag_OMP_rocFFT/10)) then
       else
-!        write(*,*) 'calypso_fwd_OpenMP_rocFFT'
+        write(*,*) 'calypso_fwd_OpenMP_rocFFT'
         call calypso_fwd_OpenMP_rocFFT(fwd_rocFFT%rocFFT_plan,          &
      &      fwd_rocFFT%rocFFT_wk_info, fwd_rocFFT%Ncomp,                &
      &      WK_rocFFT%aNfft, WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT(1))
       end if
 !
-      end subroutine sel_pout_forward_rocFFT
+      end subroutine select_forward_rocFFT
 !
 ! ------------------------------------------------------------------
 !
-      subroutine sel_pout_backward_rocFFT(iflag_fft, bwd_rocFFT,        &
-     &                                    WK_rocFFT)
+      subroutine select_backward_rocFFT(iflag_fft, bwd_rocFFT,          &
+     &                                  WK_rocFFT)
 !
       use calypso_multi_rocFFT
 !
@@ -216,27 +216,27 @@
 !
 !
       if((iflag_fft/10) .eq. (iflag_rocFFT/10)) then
-!        write(*,*) 'calypso_backward_rocFFT_c2r'
+        write(*,*) 'calypso_backward_rocFFT_c2r'
         call calypso_backward_rocFFT_c2r(bwd_rocFFT%rocFFT_plan,        &
      &      bwd_rocFFT%rocFFT_wk_info, bwd_rocFFT%Ncomp,                &
      &      WK_rocFFT%Nfft_c, WK_rocFFT%C_rocFFT(1),                    &
      &      WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT(1),                    &
      &      bwd_rocFFT%Nbytes, WK_rocFFT%data_ptr)
       else if((iflag_fft/10) .eq. (iflag_real_rocFFT/10)) then
-!        write(*,*) 'calypso_backward_rocFFT_r2r'
+        write(*,*) 'calypso_backward_rocFFT_r2r'
         call calypso_backward_rocFFT_r2r                                &
      &     (bwd_rocFFT%rocFFT_plan, bwd_rocFFT%rocFFT_wk_info,          &
      &      bwd_rocFFT%Ncomp, WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT(1),  &
      &      bwd_rocFFT%Nbytes, WK_rocFFT%data_ptr)
 !      else if((iflag_fft/10) .eq. (iflag_OMP_rocFFT/10)) then
       else
-!        write(*,*) 'calypso_bwd_OpenMP_rocFFT'
+        write(*,*) 'calypso_bwd_OpenMP_rocFFT'
         call calypso_bwd_OpenMP_rocFFT                                  &
            (bwd_rocFFT%rocFFT_plan, bwd_rocFFT%rocFFT_wk_info,          &
      &      bwd_rocFFT%Ncomp, WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT(1))
       end if
 !
-      end subroutine sel_pout_backward_rocFFT
+      end subroutine select_backward_rocFFT
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------

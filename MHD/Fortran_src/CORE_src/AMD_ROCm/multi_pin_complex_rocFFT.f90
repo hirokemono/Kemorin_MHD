@@ -164,9 +164,8 @@
 !
       if(fwd%Ncomp .le. 0) return
       start = OMP_GET_WTIME()
-      call sel_copy_pin_field_to_FFT                                    &
-     &   (int(fwd%Ncomp), int(fwd%Nfft), X(1,1),                        &
-     &    int(WK_fft%Nfft_r), WK_fft%X_rocFFT(1))
+      call sel_copy_pin_field_to_FFT(int(fwd%Ncomp), int(fwd%Nfft),     &
+     &    X(1,1), int(WK_fft%Nfft_r), WK_fft%X_rocFFT(1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()

@@ -144,8 +144,8 @@
 !!   2. Isolate a single thread to spawn the GPU work asynchronously
 !$omp single
       st_g = OMP_GET_WTIME()
-      call sel_pout_forward_rocFFT(iflag_GPU_FFT,                       &
-     &                             fwd_rocFFT, WK_rocFFT)
+      call select_forward_rocFFT(iflag_GPU_FFT,                         &
+     &                           fwd_rocFFT, WK_rocFFT)
       elapsed(4) = elapsed(4) + OMP_GET_WTIME() - st_g
 !$omp end single nowait
 !
@@ -212,8 +212,8 @@
 !!   2. Isolate a single thread to spawn the GPU work asynchronously
 !$omp single
       st_g = OMP_GET_WTIME()
-      call sel_pout_backward_rocFFT(iflag_GPU_FFT,                      &
-     &                              bwd_rocFFT, WK_rocFFT)
+      call select_backward_rocFFT(iflag_GPU_FFT,                        &
+     &                            bwd_rocFFT, WK_rocFFT)
       elapsed(4) = elapsed(4) + OMP_GET_WTIME() - st_g
 !$omp end single nowait
 !
