@@ -86,6 +86,8 @@
       use m_constants
       use m_FFT_selector
 !
+      use t_multi_rocFFT_wrapper
+!
       implicit none
 !
 ! ------------------------------------------------------------------
