@@ -179,7 +179,7 @@
 !
 !
       if((iflag_FFT/10) .eq. (iflag_rocFFT/10)) then
-        write(*,*) 'calypso_forward_rocFFT_r2c'
+!        write(*,*) 'calypso_forward_rocFFT_r2c'
         call calypso_forward_rocFFT_r2c                                 &
      &     (fwd_rocFFT%rocFFT_plan, fwd_rocFFT%rocFFT_wk_info,          &
      &      fwd_rocFFT%Ncomp, WK_rocFFT%aNfft,                          &
@@ -187,14 +187,14 @@
      &      WK_rocFFT%Nfft_c, WK_rocFFT%C_rocFFT(1),                    &
      &      fwd_rocFFT%Nbytes, WK_rocFFT%data_ptr)
       else if((iflag_FFT/10) .eq. (iflag_real_rocFFT/10)) then
-        write(*,*) 'calypso_forward_rocFFT_r2r'
+!        write(*,*) 'calypso_forward_rocFFT_r2r'
         call calypso_forward_rocFFT_r2r(fwd_rocFFT%rocFFT_plan,         &
      &      fwd_rocFFT%rocFFT_wk_info, fwd_rocFFT%Ncomp,                &
      &      WK_rocFFT%aNfft, WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT(1),   &
      &      fwd_rocFFT%Nbytes, WK_rocFFT%data_ptr)
 !      else if((iflag_FFT/10) .eq. (iflag_OMP_rocFFT/10)) then
       else
-        write(*,*) 'calypso_fwd_OpenMP_rocFFT'
+!        write(*,*) 'calypso_fwd_OpenMP_rocFFT'
         call calypso_fwd_OpenMP_rocFFT(fwd_rocFFT%rocFFT_plan,          &
      &      fwd_rocFFT%rocFFT_wk_info, fwd_rocFFT%Ncomp,                &
      &      WK_rocFFT%aNfft, WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT(1))
@@ -216,21 +216,21 @@
 !
 !
       if((iflag_fft/10) .eq. (iflag_rocFFT/10)) then
-        write(*,*) 'calypso_backward_rocFFT_c2r'
+!        write(*,*) 'calypso_backward_rocFFT_c2r'
         call calypso_backward_rocFFT_c2r(bwd_rocFFT%rocFFT_plan,        &
      &      bwd_rocFFT%rocFFT_wk_info, bwd_rocFFT%Ncomp,                &
      &      WK_rocFFT%Nfft_c, WK_rocFFT%C_rocFFT(1),                    &
      &      WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT(1),                    &
      &      bwd_rocFFT%Nbytes, WK_rocFFT%data_ptr)
       else if((iflag_fft/10) .eq. (iflag_real_rocFFT/10)) then
-        write(*,*) 'calypso_backward_rocFFT_r2r'
+!        write(*,*) 'calypso_backward_rocFFT_r2r'
         call calypso_backward_rocFFT_r2r                                &
      &     (bwd_rocFFT%rocFFT_plan, bwd_rocFFT%rocFFT_wk_info,          &
      &      bwd_rocFFT%Ncomp, WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT(1),  &
      &      bwd_rocFFT%Nbytes, WK_rocFFT%data_ptr)
 !      else if((iflag_fft/10) .eq. (iflag_OMP_rocFFT/10)) then
       else
-        write(*,*) 'calypso_bwd_OpenMP_rocFFT'
+!        write(*,*) 'calypso_bwd_OpenMP_rocFFT'
         call calypso_bwd_OpenMP_rocFFT                                  &
            (bwd_rocFFT%rocFFT_plan, bwd_rocFFT%rocFFT_wk_info,          &
      &      bwd_rocFFT%Ncomp, WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT(1))
@@ -256,14 +256,14 @@
 !
 !
       if((iflag_FFT/10) .eq. (iflag_rocFFT/10)) then
-        write(*,*) 'norm_rtp_from_fwd_OMP_FFTW'
+!        write(*,*) 'norm_rtp_from_fwd_OMP_FFTW'
         call norm_rtp_from_fwd_OMP_FFTW(int(fwd_rocFFT%Ncomp),          &
      &      int(WK_rocFFT%NFFT_c), WK_rocFFT%C_rocFFT(1),               &
      &      ist_comp, Ncomp, int(fwd_rocFFT%Nfft), X(1,1))
 !      else if((iflag_FFT/10) .eq. (iflag_real_rocFFT/10)) then
 !      else if((iflag_FFT/10) .eq. (iflag_OMP_rocFFT/10)) then
       else
-        write(*,*) 'norm_rtp_from_fwd_rocFFT'
+!        write(*,*) 'norm_rtp_from_fwd_rocFFT'
         call norm_rtp_from_fwd_rocFFT(int(fwd_rocFFT%Ncomp),            &
      &      int(WK_rocFFT%NFFT_r), WK_rocFFT%X_rocFFT(1),               &
      &      ist_comp, Ncomp, int(fwd_rocFFT%Nfft), X(1,1))
@@ -288,7 +288,7 @@
 !
 !
       if((iflag_FFT/10) .eq. (iflag_rocFFT/10)) then
-        write(*,*) 'norm_rtp_to_bwd_OMP_FFTW'
+!        write(*,*) 'norm_rtp_to_bwd_OMP_FFTW'
         call norm_rtp_to_bwd_OMP_FFTW                                   &
      &     (ist_comp, Ncomp, int(bwd_rocFFT%Nfft), X(1,1),              &
      &      int(bwd_rocFFT%Ncomp), int(WK_rocFFT%Nfft_c),               &
@@ -296,7 +296,7 @@
 !      else if((iflag_FFT/10) .eq. (iflag_real_rocFFT/10)) then
 !      else if((iflag_FFT/10) .eq. (iflag_OMP_rocFFT/10)) then
       else
-        write(*,*) 'norm_rtp_to_bwd_rocFFT'
+!        write(*,*) 'norm_rtp_to_bwd_rocFFT'
         call norm_rtp_to_bwd_rocFFT                                     &
      &     (ist_comp, Ncomp, int(bwd_rocFFT%Nfft), X(1,1),              &
      &      int(bwd_rocFFT%Ncomp), int(WK_rocFFT%Nfft_r),               &
