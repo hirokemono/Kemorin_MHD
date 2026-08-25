@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine init_pout_cplx_rocFFT_FFTPACK                        &
-!!     &         (Ncomp, Ncomp_GPU, N8omp_CPU, Nfft, Nsmp,              &
+!!     &         (Ncomp, Ncomp_GPU, Ncomp_CPU, Nfft, Nsmp,              &
 !!     &          fwd_rocFFT, bwd_rocFFT, WK_rocFFT, WK_FFTPACK)
 !!      subroutine finalize_cplx_rocFFT_FFTPACK(fwd_rocFFT, bwd_rocFFT, &
 !!     &                                        WK_rocFFT, WK_FFTPACK)

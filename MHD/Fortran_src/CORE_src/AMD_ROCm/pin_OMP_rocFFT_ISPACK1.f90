@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine init_pin_OMP_rocFFT_ISPACK1                          &
-!!     &         (Ncomp, Ncomp_GPU, N8omp_CPU, Nfft, Nsmp,              &
+!!     &         (Ncomp, Ncomp_GPU, Ncomp_CPU, Nfft, Nsmp,              &
 !!     &          fwd_rocFFT, bwd_rocFFT, WK_rocFFT, WK_ISPACK1)
 !!      subroutine finalize_OMP_rocFFT_ISPACK1(fwd_rocFFT, bwd_rocFFT,  &
 !!     &                                       WK_rocFFT, WK_ISPACK1)

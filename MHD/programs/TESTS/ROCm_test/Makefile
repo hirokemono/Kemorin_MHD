@@ -7,6 +7,8 @@ ROCM_TEST_DIR = $$(TESTS_DIR)/ROCm_test
 TARGET_ROCM_DGEMM_TEST = test_rocBLAS_DGEMM
 TARGET_HIPM_DGEMM_TEST = test_hipBLAS_DGEMM
 
+TARGET_ROCFFT_RTP_TEST =     test_rocFFT_rtp
+
 TARGET_CPLX_ROCFFT_PRT_TEST =     test_cplx_rocFFT_prt
 TARGET_CPLX_ROCFFT_RTP_TEST =     test_cplx_rocFFT_rtp
 TARGET_REAL_ROCFFT_PRT_TEST =     test_real_rocFFT_prt
@@ -63,6 +65,7 @@ DGEMM_test_openmp.o
 
 MOD_HIPM_DGEMM_TEST = test_HIPmBLAS_DGEMM
 
+MOD_ROCFFT_RTP_TEST =   test_rocFFT_rtp.o
 
 MOD_CPLX_ROCFFT_PRT_TEST =   test_cplx_rocFFT_prt.o
 MOD_CPLX_ROCFFT_RTP_TEST =   test_cplx_rocFFT_rtp.o
@@ -101,6 +104,9 @@ target_list:
 	@echo 'TARGET_ROCM_DGEMM_TEST = $$(TEST_BUILD_DIR)/$(TARGET_ROCM_DGEMM_TEST)' \
 	>> $(MAKENAME)
 	@echo 'TARGET_HIPM_DGEMM_TEST = $$(TEST_BUILD_DIR)/$(TARGET_HIPM_DGEMM_TEST)' \
+	>> $(MAKENAME)
+	@echo ' ' >> $(MAKENAME)
+	@echo 'TARGET_ROCFFT_RTP_TEST = $$(TEST_BUILD_DIR)/$(TARGET_ROCFFT_RTP_TEST)' \
 	>> $(MAKENAME)
 	@echo ' ' >> $(MAKENAME)
 	@echo 'TARGET_CPLX_ROCFFT_PRT_TEST = $$(TEST_BUILD_DIR)/$(TARGET_CPLX_ROCFFT_PRT_TEST)' \
@@ -152,6 +158,7 @@ target_list:
 target_task:
 	@echo ROCm_tests: \
 	'$$(TARGET_ROCM_DGEMM_TEST)  ' \
+	'$$(TARGET_ROCFFT_RTP_TEST)       ' \
 	'$$(TARGET_CPLX_ROCFFT_PRT_TEST)         $$(TARGET_CPLX_ROCFFT_RTP_TEST)' \
 	'$$(TARGET_REAL_ROCFFT_PRT_TEST)         $$(TARGET_REAL_ROCFFT_RTP_TEST)' \
 	'$$(TARGET_OMP_ROCFFT_PRT_TEST)          $$(TARGET_OMP_ROCFFT_RTP_TEST)' \
@@ -172,6 +179,14 @@ target_task:
 	'$$(MOD_ROCM_DGEMM_TEST)' \
 	'-L. $$(LIBS_ROCM_TEST)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_ROCFFT_RTP_TEST):' \
+	'$$(MOD_ROCFFT_RTP_TEST) $$(MOD_FFT_TEST)' \
+	'$$(LIB_FILES_ROCM_TEST)' >> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_ROCFFT_RTP_TEST)' \
+	'$$(MOD_ROCFFT_RTP_TEST) $$(MOD_FFT_TEST)' \
+	'-L. $$(LIBS_ROCM_TEST) $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_CPLX_ROCFFT_PRT_TEST):' \
 	'$$(MOD_CPLX_ROCFFT_PRT_TEST) $$(MOD_FFT_TEST)' \
@@ -364,6 +379,9 @@ mod_list:
 	@echo  $(MOD_ROCM_DGEMM_TEST) >> $(MAKENAME)
 	@echo  MOD_HIPM_DGEMM_TEST=  \\ >> $(MAKENAME)
 	@echo  $(MOD_HIPM_DGEMM_TEST) >> $(MAKENAME)
+	@echo ' ' >> $(MAKENAME)
+	@echo  MOD_ROCFFT_RTP_TEST=  \\ >> $(MAKENAME)
+	@echo  $(MOD_ROCFFT_RTP_TEST) >> $(MAKENAME)
 	@echo ' ' >> $(MAKENAME)
 	@echo  MOD_CPLX_ROCFFT_PRT_TEST=  \\ >> $(MAKENAME)
 	@echo  $(MOD_CPLX_ROCFFT_PRT_TEST) >> $(MAKENAME)

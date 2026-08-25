@@ -26,6 +26,10 @@
         character(len = kchara) :: test_name
 !>        output file name
         character(len = kchara) :: file_name
+!
+!>        Integer flag for FFT selection
+        integer(kind = kint) :: iflag_FFT
+!
 !>        Length of FFT
         integer(kind = kint) :: Nfft_test =  ngrid
 !>        number of date series for FFT
@@ -77,6 +81,10 @@
       if(fft_c%loop_counts_ctl%iflag .gt. 0) then
         fft_test_p%nloop_test = fft_c%loop_counts_ctl%intvalue
       end if
+!
+      fft_test_p%iflag_FFT                                              &
+     &     = set_fft_library_ctl(fft_c%FFT_lib_ctl%iflag,               &
+     &                           fft_c%FFT_lib_ctl%charavalue)
 !
       end subroutine set_FFT_test_parameters
 !
