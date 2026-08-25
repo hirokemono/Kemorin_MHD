@@ -102,8 +102,6 @@
 !
       type(working_ISPACK), intent(inout) :: WK
 !
-      integer(kind = kint) :: ip
-!
 !
       if(WK%iflag_fft_len .ne. Nfft) then
 !

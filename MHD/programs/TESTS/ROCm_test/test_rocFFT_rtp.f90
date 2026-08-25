@@ -17,8 +17,7 @@
 !
       implicit none
 !
-      character(len = kchara), parameter                                &
-     &             :: test_name = 'rtp_rocFFT'
+      character(len = kchara) :: test_name = 'rtp_rocFFT'
       character(len = kchara), parameter                                &
      &             :: def_fname = 'rtp_rocFFT_test.dat'
 !

@@ -232,7 +232,6 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
-      integer(kind = kint) :: j, ip, ist, num
 !
 !
       start = OMP_GET_WTIME()
