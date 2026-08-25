@@ -144,16 +144,18 @@
 !!   2. Isolate a single thread to spawn the GPU work asynchronously
 !$omp single
       st_g = OMP_GET_WTIME()
-      call calypso_fwd_OpenMP_rocFFT(fwd_rocFFT%rocFFT_plan,            &
-     &    fwd_rocFFT%rocFFT_wk_info, fwd_rocFFT%Ncomp,                  &
-     &    WK_rocFFT%aNfft, WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT(1))
+      call sel_pout_forward_rocFFT(iflag_GPU_FFT,                       &
+     &                             fwd_rocFFT, WK_rocFFT)
       elapsed(4) = elapsed(4) + OMP_GET_WTIME() - st_g
 !$omp end single nowait
 !
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
-      call sel_pout_forward_rocFFT(iflag_GPU_FFT,                       &
-     &                             fwd_rocFFT, WK_rocFFT)
+      call multi_pout_RFFTMF_smp(WK_FFTPACK%Nplan_FFTPACK,              &
+     &    WK_FFTPACK%istack_FFTPACK, WK_FFTPACK%Mmax_smp,               &
+     &    int(fwd_rocFFT%Nfft), WK_FFTPACK%X_FFTPACK5,                  &
+     &    WK_FFTPACK%lsave_FFTPACK, WK_FFTPACK%WSAVE_FFTPACK,           &
+     &    WK_FFTPACK%WORK_FFTPACK)
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
 !$omp end parallel
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
