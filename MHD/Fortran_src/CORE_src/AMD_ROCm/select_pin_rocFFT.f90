@@ -13,7 +13,7 @@
 !!        integer(kind = kint), intent(in) :: Ncomp
 !!        type(calypso_rocFFT_params), intent(in), target :: fwd_rocFFT
 !!        type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
-!!        real(kind = kreal), intent(inout) :: X(Ncomp,fwd_rocFFT%Nfft)
+!!        real(kind = kreal), intent(inout) :: X(fwd_rocFFT%Nfft,Ncomp)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !!      subroutine sel_multi_pin_bwd_rocFFT(iflag_FFT, Ncomp,           &
 !!     &          bwd_rocFFT, WK_rocFFT, X, elapsed_fft, elapsed_cpy)
@@ -21,7 +21,7 @@
 !!        integer(kind = kint), intent(in) :: Ncomp
 !!        type(calypso_rocFFT_params), intent(in), target :: bwd_rocFFT
 !!        type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
-!!        real(kind = kreal), intent(inout) :: X(Ncomp,bwd_rocFFT%Nfft)
+!!        real(kind = kreal), intent(inout) :: X(bwd_rocFFT%Nfft,Ncomp)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !!
 !!      subroutine sel_norm_pin_from_fwd_rocFFT                         &
@@ -30,14 +30,13 @@
 !!        integer(kind = kint), intent(in) :: ist_comp, Ncomp
 !!        type(calypso_rocFFT_params), intent(in), target :: fwd_rocFFT
 !!        type(calypso_rocFFT_work), intent(in) :: WK_rocFFT
-!!        real(kind = kreal), intent(inout) :: X(Ncomp,fwd_rocFFT%Nfft)
-!!
+!!        real(kind = kreal), intent(inout) :: X(fwd_rocFFT%Nfft,Ncomp)
 !!      subroutine sel_norm_prt_to_bwd_rocFFT                           &
 !!     &         (iflag_FFT, ist_comp, Ncomp, X, bwd_rocFFT, WK_rocFFT)
 !!        integer(kind = kint), intent(in) :: iflag_FFT
 !!        integer(kind = kint), intent(in) :: ist_comp, Ncomp
 !!        type(calypso_rocFFT_params), intent(in), target :: bwd_rocFFT
-!!        real(kind = kreal), intent(in) :: X(Ncomp,bwd_rocFFT%Nfft)
+!!        real(kind = kreal), intent(inout) :: X(bwd_rocFFT%Nfft,Ncomp)
 !!        type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
 !!
 !! ------------------------------------------------------------------
@@ -88,6 +87,7 @@
       subroutine sel_multi_pin_fwd_rocFFT(iflag_FFT, Ncomp,             &
      &          fwd_rocFFT, WK_rocFFT, X, elapsed_fft, elapsed_cpy)
 !
+      use select_pout_rocFFT
       use copy_field_for_FFT
 !
       integer(kind = kint), intent(in) :: iflag_FFT
@@ -123,6 +123,7 @@
       subroutine sel_multi_pin_bwd_rocFFT(iflag_FFT, Ncomp,             &
      &          bwd_rocFFT, WK_rocFFT, X, elapsed_fft, elapsed_cpy)
 !
+      use select_pout_rocFFT
       use copy_field_for_FFT
 !
       integer(kind = kint), intent(in) :: iflag_FFT

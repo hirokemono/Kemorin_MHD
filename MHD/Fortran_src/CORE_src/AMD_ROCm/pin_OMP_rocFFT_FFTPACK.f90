@@ -5,7 +5,7 @@
 !!@date Programmed in Aug., 2026
 !!
 !!
-!>@brief  FFT by OpenMP rocFFT and FFTPACK5 with innsemost data series
+!>@brief  FFT by OpenMP rocFFT and FFTPACK5 with innermost data series
 !!
 !!@verbatim
 !!      subroutine init_pin_OMP_rocFFT_FFTPACK                          &

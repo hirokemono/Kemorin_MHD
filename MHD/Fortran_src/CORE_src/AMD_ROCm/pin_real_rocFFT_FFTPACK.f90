@@ -5,7 +5,7 @@
 !!@date Programmed in Aug., 2026
 !!
 !!
-!>@brief  FFT by real rocFFT and FFTPACK5 with innsemost data series
+!>@brief  FFT by real rocFFT and FFTPACK5 with innermost data series
 !!
 !!@verbatim
 !!      subroutine init_pin_real_rocFFT_FFTPACK                         &
