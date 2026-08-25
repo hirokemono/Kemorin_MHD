@@ -63,6 +63,7 @@
 !
       subroutine set_FFT_test_parameters(fft_c, fft_test_p)
 !
+      use m_FFT_labels
       use t_ctl_data_4_FFT_tests
 !
       type(FFT_tests_ctl), intent(in) :: fft_c
