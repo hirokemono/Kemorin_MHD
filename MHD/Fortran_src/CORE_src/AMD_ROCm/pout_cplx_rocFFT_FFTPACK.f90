@@ -164,7 +164,7 @@
       start = OMP_GET_WTIME()
       call norm_rtp_from_fwd_OMP_FFTW(int(fwd_rocFFT%Ncomp),            &
      &    int(WK_rocFFT%NFFT_c), WK_rocFFT%C_rocFFT(1),                 &
-     &    Ncomp, int(fwd_rocFFT%Nfft), ione, X(1,1))
+     &    ione, Ncomp, int(fwd_rocFFT%Nfft), X(1,1))
       call copy_rtp_spectr_from_RFFTMF(WK_FFTPACK%Nplan_FFTPACK,        &
      &    WK_FFTPACK%istack_FFTPACK, WK_FFTPACK%Mmax_smp,               &
      &    int(fwd_rocFFT%Nfft), WK_FFTPACK%X_FFTPACK5, Ncomp, X(1,1))

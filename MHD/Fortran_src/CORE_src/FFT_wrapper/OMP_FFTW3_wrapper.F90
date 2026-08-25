@@ -197,7 +197,7 @@
       st = OMP_GET_WTIME()
       call normalize_fwd_OMP_FFTW(aNfft, Ncomp, Nfft_c, C_FFTW)
       call norm_rtp_from_fwd_OMP_FFTW(Ncomp, NFFT_c, C_FFTW,            &
-     &                                Ncomp, Nfft, ione, X)
+     &                                ione, Ncomp, Nfft, X)
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - st
 !
       end subroutine forward_mul_OMP_FFTW

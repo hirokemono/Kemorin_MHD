@@ -164,7 +164,7 @@
       start = OMP_GET_WTIME()
       call norm_rtp_from_fwd_rocFFT(int(fwd_rocFFT%Ncomp),              &
      &    int(WK_rocFFT%NFFT_r), WK_rocFFT%X_rocFFT(1),                 &
-     &    Ncomp, int(fwd_rocFFT%Nfft), X(1,1))
+     &    ione, Ncomp, int(fwd_rocFFT%Nfft), X(1,1))
       call norm_rtp_spectr_from_FXRTFA(WK_ISPACK3%Nplan_ISPACK3,        &
      &    WK_ISPACK3%istack_ISPACK3, WK_ISPACK3%Mmax_smp,               &
      &    fwd_rocFFT%Nfft, WK_ISPACK3%X_ispack(1,1),                    &

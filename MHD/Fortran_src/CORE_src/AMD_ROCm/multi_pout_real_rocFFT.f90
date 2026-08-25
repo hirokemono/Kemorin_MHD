@@ -111,7 +111,7 @@
       start = OMP_GET_WTIME()
       call norm_rtp_from_fwd_rocFFT                                     &
      &   (int(fwd%Ncomp), int(WK_fft%NFFT_r), WK_fft%X_rocFFT(1),       &
-     &    Ncomp, int(fwd%Nfft), X(1,1))
+     &    ione, Ncomp, int(fwd%Nfft), X(1,1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       end subroutine multi_pout_fwd_rocFFT_r2r
@@ -190,7 +190,7 @@
       start = OMP_GET_WTIME()
       call norm_rtp_from_fwd_rocFFT                                     &
      &   (int(fwd%Ncomp), int(WK_fft%NFFT_r), WK_fft%X_rocFFT(1),       &
-     &    Ncomp, int(fwd%Nfft), X(1,1))
+     &    ione, Ncomp, int(fwd%Nfft), X(1,1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       end subroutine multi_pout_fwd_OMP_rocFFT

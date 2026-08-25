@@ -166,7 +166,7 @@
       start = OMP_GET_WTIME()
       call norm_rtp_from_fwd_rocFFT(int(fwd_rocFFT%Ncomp),              &
      &    int(WK_rocFFT%NFFT_r), WK_rocFFT%X_rocFFT(1),                 &
-     &    Ncomp, int(fwd_rocFFT%Nfft), X(1,1))
+     &    ione, Ncomp, int(fwd_rocFFT%Nfft), X(1,1))
 !
       call normalize_fwd_OMP_FFTW(WK_FFTW%aNfft, Ncomp_CPU,             &
      &    WK_FFTW%Nfft_c, WK_FFTW%C_FFTW_mul(1,1))

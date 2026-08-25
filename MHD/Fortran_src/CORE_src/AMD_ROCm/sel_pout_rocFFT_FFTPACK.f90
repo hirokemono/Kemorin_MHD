@@ -159,8 +159,8 @@
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
-      call sel_norm_pout_from_fwd_rocFFT(iflag_GPU_FFT, Ncomp,          &
-     &                                   fwd_rocFFT, WK_rocFFT, X(1,1))
+      call sel_norm_pout_from_fwd_rocFFT                                &
+     &   (iflag_GPU_FFT, fwd_rocFFT, WK_rocFFT, ione, Ncomp, X(1,1))
       call copy_rtp_spectr_from_RFFTMF(WK_FFTPACK%Nplan_FFTPACK,        &
      &    WK_FFTPACK%istack_FFTPACK, WK_FFTPACK%Mmax_smp,               &
      &    int(fwd_rocFFT%Nfft), WK_FFTPACK%X_FFTPACK5, Ncomp, X(1,1))

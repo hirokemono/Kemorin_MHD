@@ -36,17 +36,17 @@
 !!        type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
 !!
 !!      subroutine sel_norm_pout_from_fwd_rocFFT                        &
-!!     &         (iflag_FFT, Ncomp, fwd_rocFFT, WK_rocFFT, X)
+!!     &         (iflag_FFT, fwd_rocFFT, WK_rocFFT, ist_comp, Ncomp, X)
 !!        integer(kind = kint), intent(in) :: iflag_FFT
-!!        integer(kind = kint), intent(in) :: Ncomp
+!!        integer(kind = kint), intent(in) :: ist_comp, Ncomp
 !!        type(calypso_rocFFT_params), intent(in), target :: fwd_rocFFT
 !!        type(calypso_rocFFT_work), intent(in) :: WK_rocFFT
 !!        real(kind = kreal), intent(inout) :: X(Ncomp,fwd_rocFFT%Nfft)
 !!
-!!      subroutine sel_norm_rtp_to_bwd_rocFFT(iflag_FFT, Ncomp, X,      &
-!!     &                                       bwd_rocFFT, WK_rocFFT)
+!!      subroutine sel_norm_rtp_to_bwd_rocFFT                           &
+!!     &         (iflag_FFT, ist_comp, Ncomp, X, bwd_rocFFT, WK_rocFFT)
 !!        integer(kind = kint), intent(in) :: iflag_FFT
-!!        integer(kind = kint), intent(in) :: Ncomp
+!!        integer(kind = kint), intent(in) :: ist_comp, Ncomp
 !!        type(calypso_rocFFT_params), intent(in), target :: bwd_rocFFT
 !!        real(kind = kreal), intent(in) :: X(Ncomp,bwd_rocFFT%Nfft)
 !!        type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
@@ -124,8 +124,8 @@
       elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
-      call sel_norm_pout_from_fwd_rocFFT(iflag_FFT, Ncomp,              &
-     &                                   fwd_rocFFT, WK_rocFFT, X(1,1))
+      call sel_norm_pout_from_fwd_rocFFT                                &
+     &   (iflag_FFT, fwd_rocFFT, WK_rocFFT, ione, Ncomp, X(1,1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       end subroutine sel_multi_pout_fwd_rocFFT
@@ -242,13 +242,13 @@
 ! ------------------------------------------------------------------
 !
       subroutine sel_norm_pout_from_fwd_rocFFT                          &
-     &         (iflag_FFT, Ncomp, fwd_rocFFT, WK_rocFFT, X)
+     &         (iflag_FFT, fwd_rocFFT, WK_rocFFT, ist_comp, Ncomp, X)
 !
       use normalize_for_rocFFT
       use normalize_for_OMP_FFTW
 !
       integer(kind = kint), intent(in) :: iflag_FFT
-      integer(kind = kint), intent(in) :: Ncomp
+      integer(kind = kint), intent(in) :: ist_comp, Ncomp
       type(calypso_rocFFT_params), intent(in), target :: fwd_rocFFT
       type(calypso_rocFFT_work), intent(in) :: WK_rocFFT
 !
@@ -259,28 +259,28 @@
         write(*,*) 'norm_rtp_from_fwd_OMP_FFTW'
         call norm_rtp_from_fwd_OMP_FFTW(int(fwd_rocFFT%Ncomp),          &
      &      int(WK_rocFFT%NFFT_c), WK_rocFFT%C_rocFFT(1),               &
-     &      Ncomp, int(fwd_rocFFT%Nfft), ione, X(1,1))
+     &      ist_comp, Ncomp, int(fwd_rocFFT%Nfft), X(1,1))
 !      else if((iflag_FFT/10) .eq. (iflag_real_rocFFT/10)) then
 !      else if((iflag_FFT/10) .eq. (iflag_OMP_rocFFT/10)) then
       else
         write(*,*) 'norm_rtp_from_fwd_rocFFT'
         call norm_rtp_from_fwd_rocFFT(int(fwd_rocFFT%Ncomp),            &
      &      int(WK_rocFFT%NFFT_r), WK_rocFFT%X_rocFFT(1),               &
-     &      Ncomp, int(fwd_rocFFT%Nfft), X(1,1))
+     &      ist_comp, Ncomp, int(fwd_rocFFT%Nfft), X(1,1))
       end if
 !
       end subroutine sel_norm_pout_from_fwd_rocFFT
 !
 ! ------------------------------------------------------------------
 !
-      subroutine sel_norm_rtp_to_bwd_rocFFT(iflag_FFT, Ncomp, X,        &
-     &                                       bwd_rocFFT, WK_rocFFT)
+      subroutine sel_norm_rtp_to_bwd_rocFFT                             &
+     &         (iflag_FFT, ist_comp, Ncomp, X, bwd_rocFFT, WK_rocFFT)
 !
       use normalize_for_rocFFT
       use normalize_for_OMP_FFTW
 !
       integer(kind = kint), intent(in) :: iflag_FFT
-      integer(kind = kint), intent(in) :: Ncomp
+      integer(kind = kint), intent(in) :: ist_comp, Ncomp
       type(calypso_rocFFT_params), intent(in), target :: bwd_rocFFT
       real(kind = kreal), intent(in) :: X(Ncomp,bwd_rocFFT%Nfft)
 !
@@ -290,7 +290,7 @@
       if((iflag_FFT/10) .eq. (iflag_rocFFT/10)) then
         write(*,*) 'norm_rtp_to_bwd_OMP_FFTW'
         call norm_rtp_to_bwd_OMP_FFTW                                   &
-     &     (ione, Ncomp, int(bwd_rocFFT%Nfft), X(1,1),                  &
+     &     (ist_comp, Ncomp, int(bwd_rocFFT%Nfft), X(1,1),              &
      &      int(bwd_rocFFT%Ncomp), int(WK_rocFFT%Nfft_c),               &
      &      WK_rocFFT%C_rocFFT(1))
 !      else if((iflag_FFT/10) .eq. (iflag_real_rocFFT/10)) then
@@ -298,7 +298,7 @@
       else
         write(*,*) 'norm_rtp_to_bwd_rocFFT'
         call norm_rtp_to_bwd_rocFFT                                     &
-     &     (ione, Ncomp, int(bwd_rocFFT%Nfft), X(1,1),                  &
+     &     (ist_comp, Ncomp, int(bwd_rocFFT%Nfft), X(1,1),              &
      &      int(bwd_rocFFT%Ncomp), int(WK_rocFFT%Nfft_r),               &
      &      WK_rocFFT%X_rocFFT(1))
       end if

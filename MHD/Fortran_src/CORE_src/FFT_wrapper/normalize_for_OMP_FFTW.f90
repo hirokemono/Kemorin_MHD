@@ -9,7 +9,7 @@
 !!@verbatim
 !! ------------------------------------------------------------------
 !!      subroutine norm_rtp_from_fwd_OMP_FFTW(Ncomp_c, NFFT_c, C_FFT,   &
-!!     &                                      Ncomp, Nfft, ist_c, X)
+!!     &                                      ist_c, Ncomp, Nfft, X)
 !!        integer(kind = kint), intent(in) :: Ncomp_c, NFFT_c
 !!        complex(kind = kreal), intent(in) :: C_FFT(Ncomp_c,Nfft_c)
 !!        integer(kind = kint), intent(in) :: ist_c, Ncomp, Nfft
@@ -47,7 +47,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine norm_rtp_from_fwd_OMP_FFTW(Ncomp_c, NFFT_c, C_FFT,     &
-     &                                      Ncomp, Nfft, ist_c, X)
+     &                                      ist_c, Ncomp, Nfft, X)
 !
       integer(kind = kint), intent(in) :: Ncomp_c, NFFT_c
       complex(kind = kreal), intent(in) :: C_FFT(Ncomp_c,Nfft_c)

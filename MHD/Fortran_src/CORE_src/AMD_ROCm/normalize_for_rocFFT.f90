@@ -9,10 +9,10 @@
 !!@verbatim
 !! ------------------------------------------------------------------
 !!      subroutine norm_rtp_from_fwd_rocFFT(Ncomp_r, Nfft_r, X_FFT,     &
-!!     &                                    Ncomp, Nfft, X)
+!!     &                                    ist_comp, Ncomp, Nfft, X)
 !!        integer(kind = kint), intent(in) :: Ncomp_r, Nfft_r
 !!        real(kind = kreal), intent(in) :: X_FFT(Ncomp_r*Nfft_r)
-!!        integer(kind = kint), intent(in) :: Ncomp, Nfft
+!!        integer(kind = kint), intent(in) :: ist_comp, comp, Nfft
 !!        real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
 !!      subroutine norm_prt_from_fwd_rocFFT(Ncomp, NFFT_r, X_FFT,       &
 !!     &                                    Nfft, X)
@@ -47,32 +47,34 @@
 ! ------------------------------------------------------------------
 !
       subroutine norm_rtp_from_fwd_rocFFT(Ncomp_r, Nfft_r, X_FFT,       &
-     &                                    Ncomp, Nfft, X)
+     &                                    ist_comp, Ncomp, Nfft, X)
 !
       integer(kind = kint), intent(in) :: Ncomp_r, Nfft_r
       real(kind = kreal), intent(in) :: X_FFT(Ncomp_r*Nfft_r)
 !
-      integer(kind = kint), intent(in) :: Ncomp, Nfft
+      integer(kind = kint), intent(in) :: ist_comp, Ncomp, Nfft
       real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
 !
-      integer(kind = kint) :: i, nd, inum
+      integer(kind = kint) :: i, nd, inum, icomp
 !
 !
 !$omp parallel
-!$omp do private(nd,inum)
+!$omp do private(nd,inum,icomp)
       do nd = 1, Ncomp_r
-        inum = nd
-        X(nd,1) = X_FFT(2*inum-1)
+        icomp = nd + ist_comp - 1
+        inum =  nd
+        X(icomp,1) = X_FFT(2*inum-1)
         inum = nd + (Nfft_r/2-1) * Ncomp_r
-        X(nd,2) = X_FFT(2*inum-1)
+        X(icomp,2) = X_FFT(2*inum-1)
       end do
 !$omp end do nowait
       do i = 2, Nfft_r/2-1
-!$omp do private(nd,inum)
+!$omp do private(nd,inum,icomp)
         do nd = 1, Ncomp_r
+          icomp = nd + ist_comp - 1
           inum = nd + (i-1) * Ncomp_r
-          X(nd,2*i-1) =  two * X_FFT(2*inum-1)
-          X(nd,2*i  ) = -two * X_FFT(2*inum  )
+          X(icomp,2*i-1) =  two * X_FFT(2*inum-1)
+          X(icomp,2*i  ) = -two * X_FFT(2*inum  )
         end do
 !$omp end do nowait
       end do

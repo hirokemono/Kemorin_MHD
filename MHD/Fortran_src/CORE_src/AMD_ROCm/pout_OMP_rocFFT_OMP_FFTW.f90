@@ -145,13 +145,13 @@
       start = OMP_GET_WTIME()
       call norm_rtp_from_fwd_rocFFT(int(fwd_rocFFT%Ncomp),              &
      &    int(WK_rocFFT%NFFT_r), WK_rocFFT%X_rocFFT(1),                 &
-     &    Ncomp, int(fwd_rocFFT%Nfft), X(1,1))
+     &    ione, Ncomp, int(fwd_rocFFT%Nfft), X(1,1))
 !
       call normalize_fwd_OMP_FFTW(WK_OMP_FFTW%aNfft, Ncomp_CPU,         &
      &    WK_OMP_FFTW%Nfft_c, WK_OMP_FFTW%C_FFTW_mul(1,1))
       call norm_rtp_from_fwd_OMP_FFTW                                   &
      &   (Ncomp_CPU, WK_OMP_FFTW%Nfft_c, WK_OMP_FFTW%C_FFTW_mul(1,1),   &
-     &    Ncomp, int(fwd_rocFFT%Nfft), int(fwd_rocFFT%Ncomp+1), X(1,1))
+     &    int(fwd_rocFFT%Ncomp+1), Ncomp, int(fwd_rocFFT%Nfft), X(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !      write(*,*) 'CPU FFT clock',   elapsed(3)
