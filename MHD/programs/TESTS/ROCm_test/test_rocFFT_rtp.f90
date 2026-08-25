@@ -53,7 +53,7 @@
      & .and. ((fft_test_p1%iflag_FFT/10) .ne. (iflag_rocFFT/10))) then
         fft_test_p1%iflag_FFT = iflag_OMP_rocFFT
       end if
-      fft_test_p%test_name = find_FFT_label(fft_test_p1%iflag_FFT)
+      fft_test_p1%test_name = find_FFT_label(fft_test_p1%iflag_FFT)
 !
       iflag_debug = 1
       call init_fft_test_data                                           &

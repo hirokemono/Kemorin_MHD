@@ -57,7 +57,7 @@
         fft_test_p1%iflag_FFT = iflag_OMP_rocFFT
       end if
       test_name = find_FFT_label(fft_test_p1%iflag_FFT)
-      write(fft_test_p%test_name,'(2a)') trim(test_name), '_FFTPACK5'
+      write(fft_test_p1%test_name,'(2a)') trim(test_name), '_FFTPACK5'
 !
       ncomp_GPU = fft_test_p1%ratio_rocFFT * fft_test_p1%Ncomp_test
       ncomp_CPU = fft_test_p1%Ncomp_test - ncomp_GPU
