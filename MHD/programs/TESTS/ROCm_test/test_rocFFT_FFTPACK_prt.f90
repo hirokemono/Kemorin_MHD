@@ -18,10 +18,9 @@
 !
       implicit none
 !
+      character(len = kchara) :: test_name = 'prt_rocFFT_FFTPACK'
       character(len = kchara), parameter                                &
-     &             :: test_name = 'prt_OpenMP_rocFFT_FFTPACK'
-      character(len = kchara), parameter                                &
-     &             :: def_fname = 'prt_half_OMP_rocFFT_test.dat'
+     &             :: def_fname = 'prt_rocFFT_FFTPACK_test.dat'
 !
       character(len = kchara) :: ctl_file_name
       type(FFT_tests_ctl), save :: fft_c1
