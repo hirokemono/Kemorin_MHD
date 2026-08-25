@@ -55,6 +55,8 @@
         fft_test_p1%iflag_FFT = iflag_OMP_rocFFT
       end if
       fft_test_p1%test_name = find_FFT_label(fft_test_p1%iflag_FFT)
+      write(*,*) 'fft_test_p1%iflag_FFT', fft_test_p1%iflag_FFT,        &
+     &          '  ', trim(fft_test_p1%test_name)
 !
       iflag_debug = 1
       call init_fft_test_data                                           &
