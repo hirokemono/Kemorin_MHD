@@ -17,9 +17,12 @@
 !!   wrapper subroutine for initierize FFT
 !! ------------------------------------------------------------------
 !!
-!!      subroutine multi_pout_RFFTMF(Nsmp, Nstacksmp, M, Nfft,          &
-!!     &          X, X_FFTPACK5, Mmax_smp, lSAVE, WSAVE, WORK,          &
-!!     &          elapsed_fft, elapsed_cpy)
+!!      subroutine calypso_pout_RFFTMF                                  &
+!!     &         (M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
+!!        integer(kind = kint), intent(in) :: M, Nfft
+!!        type(working_FFTPACK), intent(inout) :: WK
+!!        real(kind = kreal), intent(inout) :: X(M, Nfft)
+!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !!      subroutine multi_pout_RFFTMF_smp(Nsmp, Nstacksmp, Mmax_smp,     &
 !!     &          Nfft, X_FFTPACK5, lSAVE, WSAVE, WORK)
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
@@ -46,9 +49,12 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine multi_pout_RFFTMB(Nsmp, Nstacksmp, M, Nfft,          &
-!!     &          X, X_FFTPACK5, Mmax_smp, lSAVE, WSAVE, WORK,          &
-!!     &          elapsed_fft, elapsed_cpy)
+!!      subroutine calypso_pout_RFFTMB                                  &
+!!     &         (M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
+!!        integer(kind = kint), intent(in) :: M, Nfft
+!!        type(working_FFTPACK), intent(inout) :: WK
+!!        real(kind = kreal), intent(inout) :: X(M,Nfft)
+!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !!      subroutine multi_pout_RFFTMB_smp(Nsmp, Nstacksmp, Mmax_smp,     &
 !!     &          Nfft, X_FFTPACK5, lSAVE, WSAVE, WORK)
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
@@ -124,83 +130,83 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine multi_pout_RFFTMF(Nsmp, Nstacksmp, M, Nfft,            &
-     &          X, X_FFTPACK5, Mmax_smp, lSAVE, WSAVE, WORK,            &
-     &          elapsed_fft, elapsed_cpy)
+      subroutine calypso_pout_RFFTMF                                    &
+     &         (M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
 !
+      use t_FFTPACK5_wrapper
       use normalize_for_FFTPACK
 !
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
-      integer(kind = kint), intent(in) :: lSAVE, Mmax_smp
-      real(kind = 8), intent(in) :: WSAVE(lSAVE)
 !
+      type(working_FFTPACK), intent(inout) :: WK
       real(kind = kreal), intent(inout) :: X(M, Nfft)
-      real(kind = 8), intent(inout) :: X_FFTPACK5(Mmax_smp*Nfft,Nsmp)
-      real(kind = 8), intent(inout) :: WORK(Mmax_smp*Nfft,Nsmp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
 !
 !
       start = OMP_GET_WTIME()
-      call copy_rtp_fld_to_RFFTMF(Nsmp, Nstacksmp, Mmax_smp,            &
-     &                            Nfft, M, X, X_FFTPACK5)
+      call copy_rtp_fld_to_RFFTMF                                       &
+     &   (WK%Nplan_FFTPACK, WK%istack_FFTPACK, WK%Mmax_smp,             &
+     &    Nfft, M, X, WK%X_FFTPACK5)
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
 !$omp parallel
-      call multi_pout_RFFTMF_smp(Nsmp, Nstacksmp, Mmax_smp, Nfft,       &
-     &                           X_FFTPACK5, lSAVE, WSAVE, WORK)
+      call multi_pout_RFFTMF_smp                                        &
+     &   (WK%Nplan_FFTPACK, WK%istack_FFTPACK, WK%Mmax_smp,             &
+     &    Nfft, WK%X_FFTPACK5, WK%lsave_FFTPACK,                        &
+     &    WK%WSAVE_FFTPACK, WK%WORK_FFTPACK)
 !$omp end parallel
       elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
-      call copy_rtp_spectr_from_RFFTMF(Nsmp, Nstacksmp, Mmax_smp, Nfft, &
-     &                                 X_FFTPACK5, M, X)
+      call copy_rtp_spectr_from_RFFTMF                                  &
+     &   (WK%Nplan_FFTPACK, WK%istack_FFTPACK, WK%Mmax_smp,             &
+     &    Nfft, WK%X_FFTPACK5, M, X)
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
-      end subroutine multi_pout_RFFTMF
+      end subroutine calypso_pout_RFFTMF
 !
 ! ------------------------------------------------------------------
 !
-      subroutine multi_pout_RFFTMB(Nsmp, Nstacksmp, M, Nfft,            &
-     &          X, X_FFTPACK5, Mmax_smp, lSAVE, WSAVE, WORK,            &
-     &          elapsed_fft, elapsed_cpy)
+      subroutine calypso_pout_RFFTMB                                    &
+     &         (M, Nfft, X, WK, elapsed_fft, elapsed_cpy)
 !
+      use t_FFTPACK5_wrapper
       use normalize_for_FFTPACK
 !
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
-      integer(kind = kint), intent(in) :: lSAVE, Mmax_smp
-      real(kind = 8), intent(in) :: WSAVE(lSAVE)
 !
+      type(working_FFTPACK), intent(inout) :: WK
       real(kind = kreal), intent(inout) :: X(M,Nfft)
-      real(kind = 8), intent(inout) :: X_FFTPACK5(Mmax_smp*Nfft,Nsmp)
-      real(kind = 8), intent(inout) :: WORK(Mmax_smp*Nfft,Nsmp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
 !
 !
       start = OMP_GET_WTIME()
-      call copy_rtp_spectr_to_RFFTMB(Nsmp, Nstacksmp, Mmax_smp, Nfft,   &
-     &                               M, X, X_FFTPACK5)
+      call copy_rtp_spectr_to_RFFTMB                                    &
+     &   (WK%Nplan_FFTPACK, WK%istack_FFTPACK, WK%Mmax_smp,             &
+     &    Nfft, M, X, WK%X_FFTPACK5(1,1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
 !$omp parallel
-      call multi_pout_RFFTMB_smp(Nsmp, Nstacksmp, Mmax_smp, Nfft,       &
-     &                           X_FFTPACK5, lSAVE, WSAVE, WORK)
+      call multi_pout_RFFTMB_smp                                        &
+     &   (WK%Nplan_FFTPACK, WK%istack_FFTPACK, WK%Mmax_smp,             &
+     &    Nfft, WK%X_FFTPACK5(1,1), WK%lsave_FFTPACK,                   &
+     &    WK%WSAVE_FFTPACK, WK%WORK_FFTPACK)
 !$omp end parallel
       elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
-      call copy_rtp_fld_from_RFFTMB(Nsmp, Nstacksmp, Mmax_smp, Nfft,    &
-     &                              X_FFTPACK5, M, X)
+      call copy_rtp_fld_from_RFFTMB                                     &
+     &   (WK%Nplan_FFTPACK, WK%istack_FFTPACK, WK%Mmax_smp, Nfft,       &
+     &    WK%X_FFTPACK5(1,1), M, X)
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
-      end subroutine multi_pout_RFFTMB
+      end subroutine calypso_pout_RFFTMB
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------

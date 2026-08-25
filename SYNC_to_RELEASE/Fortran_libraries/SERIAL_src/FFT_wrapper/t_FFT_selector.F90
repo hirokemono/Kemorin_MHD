@@ -224,8 +224,8 @@
      &                              elapsed_fft, elapsed_cpy)
 !
       use calypso_multi_fftpack
-      use calypso_multi_FFTW3
       use calypso_single_FFTW3
+      use multi_pout_FFTPACK_smp
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: M, Nfft
@@ -247,8 +247,8 @@
       end if
 #endif
 !
-      call CALYPSO_RFFTMF_t(M, Nfft, X, WKS%WK_FFTPACK,                 &
-     &                      elapsed_fft, elapsed_cpy)
+      call calypso_pout_RFFTMF(M, Nfft, X, WKS%WK_FFTPACK,              &
+     &                         elapsed_fft, elapsed_cpy)
 !
       end subroutine forward_FFT_select
 !
@@ -257,9 +257,9 @@
       subroutine backward_FFT_select(iflag_FFT, M, Nfft, X, WKS,        &
      &                               elapsed_fft, elapsed_cpy)
 !
-      use calypso_multi_fftpack
       use calypso_multi_FFTW3
       use calypso_single_FFTW3
+      use multi_pout_FFTPACK_smp
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: M, Nfft
@@ -281,8 +281,8 @@
       end if
 #endif
 !
-      call CALYPSO_RFFTMB_t(M, Nfft, X, WKS%WK_FFTPACK,                 &
-     &                      elapsed_fft, elapsed_cpy)
+      call calypso_pout_RFFTMB(M, Nfft, X, WKS%WK_FFTPACK,              &
+     &                         elapsed_fft, elapsed_cpy)
 !
       end subroutine backward_FFT_select
 !

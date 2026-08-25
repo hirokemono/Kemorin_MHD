@@ -267,10 +267,10 @@
       use calypso_single_ispack
       use calypso_multi_ispack3
       use calypso_single_ispack3
-      use calypso_multi_fftpack
       use calypso_single_fftpack
       use calypso_multi_FFTW3
       use calypso_single_FFTW3
+      use multi_pin_FFTPACK_smp
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: M, Nfft
@@ -293,7 +293,6 @@
      &                                X, WKS%WK_ISPACK3,                &
      &                                elapsed_fft, elapsed_cpy)
       else if(abs(iflag_FFT) .eq. (iflag_ISPACK3 + iflag_single_fft)) then
-        write(*,*) 'calypso_single_pin_FXRTFA'
         call calypso_single_pin_FXRTFA(cast_long(M), cast_long(Nfft),   &
      &                                 X, WKS%WK_ISPACK3,               &
      &                                 elapsed_fft, elapsed_cpy)
@@ -302,7 +301,6 @@
         call calypso_multi_pin_fwd_FFTW3(M, Nfft, X, WKS%WK_MUL_FFTW,   &
      &                                   elapsed_fft, elapsed_cpy)
       else if(abs(iflag_FFT) .eq. (iflag_FFTW + iflag_single_fft)) then
-        write(*,*) 'calypso_single_pin_fwd_FFTW3'
         call calypso_single_pin_fwd_FFTW3(M, Nfft, X, WKS%WK_FFTW,      &
      &                                    elapsed_fft, elapsed_cpy)
 #endif
@@ -311,8 +309,8 @@
         call calypso_single_pin_RFFTMF(M, Nfft, X, WKS%WK_FFTPACK,      &
      &                                 elapsed_fft, elapsed_cpy)
       else
-        call calypso_multi_pin_RFFTMF(M, Nfft, X, WKS%WK_FFTPACK,       &
-     &                                elapsed_fft, elapsed_cpy)
+        call calypso_pin_RFFTMF(M, Nfft, X, WKS%WK_FFTPACK,             &
+     &                          elapsed_fft, elapsed_cpy)
       end if
 !
       end subroutine fwd_pin_FFT_select
@@ -370,8 +368,8 @@
         call calypso_single_pin_RFFTMB(M, Nfft, X, WKS%WK_FFTPACK,      &
      &                                 elapsed_fft, elapsed_cpy)
       else
-        call calypso_multi_pin_RFFTMB(M, Nfft, X, WKS%WK_FFTPACK,       &
-     &                                elapsed_fft, elapsed_cpy)
+        call calypso_pin_RFFTMB(M, Nfft, X, WKS%WK_FFTPACK,             &
+     &                          elapsed_fft, elapsed_cpy)
       end if
 !
       end subroutine back_pin_FFT_select

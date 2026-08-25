@@ -35,6 +35,7 @@
       use t_ctl_data_4_FFT_tests
 !
       use calypso_multi_fftpack
+      use multi_pin_FFTPACK_smp
 !
 !      use m_FFT_labels
 !
@@ -85,7 +86,7 @@
 !$omp end parallel workshare
         ft1%elapsed(3) = ft1%elapsed(3) + OMP_GET_WTIME() - ft1%start
 !
-        call calypso_multi_pin_RFFTMF(ft1%nfld, ft1%ngrd, ft1%s_k,      &
+        call calypso_pin_RFFTMF(ft1%nfld, ft1%ngrd, ft1%s_k,            &
      &      WK_FFTPACK_T, ft1%elapsed(2), ft1%elapsed(3))
 !
         ft1%start = OMP_GET_WTIME()
@@ -94,7 +95,7 @@
 !$omp end parallel workshare
         ft1%elapsed(3) = ft1%elapsed(3) + OMP_GET_WTIME() - ft1%start
 !
-        call calypso_multi_pin_RFFTMB(ft1%nfld, ft1%ngrd, ft1%f_x,      &
+        call calypso_pin_RFFTMB(ft1%nfld, ft1%ngrd, ft1%f_x,            &
      &      WK_FFTPACK_T, ft1%elapsed(2), ft1%elapsed(3))
       end do
 !

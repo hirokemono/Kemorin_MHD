@@ -242,7 +242,7 @@
      &    Ncomp, int(bwd_rocFFT%Nfft), ione, X(1,1))
       call swap_from_rtp_bwd_FFTW                                       &
      &   (Ncomp_CPU, int(bwd_rocFFT%Nfft), WK_FFTW%X_FFTW_mul(1,1),     &
-     &    int(bwd_rocFFT%Ncomp+1), Ncomp, int(bwd_rocFFT%Nfft), X)
+     &    int(bwd_rocFFT%Ncomp+1), Ncomp, int(bwd_rocFFT%Nfft), X(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !      write(*,*) 'CPU FFT clock',   elapsed(3)

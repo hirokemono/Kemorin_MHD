@@ -115,7 +115,7 @@
       call count_FFTPACK_smp(Nsmp, Nstacksmp, WK)
 !
       call init_CALYPSO_FFTPACK                                         &
-     &   (Nfft,  WK%lsave_FFTPACK, WK%WSAVE_FFTPACK)
+     &   (Nfft, WK%lsave_FFTPACK, WK%WSAVE_FFTPACK)
 !
       call alloc_work_4_FFTPACK_t(Nsmp, Nfft, WK)
 !
