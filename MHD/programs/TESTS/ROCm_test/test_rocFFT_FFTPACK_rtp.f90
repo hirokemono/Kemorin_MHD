@@ -104,7 +104,7 @@
 !
 !   Finalize
       start = OMP_GET_WTIME()
-      call finalize_rocFFT_FFTPACK(fwd, bwd, WK_rocFFT, WK_FFTPACK)
+      call finalize_rocFFT_FFTPACK(fwd, bwd, WK_rocFFT, WK_FFTPACK_T)
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
   10  continue
