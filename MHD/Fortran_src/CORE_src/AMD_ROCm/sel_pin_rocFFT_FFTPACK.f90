@@ -113,6 +113,7 @@
       use select_pout_rocFFT
       use multi_pin_FFTPACK_smp
       use swap_prt_data_for_FFTPACK
+      use copy_field_for_FFT
 !
       integer(kind = kint), intent(in) :: iflag_GPU_FFT
       integer(kind = kint), intent(in) :: Ncomp
@@ -184,6 +185,7 @@
       use select_pout_rocFFT
       use multi_pin_FFTPACK_smp
       use swap_prt_data_for_FFTPACK
+      use copy_field_for_FFT
 !
       integer(kind = kint), intent(in) :: iflag_GPU_FFT
       integer(kind = kint), intent(in) :: Ncomp
