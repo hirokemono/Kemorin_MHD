@@ -20,12 +20,15 @@
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
 !!
-!!   a_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\frac{2\pi j k}{Nfft})
-!!   b_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \sin (\frac{2\pi j k}{Nfft})
+!!   a_{k} = \frac{2}{Nfft}
+!!          \sum_{j=0}^{Nfft-1} [x_{j} \cos (\frac{2\pi j k}{Nfft})]
+!!   b_{k} = \frac{2}{Nfft}
+!!          \sum_{j=0}^{Nfft-1} [x_{j} \sin (\frac{2\pi j k}{Nfft})]
 !!
 !!   a_{0} = \frac{1}{Nfft} \sum_{j=0}^{Nfft-1} x_{j}
 !!    K = Nfft/2....
-!!   a_{k} = \frac{1}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\frac{2\pi j k}{Nfft})
+!!   a_{k} = \frac{1}{Nfft}
+!!          \sum_{j=0}^{Nfft-1} [x_{j} \cos (\frac{2\pi j k}{Nfft})]
 !!
 !! ------------------------------------------------------------------
 !!
@@ -95,7 +98,7 @@
 !
       start = OMP_GET_WTIME()
       call copy_pout_field_to_FFT(ione, Ncomp, int(fwd%Nfft), X(1,1),   &
-     &    int(fwd%Ncomp), int(fwd%Nfft), WK_fft%X_rocFFT(1))
+     &    int(fwd%Ncomp), int(WK_fft%Nfft_r), WK_fft%X_rocFFT(1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
@@ -175,7 +178,7 @@
 !
       start = OMP_GET_WTIME()
       call copy_pout_field_to_FFT(ione, Ncomp, int(fwd%Nfft), X(1,1),   &
-     &    int(fwd%Ncomp), int(fwd%Nfft), WK_fft%X_rocFFT(1))
+     &    int(fwd%Ncomp), int(WK_fft%Nfft_r), WK_fft%X_rocFFT(1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()

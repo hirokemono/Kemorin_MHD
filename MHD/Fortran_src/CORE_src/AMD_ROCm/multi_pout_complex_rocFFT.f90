@@ -26,12 +26,15 @@
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !! ------------------------------------------------------------------
 !!
-!!   a_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\frac{2\pi j k}{Nfft})
-!!   b_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \sin (\frac{2\pi j k}{Nfft})
+!!   a_{k} = \frac{2}{Nfft}
+!!          \sum_{j=0}^{Nfft-1} [x_{j} \cos (\frac{2\pi j k}{Nfft})]
+!!   b_{k} = \frac{2}{Nfft}
+!!          \sum_{j=0}^{Nfft-1} [x_{j} \sin (\frac{2\pi j k}{Nfft})]
 !!
 !!   a_{0} = \frac{1}{Nfft} \sum_{j=0}^{Nfft-1} x_{j}
 !!    K = Nfft/2....
-!!   a_{k} = \frac{1}{Nfft} \sum_{j=0}^{Nfft-1} x_{j} \cos (\frac{2\pi j k}{Nfft})
+!!   a_{k} = \frac{1}{Nfft}
+!!          \sum_{j=0}^{Nfft-1} [x_{j} \cos (\frac{2\pi j k}{Nfft})]
 !!
 !! ------------------------------------------------------------------
 !!
@@ -161,25 +164,24 @@
 !
 !
       if(fwd%Ncomp .le. 0) return
-        start = OMP_GET_WTIME()
-        call copy_pout_field_to_FFT                                     &
-     &     (ione, Ncomp, int(fwd%Nfft), X(1,1),                         &
-     &      int(fwd%Ncomp), int(WK_fft%Nfft_r), WK_fft%X_rocFFT(1))
-        elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+      start = OMP_GET_WTIME()
+      call copy_pout_field_to_FFT(ione, Ncomp, int(fwd%Nfft), X(1,1),   &
+     &    int(fwd%Ncomp), int(WK_fft%Nfft_r), WK_fft%X_rocFFT(1))
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
-        start = OMP_GET_WTIME()
-        call calypso_forward_rocFFT_r2c                                 &
-     &     (fwd%rocFFT_plan, fwd%rocFFT_wk_info, fwd%Ncomp,             &
-     &      WK_fft%aNfft, WK_fft%Nfft_r, WK_fft%X_rocFFT(1),            &
-     &                    WK_fft%Nfft_c, WK_fft%C_rocFFT(1),            &
-     &      fwd%Nbytes, WK_fft%data_ptr)
-        elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
+      start = OMP_GET_WTIME()
+      call calypso_forward_rocFFT_r2c                                   &
+     &   (fwd%rocFFT_plan, fwd%rocFFT_wk_info, fwd%Ncomp, WK_fft%aNfft, &
+     &    WK_fft%Nfft_r, WK_fft%X_rocFFT(1),                            &
+     &    WK_fft%Nfft_c, WK_fft%C_rocFFT(1),                            &
+     &    fwd%Nbytes, WK_fft%data_ptr)
+      elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
-        start = OMP_GET_WTIME()
-        call norm_rtp_from_fwd_OMP_FFTW                                 &
-     &     (int(fwd%Ncomp), int(WK_fft%NFFT_c), WK_fft%C_rocFFT(1),     &
-     &      Ncomp, int(fwd%Nfft), ione, X(1,1))
-        elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+      start = OMP_GET_WTIME()
+      call norm_rtp_from_fwd_OMP_FFTW                                   &
+     &   (int(fwd%Ncomp), int(WK_fft%NFFT_c), WK_fft%C_rocFFT(1),       &
+     &    Ncomp, int(fwd%Nfft), ione, X(1,1))
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       end subroutine multi_pout_fwd_rocFFT_r2c
 !
