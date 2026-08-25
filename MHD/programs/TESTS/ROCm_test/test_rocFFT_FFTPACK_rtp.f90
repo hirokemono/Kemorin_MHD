@@ -53,7 +53,8 @@
       end if
 !
       iflag_debug = 1
-      if(    ((fft_test_p1%iflag_FFT/10) .ne. (iflag_real_rocFFT/10))   &
+      if(    ((fft_test_p1%iflag_FFT/10) .ne. (iflag_OMP_rocFFT/10))    &
+     & .and. ((fft_test_p1%iflag_FFT/10) .ne. (iflag_real_rocFFT/10))   &
      & .and. ((fft_test_p1%iflag_FFT/10) .ne. (iflag_rocFFT/10))) then
         fft_test_p1%iflag_FFT = iflag_OMP_rocFFT
       end if
