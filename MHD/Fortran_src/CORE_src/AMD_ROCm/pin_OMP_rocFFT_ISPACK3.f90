@@ -112,7 +112,7 @@
      &         (Ncomp, fwd_rocFFT, WK_rocFFT, WK_ISPACK3, X, elapsed)
 !
       use calypso_multi_rocFFT
-      use multi_pin_ISPACK3_smp
+      use calypso_multi_ispack3
       use normalize_for_rocFFT
       use swap_prt_data_for_ISPACK
       use copy_field_for_FFT
@@ -158,7 +158,7 @@
 !!   3. The rest of the CPU threads immediately and execute
 !      write(*,*) 'FFT loop start', OMP_GET_WTIME() - start
       st_c = OMP_GET_WTIME()
-      call multi_pin_FXRTFA_smp(WK_ISPACK3%Nplan_ISPACK3,               &
+      call multi_FXRTFA_smp(WK_ISPACK3%Nplan_ISPACK3,                   &
      &    WK_ISPACK3%istack_ISPACK3, WK_ISPACK3%Mmax_smp,               &
      &    fwd_rocFFT%Nfft, WK_ISPACK3%X_ispack, WK_ISPACK3%IT_ispack,   &
      &    WK_ISPACK3%T_ispack)
@@ -188,7 +188,7 @@
      &          bwd_rocFFT, WK_rocFFT, WK_ISPACK3, X, elapsed)
 !
       use calypso_multi_rocFFT
-      use multi_pin_ISPACK3_smp
+      use calypso_multi_ispack3
       use normalize_for_rocFFT
       use swap_prt_data_for_ISPACK
       use copy_field_for_FFT
@@ -231,7 +231,7 @@
 !
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
-      call multi_pin_FXRTBA_smp(WK_ISPACK3%Nplan_ISPACK3,               &
+      call multi_FXRTBA_smp(WK_ISPACK3%Nplan_ISPACK3,                   &
      &    WK_ISPACK3%istack_ISPACK3, WK_ISPACK3%Mmax_smp,               &
      &    bwd_rocFFT%Nfft, WK_ISPACK3%X_ispack, WK_ISPACK3%IT_ispack,   &
      &    WK_ISPACK3%T_ispack)

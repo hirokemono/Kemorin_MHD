@@ -34,6 +34,7 @@
       use t_ispack3_FFT_wrapper
       use t_fft_test_data
       use calypso_multi_ispack3
+      use multi_pout_ISPACK3_smp
 !
       implicit none
 !
@@ -82,8 +83,8 @@
 !$omp end parallel workshare
         ft0%elapsed(3) = ft0%elapsed(3) + OMP_GET_WTIME() - ft0%start
 !
-        call FXRTFA_kemo_t(nfld8, Nfft8, ft0%s_k, WK_ISPACK3_t,         &
-     &                     ft0%elapsed(2), ft0%elapsed(3))
+        call multi_pout_FXRTFA(nfld8, Nfft8, ft0%s_k, WK_ISPACK3_t,     &
+     &                         ft0%elapsed(2), ft0%elapsed(3))
 !
         ft0%start = OMP_GET_WTIME()
 !$omp parallel workshare
@@ -91,7 +92,7 @@
 !$omp end parallel workshare
         ft0%elapsed(3) = ft0%elapsed(3) + OMP_GET_WTIME() - ft0%start
 !
-        call FXRTBA_kemo_t(nfld8, Nfft8, ft0%f_x, WK_ISPACK3_t,         &
+        call multi_pout_FXRTBA(nfld8, Nfft8, ft0%f_x, WK_ISPACK3_t,     &
      &                     ft0%elapsed(2), ft0%elapsed(3))
       end do
 !

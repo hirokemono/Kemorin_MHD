@@ -16,21 +16,20 @@
 !!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !!        type(working_ISPACK3), intent(inout) :: WK
 !!
-!!      subroutine calypso_multi_pin_FXRTFA(M, Nfft, X, WK,             &
-!!     &                                    elapsed_fft, elapsed_cpy)
-!!        integer(kind = kint_gl), intent(in) :: M, Nfft
-!!        real(kind = kreal), intent(inout) :: X(Nfft,M)
-!!        type(working_ISPACK3), intent(inout) :: WK
-!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!!      subroutine FXRTFA_kemo_t(M, Nfft, X, WK,                        &
-!!     &                         elapsed_fft, elapsed_cpy)
-!!        integer(kind = kint_gl), intent(in) :: M, Nfft
-!!        real(kind = kreal), intent(inout) :: X(M, Nfft)
-!!        type(working_ISPACK3), intent(inout) :: WK
-!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
+!! ------------------------------------------------------------------
+!! wrapper subroutine for forward Fourier transform by ISPACK-3
 !! ------------------------------------------------------------------
 !!
-!! wrapper subroutine for forward Fourier transform by ISPACK-3
+!!      subroutine multi_FXRTFA_smp(Nsmp, Nstacksmp, Mmax_smp, Nfft,    &
+!!     &          X_ispack, IT_ispack, T_ispack)
+!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) :: M, Nfft, Mmax_smp
+!!        integer(kind = 4), intent(in) :: IT_ispack(nfft/2)
+!!        real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
+!!        real(kind = kreal), intent(inout) :: X(Nfft,M)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                 :: X_ispack(Mmax_smp*Nfft,Nsmp)
+!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !!
 !!   a_{k} = \frac{2}{Nfft}
 !!          \sum_{j=0}^{Nfft-1} [x_{j} \cos (\frac{2\pi j k}{Nfft})]
@@ -43,24 +42,21 @@
 !!          \sum_{j=0}^{Nfft-1} [x_{j} \cos (\frac{2\pi j k}{Nfft})]
 !!
 !! ------------------------------------------------------------------
-!!
-!!
-!!      subroutine calypso_multi_pin_FXRTBA(M, Nfft, X, WK,             &
-!!     &                                    elapsed_fft, elapsed_cpy)
-!!        integer(kind = kint_gl), intent(in) :: M, Nfft
-!!        real(kind = kreal), intent(inout) :: X(Nfft,M)
-!!        type(working_ISPACK3), intent(inout) :: WK
-!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!!      subroutine FXRTBA_kemo_t(M, Nfft, X, WK,                        &
-!!     &                         elapsed_fft, elapsed_cpy)
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-!!        integer(kind = kint_gl), intent(in) :: M, Nfft
-!!        real(kind = kreal), intent(inout) :: X(M,Nfft)
-!!        type(working_ISPACK3), intent(inout) :: WK
-!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
+!! wrapper subroutine for backward Fourier transform by ISPACK-3
 !! ------------------------------------------------------------------
 !!
-!! wrapper subroutine for backward Fourier transform by ISPACK-3
+!!      subroutine multi_FXRTBA_smp(Nsmp, Nstacksmp, Mmax_smp, Nfft,    &
+!!     &                            X_ispack, IT_ispack, T_ispack)
+!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) :: M, Nfft, Mmax_smp
+!!        integer(kind = 4), intent(in) :: IT_ispack(nfft/2)
+!!        real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
+!!        real(kind = kreal), intent(inout) :: X(Nfft,M)
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                 :: X_ispack(Mmax_smp*Nfft,Nsmp)
+!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
+!!
+!! ------------------------------------------------------------------
 !!
 !! x_{k} = a_{0} + (-1)^{j} a_{Nfft/2} + sum_{k=1}^{Nfft/2-1}
 !! (a_{k} \cos(2\pijk/Nfft) + b_{k} \sin(2\pijk/Nfft))
@@ -91,8 +87,6 @@
 !
       subroutine init_wk_ispack3_t(Nsmp, Nstacksmp, Nfft, WK)
 !
-      use multi_pout_ISPACK3_smp
-!
       integer(kind = kint_gl), intent(in) ::  Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !
@@ -111,84 +105,58 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine calypso_multi_pin_FXRTFA(M, Nfft, X, WK,               &
-     &                                    elapsed_fft, elapsed_cpy)
+      subroutine multi_FXRTFA_smp(Nsmp, Nstacksmp, Mmax_smp, Nfft,      &
+     &                            X_ispack, IT_ispack, T_ispack)
 !
-      use multi_pin_ISPACK3_smp
+      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint_gl), intent(in) :: Nfft, Mmax_smp
+      integer(kind = kint_gl), intent(in) :: IT_ispack(Nfft/2)
+      real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
 !
-      integer(kind = kint_gl), intent(in) :: M, Nfft
+      real(kind = kreal), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nsmp)
 !
-      real(kind = kreal), intent(inout) :: X(Nfft,M)
-      type(working_ISPACK3), intent(inout) :: WK
-      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!
-!
-      call multi_pin_FXRTFA(WK%Nplan_ISPACK3, WK%istack_ISPACK3,        &
-     &    M, Nfft, X, WK%X_ispack, WK%Mmax_smp,                         &
-     &    WK%IT_ispack, WK%T_ispack, elapsed_fft, elapsed_cpy)
-!
-      end subroutine calypso_multi_pin_FXRTFA
-!
-! ------------------------------------------------------------------
-!
-      subroutine calypso_multi_pin_FXRTBA(M, Nfft, X, WK,               &
-     &                                    elapsed_fft, elapsed_cpy)
-!
-      use multi_pin_ISPACK3_smp
-!
-      integer(kind = kint_gl), intent(in) :: M, Nfft
-!
-      real(kind = kreal), intent(inout) :: X(Nfft,M)
-      type(working_ISPACK3), intent(inout) :: WK
-      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
+      integer(kind = kint_gl) :: ip, num8
 !
 !
-      call multi_pin_FXRTBA(WK%Nplan_ISPACK3, WK%istack_ISPACK3,        &
-     &    M, Nfft, X, WK%X_ispack, WK%Mmax_smp,                         &
-     &    WK%IT_ispack, WK%T_ispack, elapsed_fft, elapsed_cpy)
+!$omp do private(num8)
+      do ip = 1, Nsmp
+        num8 = Nstacksmp(ip) - Nstacksmp(ip-1)
+        if(num8 .le. 0) cycle
 !
-      end subroutine calypso_multi_pin_FXRTBA
+        call FXRTFA(num8, Nfft, X_ispack(1,ip),                         &
+     &              IT_ispack(1), T_ispack(1))
+      end do
+!$omp end do nowait
 !
-! ------------------------------------------------------------------
-! ------------------------------------------------------------------
-!
-      subroutine FXRTFA_kemo_t(M, Nfft, X, WK,                          &
-     &                         elapsed_fft, elapsed_cpy)
-!
-      use multi_pout_ISPACK3_smp
-!
-      integer(kind = kint_gl), intent(in) :: M, Nfft
-!
-      real(kind = kreal), intent(inout) :: X(M, Nfft)
-      type(working_ISPACK3), intent(inout) :: WK
-      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!
-!
-      call multi_pout_FXRTFA(WK%Nplan_ISPACK3, WK%istack_ISPACK3,       &
-     &    M, Nfft, X, WK%X_ispack, WK%Mmax_smp,                         &
-     &    WK%IT_ispack, WK%T_ispack, elapsed_fft, elapsed_cpy)
-!
-      end subroutine FXRTFA_kemo_t
+      end subroutine multi_FXRTFA_smp
 !
 ! ------------------------------------------------------------------
 !
-      subroutine FXRTBA_kemo_t(M, Nfft, X, WK,                          &
-     &                         elapsed_fft, elapsed_cpy)
+      subroutine multi_FXRTBA_smp(Nsmp, Nstacksmp, Mmax_smp, Nfft,      &
+     &                            X_ispack, IT_ispack, T_ispack)
 !
-      use multi_pout_ISPACK3_smp
+      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint_gl), intent(in) :: Nfft, Mmax_smp
+      integer(kind = kint_gl), intent(in) :: IT_ispack(Nfft/2)
+      real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
 !
-      integer(kind = kint_gl), intent(in) :: M, Nfft
+      real(kind = kreal), intent(inout)                                 &
+     &                              :: X_ispack(Mmax_smp*Nfft,Nsmp)
 !
-      real(kind = kreal), intent(inout) :: X(M,Nfft)
-      type(working_ISPACK3), intent(inout) :: WK
-      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
+      integer(kind = kint_gl) :: ip, num8
 !
 !
-      call multi_pout_FXRTBA(WK%Nplan_ISPACK3, WK%istack_ISPACK3,       &
-     &    M, Nfft, X, WK%X_ispack, WK%Mmax_smp,                         &
-     &    WK%IT_ispack, WK%T_ispack, elapsed_fft, elapsed_cpy)
+!$omp do private(num8)
+      do ip = 1, Nsmp
+        num8 = Nstacksmp(ip) - Nstacksmp(ip-1)
+        if(num8 .le. 0) cycle
 !
-      end subroutine FXRTBA_kemo_t
+        call FXRTBA(num8, Nfft, X_ispack(1,ip),                         &
+     &              IT_ispack(1), T_ispack(1))
+      end do
+!$omp end do nowait
+!
+      end subroutine multi_FXRTBA_smp
 !
 ! ------------------------------------------------------------------
 !

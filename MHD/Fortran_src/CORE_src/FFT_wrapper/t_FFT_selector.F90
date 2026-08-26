@@ -276,6 +276,7 @@
       use calypso_single_FFTW3
       use multi_pout_FFTPACK_smp
       use multi_pout_ISPACK1_smp
+      use multi_pout_ISPACK3_smp
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: M, Nfft
@@ -292,8 +293,8 @@
         call calypso_single_pout_FTTRUF(M, Nfft, X, WKS%WK_ISPACK1,     &
      &                                  elapsed_fft, elapsed_cpy)
       else if(iflag_FFT .eq. (iflag_ISPACK3 + iflag_once_fft)) then
-        call FXRTFA_kemo_t(cast_long(M), cast_long(Nfft), X,            &
-     &                     WKS%WK_ISPACK3, elapsed_fft, elapsed_cpy)
+        call multi_pout_FXRTFA(cast_long(M), cast_long(Nfft), X,        &
+     &      WKS%WK_ISPACK3, elapsed_fft, elapsed_cpy)
       else if(iflag_FFT .eq. (iflag_ISPACK3 + iflag_single_fft)) then
         call calypso_single_pout_FXRTFA(cast_long(M), cast_long(Nfft),  &
      &                                  X, WKS%WK_ISPACK3,              &
@@ -323,13 +324,13 @@
 !
       use transfer_to_long_integers
       use calypso_single_ispack
-      use calypso_multi_ispack3
       use calypso_single_ispack3
       use calypso_single_fftpack
       use calypso_multi_FFTW3
       use calypso_single_FFTW3
       use multi_pout_FFTPACK_smp
       use multi_pout_ISPACK1_smp
+      use multi_pout_ISPACK3_smp
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: M, Nfft
@@ -346,7 +347,7 @@
         call calypso_single_pout_FTTRUB(M, Nfft, X, WKS%WK_ISPACK1,     &
      &                                  elapsed_fft, elapsed_cpy)
       else if(iflag_FFT .eq. (iflag_ISPACK3 + iflag_once_fft)) then
-        call FXRTBA_kemo_t(cast_long(M), cast_long(Nfft), X,            &
+        call multi_pout_FXRTBA(cast_long(M), cast_long(Nfft), X,        &
      &                     WKS%WK_ISPACK3, elapsed_fft, elapsed_cpy)
       else if(iflag_FFT .eq. (iflag_ISPACK3 + iflag_single_fft)) then
         call calypso_single_pout_FXRTBA(cast_long(M), cast_long(Nfft),  &

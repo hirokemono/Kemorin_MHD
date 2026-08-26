@@ -8,7 +8,14 @@
 !>@brief  Fourier transform with work structures for ISPACK-3
 !!
 !!@verbatim
-!!  ---------------------------------------------------------------------
+!! ------------------------------------------------------------------
+!! wrapper subroutine for initierize FFT for ISPACK
+!! ------------------------------------------------------------------
+!!
+!!      subroutine FXRINI_kemo(Nfft, IT_ispack, T_ispack)
+!!        integer(kind = kint_gl), intent(in) :: Nfft
+!!        integer(kind = kint_gl), intent(inout) :: IT_ispack(Nfft/2)
+!!        real(kind = 8), intent(inout) :: T_ispack(Nfft+Nfft/2)
 !!
 !!      subroutine finalize_wk_ispack3_t(WK)
 !!      subroutine verify_wk_ispack3_t(Nsmp, Nstacksmp, Nfft, WK)
@@ -86,6 +93,20 @@
 !
 ! ------------------------------------------------------------------
 !
+      subroutine FXRINI_kemo(Nfft, IT_ispack, T_ispack)
+!
+      integer(kind = kint_gl), intent(in) :: Nfft
+      integer(kind = kint_gl), intent(inout) :: IT_ispack(Nfft/2)
+      real(kind = 8), intent(inout) :: T_ispack(Nfft+Nfft/2)
+!
+!
+      call FXRINI(Nfft, IT_ispack, T_ispack(1))
+!
+      end subroutine FXRINI_kemo
+!
+! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
       subroutine finalize_wk_ispack3_t(WK)
 !
       type(working_ISPACK3), intent(inout) :: WK
@@ -99,8 +120,6 @@
 ! ------------------------------------------------------------------
 !
       subroutine verify_wk_ispack3_t(Nsmp, Nstacksmp, Nfft, WK)
-!
-      use multi_pout_ISPACK3_smp
 !
       integer(kind = kint_gl), intent(in) ::  Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)

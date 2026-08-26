@@ -34,6 +34,7 @@
       use t_parameters_FFT_tests
       use t_ctl_data_4_FFT_tests
       use calypso_multi_ispack3
+      use multi_pin_ISPACK3_smp
       use transfer_to_long_integers
 !
       implicit none
@@ -83,9 +84,8 @@
 !$omp end parallel workshare
         ft0%elapsed(3) = ft0%elapsed(3) + OMP_GET_WTIME() - ft0%start
 !
-        call calypso_multi_pin_FXRTFA                                   &
-     &     (cast_long(ft0%nfld), cast_long(ft0%ngrd), ft0%s_k,          &
-     &      WK_ISPACK3_t, ft0%elapsed(2), ft0%elapsed(3))
+        call multi_pin_FXRTFA(cast_long(ft0%nfld), cast_long(ft0%ngrd), &
+     &      ft0%s_k, WK_ISPACK3_t, ft0%elapsed(2), ft0%elapsed(3))
 !
         ft0%start = OMP_GET_WTIME()
 !$omp parallel workshare
@@ -93,9 +93,8 @@
 !$omp end parallel workshare
         ft0%elapsed(3) = ft0%elapsed(3) + OMP_GET_WTIME() - ft0%start
 !
-        call calypso_multi_pin_FXRTBA                                   &
-     &     (cast_long(ft0%nfld), cast_long(ft0%ngrd), ft0%f_x,          &
-     &      WK_ISPACK3_t, ft0%elapsed(2), ft0%elapsed(3))
+        call multi_pin_FXRTBA(cast_long(ft0%nfld), cast_long(ft0%ngrd), &
+     &      ft0%f_x, WK_ISPACK3_t, ft0%elapsed(2), ft0%elapsed(3))
       end do
 !
       if(fft_test_p1%nloop_test .eq. 1) then
