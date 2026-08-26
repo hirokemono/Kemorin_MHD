@@ -34,6 +34,7 @@
       use t_parameters_FFT_tests
       use t_ctl_data_4_FFT_tests
       use calypso_multi_ispack
+      use multi_pin_ISPACK1_smp
 !
       implicit none
 !
@@ -82,7 +83,7 @@
 !$omp end parallel workshare
         ft0%elapsed(3) = ft0%elapsed(3) + OMP_GET_WTIME() - ft0%start
 !
-        call calypso_multi_pin_FTTRUF(ft0%nfld, ft0%ngrd, ft0%s_k,      &
+        call multi_pin_FTTRUF(ft0%nfld, ft0%ngrd, ft0%s_k,              &
      &      WK_FFTPACK_t, ft0%elapsed(2), ft0%elapsed(3))
 !
         ft0%start = OMP_GET_WTIME()
@@ -91,7 +92,7 @@
 !$omp end parallel workshare
         ft0%elapsed(3) = ft0%elapsed(3) + OMP_GET_WTIME() - ft0%start
 !
-        call calypso_multi_pin_FTTRUB(ft0%nfld, ft0%ngrd, ft0%f_x,      &
+        call multi_pin_FTTRUB(ft0%nfld, ft0%ngrd, ft0%f_x,              &
      &      WK_FFTPACK_t, ft0%elapsed(2), ft0%elapsed(3))
       end do
 !

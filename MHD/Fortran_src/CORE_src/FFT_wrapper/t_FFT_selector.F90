@@ -268,7 +268,6 @@
      &                              elapsed_fft, elapsed_cpy)
 !
       use transfer_to_long_integers
-      use calypso_multi_ispack
       use calypso_single_ispack
       use calypso_multi_ispack3
       use calypso_single_ispack3
@@ -276,6 +275,7 @@
       use calypso_multi_FFTW3
       use calypso_single_FFTW3
       use multi_pout_FFTPACK_smp
+      use multi_pout_ISPACK1_smp
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: M, Nfft
@@ -286,8 +286,8 @@
 !
 !
       if(iflag_FFT .eq. (iflag_ISPACK0 + iflag_once_fft)) then
-        call FTTRUF_kemo_t(M, Nfft, X, WKS%WK_ISPACK1,                  &
-     &                     elapsed_fft, elapsed_cpy)
+        call multi_pout_FTTRUF(M, Nfft, X, WKS%WK_ISPACK1,              &
+     &                         elapsed_fft, elapsed_cpy)
       else if(iflag_FFT .eq. (iflag_ISPACK0 + iflag_single_fft)) then
         call calypso_single_pout_FTTRUF(M, Nfft, X, WKS%WK_ISPACK1,     &
      &                                  elapsed_fft, elapsed_cpy)
@@ -322,7 +322,6 @@
      &                               elapsed_fft, elapsed_cpy)
 !
       use transfer_to_long_integers
-      use calypso_multi_ispack
       use calypso_single_ispack
       use calypso_multi_ispack3
       use calypso_single_ispack3
@@ -330,6 +329,7 @@
       use calypso_multi_FFTW3
       use calypso_single_FFTW3
       use multi_pout_FFTPACK_smp
+      use multi_pout_ISPACK1_smp
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: M, Nfft
@@ -340,8 +340,8 @@
 !
 !
       if(iflag_FFT .eq. (iflag_ISPACK0 + iflag_once_fft)) then
-        call FTTRUB_kemo_t(M, Nfft, X, WKS%WK_ISPACK1,                  &
-     &                     elapsed_fft, elapsed_cpy)
+        call multi_pout_FTTRUB(M, Nfft, X, WKS%WK_ISPACK1,              &
+     &                         elapsed_fft, elapsed_cpy)
       else if(iflag_FFT .eq. iflag_ISPACK1_SINGLE + iflag_single_fft) then
         call calypso_single_pout_FTTRUB(M, Nfft, X, WKS%WK_ISPACK1,     &
      &                                  elapsed_fft, elapsed_cpy)

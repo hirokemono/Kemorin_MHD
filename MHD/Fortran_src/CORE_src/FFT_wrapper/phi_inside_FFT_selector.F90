@@ -262,7 +262,6 @@
      &          elapsed_fft, elapsed_cpy)
 !
       use transfer_to_long_integers
-      use calypso_multi_ispack
       use calypso_single_ispack
       use calypso_multi_ispack3
       use calypso_single_ispack3
@@ -270,6 +269,7 @@
       use calypso_multi_FFTW3
       use calypso_single_FFTW3
       use multi_pin_FFTPACK_smp
+      use multi_pin_ISPACK1_smp
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: M, Nfft
@@ -280,8 +280,8 @@
 !
 !
       if(abs(iflag_FFT) .eq. (iflag_ISPACK0 + iflag_once_fft)) then
-        call calypso_multi_pin_FTTRUF(M, Nfft, X, WKS%WK_ISPACK1,       &
-     &                                elapsed_fft, elapsed_cpy)
+        call multi_pin_FTTRUF(M, Nfft, X, WKS%WK_ISPACK1,               &
+     &                        elapsed_fft, elapsed_cpy)
       else if(abs(iflag_FFT)                                            &
      &         .eq. (iflag_ISPACK0 + iflag_single_fft)) then
         call calypso_single_pin_FTTRUF(M, Nfft, X, WKS%WK_ISPACK1,      &
@@ -320,7 +320,6 @@
      &                               elapsed_fft, elapsed_cpy)
 !
       use transfer_to_long_integers
-      use calypso_multi_ispack
       use calypso_single_ispack
       use calypso_multi_ispack3
       use calypso_single_ispack3
@@ -328,6 +327,7 @@
       use calypso_multi_FFTW3
       use calypso_single_FFTW3
       use multi_pin_FFTPACK_smp
+      use multi_pin_ISPACK1_smp
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: M, Nfft
@@ -338,8 +338,8 @@
 !
 !
       if(abs(iflag_FFT) .eq. (iflag_ISPACK0 + iflag_once_fft)) then
-        call calypso_multi_pin_FTTRUB(M, Nfft, X, WKS%WK_ISPACK1,       &
-     &                                elapsed_fft, elapsed_cpy)
+        call multi_pin_FTTRUB(M, Nfft, X, WKS%WK_ISPACK1,               &
+     &                        elapsed_fft, elapsed_cpy)
       else if(abs(iflag_FFT)                                            &
      &          .eq. (iflag_ISPACK0 + iflag_single_fft)) then
         call calypso_single_pin_FTTRUB(M, Nfft, X, WKS%WK_ISPACK1,      &

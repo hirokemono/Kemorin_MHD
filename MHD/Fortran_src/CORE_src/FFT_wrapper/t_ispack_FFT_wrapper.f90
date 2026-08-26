@@ -10,6 +10,11 @@
 !!@verbatim
 !!  ---------------------------------------------------------------------
 !!
+!!      subroutine FTTRUI_kemo(Nfft, IT_ispack, T_ispack)
+!!        integer(kind = kint), intent(in) :: Nfft
+!!        integer(kind = 4), intent(inout) :: IT_ispack(5)
+!!        real(kind = 8), intent(inout) :: T_ispack(itwo*Nfft)
+!!
 !!      subroutine finalize_wk_ispack_t(WK)
 !!      subroutine verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WK)
 !!      subroutine alloc_work_ispack_t(Nsmp, nmax_comp, Nfft, WK)
@@ -81,6 +86,22 @@
 !
 ! ------------------------------------------------------------------
 !
+      subroutine FTTRUI_kemo(Nfft, IT_ispack, T_ispack)
+!
+      use ispack_0931
+!
+      integer(kind = kint), intent(in) :: Nfft
+      integer(kind = 4), intent(inout) :: IT_ispack(5)
+      real(kind = 8), intent(inout) :: T_ispack(itwo*Nfft)
+!
+!
+      call FTTRUI( Nfft, IT_ispack, T_ispack(1) )
+!
+      end subroutine FTTRUI_kemo
+!
+! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
       subroutine finalize_wk_ispack_t(WK)
 !
       type(working_ISPACK), intent(inout) :: WK
@@ -94,8 +115,6 @@
 ! ------------------------------------------------------------------
 !
       subroutine verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WK)
-!
-      use multi_pout_ISPACK1_smp
 !
       integer(kind = kint), intent(in) ::  Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)

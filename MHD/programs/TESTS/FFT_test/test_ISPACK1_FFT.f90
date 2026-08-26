@@ -34,6 +34,7 @@
       use t_fft_test_data
       use t_ispack_FFT_wrapper
       use calypso_multi_ispack
+      use multi_pout_ISPACK1_smp
 !
       implicit none
 !
@@ -80,8 +81,8 @@
 !$omp end parallel workshare
         ft0%elapsed(3) = ft0%elapsed(3) + OMP_GET_WTIME() - ft0%start
 !
-        call FTTRUF_kemo_t(ft0%nfld, ft0%ngrd, ft0%s_k, WK_FFTPACK_t,   &
-       &                   ft0%elapsed(2), ft0%elapsed(3))
+        call multi_pout_FTTRUF(ft0%nfld, ft0%ngrd, ft0%s_k,             &
+       &    WK_FFTPACK_t, ft0%elapsed(2), ft0%elapsed(3))
 !
         ft0%start = OMP_GET_WTIME()
 !$omp parallel workshare
@@ -89,8 +90,8 @@
 !$omp end parallel workshare
         ft0%elapsed(3) = ft0%elapsed(3) + OMP_GET_WTIME() - ft0%start
 !
-        call FTTRUB_kemo_t(ft0%nfld, ft0%ngrd, ft0%f_x, WK_FFTPACK_t,   &
-     &                     ft0%elapsed(2), ft0%elapsed(3))
+        call multi_pout_FTTRUB(ft0%nfld, ft0%ngrd, ft0%f_x,             &
+     &      WK_FFTPACK_t, ft0%elapsed(2), ft0%elapsed(3))
       end do
 !
       if(fft_test_p1%nloop_test .eq. 1) then
