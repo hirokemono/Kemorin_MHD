@@ -32,6 +32,7 @@
       use t_fft_test_data
       use t_parameters_FFT_tests
       use t_ctl_data_4_FFT_tests
+      use OMP_FFTW3_wrapper
 !
       implicit none
 !
@@ -78,7 +79,7 @@
 !$omp end parallel workshare
         ft3%elapsed(3) = ft3%elapsed(3) + OMP_GET_WTIME() - ft3%start
 !
-        call OMP_forward_FFTW_type                                      &
+        call forward_mul_OMP_FFTW                                       &
      &     (ft3%nfld, ft3%ngrd, ft3%s_k, WK_OMP_FFTW_t,                 &
      &      ft3%elapsed(2), ft3%elapsed(3))
 !
@@ -88,7 +89,7 @@
 !$omp end parallel workshare
         ft3%elapsed(3) = ft3%elapsed(3) + OMP_GET_WTIME() - ft3%start
 !
-        call OMP_backward_FFTW_type                                     &
+        call backward_mul_OMP_FFTW                                      &
      &     (ft3%nfld, ft3%ngrd, ft3%f_x, WK_OMP_FFTW_t,                 &
      &      ft3%elapsed(2), ft3%elapsed(3))
       end do

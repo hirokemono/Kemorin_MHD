@@ -30,10 +30,11 @@
 !!        type(working_FFTPACK), intent(inout) :: WK_FFTPACK
 !!        real(kind = kreal), intent(inout) :: X(fwd_rocFFT%Nfft,Ncomp)
 !!        real(kind = kreal), intent(inout) :: elapsed(4)
-!!      subroutine sel_pin_bwd_rocFFT_FFTPACK(iflag_GPU_FFT, Ncomp,     &
+!!      subroutine sel_pin_bwd_rocFFT_FFTPACK                           &
+!!     &         (iflag_GPU_FFT, Ncomp, Ncomp_CPU,                      &
 !!     &          bwd_rocFFT, WK_rocFFT, WK_FFTPACK, X, elapsed)
 !!        integer(kind = kint), intent(in) :: iflag_GPU_FFT
-!!        integer(kind = kint), intent(in) :: Ncomp
+!!        integer(kind = kint), intent(in) :: Ncomp, Ncomp_CPU
 !!        type(calypso_rocFFT_params), intent(in), target :: bwd_rocFFT
 !!        type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
 !!        type(working_FFTPACK), intent(inout) :: WK_FFTPACK
@@ -178,7 +179,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine sel_pin_bwd_rocFFT_FFTPACK(iflag_GPU_FFT, Ncomp,       &
+      subroutine sel_pin_bwd_rocFFT_FFTPACK                             &
+     &         (iflag_GPU_FFT, Ncomp, Ncomp_CPU,                        &
      &          bwd_rocFFT, WK_rocFFT, WK_FFTPACK, X, elapsed)
 !
       use select_pin_rocFFT
@@ -188,7 +190,7 @@
       use copy_field_for_FFT
 !
       integer(kind = kint), intent(in) :: iflag_GPU_FFT
-      integer(kind = kint), intent(in) :: Ncomp
+      integer(kind = kint), intent(in) :: Ncomp, Ncomp_CPU
       type(calypso_rocFFT_params), intent(in), target :: bwd_rocFFT
 !
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
@@ -203,8 +205,9 @@
       call sel_norm_prt_to_bwd_rocFFT(iflag_GPU_FFT, ione, Ncomp,       &
      &                                X(1,1), bwd_rocFFT, WK_rocFFT)
       call swap_prt_spectr_to_RFFTMB(WK_FFTPACK%Nplan_FFTPACK,          &
-     &   WK_FFTPACK%istack_FFTPACK, WK_FFTPACK%Mmax_smp,                &
-     &   int(bwd_rocFFT%Nfft), Ncomp, X(1,1), WK_FFTPACK%X_FFTPACK5)
+     &    WK_FFTPACK%istack_FFTPACK, WK_FFTPACK%Mmax_smp,               &
+     &    int(bwd_rocFFT%Nfft), Ncomp_CPU, X(1,bwd_rocFFT%Ncomp+1),     &
+     &    WK_FFTPACK%X_FFTPACK5)
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !      write(*,*) 'OMP parallel start', OMP_GET_WTIME()
@@ -235,7 +238,8 @@
      &    int(bwd_rocFFT%Nfft), X(1,1))
       call swap_prt_fld_from_RFFTMB(WK_FFTPACK%Nplan_FFTPACK,           &
      &    WK_FFTPACK%istack_FFTPACK, WK_FFTPACK%Mmax_smp,               &
-     &    int(bwd_rocFFT%Nfft), WK_FFTPACK%X_FFTPACK5, Ncomp, X(1,1))
+     &    int(bwd_rocFFT%Nfft), WK_FFTPACK%X_FFTPACK5,                  &
+     &    Ncomp_CPU, X(1,bwd_rocFFT%Ncomp+1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !      write(*,*) 'CPU FFT clock',   elapsed(3)

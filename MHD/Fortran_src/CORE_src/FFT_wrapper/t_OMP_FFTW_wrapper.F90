@@ -8,22 +8,33 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
+!!   wrapper subroutine for initierize FFTW plans
+!! ------------------------------------------------------------------
+!!      subroutine init_OMP_FFTW(Ncomp, Nfft, Nfft_c,                   &
+!!     &          plan_forward, plan_backward, X_FFTW, C_FFTW)
+!!        integer(kind = kint), intent(in) :: Nfft, Nfft_c, Ncomp
+!!        integer(kind = fftw_plan), intent(inout) :: plan_forward
+!!        integer(kind = fftw_plan), intent(inout) :: plan_backward
+!!        real(kind = kreal), intent(inout) :: X_FFTW(Ncomp,Nfft)
+!!        complex(kind = fftw_complex), intent(inout)                   &
+!!     &                                  :: C_FFTW(Ncomp,WK%Nfft_c)
+!!
+!! ------------------------------------------------------------------
+!!   wrapper subroutine for clear FFTW plans
+!!        CAUTION!!  dfftw_destroy_plan oftern makes SEGMENTAION FAULT!!
+!! ------------------------------------------------------------------
+!!      subroutine destroy_OMP_FFTW(plan_forward, plan_backward)
+!!        integer(kind = fftw_plan), intent(in) :: plan_forward
+!!        integer(kind = fftw_plan), intent(in) :: plan_backward
+!!
+!! ------------------------------------------------------------------
+!!   wrapper subroutine for initierize FFT by FFTW
+!! ------------------------------------------------------------------
 !!      subroutine init_OMP_FFTW_type(Ncomp, Nfft, WK)
 !!      subroutine finalize_OMP_FFTW_type(WK)
 !!      subroutine verify_wk_OMP_FFTW_type(Ncomp, Nfft, WK)
 !!
-!!   wrapper subroutine for initierize FFT by FFTW
 !! ------------------------------------------------------------------
-!!
-!!      subroutine OMP_forward_FFTW_type(Ncomp, Nfft, X, WK,            &
-!!     &                                 elapsed_fft, elapsed_cpy))
-!!        integer(kind = kint), intent(in) :: Ncomp, Nfft
-!!        real(kind = kreal), intent(inout) :: X(Ncomp, Nfft)
-!!        type(working_OMP_FFTW), intent(inout) :: WK
-!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!! ------------------------------------------------------------------
-!!
-!! wrapper subroutine for forward Fourier transform by FFTW3
 !!
 !!   a_{k} = \frac{2}{Nfft}
 !!          \sum_{j=0}^{Nfft-1} [x_{j} \cos (\frac{2\pi j k}{Nfft})]
@@ -36,16 +47,6 @@
 !!          \sum_{j=0}^{Nfft-1} [x_{j} \cos (\frac{2\pi j k}{Nfft})]
 !!
 !! ------------------------------------------------------------------
-!!
-!!      subroutine OMP_backward_FFTW_type(Ncomp, Nfft, X, WK            &
-!!     &                                 elapsed_fft, elapsed_cpy)
-!!        integer(kind = kint), intent(in) :: Ncomp, Nfft
-!!        real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
-!!        type(working_OMP_FFTW), intent(inout) :: WK
-!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!! ------------------------------------------------------------------
-!!
-!! wrapper subroutine for backward Fourier transform by FFTW3
 !!
 !!   x_{k} = a_{0} + (-1)^{j} a_{Nfft/2} + sum_{k=1}^{Nfft/2-1}
 !!          (a_{k} \cos(2\pijk/Nfft) + b_{k} \sin(2\pijk/Nfft))
@@ -79,8 +80,6 @@
       use m_constants
       use m_fftw_parameters
 !
-      use OMP_FFTW3_wrapper
-!
       implicit none
 !
 !>      structure for working data for FFTW
@@ -102,12 +101,69 @@
         integer(kind = kint) :: iflag_fft_mul_len =  -1
       end type working_OMP_FFTW
 !
+      integer, parameter :: IONE_4 = 1
+      integer, parameter :: inembed = 0
+!
+      private :: IONE_4, inembed
+!
       private :: alloc_OMP_FFTW_plan_t, dealloc_OMP_FFTW_plan_t
 !
 ! ------------------------------------------------------------------
 !
       contains
 !
+! ------------------------------------------------------------------
+!
+      subroutine init_OMP_FFTW(Ncomp, Nfft, Nfft_c,                     &
+     &          plan_forward, plan_backward, X_FFTW, C_FFTW)
+!
+      use m_OMP_FFTW3_counter
+!
+      integer(kind = kint), intent(in) :: Nfft, Nfft_c, Ncomp
+!
+      integer(kind = fftw_plan), intent(inout) :: plan_forward
+      integer(kind = fftw_plan), intent(inout) :: plan_backward
+      real(kind = kreal), intent(inout) :: X_FFTW(Ncomp,Nfft)
+      complex(kind = fftw_complex), intent(inout)                       &
+     &                                  :: C_FFTW(Ncomp,Nfft_c)
+!
+      integer(kind = 4) :: Nfft4, howmany
+!
+!
+      Nfft4 = int(Nfft,KIND(Nfft4))
+      howmany = int(Ncomp, KIND(howmany))
+!
+      call check_init_OMP_FFTW()
+!
+      call dfftw_plan_many_dft_r2c                                      &
+     &   (plan_forward, IONE_4, Nfft4, howmany,                         &
+     &    X_FFTW(1,1), inembed, howmany, IONE_4,                        &
+     &    C_FFTW(1,1), inembed, howmany, IONE_4, FFTW_KEMO_EST)
+      call dfftw_plan_many_dft_c2r                                      &
+     &   (plan_backward, IONE_4, Nfft4, howmany,                        &
+     &    C_FFTW(1,1), inembed, howmany, IONE_4,                        &
+     &    X_FFTW(1,1), inembed, howmany, IONE_4, FFTW_KEMO_EST)
+!
+      end subroutine init_OMP_FFTW
+!
+! ------------------------------------------------------------------
+!
+      subroutine destroy_OMP_FFTW(plan_forward, plan_backward)
+!
+      use m_OMP_FFTW3_counter
+!
+      integer(kind = fftw_plan), intent(in) :: plan_forward
+      integer(kind = fftw_plan), intent(in) :: plan_backward
+!
+!
+      call dfftw_destroy_plan(plan_forward)
+      call dfftw_destroy_plan(plan_backward)
+      call dfftw_cleanup
+      call check_clean_OMP_FFTW()
+!
+      end subroutine destroy_OMP_FFTW
+!
+! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
       subroutine init_OMP_FFTW_type(Ncomp, Nfft, WK)
@@ -157,42 +213,6 @@
       end if
 !
       end subroutine verify_wk_OMP_FFTW_type
-!
-! ------------------------------------------------------------------
-! ------------------------------------------------------------------
-!
-      subroutine OMP_forward_FFTW_type(Ncomp, Nfft, X, WK,              &
-     &                                 elapsed_fft, elapsed_cpy)
-!
-      integer(kind = kint), intent(in) :: Ncomp, Nfft
-!
-      real(kind = kreal), intent(inout) :: X(Ncomp, Nfft)
-      type(working_OMP_FFTW), intent(inout) :: WK
-      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!
-!
-      call forward_mul_OMP_FFTW                                         &
-     &   (WK%omp_plan_fwd, Ncomp, Nfft, WK%aNfft, X,                    &
-     &    WK%Nfft_c, WK%C_FFTW_mul, elapsed_fft, elapsed_cpy)
-!
-      end subroutine OMP_forward_FFTW_type
-!
-! ------------------------------------------------------------------
-!
-      subroutine OMP_backward_FFTW_type(Ncomp, Nfft, X, WK,             &
-     &                                  elapsed_fft, elapsed_cpy)
-!
-      integer(kind = kint), intent(in) :: Ncomp, Nfft
-!
-      real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
-      type(working_OMP_FFTW), intent(inout) :: WK
-      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!
-!
-      call backward_mul_OMP_FFTW(WK%omp_plan_bwd, Ncomp, Nfft, X,       &
-     &    WK%Nfft_c, WK%C_FFTW_mul, elapsed_fft, elapsed_cpy)
-!
-      end subroutine OMP_backward_FFTW_type
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
