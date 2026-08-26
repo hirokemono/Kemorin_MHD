@@ -109,7 +109,6 @@
 !
       use calypso_multi_rocFFT
       use calypso_multi_fftpack
-      use multi_pin_FFTPACK_smp
       use normalize_for_rocFFT
       use swap_prt_data_for_FFTPACK
       use copy_field_for_FFT
@@ -153,7 +152,7 @@
 !!   3. The rest of the CPU threads immediately and execute
 !      write(*,*) 'FFT loop start', OMP_GET_WTIME() - start
       st_c = OMP_GET_WTIME()
-      call multi_pin_RFFTMF_smp(WK_FFTPACK%Nplan_FFTPACK,               &
+      call multi_RFFTMF_smp(WK_FFTPACK%Nplan_FFTPACK,                   &
      &    WK_FFTPACK%istack_FFTPACK, WK_FFTPACK%Mmax_smp,               &
      &    int(fwd_rocFFT%Nfft), WK_FFTPACK%X_FFTPACK5,                  &
      &    WK_FFTPACK%lsave_FFTPACK, WK_FFTPACK%WSAVE_FFTPACK,           &
@@ -184,7 +183,6 @@
 !
       use calypso_multi_rocFFT
       use calypso_multi_fftpack
-      use multi_pin_FFTPACK_smp
       use normalize_for_rocFFT
       use swap_prt_data_for_FFTPACK
       use copy_field_for_FFT
@@ -224,7 +222,7 @@
 !
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
-      call multi_pin_RFFTMB_smp(WK_FFTPACK%Nplan_FFTPACK,               &
+      call multi_RFFTMB_smp(WK_FFTPACK%Nplan_FFTPACK,                   &
      &    WK_FFTPACK%istack_FFTPACK, WK_FFTPACK%Mmax_smp,               &
      &    int(bwd_rocFFT%Nfft), WK_FFTPACK%X_FFTPACK5,                  &
      &    WK_FFTPACK%lsave_FFTPACK, WK_FFTPACK%WSAVE_FFTPACK,           &

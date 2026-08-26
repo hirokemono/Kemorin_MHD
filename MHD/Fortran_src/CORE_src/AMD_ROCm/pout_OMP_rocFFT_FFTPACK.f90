@@ -9,13 +9,14 @@
 !!
 !!@verbatim
 !!      subroutine init_pout_OMP_rocFFT_FFTPACK                         &
-!!     &         (Ncomp, Ncomp_GPU, Ncomp_CPU, Nfft, Nsmp,              &
+!!     &         (Ncomp, Ncomp_GPU, N8omp_CPU, Nfft, Nsmp, Nstacksmp,   &
 !!     &          fwd_rocFFT, bwd_rocFFT, WK_rocFFT, WK_FFTPACK)
 !!      subroutine finalize_OMP_rocFFT_FFTPACK(fwd_rocFFT, bwd_rocFFT,  &
 !!     &                                       WK_rocFFT, WK_FFTPACK)
 !!        integer(kind = kint), intent(in) :: Nsmp
 !!        integer(kind = kint), intent(in) :: Ncomp, Ncomp_GPU, Ncomp_CPU
 !!        integer(kind = kint), intent(in) :: Nfft
+!!        integer(kind = kint), intent(inout) :: Nstacksmp(0:Nsmp)
 !!        type(calypso_rocFFT_params), intent(inout) :: fwd_rocFFT
 !!        type(calypso_rocFFT_params), intent(inout) :: bwd_rocFFT
 !!        type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
@@ -52,7 +53,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine init_pout_OMP_rocFFT_FFTPACK                           &
-     &         (Ncomp, Ncomp_GPU, Ncomp_CPU, Nfft, Nsmp,                &
+     &         (Ncomp, Ncomp_GPU, Ncomp_CPU, Nfft, Nsmp, Nstacksmp,     &
      &          fwd_rocFFT, bwd_rocFFT, WK_rocFFT, WK_FFTPACK)
 !
       use multi_pout_complex_rocFFT
@@ -63,25 +64,21 @@
       integer(kind = kint), intent(in) :: Ncomp, Ncomp_GPU, Ncomp_CPU
       integer(kind = kint), intent(in) :: Nfft
 !
+      integer(kind = kint), intent(inout) :: Nstacksmp(0:Nsmp)
       type(calypso_rocFFT_params), intent(inout) :: fwd_rocFFT
       type(calypso_rocFFT_params), intent(inout) :: bwd_rocFFT
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
       type(working_FFTPACK), intent(inout) :: WK_FFTPACK
 !
-      integer(kind = kint), allocatable :: istack_smp(:)
       integer(kind = kint) :: max_4_smp = 0
 !
 !
-      allocate(istack_smp(0:Nsmp))
-      istack_smp(0:Nsmp) = 0
-!
       call count_number_4_smp(Nsmp, (Ncomp_GPU+1), Ncomp,               &
-     &                        istack_smp, max_4_smp)
+     &                        Nstacksmp, max_4_smp)
 !
       call calypso_pout_rocFFT_init(Ncomp_GPU, Ncomp_GPU, Nfft,         &
      &                              fwd_rocFFT, bwd_rocFFT, WK_rocFFT)
-      call init_WK_FFTPACK_t(Nsmp, istack_smp, Nfft, WK_FFTPACK)
-      deallocate(istack_smp)
+      call init_WK_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WK_FFTPACK)
 !
       end subroutine init_pout_OMP_rocFFT_FFTPACK
 !
@@ -110,8 +107,7 @@
       use copy_field_for_FFT
       use normalize_for_rocFFT
       use calypso_multi_rocFFT
-!
-      use multi_pout_FFTPACK_smp
+      use calypso_multi_fftpack
       use normalize_for_FFTPACK
 !
       integer(kind = kint), intent(in) :: Ncomp
@@ -150,7 +146,7 @@
 !
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
-      call multi_pout_RFFTMF_smp(WK_FFTPACK%Nplan_FFTPACK,              &
+      call multi_RFFTMF_smp(WK_FFTPACK%Nplan_FFTPACK,                   &
      &    WK_FFTPACK%istack_FFTPACK, WK_FFTPACK%Mmax_smp,               &
      &    int(fwd_rocFFT%Nfft), WK_FFTPACK%X_FFTPACK5,                  &
      &    WK_FFTPACK%lsave_FFTPACK, WK_FFTPACK%WSAVE_FFTPACK,           &
@@ -182,8 +178,7 @@
       use copy_field_for_FFT
       use normalize_for_rocFFT
       use calypso_multi_rocFFT
-!
-      use multi_pout_FFTPACK_smp
+      use calypso_multi_fftpack
       use normalize_for_FFTPACK
 !
       integer(kind = kint), intent(in) :: Ncomp
@@ -222,7 +217,7 @@
 !
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
-      call multi_pout_RFFTMB_smp(WK_FFTPACK%Nplan_FFTPACK,              &
+      call multi_RFFTMB_smp(WK_FFTPACK%Nplan_FFTPACK,                   &
      &    WK_FFTPACK%istack_FFTPACK, WK_FFTPACK%Mmax_smp,               &
      &    int(bwd_rocFFT%Nfft), WK_FFTPACK%X_FFTPACK5,                  &
      &    WK_FFTPACK%lsave_FFTPACK, WK_FFTPACK%WSAVE_FFTPACK,           &

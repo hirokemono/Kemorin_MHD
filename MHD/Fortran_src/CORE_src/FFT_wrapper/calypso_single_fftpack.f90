@@ -103,8 +103,6 @@
 !
       subroutine calypso_single_RFFTMI(Nsmp, Nstacksmp, Nfft, WK)
 !
-      use multi_pout_FFTPACK_smp
-!
       integer(kind = kint), intent(in) ::  Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
 !

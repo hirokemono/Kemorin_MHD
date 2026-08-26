@@ -7,7 +7,13 @@
 !>@brief  Fourier transform using FFTPACK5
 !!
 !!@verbatim
-!!  ------------------------------------------------------------------
+!! ------------------------------------------------------------------
+!!   wrapper subroutine for initierize FFT
+!! ------------------------------------------------------------------
+!!      subroutine init_CALYPSO_FFTPACK(Nfft, lSAVE, WSAVE)
+!!        integer(kind = kint), intent(in) :: lSAVE
+!!        integer(kind = kint), intent(in) ::  Nfft
+!!        real(kind = 8), intent(in) :: WSAVE(lSAVE)
 !!
 !!      subroutine finalize_WK_FFTPACK_t(WK)
 !!      subroutine verify_wk_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WK)
@@ -86,6 +92,21 @@
 !
 ! ------------------------------------------------------------------
 !
+      subroutine init_CALYPSO_FFTPACK(Nfft, lSAVE, WSAVE)
+!
+      integer(kind = kint), intent(in) :: lSAVE
+      integer(kind = kint), intent(in) ::  Nfft
+      real(kind = 8), intent(in) :: WSAVE(lSAVE)
+!
+      integer(kind = kint) :: ierr
+!
+      call RFFTMI(Nfft, WSAVE, lSAVE, ierr)
+!
+      end subroutine init_CALYPSO_FFTPACK
+!
+! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
       subroutine finalize_WK_FFTPACK_t(WK)
 !
       type(working_FFTPACK), intent(inout) :: WK
@@ -99,8 +120,6 @@
 ! ------------------------------------------------------------------
 !
       subroutine verify_wk_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WK)
-!
-      use multi_pout_FFTPACK_smp
 !
       integer(kind = kint), intent(in) ::  Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)

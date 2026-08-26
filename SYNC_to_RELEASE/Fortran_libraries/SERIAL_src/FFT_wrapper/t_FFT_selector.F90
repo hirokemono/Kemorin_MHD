@@ -188,7 +188,6 @@
       subroutine verify_FFT_select                                      &
      &         (iflag_FFT, Nsmp, Nstacksmp, Nfft, WKS)
 !
-      use calypso_multi_fftpack
       use calypso_multi_FFTW3
       use calypso_single_FFTW3
 !
@@ -223,7 +222,6 @@
       subroutine forward_FFT_select(iflag_FFT, M, Nfft, X, WKS,         &
      &                              elapsed_fft, elapsed_cpy)
 !
-      use calypso_multi_fftpack
       use calypso_single_FFTW3
       use multi_pout_FFTPACK_smp
 !

@@ -108,7 +108,7 @@
      &         (Ncomp, fwd_rocFFT, WK_rocFFT, WK_FFTPACK, X, elapsed)
 !
       use calypso_multi_rocFFT
-      use multi_pout_FFTPACK_smp
+      use calypso_multi_fftpack
       use normalize_for_rocFFT
       use normalize_for_OMP_FFTW
       use normalize_for_FFTPACK
@@ -152,7 +152,7 @@
 !
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
-      call multi_pout_RFFTMF_smp(WK_FFTPACK%Nplan_FFTPACK,              &
+      call multi_RFFTMF_smp(WK_FFTPACK%Nplan_FFTPACK,                   &
      &    WK_FFTPACK%istack_FFTPACK, WK_FFTPACK%Mmax_smp,               &
      &    int(fwd_rocFFT%Nfft), WK_FFTPACK%X_FFTPACK5,                  &
      &    WK_FFTPACK%lsave_FFTPACK, WK_FFTPACK%WSAVE_FFTPACK,           &
@@ -182,7 +182,7 @@
      &         (Ncomp, bwd_rocFFT, WK_rocFFT, WK_FFTPACK, X, elapsed)
 !
       use calypso_multi_rocFFT
-      use multi_pout_FFTPACK_smp
+      use calypso_multi_fftpack
       use normalize_for_rocFFT
       use normalize_for_OMP_FFTW
       use normalize_for_FFTPACK
@@ -226,7 +226,7 @@
 !
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
-      call multi_pout_RFFTMB_smp(WK_FFTPACK%Nplan_FFTPACK,              &
+      call multi_RFFTMB_smp(WK_FFTPACK%Nplan_FFTPACK,                   &
      &    WK_FFTPACK%istack_FFTPACK, WK_FFTPACK%Mmax_smp,               &
      &    int(bwd_rocFFT%Nfft), WK_FFTPACK%X_FFTPACK5,                  &
      &    WK_FFTPACK%lsave_FFTPACK, WK_FFTPACK%WSAVE_FFTPACK,           &
