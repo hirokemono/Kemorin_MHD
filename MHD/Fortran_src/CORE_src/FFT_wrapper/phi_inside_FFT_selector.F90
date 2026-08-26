@@ -265,11 +265,11 @@
       use calypso_single_ispack
       use calypso_single_ispack3
       use calypso_single_fftpack
-      use calypso_multi_FFTW3
       use calypso_single_FFTW3
       use multi_pin_FFTPACK_smp
       use multi_pin_ISPACK1_smp
       use multi_pin_ISPACK3_smp
+      use multi_pin_FFTW3_smp
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: M, Nfft
@@ -297,8 +297,8 @@
      &                                 elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
       else if(abs(iflag_FFT) .eq. (iflag_FFTW + iflag_once_fft)) then
-        call calypso_multi_pin_fwd_FFTW3(M, Nfft, X, WKS%WK_MUL_FFTW,   &
-     &                                   elapsed_fft, elapsed_cpy)
+        call multi_pin_fwd_FFTW3(M, Nfft, X, WKS%WK_MUL_FFTW,           &
+     &                           elapsed_fft, elapsed_cpy)
       else if(abs(iflag_FFT) .eq. (iflag_FFTW + iflag_single_fft)) then
         call calypso_single_pin_fwd_FFTW3(M, Nfft, X, WKS%WK_FFTW,      &
      &                                    elapsed_fft, elapsed_cpy)
@@ -323,11 +323,11 @@
       use calypso_single_ispack
       use calypso_single_ispack3
       use calypso_single_fftpack
-      use calypso_multi_FFTW3
       use calypso_single_FFTW3
       use multi_pin_FFTPACK_smp
       use multi_pin_ISPACK1_smp
       use multi_pin_ISPACK3_smp
+      use multi_pin_FFTW3_smp
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: M, Nfft
@@ -355,8 +355,8 @@
      &                                 elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
       else if(abs(iflag_FFT) .eq. (iflag_FFTW + iflag_once_fft)) then
-        call calypso_multi_pin_bwd_FFTW3(M, Nfft, X, WKS%WK_MUL_FFTW,   &
-     &                                   elapsed_fft, elapsed_cpy)
+        call multi_pin_bwd_FFTW3(M, Nfft, X, WKS%WK_MUL_FFTW,           &
+     &                           elapsed_fft, elapsed_cpy)
       else if(abs(iflag_FFT) .eq. (iflag_FFTW + iflag_single_fft)) then
         call calypso_single_pin_bwd_FFTW3(M, Nfft, X, WKS%WK_FFTW,      &
      &                                    elapsed_fft, elapsed_cpy)

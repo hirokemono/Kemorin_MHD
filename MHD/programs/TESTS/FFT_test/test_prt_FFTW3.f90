@@ -34,6 +34,7 @@
       use t_parameters_FFT_tests
       use t_ctl_data_4_FFT_tests
       use calypso_multi_FFTW3
+      use multi_pin_FFTW3_smp
 !
       implicit none
 !
@@ -82,7 +83,7 @@
 !$omp end parallel workshare
         ft3%elapsed(3) = ft3%elapsed(3) + OMP_GET_WTIME() - ft3%start
 !
-        call calypso_multi_pin_fwd_FFTW3(ft3%nfld, ft3%ngrd, ft3%s_k,   &
+        call multi_pin_fwd_FFTW3(ft3%nfld, ft3%ngrd, ft3%s_k,           &
      &      WK_MUL_FFTW_t, ft3%elapsed(2), ft3%elapsed(3))
 !
         ft3%start = OMP_GET_WTIME()
@@ -91,7 +92,7 @@
 !$omp end parallel workshare
         ft3%elapsed(3) = ft3%elapsed(3) + OMP_GET_WTIME() - ft3%start
 !
-        call calypso_multi_pin_bwd_FFTW3(ft3%nfld, ft3%ngrd, ft3%f_x,   &
+        call multi_pin_bwd_FFTW3(ft3%nfld, ft3%ngrd, ft3%f_x,           &
      &      WK_MUL_FFTW_t, ft3%elapsed(2), ft3%elapsed(3))
       end do
 !

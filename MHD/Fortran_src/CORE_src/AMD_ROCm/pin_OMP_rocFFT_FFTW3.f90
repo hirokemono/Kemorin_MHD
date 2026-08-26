@@ -111,7 +111,7 @@
      &          fwd_rocFFT, WK_rocFFT, WK_FFTW, X, elapsed)
 !
       use calypso_multi_rocFFT
-      use multi_pin_FFTW3_smp
+      use calypso_multi_FFTW3
       use normalize_for_rocFFT
       use normalize_for_FFTW
       use copy_field_for_FFT
@@ -152,10 +152,10 @@
 !!   3. The rest of the CPU threads immediately and execute
 !      write(*,*) 'FFT loop start', OMP_GET_WTIME() - start
       st_c = OMP_GET_WTIME()
-      call multi_pin_fwd_FFTW3_smp(WK_FFTW%plan_fowd_mul,               &
+      call multi_fwd_FFTW3_smp(WK_FFTW%plan_fowd_mul,                   &
      &    WK_FFTW%Nplan_FFTW, WK_FFTW%istack_FFTW,                      &
-     &    Ncomp, int(fwd_rocFFT%Nfft), WK_FFTW%Nfft_c,                  &
-     &    X(1,fwd_rocFFT%Ncomp+1), WK_FFTW%C_FFTW_mul(1,1))
+     &    Ncomp, int(fwd_rocFFT%Nfft), X(1,fwd_rocFFT%Ncomp+1),         &
+     &    WK_FFTW%Nfft_c, WK_FFTW%C_FFTW_mul(1,1))
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
 !$omp end parallel
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
@@ -180,7 +180,7 @@
      &          bwd_rocFFT, WK_rocFFT, WK_FFTW, X, elapsed)
 !
       use calypso_multi_rocFFT
-      use multi_pin_FFTW3_smp
+      use calypso_multi_FFTW3
       use normalize_for_rocFFT
       use normalize_for_FFTW
       use copy_field_for_FFT
@@ -220,7 +220,7 @@
 !
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
-      call multi_pin_bwd_FFTW3_smp(WK_FFTW%plan_back_mul,               &
+      call multi_bwd_FFTW3_smp(WK_FFTW%plan_back_mul,                   &
      &    WK_FFTW%Nplan_FFTW, WK_FFTW%istack_FFTW,                      &
      &    Ncomp_CPU, WK_FFTW%Nfft_c, WK_FFTW%C_FFTW_mul(1,1),           &
      &    int(bwd_rocFFT%Nfft), X(1,bwd_rocFFT%Ncomp+1))

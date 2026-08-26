@@ -60,8 +60,6 @@
       use m_constants
       use m_fftw_parameters
 !
-      use multi_pout_FFTW3_smp
-!
       implicit none
 !
 !>      structure for working data for FFTW

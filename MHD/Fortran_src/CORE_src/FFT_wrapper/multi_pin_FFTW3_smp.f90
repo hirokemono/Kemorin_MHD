@@ -8,25 +8,12 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine multi_pin_fwd_FFTW3(plan_forward_smp,                &
-!!     &          Nsmp, Nstacksmp, Ncomp, Nfft, aNfft, Nfft_c,          &
-!!     &          X, C_FFTW, elapsed_fft, elapsed_cpy)
-!!        integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
-!!        integer(kind = kint), intent(in) :: Ncomp, Nfft, Nfft_c
-!!        integer(kind = fftw_plan), intent(in) :: plan_forward_smp(Nsmp)
-!!        real(kind = kreal), intent(in) :: aNfft
+!!      subroutine multi_pin_fwd_FFTW3(Ncomp, Nfft, X, WK,              &
+!!     &                               elapsed_fft, elapsed_cpy)
+!!        integer(kind = kint), intent(in) :: Ncomp, Nfft
+!!        type(working_mul_FFTW), intent(inout) :: WK
 !!        real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
-!!        complex(kind = fftw_complex), intent(inout)                   &
-!!     &                                  :: C_FFTW(Nfft_c,Ncomp)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!!      subroutine multi_pin_fwd_FFTW3_smp(plan_forward_smp,            &
-!!     &          Nsmp, Nstacksmp, Ncomp, Nfft, Nfft_c, X, C_FFTW)
-!!        integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
-!!        integer(kind = kint), intent(in) :: Ncomp, Nfft, Nfft_c
-!!        integer(kind = fftw_plan), intent(in) :: plan_forward_smp(Nsmp)
-!!        real(kind = kreal), intent(in) :: X(Nfft,Ncomp)
-!!        complex(kind = fftw_complex), intent(inout)                   &
-!!     &                                  :: C_FFTW(Nfft_c,Ncomp)
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by FFTW3
@@ -43,25 +30,12 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine multi_pin_bwd_FFTW3(plan_backward_smp,               &
-!!     &          Nsmp, Nstacksmp, Ncomp, Nfft, Nfft_c,                 &
-!!     &          X, C_FFTW, elapsed_fft, elapsed_cpy)
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-!!        integer(kind = kint), intent(in) :: Ncomp, Nfft, Nfft_c
-!!        integer(kind=fftw_plan), intent(in) :: plan_backward_smp(Nsmp)
+!!      subroutine multi_pin_bwd_FFTW3(Ncomp, Nfft, X, WK,              &
+!!     &                               elapsed_fft, elapsed_cpy)
+!!        integer(kind = kint), intent(in) :: Ncomp, Nfft
+!!        type(working_mul_FFTW), intent(inout) :: WK
 !!        real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
-!!        complex(kind = fftw_complex), intent(inout)                   &
-!!     &                                  :: C_FFTW(Nfft_c,Ncomp)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!!      subroutine multi_pin_bwd_FFTW3_smp(plan_backward_smp,           &
-!!     &          Nsmp, Nstacksmp, Ncomp, Nfft_c, C_FFTW, Nfft, X)
-!!        integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
-!!        integer(kind = kint), intent(in) :: Ncomp, Nfft, Nfft_c
-!!        integer(kind = fftw_plan), intent(in)                         &
-!!     &                             :: plan_backward_smp(Nsmp)
-!!        complex(kind = fftw_complex), intent(in)                      &
-!!     &                             :: C_FFTW(Nfft_c,Ncomp)
-!!        real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by FFTW3
@@ -113,20 +87,17 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine multi_pin_fwd_FFTW3(plan_forward_smp,                  &
-     &          Nsmp, Nstacksmp, Ncomp, Nfft, aNfft, Nfft_c,            &
-     &          X, C_FFTW, elapsed_fft, elapsed_cpy)
+      subroutine multi_pin_fwd_FFTW3(Ncomp, Nfft, X, WK,                &
+     &                               elapsed_fft, elapsed_cpy)
 !
+      use t_multi_FFTW_wrapper
+      use calypso_multi_FFTW3
       use normalize_for_FFTW
 !
-      integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint), intent(in) :: Ncomp, Nfft, Nfft_c
-      integer(kind = fftw_plan), intent(in) :: plan_forward_smp(Nsmp)
-      real(kind = kreal), intent(in) :: aNfft
+      integer(kind = kint), intent(in) :: Ncomp, Nfft
 !
+      type(working_mul_FFTW), intent(inout) :: WK
       real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
-      complex(kind = fftw_complex), intent(inout)                       &
-     &                                  :: C_FFTW(Nfft_c,Ncomp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
@@ -134,35 +105,35 @@
 !
       start = OMP_GET_WTIME()
 !$omp parallel
-      call multi_pin_fwd_FFTW3_smp(plan_forward_smp, Nsmp, Nstacksmp,   &
-     &                             Ncomp, Nfft, Nfft_c, X, C_FFTW)
+      call multi_fwd_FFTW3_smp                                          &
+     &   (WK%plan_fowd_mul, WK%Nplan_FFTW, WK%istack_FFTW,              &
+     &    Ncomp, Nfft, X, WK%Nfft_c, WK%C_FFTW_mul)
 !$omp end parallel
       elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
 !   normalization
       start = OMP_GET_WTIME()
-      call normalize_fwd_OMP_FFTW(aNfft, Ncomp, NFFT_c, C_FFTW(1,1))
-      call copy_from_prt_fwd_OMP_FFTW(Ncomp, NFFT_c, C_FFTW(1,1),       &
-     &                                Ncomp, Nfft, X(1,1))
+      call normalize_fwd_OMP_FFTW(WK%aNfft, Ncomp, WK%Nfft_c,           &
+     &                            WK%C_FFTW_mul(1,1))
+      call copy_from_prt_fwd_OMP_FFTW                                   &
+     &   (Ncomp, WK%Nfft_c, WK%C_FFTW_mul(1,1), Ncomp, Nfft, X(1,1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       end subroutine multi_pin_fwd_FFTW3
 !
 ! ------------------------------------------------------------------
 !
-      subroutine multi_pin_bwd_FFTW3(plan_backward_smp,                 &
-     &          Nsmp, Nstacksmp, Ncomp, Nfft, Nfft_c,                   &
-     &          X, C_FFTW, elapsed_fft, elapsed_cpy)
+      subroutine multi_pin_bwd_FFTW3(Ncomp, Nfft, X, WK,                &
+     &                               elapsed_fft, elapsed_cpy)
 !
+      use t_multi_FFTW_wrapper
+      use calypso_multi_FFTW3
       use normalize_for_FFTW
 !
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint), intent(in) :: Ncomp, Nfft, Nfft_c
-      integer(kind = fftw_plan), intent(in) :: plan_backward_smp(Nsmp)
+      integer(kind = kint), intent(in) :: Ncomp, Nfft
 !
+      type(working_mul_FFTW), intent(inout) :: WK
       real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
-      complex(kind = fftw_complex), intent(inout)                       &
-     &                                  :: C_FFTW(Nfft_c,Ncomp)
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start
@@ -171,78 +142,18 @@
 !   normalization
       start = OMP_GET_WTIME()
       call norm_copy_to_prt_bwd_OMP_FFTW(Ncomp, Nfft, X(1,1),           &
-     &                                   Ncomp, NFFT_c, C_FFTW(1,1))
+     &    Ncomp, WK%Nfft_c, WK%C_FFTW_mul(1,1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
       start = OMP_GET_WTIME()
 !$omp parallel
-      call multi_pin_bwd_FFTW3_smp(plan_backward_smp, Nsmp, Nstacksmp,  &
-     &                             Ncomp, Nfft_c, C_FFTW, Nfft, X)
+      call multi_bwd_FFTW3_smp                                          &
+     &   (WK%plan_back_mul, WK%Nplan_FFTW, WK%istack_FFTW,              &
+     &    Ncomp,  WK%Nfft_c, WK%C_FFTW_mul, Nfft, X)
 !$omp end parallel
       elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
 !
       end subroutine multi_pin_bwd_FFTW3
-!
-! ------------------------------------------------------------------
-! ------------------------------------------------------------------
-!
-      subroutine multi_pin_fwd_FFTW3_smp(plan_forward_smp,              &
-     &          Nsmp, Nstacksmp, Ncomp, Nfft, Nfft_c, X, C_FFTW)
-!
-      integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint), intent(in) :: Ncomp, Nfft, Nfft_c
-      integer(kind = fftw_plan), intent(in) :: plan_forward_smp(Nsmp)
-      real(kind = kreal), intent(in) :: X(Nfft,Ncomp)
-!
-      complex(kind = fftw_complex), intent(inout)                       &
-     &                                  :: C_FFTW(Nfft_c,Ncomp)
-!
-      real(kind = kreal) :: start
-      integer(kind = kint) :: ip, ist, num
-!
-!
-!$omp do private(ip,ist,num)
-      do ip = 1, Nsmp
-        num = Nstacksmp(ip  ) - Nstacksmp(ip-1)
-        if(num .le. 0) cycle
-!
-        ist = Nstacksmp(ip-1) - Nstacksmp(0)
-        call dfftw_execute_dft_r2c(plan_forward_smp(ip),                &
-     &                             X(1,ist+1), C_FFTW(1,ist+1))
-      end do
-!$omp end do nowait
-!
-      end subroutine multi_pin_fwd_FFTW3_smp
-!
-! ------------------------------------------------------------------
-!
-      subroutine multi_pin_bwd_FFTW3_smp(plan_backward_smp,             &
-     &          Nsmp, Nstacksmp, Ncomp, Nfft_c, C_FFTW, Nfft, X)
-!
-      integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint), intent(in) :: Ncomp, Nfft, Nfft_c
-      integer(kind = fftw_plan), intent(in)                             &
-     &                             :: plan_backward_smp(Nsmp)
-      complex(kind = fftw_complex), intent(in)                          &
-     &                             :: C_FFTW(Nfft_c,Ncomp)
-!
-      real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
-!
-      integer(kind = kint) :: ip, ist, num
-!
-!
-!$omp do private(ip,ist,num)
-      do ip = 1, Nsmp
-        num = Nstacksmp(ip) - Nstacksmp(ip-1)
-        if(num .le. 0) cycle
-!
-        ist = Nstacksmp(ip-1) - Nstacksmp(0)
-        call dfftw_execute_dft_c2r(plan_backward_smp(ip),               &
-     &                             C_FFTW(1,ist+1), X(1,ist+1))
-      end do
-!$omp end do nowait
-!
-      end subroutine multi_pin_bwd_FFTW3_smp
 !
 ! ------------------------------------------------------------------
 !

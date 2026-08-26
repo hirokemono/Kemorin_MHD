@@ -272,11 +272,11 @@
       use calypso_multi_ispack3
       use calypso_single_ispack3
       use calypso_single_fftpack
-      use calypso_multi_FFTW3
       use calypso_single_FFTW3
       use multi_pout_FFTPACK_smp
       use multi_pout_ISPACK1_smp
       use multi_pout_ISPACK3_smp
+      use multi_pout_FFTW3_smp
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: M, Nfft
@@ -301,8 +301,8 @@
      &                                  elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
       else if(iflag_FFT .eq. (iflag_FFTW + iflag_once_fft)) then
-        call calypso_multi_pout_fwd_FFTW3(M, Nfft, X, WKS%WK_MUL_FFTW,  &
-     &                                    elapsed_fft, elapsed_cpy)
+        call multi_pout_fwd_FFTW3(M, Nfft, X, WKS%WK_MUL_FFTW,          &
+     &                            elapsed_fft, elapsed_cpy)
       else if(iflag_FFT .eq. (iflag_FFTW + iflag_single_fft)) then
         call FFTW_forward_type(M, Nfft, X, WKS%WK_FFTW,                 &
      &                         elapsed_fft, elapsed_cpy)
@@ -326,11 +326,11 @@
       use calypso_single_ispack
       use calypso_single_ispack3
       use calypso_single_fftpack
-      use calypso_multi_FFTW3
       use calypso_single_FFTW3
       use multi_pout_FFTPACK_smp
       use multi_pout_ISPACK1_smp
       use multi_pout_ISPACK3_smp
+      use multi_pout_FFTW3_smp
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: M, Nfft
@@ -355,8 +355,8 @@
      &                                  elapsed_fft, elapsed_cpy)
 #ifdef FFTW3
       else if(iflag_FFT .eq. (iflag_FFTW + iflag_once_fft)) then
-        call calypso_multi_pout_bwd_FFTW3(M, Nfft, X, WKS%WK_MUL_FFTW,  &
-     &                                    elapsed_fft, elapsed_cpy)
+        call multi_pout_bwd_FFTW3(M, Nfft, X, WKS%WK_MUL_FFTW,          &
+     &                            elapsed_fft, elapsed_cpy)
       else if(iflag_FFT .eq. (iflag_FFTW + iflag_single_fft)) then
         call FFTW_backward_type(M, Nfft, X, WKS%WK_FFTW,                &
      &                          elapsed_fft, elapsed_cpy)
