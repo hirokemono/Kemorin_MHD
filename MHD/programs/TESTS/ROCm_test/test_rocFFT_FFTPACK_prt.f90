@@ -86,9 +86,9 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Forward transform
-        call sel_pin_fwd_rocFFT_FFTPACK(fft_test_p1%iflag_FFT,          &
-     &      ft1%nfld, fwd, WK_rocFFT, WK_FFTPACK_T, ft1%s_k(1,1),       &
-     &      elapsed(2:5))
+        call sel_pin_fwd_rocFFT_FFTPACK                                 &
+     &     (fft_test_p1%iflag_FFT, ft1%nfld, Ncomp_CPU, fwd, WK_rocFFT, &
+     &      WK_FFTPACK_T, ft1%s_k(1,1), elapsed(2:5))
 !
         start = OMP_GET_WTIME()
 !$omp parallel workshare

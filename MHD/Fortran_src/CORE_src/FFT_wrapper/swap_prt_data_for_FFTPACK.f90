@@ -77,10 +77,10 @@
 !
 !$omp parallel do private(ist,num)
       do ismp = 1, Nsmp
-        ist = Nstacksmp(ismp-1)
         num = Nstacksmp(ismp) - Nstacksmp(ismp-1)
         if(num .le. 0) cycle
 !
+        ist = Nstacksmp(ismp-1) - Nstacksmp(0)
         call swap_prt_fld_to_RFFTMF_smp(ist, num, Nfft, M, X,           &
      &                                  Mmax_smp, X_FFTPACK5(1,ismp))
       end do
@@ -107,10 +107,10 @@
 !
 !$omp parallel do private(ist,num)
       do ismp = 1, Nsmp
-        ist = Nstacksmp(ismp-1)
         num = Nstacksmp(ismp) - Nstacksmp(ismp-1)
         if(num .le. 0) cycle
 !
+        ist = Nstacksmp(ismp-1) - Nstacksmp(0)
         call swap_prt_spec_from_RFFTMF_smp(ist, num, Nfft, Mmax_smp,    &
      &                                     X_FFTPACK5(1,ismp), M, X)
       end do
