@@ -10,22 +10,25 @@
 !!@verbatim
 !!      subroutine copy_rtp_fld_to_FXRTFA(Nsmp, Nstacksmp, Mmax_smp,    &
 !!     &                                  Nfft, M, X, X_ispack)
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) :: Nsmp
+!!        integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
 !!        integer(kind = kint_gl), intent(in) :: M, Mmax_smp
 !!        integer(kind = kint_gl), intent(in) :: Nfft
 !!        real(kind = kreal), intent(in) :: X(M, Nfft)
 !!        real(kind = 8), intent(inout) :: X_ispack(Mmax_smp*Nfft,Nsmp)
 !!      subroutine norm_rtp_spectr_from_FXRTFA(Nsmp, Nstacksmp,         &
 !!     &          Mmax_smp, Nfft, X_ispack, M, X)
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) :: Nsmp
+!!        integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
 !!        integer(kind = kint_gl), intent(in) :: M, Mmax_smp
-!!       integer(kind = kint_gl), intent(in) :: Nfft
+!!        integer(kind = kint_gl), intent(in) :: Nfft
 !!        real(kind = 8), intent(in) :: X_ispack(Mmax_smp*Nfft,Nsmp)
 !!        real(kind = kreal), intent(inout) :: X(M, Nfft)
 !!
 !!      subroutine norm_rtp_spectr_to_FXRTBA(Nsmp, Nstacksmp, Mmax_smp, &
 !!     &                                     Nfft, M, X, X_ispack)
-!!        integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) :: Nsmp
+!!        integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
 !!        integer(kind = kint_gl), intent(in) :: Mmax_smp
 !!        integer(kind = kint_gl), intent(in) :: M, Nfft
 !!        real(kind = kreal), intent(in) :: X(M,Nfft)
@@ -33,7 +36,8 @@
 !!     &                   :: X_ispack(Mmax_smp*Nfft,Nsmp)
 !!      subroutine copy_rtp_fld_from_FXRTBA(Nsmp, Nstacksmp, Mmax_smp,  &
 !!     &                                    Nfft, X_ispack, M, X)
-!!        integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) :: Nsmp
+!!        integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
 !!        integer(kind = kint_gl), intent(in) :: Mmax_smp
 !!        integer(kind = kint_gl), intent(in) :: M, Nfft
 !!        real(kind = kreal), intent(in) :: X_ispack(Mmax_smp*Nfft,Nsmp)
@@ -61,7 +65,8 @@
       subroutine copy_rtp_fld_to_FXRTFA(Nsmp, Nstacksmp, Mmax_smp,      &
      &                                  Nfft, M, X, X_ispack)
 !
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) :: Nsmp
+      integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
       integer(kind = kint_gl), intent(in) :: M, Mmax_smp
       integer(kind = kint_gl), intent(in) :: Nfft
       real(kind = kreal), intent(in) :: X(M, Nfft)
@@ -88,7 +93,8 @@
       subroutine norm_rtp_spectr_from_FXRTFA(Nsmp, Nstacksmp,           &
      &          Mmax_smp, Nfft, X_ispack, M, X)
 !
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) :: Nsmp
+      integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
       integer(kind = kint_gl), intent(in) :: M, Mmax_smp
       integer(kind = kint_gl), intent(in) :: Nfft
       real(kind = 8), intent(in) :: X_ispack(Mmax_smp*Nfft,Nsmp)
@@ -117,7 +123,8 @@
       subroutine norm_rtp_spectr_to_FXRTBA(Nsmp, Nstacksmp, Mmax_smp,   &
      &                                     Nfft, M, X, X_ispack)
 !
-      integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) :: Nsmp
+      integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
       integer(kind = kint_gl), intent(in) :: Mmax_smp
       integer(kind = kint_gl), intent(in) :: M, Nfft
       real(kind = kreal), intent(in) :: X(M,Nfft)
@@ -146,7 +153,8 @@
       subroutine copy_rtp_fld_from_FXRTBA(Nsmp, Nstacksmp, Mmax_smp,    &
      &                                    Nfft, X_ispack, M, X)
 !
-      integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) :: Nsmp
+      integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
       integer(kind = kint_gl), intent(in) :: Mmax_smp
       integer(kind = kint_gl), intent(in) :: M, Nfft
       real(kind = kreal), intent(in) :: X_ispack(Mmax_smp*Nfft,Nsmp)

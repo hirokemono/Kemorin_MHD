@@ -12,11 +12,12 @@
 !!     &                                plan_forward, plan_backward,    &
 !!     &                                istack_sFFTW, Mmax_smp,         &
 !!     &                                X_FFTW, C_FFTW)
-!!        integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) :: Nsmp
+!!        integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
 !!        integer(kind = kint), intent(in) :: Nfft, Nfft_c
 !!        integer(kind = fftw_plan), intent(inout) :: plan_forward(Nsmp)
 !!        integer(kind = fftw_plan), intent(inout) :: plan_backward(Nsmp)
-!!        integer(kind = kint), intent(inout) :: istack_sFFTW(0:Nsmp)
+!!        integer(kind = kint_gl), intent(inout) :: istack_sFFTW(0:Nsmp)
 !!        integer(kind = kint), intent(inout) :: Mmax_smp
 !!        real(kind = kreal), intent(inout) :: X_FFTW(Nfft,Nsmp)
 !!        complex(kind = fftw_complex), intent(inout)                   &
@@ -58,7 +59,8 @@
 !!      subroutine single_pout_bwd_FFTW3_smp(plan_backward,             &
 !!     &          Nsmp, Nstacksmp, Ncomp, Nfft, NFFT_c,                 &
 !!     &          X, X_FFTW, C_FFTW, elapsed_fft, elapsed_cpy)
-!!        integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) :: Nsmp
+!!        integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
 !!        integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_c
 !!        integer(kind = fftw_plan), intent(in) :: plan_backward(Ncomp)
 !!        real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
@@ -127,7 +129,7 @@
 !
       integer(kind = fftw_plan), intent(inout) :: plan_forward(Nsmp)
       integer(kind = fftw_plan), intent(inout) :: plan_backward(Nsmp)
-      integer(kind = kint), intent(inout) :: istack_sFFTW(0:Nsmp)
+      integer(kind = kint_gl), intent(inout) :: istack_sFFTW(0:Nsmp)
       integer(kind = kint_gl), intent(inout) :: Mmax_smp
       real(kind = kreal), intent(inout) :: X_FFTW(Nfft,Nsmp)
       complex(kind = fftw_complex), intent(inout)                       &
@@ -182,7 +184,8 @@
 !
       use normalize_for_FFTW
 !
-      integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) :: Nsmp
+      integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_c
       integer(kind = fftw_plan), intent(in) :: plan_forward(Nsmp)
       real(kind = kreal), intent(in) :: aNfft
@@ -194,7 +197,8 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start, ed_c, ed_f
-      integer(kind = kint) :: i, j, ip, ist, ied
+      integer(kind = kint) :: i, ip
+      integer(kind = kint_gl) :: j, ist, ied
 !
 !
       ed_c = 0.0d0
@@ -237,7 +241,8 @@
 !
       use normalize_for_FFTW
 !
-      integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) :: Nsmp
+      integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_c
       integer(kind = fftw_plan), intent(in) :: plan_backward(Ncomp)
 !
@@ -248,7 +253,8 @@
       real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
       real(kind = kreal) :: start, ed_c, ed_f
-      integer(kind = kint) :: i, j, ip, ist, ied
+      integer(kind = kint) :: i, ip
+      integer(kind = kint_gl) :: j, ist, ied
 !
 !
       ed_c = 0.0d0

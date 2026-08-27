@@ -103,6 +103,7 @@
       subroutine calypso_single_FTTRUI(Nsmp, Nstacksmp, Nfft, WK)
 !
       use multi_pout_ISPACK1_smp
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) ::  Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
@@ -115,7 +116,7 @@
 !
       call FTTRUI_kemo(Nfft, WK%IT_ispack, WK%T_ispack)
 !
-      call alloc_work_ispack_t(Nsmp, ione, Nfft, WK)
+      call alloc_work_ispack_t(Nsmp, cast_long(ione), Nfft, WK)
 !
       end subroutine calypso_single_FTTRUI
 !
@@ -178,9 +179,9 @@
 !
 !
       call single_pout_FTTRUF_smp                                       &
-     &  (WK%Nplan_ISPACK, WK%istack_ISPACK, M, Nfft, X,                 &
-     &   WK%X_ispack, WK%IT_ispack, WK%T_ispack, WK%WORK_ispack,        &
-     &   elapsed_fft, elapsed_cpy)
+     &   (WK%Nplan_ISPACK, WK%istack_ISPACK, M, Nfft, X,                &
+     &    WK%X_ispack, WK%IT_ispack, WK%T_ispack, WK%WORK_ispack,       &
+     &    elapsed_fft, elapsed_cpy)
 !
       end subroutine calypso_single_pout_FTTRUF
 !
@@ -199,8 +200,8 @@
 !
 !
       call single_pout_FTTRUB_smp                                       &
-     &  (WK%Nplan_ISPACK, WK%istack_ISPACK, M, Nfft, X,                 &
-     &   WK%X_ispack, WK%IT_ispack, WK%T_ispack, WK%WORK_ispack,        &
+     &   (WK%Nplan_ISPACK, WK%istack_ISPACK, M, Nfft, X,                &
+     &    WK%X_ispack, WK%IT_ispack, WK%T_ispack, WK%WORK_ispack,       &
      &   elapsed_fft, elapsed_cpy)
 !
       end subroutine calypso_single_pout_FTTRUB

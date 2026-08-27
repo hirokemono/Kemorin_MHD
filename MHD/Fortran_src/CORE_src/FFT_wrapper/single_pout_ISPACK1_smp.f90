@@ -11,7 +11,8 @@
 !!      subroutine single_pout_FTTRUF_smp(Nsmp, Nstacksmp, M, Nfft, X,  &
 !!     &          X_ispack, IT_ispack, T_ispack, WORK_ispack,           &
 !!     &          elapsed_fft, elapsed_cpy)
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) :: Nsmp
+!!        integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
 !!        integer(kind = kint), intent(in) :: M, Nfft
 !!        integer(kind = 4), intent(in) :: IT_ispack(5)
 !!        real(kind = 8), intent(in) :: T_ispack(itwo*Nfft)
@@ -37,7 +38,8 @@
 !!      subroutine single_pout_FTTRUB_smp(Nsmp, Nstacksmp, M, Nfft, X,  &
 !!     &          X_ispack, IT_ispack, T_ispack, WORK_ispack,           &
 !!     &          elapsed_fft, elapsed_cpy)
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) :: Nsmp
+!!        integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
 !!        integer(kind = kint), intent(in) :: M, Nfft
 !!        integer(kind = 4), intent(in) :: IT_ispack(5)
 !!        real(kind = 8), intent(in) :: T_ispack(itwo*Nfft)
@@ -89,7 +91,8 @@
 !
       use ispack_0931
 !
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) :: Nsmp
+      integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
       integer(kind = 4), intent(in) :: IT_ispack(5)
       real(kind = 8), intent(in) :: T_ispack(itwo*Nfft)
@@ -142,7 +145,8 @@
 !
       use ispack_0931
 !
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) :: Nsmp
+      integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
       integer(kind = 4), intent(in) :: IT_ispack(5)
       real(kind = 8), intent(in) :: T_ispack(itwo*Nfft)

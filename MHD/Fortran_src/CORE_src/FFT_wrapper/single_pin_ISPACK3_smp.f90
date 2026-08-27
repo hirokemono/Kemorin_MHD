@@ -10,7 +10,8 @@
 !!@verbatim
 !!      subroutine single_pin_FXRTFA_smp(Nsmp, Nstacksmp, M, Nfft, X,   &
 !!     &          IT_ispack, T_ispack, elapsed_fft, elapsed_cpy)
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) :: Nsmp
+!!        integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
 !!        integer(kind = kint_gl), intent(in) :: M, Nfft
 !!        integer(kind = kint_gl), intent(in) :: IT_ispack(Nfft/2)
 !!        real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
@@ -33,7 +34,8 @@
 !! ------------------------------------------------------------------
 !!      subroutine single_pin_FXRTBA_smp(Nsmp, Nstacksmp, M, Nfft, X,   &
 !!     &          IT_ispack, T_ispack, elapsed_fft, elapsed_cpy)
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) :: Nsmp
+!!        integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
 !!        integer(kind = kint_gl), intent(in) :: M, Nfft
 !!        integer(kind = kint_gl), intent(in) :: IT_ispack(Nfft/2)
 !!        real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
@@ -82,7 +84,8 @@
 !
       use transfer_to_long_integers
 !
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) :: Nsmp
+      integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
       integer(kind = kint_gl), intent(in) :: M, Nfft
       integer(kind = kint_gl), intent(in) :: IT_ispack(Nfft/2)
       real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
@@ -128,7 +131,8 @@
 !
       use transfer_to_long_integers
 !
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) :: Nsmp
+      integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
       integer(kind = kint_gl), intent(in) :: M, Nfft
       integer(kind = kint_gl), intent(in) :: IT_ispack(Nfft/2)
       real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)

@@ -92,7 +92,7 @@
 !
       start = OMP_GET_WTIME()
       call swap_prt_fld_to_FXRTFA                                       &
-     &   (WK%Nplan_ISPACK, WK%istack_ISPACK, cast_long(WK%Mmax_smp),    &
+     &   (WK%Nplan_ISPACK, WK%istack_ISPACK, WK%Mmax_smp,               &
      &    cast_long(Nfft), cast_long(M), X(1,1), WK%X_ispack(1,1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
@@ -106,7 +106,7 @@
 !
       start = OMP_GET_WTIME()
       call swap_prt_spectr_from_FXRTFA                                  &
-     &   (WK%Nplan_ISPACK, WK%istack_ISPACK, cast_long(WK%Mmax_smp),    &
+     &   (WK%Nplan_ISPACK, WK%istack_ISPACK, WK%Mmax_smp,               &
      &    cast_long(Nfft), WK%X_ispack(1,1), cast_long(M), X(1,1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
@@ -133,7 +133,7 @@
 !
       start = OMP_GET_WTIME()
       call swap_prt_spectr_to_FXRTBA                                    &
-     &   (WK%Nplan_ISPACK, WK%istack_ISPACK, cast_long(WK%Mmax_smp),    &
+     &   (WK%Nplan_ISPACK, WK%istack_ISPACK, WK%Mmax_smp,               &
      &    cast_long(Nfft), cast_long(M), X(1,1), WK%X_ispack(1,1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
@@ -147,7 +147,7 @@
 !
       start = OMP_GET_WTIME()
       call swap_prt_fld_from_FXRTBA                                     &
-     &   (WK%Nplan_ISPACK, WK%istack_ISPACK, cast_long(WK%Mmax_smp),    &
+     &   (WK%Nplan_ISPACK, WK%istack_ISPACK, WK%Mmax_smp,               &
      &    cast_long(Nfft), WK%X_ispack(1,1), cast_long(M), X(1,1))
       elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !

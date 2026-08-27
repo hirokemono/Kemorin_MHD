@@ -19,7 +19,8 @@
 !!      subroutine verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WK)
 !!      subroutine alloc_work_ispack_t(Nsmp, nmax_comp, Nfft, WK)
 !!      subroutine alloc_const_ispack_t(Nsmp, nfft, WK)
-!!        integer(kind = kint), intent(in) :: Nsmp, nmax_comp, Nfft
+!!        integer(kind = kint), intent(in) :: Nsmp, Nfft
+!!        integer(kind = kint_gl), intent(in) :: nmax_comp
 !!        type(working_ISPACK), intent(inout) :: WK
 !!
 !!      subroutine count_ispack_smp(Nsmp, Nstacksmp, WK)
@@ -61,9 +62,9 @@
 !>        Number of FFT call (generally number of SMP threads)
         integer(kind = kint) :: Nplan_ISPACK = 1
 !>        Stack for FFT
-        integer(kind = kint), allocatable :: istack_ISPACK(:)
+        integer(kind = kint_gl), allocatable :: istack_ISPACK(:)
 !>        Maximum nuber of components for each SMP process
-        integer(kind = kint) :: Mmax_smp
+        integer(kind = kint_gl) :: Mmax_smp
 !
 !>        Data for multiple Fourier transform
         real(kind = 8), allocatable :: X_ispack(:,:)
@@ -150,7 +151,8 @@
 !
       subroutine alloc_work_ispack_t(Nsmp, nmax_comp, Nfft, WK)
 !
-      integer(kind = kint), intent(in) :: Nsmp, nmax_comp, Nfft
+      integer(kind = kint), intent(in) :: Nsmp, Nfft
+      integer(kind = kint_gl), intent(in) :: nmax_comp
       type(working_ISPACK), intent(inout) :: WK
 !
 !

@@ -165,7 +165,7 @@
 !
       call single_pin_fwd_FFTW3_smp                                     &
      &   (WK%plan_forward, WK%Nplan_sFFTW, WK%istack_sFFTW,             &
-     &    Ncomp, Nfft, WK%aNfft, WK%Nfft_c, X, WK%X_FFTW, WK%C_FFTW,    &
+     &    Ncomp, Nfft, WK%aNfft, WK%Nfft_c, X, WK%C_FFTW,               &
      &    elapsed_fft, elapsed_cpy)
 !
       end subroutine calypso_single_pin_fwd_FFTW3
@@ -186,7 +186,7 @@
 !
       call single_pin_bwd_FFTW3_smp                                     &
      &   (WK%plan_backward, WK%Nplan_sFFTW, WK%istack_sFFTW,            &
-     &    Ncomp, Nfft, WK%Nfft_c, X, WK%X_FFTW, WK%C_FFTW,              &
+     &    Ncomp, Nfft, WK%Nfft_c, X, WK%C_FFTW,                         &
      &    elapsed_fft, elapsed_cpy)
 !
       end subroutine calypso_single_pin_bwd_FFTW3

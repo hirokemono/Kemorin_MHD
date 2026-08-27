@@ -22,7 +22,8 @@
 !!
 !!      subroutine multi_FXRTFA_smp(Nsmp, Nstacksmp, Mmax_smp, Nfft,    &
 !!     &          X_ispack, IT_ispack, T_ispack)
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) ::  Nsmp
+!!        integer(kind = kint_gl), intent(in) ::  Nstacksmp(0:Nsmp)
 !!        integer(kind = kint), intent(in) :: M, Nfft, Mmax_smp
 !!        integer(kind = 4), intent(in) :: IT_ispack(nfft/2)
 !!        real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
@@ -47,7 +48,8 @@
 !!
 !!      subroutine multi_FXRTBA_smp(Nsmp, Nstacksmp, Mmax_smp, Nfft,    &
 !!     &                            X_ispack, IT_ispack, T_ispack)
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) ::  Nsmp
+!!        integer(kind = kint_gl), intent(in) ::  Nstacksmp(0:Nsmp)
 !!        integer(kind = kint), intent(in) :: M, Nfft, Mmax_smp
 !!        integer(kind = 4), intent(in) :: IT_ispack(nfft/2)
 !!        real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
@@ -108,7 +110,8 @@
       subroutine multi_FXRTFA_smp(Nsmp, Nstacksmp, Mmax_smp, Nfft,      &
      &                            X_ispack, IT_ispack, T_ispack)
 !
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) ::  Nsmp
+      integer(kind = kint_gl), intent(in) ::  Nstacksmp(0:Nsmp)
       integer(kind = kint_gl), intent(in) :: Nfft, Mmax_smp
       integer(kind = kint_gl), intent(in) :: IT_ispack(Nfft/2)
       real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)
@@ -135,7 +138,8 @@
       subroutine multi_FXRTBA_smp(Nsmp, Nstacksmp, Mmax_smp, Nfft,      &
      &                            X_ispack, IT_ispack, T_ispack)
 !
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) ::  Nsmp
+      integer(kind = kint_gl), intent(in) ::  Nstacksmp(0:Nsmp)
       integer(kind = kint_gl), intent(in) :: Nfft, Mmax_smp
       integer(kind = kint_gl), intent(in) :: IT_ispack(Nfft/2)
       real(kind = 8), intent(in) :: T_ispack(Nfft+Nfft/2)

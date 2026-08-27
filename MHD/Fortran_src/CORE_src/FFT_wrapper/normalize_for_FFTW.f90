@@ -15,9 +15,9 @@
 !!        real(kind = kreal), intent(in) :: aNfft
 !!        complex(kind = kreal), intent(inout) :: C_FFT(NFFT_c*Ncomp_smp)
 !!
-!!      subroutine swap_from_fwd_single_FFTW(nd, Ncomp, NFFT_c, C_FFT,  &
+!!      subroutine swap_from_fwd_single_FFTW(nd8, Ncomp, NFFT_c, C_FFT, &
 !!     &                                     Nfft, X)
-!!        integer(kind = kint), intent(in) :: nd
+!!        integer(kind = kint_gl), intent(in) :: nd8
 !!        integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_c
 !!        complex(kind = kreal), intent(in) :: C_FFT(NFFT_c)
 !!        real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
@@ -32,9 +32,9 @@
 !!        complex(kind = kreal), intent(in) :: C_FFT(NFFT_c,Ncomp_c)
 !!        real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
 !!
-!!      subroutine norm_prt_bwd_single_FFTW(nd, Ncomp, Nfft, X,         &
+!!      subroutine norm_prt_bwd_single_FFTW(nd8, Ncomp, Nfft, X,        &
 !!     &                                    NFFT_c, C_FFT)
-!!        integer(kind = kint), intent(in) :: nd
+!!        integer(kind = kint_gl), intent(in) :: nd8
 !!        integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_c
 !!        real(kind = kreal), intent(in) :: X(Ncomp,Nfft)
 !!        complex(kind = kreal), intent(inout) :: C_FFT(NFFT_c)
@@ -91,10 +91,10 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine swap_from_fwd_single_FFTW(nd, Ncomp, NFFT_c, C_FFT,    &
+      subroutine swap_from_fwd_single_FFTW(nd8, Ncomp, NFFT_c, C_FFT,   &
      &                                     Nfft, X)
 !
-      integer(kind = kint), intent(in) :: nd
+      integer(kind = kint_gl), intent(in) :: nd8
       integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_c
       complex(kind = kreal), intent(in) :: C_FFT(NFFT_c)
 !
@@ -103,11 +103,11 @@
       integer(kind = kint) :: i
 !
 !
-      X(nd,1) = real(C_FFT(1))
-      X(nd,2) = real(C_FFT(NFFT_c))
+      X(nd8,1) = real(C_FFT(1))
+      X(nd8,2) = real(C_FFT(NFFT_c))
       do i = 2, NFFT_c - 1
-        X(nd,2*i-1) =  two * real(C_FFT(i))
-        X(nd,2*i  ) = -two * imag(C_FFT(i))
+        X(nd8,2*i-1) =  two * real(C_FFT(i))
+        X(nd8,2*i  ) = -two * imag(C_FFT(i))
       end do
 !
       end subroutine swap_from_fwd_single_FFTW
@@ -163,10 +163,10 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine norm_prt_bwd_single_FFTW(nd, Ncomp, Nfft, X,           &
+      subroutine norm_prt_bwd_single_FFTW(nd8, Ncomp, Nfft, X,          &
      &                                    NFFT_c, C_FFT)
 !
-      integer(kind = kint), intent(in) :: nd
+      integer(kind = kint_gl), intent(in) :: nd8
       integer(kind = kint), intent(in) :: Ncomp, Nfft, NFFT_c
       real(kind = kreal), intent(in) :: X(Ncomp,Nfft)
 !
@@ -175,11 +175,11 @@
       integer(kind = kint) :: i
 !
 !
-      C_FFT(1) = cmplx(X(nd,1), zero, kind(0d0))
+      C_FFT(1) = cmplx(X(nd8,1), zero, kind(0d0))
       do i = 2, NFFT_c - 1
-        C_FFT(i) = half * cmplx(X(nd,2*i-1), -X(nd,2*i), kind(0d0))
+        C_FFT(i) = half * cmplx(X(nd8,2*i-1), -X(nd8,2*i), kind(0d0))
       end do
-      C_FFT(NFFT_c) = cmplx(X(nd,2), zero, kind(0d0))
+      C_FFT(NFFT_c) = cmplx(X(nd8,2), zero, kind(0d0))
 !
       end subroutine norm_prt_bwd_single_FFTW
 !

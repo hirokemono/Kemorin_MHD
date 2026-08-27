@@ -22,8 +22,10 @@
 !!
 !!      subroutine multi_FTTRUF_smp(Nsmp, Nstacksmp, Mmax_smp,          &
 !!     &          Nfft, X_ispack, IT_ispack, T_ispack, WORK_ispack)
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-!!        integer(kind = kint), intent(in) :: M, Nfft, Mmax_smp
+!!        integer(kind = kint), intent(in) :: Nsmp
+!!        integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
+!!        integer(kind = kint_gl), intent(in) :: Mmax_smp
+!!        integer(kind = kint), intent(in) :: Nfft
 !!        integer(kind = 4), intent(in) :: IT_ispack(5)
 !!        real(kind = 8), intent(in) :: T_ispack(itwo*Nfft)
 !!        real(kind = kreal), intent(inout) :: X(M, Nfft)
@@ -50,8 +52,10 @@
 !!
 !!      subroutine multi_FTTRUB_smp(Nsmp, Nstacksmp, Mmax_smp,          &
 !!     &          Nfft, X_ispack, IT_ispack, T_ispack, WORK_ispack)
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-!!        integer(kind = kint), intent(in) :: M, Nfft, Mmax_smp
+!!        integer(kind = kint), intent(in) :: Nsmp
+!!        integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
+!!        integer(kind = kint_gl), intent(in) :: Mmax_smp
+!!        integer(kind = kint), intent(in) :: Nfft
 !!        integer(kind = 4), intent(in) :: IT_ispack(5)
 !!        real(kind = 8), intent(in) :: T_ispack(itwo*Nfft)
 !!        real(kind = kreal), intent(inout) :: X(M,Nfft)
@@ -127,8 +131,10 @@
 !
       use ispack_0931
 !
-      integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint), intent(in) :: Nfft, Mmax_smp
+      integer(kind = kint), intent(in) :: Nsmp
+      integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
+      integer(kind = kint_gl), intent(in) :: Mmax_smp
+      integer(kind = kint), intent(in) :: Nfft
       integer(kind = 4), intent(in) :: IT_ispack(5)
       real(kind = 8), intent(in) :: T_ispack(itwo*Nfft)
 !
@@ -157,8 +163,10 @@
 !
       use ispack_0931
 !
-      integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint), intent(in) :: Nfft, Mmax_smp
+      integer(kind = kint), intent(in) :: Nsmp
+      integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
+      integer(kind = kint_gl), intent(in) :: Mmax_smp
+      integer(kind = kint), intent(in) :: Nfft
       integer(kind = 4), intent(in) :: IT_ispack(5)
       real(kind = 8), intent(in) :: T_ispack(itwo*Nfft)
 !

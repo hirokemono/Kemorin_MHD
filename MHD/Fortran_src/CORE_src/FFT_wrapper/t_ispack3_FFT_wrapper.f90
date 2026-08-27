@@ -69,7 +69,7 @@
 !>        Number of FFT call (generally number of SMP threads)
         integer(kind = kint) :: Nplan_ISPACK3 = 1
 !>        Stack for FFT
-        integer(kind = kint), allocatable :: istack_ISPACK3(:)
+        integer(kind = kint_gl), allocatable :: istack_ISPACK3(:)
 !>        Maximum nuber of components for each SMP process
         integer(kind = kint_gl) :: Mmax_smp
 !

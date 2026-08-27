@@ -131,7 +131,7 @@
      &   (int(fwd_rocFFT%Ncomp), int(fwd_rocFFT%Nfft),                  &
      &    X(1,1), int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1))
       call swap_prt_fld_to_FXRTFA(WK_ISPACK1%Nplan_ISPACK,              &
-     &    WK_ISPACK1%istack_ISPACK, cast_long(WK_ISPACK1%Mmax_smp),     &
+     &    WK_ISPACK1%istack_ISPACK, WK_ISPACK1%Mmax_smp,                &
      &    fwd_rocFFT%Nfft, cast_long(Ncomp_CPU),                        &
      &    X(1,fwd_rocFFT%Ncomp+1), WK_ISPACK1%X_ispack(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
@@ -168,7 +168,7 @@
      &    int(WK_rocFFT%NFFT_r), WK_rocFFT%X_rocFFT,                    &
      &    int(fwd_rocFFT%Nfft), X(1,1))
       call swap_prt_spectr_from_FXRTFA(WK_ISPACK1%Nplan_ISPACK,         &
-     &    WK_ISPACK1%istack_ISPACK,cast_long(WK_ISPACK1%Mmax_smp),      &
+     &    WK_ISPACK1%istack_ISPACK, WK_ISPACK1%Mmax_smp,                &
      &    fwd_rocFFT%Nfft, WK_ISPACK1%X_ispack(1,1),                    &
      &    cast_long(Ncomp_CPU), X(1,fwd_rocFFT%Ncomp+1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
@@ -207,7 +207,7 @@
      &   (int(bwd_rocFFT%Ncomp), int(bwd_rocFFT%Nfft), X(1,1),          &
      &    int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1))
       call swap_prt_spectr_to_FXRTBA(WK_ISPACK1%Nplan_ISPACK,           &
-     &    WK_ISPACK1%istack_ISPACK, cast_long(WK_ISPACK1%Mmax_smp),     &
+     &    WK_ISPACK1%istack_ISPACK, WK_ISPACK1%Mmax_smp,                &
      &    bwd_rocFFT%Nfft, cast_long(Ncomp_CPU),                        &
      &    X(1,bwd_rocFFT%Ncomp+1), WK_ISPACK1%X_ispack(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
@@ -241,7 +241,7 @@
      &    int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1),                 &
      &    int(bwd_rocFFT%Nfft), X(1,1))
       call swap_prt_fld_from_FXRTBA(WK_ISPACK1%Nplan_ISPACK,            &
-     &    WK_ISPACK1%istack_ISPACK, cast_long(WK_ISPACK1%Mmax_smp),     &
+     &    WK_ISPACK1%istack_ISPACK, WK_ISPACK1%Mmax_smp,                &
      &    bwd_rocFFT%Nfft, WK_ISPACK1%X_ispack(1,1),                    &
      &    cast_long(Ncomp_CPU), X(1,bwd_rocFFT%Ncomp+1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
