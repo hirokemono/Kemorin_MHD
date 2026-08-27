@@ -12,13 +12,13 @@ SHELL = /bin/sh
 #
 # Compiler commands
 #
-CC=mpicc -std=gnu23
+CC=gcc
 F90=mpif90
 CXX=
-AS=mpicc -std=gnu23
+AS=gcc
 AR=ar
 RANLIB=ranlib
-F90_LOCAL=mpif90
+F90_LOCAL=gfortran
 MPIRUN=mpirun
 #
 # Compiler options
@@ -39,13 +39,13 @@ C_INCLUDE = -I. -I$(MAKEDIR) -I/Users/matsui/src_kemo/MHD/C_src/CORE_C -I/Users/
 #
 # zlib settings
 #
-ZLIB_CFLAGS = -I/opt/homebrew/include -I /opt/homebrew/Cellar/hdf5-mpi/1.14.6/include -I/opt/homebrew/opt/zlib/include
-ZLIB_LIBS =   -L/opt/homebrew/opt/zlib/lib -lz 
+ZLIB_CFLAGS = -I/usr/local/include -I /usr/local/Cellar/hdf5-mpi/2.1.1/include -I/usr/local/opt/zlib/include
+ZLIB_LIBS =   -L/usr/local/opt/zlib/lib -lz 
 #
 # libpng settings
 #
-PNG_CFLAGS = -I/opt/homebrew/opt/libpng/include/libpng16
-PNG_LIBS =    -L/opt/homebrew/opt/libpng/lib -lpng16
+PNG_CFLAGS = -I/usr/local/opt/libpng/include/libpng16
+PNG_LIBS =    -L/usr/local/opt/libpng/lib -lpng16
 #
 #   AMD ROCm settings
 #
@@ -63,15 +63,15 @@ BLAS_LIBS =   -lblas
 #
 # FFTW3 settings
 #
-FFTW3_CFLAGS =   -I/opt/homebrew/Cellar/fftw/3.3.10_2/include
-FFTW3_LIBS =     -L/opt/homebrew/Cellar/fftw/3.3.10_2/lib -lfftw3
+FFTW3_CFLAGS =   -I/usr/local/Cellar/fftw/3.3.10_1/include
+FFTW3_LIBS =     -L/usr/local/Cellar/fftw/3.3.10_1/lib -lfftw3
 FFTW3_OMP_LIBS = -lfftw3_omp
 #
 # HDF5 settings
 #
-HDF5_FFLAGS = -I/opt/homebrew/lib -L/opt/homebrew/lib -I/opt/homebrew/include 
-HDF5_LDFLAGS = -L/opt/homebrew/lib 
-HDF5_FLIBS = -L/opt/homebrew/lib -lhdf5_fortran -lhdf5
+HDF5_FFLAGS = -I/usr/local/lib -L/usr/local/lib -I/usr/local/include 
+HDF5_LDFLAGS = -L/usr/local/lib 
+HDF5_FLIBS = -I/usr/local/include -L/usr/local/lib -lhdf5_hl_fortran -lhdf5_fortran -lhdf5
 #
 # PGPLOT Libralies
 #
@@ -86,18 +86,18 @@ OPTFLAGS_GL = $(OPTFLAGS)  -DPNG_OUTPUT -DZLIB_IO -DOMP_FFTW3 -DFFTW3 -DBLAS -DH
 #
 # GTK settings
 #
-GTK3_CFLAGS =  -I/opt/homebrew/Cellar/gtk+3/3.24.51/include/gtk-3.0 -I/opt/homebrew/Cellar/pango/1.57.0_2/include/pango-1.0 -I/opt/homebrew/Cellar/libthai/0.1.30/include -I/opt/homebrew/Cellar/libdatrie/0.2.14/include -I/opt/homebrew/Cellar/harfbuzz/12.3.2/include/harfbuzz -I/opt/homebrew/Cellar/graphite2/1.3.14/include -I/opt/homebrew/Cellar/cairo/1.18.4/include -I/opt/homebrew/Cellar/cairo/1.18.4/include/cairo -I/opt/homebrew/Cellar/fontconfig/2.17.1/include -I/opt/homebrew/opt/freetype/include/freetype2 -I/opt/homebrew/Cellar/libxext/1.3.7/include -I/opt/homebrew/Cellar/xorgproto/2025.1/include -I/opt/homebrew/Cellar/libxrender/0.9.12/include -I/opt/homebrew/Cellar/libx11/1.8.13/include -I/opt/homebrew/Cellar/libxcb/1.17.0/include -I/opt/homebrew/Cellar/libxau/1.0.12/include -I/opt/homebrew/Cellar/libxdmcp/1.1.5/include -I/opt/homebrew/Cellar/pixman/0.46.4/include/pixman-1 -I/opt/homebrew/include/gdk-pixbuf-2.0 -I/opt/homebrew/opt/libpng/include/libpng16 -I/opt/homebrew/opt/libtiff/include -I/opt/homebrew/opt/zstd/include -I/opt/homebrew/Cellar/xz/5.8.2/include -I/opt/homebrew/opt/jpeg-turbo/include -I/opt/homebrew/Cellar/at-spi2-core/2.58.3/include/atk-1.0 -I/opt/homebrew/Cellar/libepoxy/1.5.10/include -I/opt/homebrew/Cellar/fribidi/1.0.16/include/fribidi -I/opt/homebrew/Cellar/glib/2.86.3/include/gio-unix-2.0 -I/opt/homebrew/Cellar/glib/2.86.3/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/usr/include/ffi -I/opt/homebrew/Cellar/glib/2.86.3/include/glib-2.0 -I/opt/homebrew/Cellar/glib/2.86.3/lib/glib-2.0/include -I/opt/homebrew/opt/gettext/include -I/opt/homebrew/Cellar/pcre2/10.47_1/include 
-GTK3_LIBS =    -L/opt/homebrew/Cellar/gtk+3/3.24.51/lib -lgtk-3 -lgdk-3 -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,CoreGraphics -L/opt/homebrew/Cellar/pango/1.57.0_2/lib -lpangocairo-1.0 -lpango-1.0 -L/opt/homebrew/Cellar/harfbuzz/12.3.2/lib -lharfbuzz -L/opt/homebrew/Cellar/cairo/1.18.4/lib -lcairo-gobject -lcairo -L/opt/homebrew/lib -lgdk_pixbuf-2.0 -L/opt/homebrew/Cellar/at-spi2-core/2.58.3/lib -latk-1.0 -L/opt/homebrew/Cellar/glib/2.86.3/lib -lgio-2.0 -lgobject-2.0 -lglib-2.0 -L/opt/homebrew/opt/gettext/lib -lintl -L/usr/X11/lib -lX11 -lm
+GTK3_CFLAGS =  -I/usr/local/Cellar/gtk+3/3.24.52/include/gtk-3.0 -I/usr/local/Cellar/pango/1.57.1/include/pango-1.0 -I/usr/local/Cellar/libthai/0.1.30/include -I/usr/local/Cellar/libdatrie/0.2.14/include -I/usr/local/Cellar/harfbuzz/14.1.0/include/harfbuzz -I/usr/local/Cellar/graphite2/1.3.14/include -I/usr/local/Cellar/cairo/1.18.4/include -I/usr/local/Cellar/cairo/1.18.4/include/cairo -I/usr/local/Cellar/fontconfig/2.17.1/include -I/usr/local/opt/freetype/include/freetype2 -I/usr/local/Cellar/libxext/1.3.7/include -I/usr/local/Cellar/xorgproto/2025.1/include -I/usr/local/Cellar/libxrender/0.9.12/include -I/usr/local/Cellar/libx11/1.8.13/include -I/usr/local/Cellar/libxcb/1.17.0/include -I/usr/local/Cellar/libxau/1.0.12/include -I/usr/local/Cellar/libxdmcp/1.1.5/include -I/usr/local/Cellar/pixman/0.46.4/include/pixman-1 -I/usr/local/include/gdk-pixbuf-2.0 -I/usr/local/opt/libpng/include/libpng16 -I/usr/local/opt/libtiff/include -I/usr/local/opt/zstd/include -I/usr/local/Cellar/xz/5.8.3/include -I/usr/local/opt/jpeg-turbo/include -I/usr/local/Cellar/at-spi2-core/2.60.0/include/atk-1.0 -I/usr/local/Cellar/libepoxy/1.5.10/include -I/usr/local/Cellar/fribidi/1.0.16/include/fribidi -I/usr/local/Cellar/glib/2.88.0/include/gio-unix-2.0 -I/usr/local/Cellar/glib/2.88.0/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX12.sdk/usr/include/ffi -I/usr/local/Cellar/glib/2.88.0/include/glib-2.0 -I/usr/local/Cellar/glib/2.88.0/lib/glib-2.0/include -I/usr/local/opt/gettext/include -I/usr/local/Cellar/pcre2/10.47_1/include 
+GTK3_LIBS =    -L/usr/local/Cellar/gtk+3/3.24.52/lib -lgtk-3 -lgdk-3 -Wl,-framework,Cocoa -Wl,-framework,Carbon -Wl,-framework,CoreGraphics -L/usr/local/Cellar/pango/1.57.1/lib -lpangocairo-1.0 -lpango-1.0 -L/usr/local/Cellar/harfbuzz/14.1.0/lib -lharfbuzz -L/usr/local/Cellar/cairo/1.18.4/lib -lcairo-gobject -lcairo -L/usr/local/lib -lgdk_pixbuf-2.0 -L/usr/local/Cellar/at-spi2-core/2.60.0/lib -latk-1.0 -L/usr/local/Cellar/glib/2.88.0/lib -lgio-2.0 -lgobject-2.0 -lglib-2.0 -L/usr/local/opt/gettext/lib -lintl -lX11 -lm
 #
 # GLFW settings
 #
-GLFW_CFLAGS =  -I/opt/homebrew/Cellar/glfw/3.4/include
-GLFW_LIBS =    -L/opt/homebrew/Cellar/glfw/3.4/lib -lglfw
+GLFW_CFLAGS =  -I/usr/local/Cellar/glfw/3.4/include
+GLFW_LIBS =    -L/usr/local/Cellar/glfw/3.4/lib -lglfw
 #
 # FFMPEG settings
 #
-FFMPEG_CFLAGS =  -I/opt/homebrew/Cellar/ffmpeg/8.0.1_1/include
-FFMPEG_LIBS =    -L/opt/homebrew/Cellar/ffmpeg/8.0.1_1/lib -lavformat -lavcodec -lswscale
+FFMPEG_CFLAGS =  -I/usr/local/Cellar/ffmpeg/8.1/include
+FFMPEG_LIBS =    -L/usr/local/Cellar/ffmpeg/8.1/lib -lavformat -lavcodec -lswscale
 #
 # -----------------------------------------------------------
 # Directory lists
@@ -108,7 +108,7 @@ SRCDIR = /Users/matsui/src_kemo
 MAKEDIR = /Users/matsui/src_kemo/work
 BUILDDIR = /Users/matsui/src_kemo/bin
 MHDDIR = /Users/matsui/src_kemo/MHD
-INSTDIR = /Users/matsui/local
+INSTDIR = /Users/matsui/local/gcc
 PYTHONDIR= /Users/matsui/src_kemo/pythons
 EXPDIR= /Users/matsui/src_kemo/examples
 TESTDIR= /Users/matsui/src_kemo/tests
