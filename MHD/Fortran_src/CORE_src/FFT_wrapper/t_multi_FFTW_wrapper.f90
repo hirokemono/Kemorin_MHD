@@ -76,9 +76,9 @@
         integer(kind = fftw_plan), allocatable :: plan_mul_fwd(:)
 !
 !>        number of component for each FFT
-        integer(kind = kint), allocatable :: istack_FFTW(:)
+        integer(kind = kint_gl), allocatable :: istack_FFTW(:)
 !>        Maximum nuber of components for each SMP process
-        integer(kind = kint) :: Mmax_smp
+        integer(kind = kint_gl) :: Mmax_smp
 !
 !>        number of component for complex data
         integer(kind = kint) :: Nfft_c

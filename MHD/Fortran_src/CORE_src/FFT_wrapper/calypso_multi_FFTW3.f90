@@ -49,7 +49,8 @@
 !!      subroutine multi_fwd_FFTW3_smp                                  &
 !!     &         (plan_forward_smp, Nsmp, Nstacksmp,                    &
 !!     &          Ncomp_c, Nfft_r, X_FFTW, Nfft_c, C_FFTW)
-!!        integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) :: Nsmp
+!!        integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
 !!        integer(kind = kint), intent(in) :: Ncomp_c, Nfft_c, Nfft_r
 !!        integer(kind = fftw_plan), intent(in) :: plan_forward_smp(Nsmp)
 !!        real(kind = kreal), intent(in) :: X_FFTW(Nfft_r,Ncomp_c)
@@ -73,7 +74,8 @@
 !!      subroutine multi_bwd_FFTW3_smp                                  &
 !!     &         (plan_backward_smp, Nsmp, Nstacksmp,                   &
 !!     &          Ncomp_c, Nfft_c, C_FFTW, Nfft_r, X_FFTW)
-!!        integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) :: Nsmp
+!!        integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
 !!        integer(kind = kint), intent(in) :: Ncomp_c, Nfft_c, Nfft_r
 !!        integer(kind = fftw_plan), intent(in):: plan_backward_smp(Nsmp)
 !!        complex(kind = fftw_complex), intent(in)                      &
@@ -189,8 +191,8 @@
      &                          :: plan_forward_smp(Nsmp)
       integer(kind = fftw_plan), intent(inout)                          &
      &                          :: plan_backward_smp(Nsmp)
-      integer(kind = kint), intent(inout) :: istack_smp_FFTW(0:Nsmp)
-      integer(kind = kint), intent(inout) :: Mmax_smp
+      integer(kind = kint_gl), intent(inout) :: istack_smp_FFTW(0:Nsmp)
+      integer(kind = kint_gl), intent(inout) :: Mmax_smp
       real(kind = kreal), intent(inout) :: X_FFTW(Nfft,Ncomp)
       complex(kind = fftw_complex), intent(inout)                       &
      &                          :: C_FFTW(Nfft_c,Ncomp)
@@ -252,7 +254,8 @@
      &         (plan_forward_smp, Nsmp, Nstacksmp,                      &
      &          Ncomp_c, Nfft_r, X_FFTW, Nfft_c, C_FFTW)
 !
-      integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) :: Nsmp
+      integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: Ncomp_c, Nfft_c, Nfft_r
       integer(kind = fftw_plan), intent(in) :: plan_forward_smp(Nsmp)
       real(kind = kreal), intent(in) :: X_FFTW(Nfft_r,Ncomp_c)
@@ -260,7 +263,8 @@
       complex(kind = fftw_complex), intent(inout)                       &
      &                                  :: C_FFTW(Nfft_c,Ncomp_c)
 !
-      integer(kind = kint) :: ip, ist, num
+      integer(kind = kint) :: ip
+      integer(kind = kint_gl) :: ist, num
 !
 !
 !$omp do private(ip,ist,num)
@@ -282,7 +286,8 @@
      &         (plan_backward_smp, Nsmp, Nstacksmp,                     &
      &          Ncomp_c, Nfft_c, C_FFTW, Nfft_r, X_FFTW)
 !
-      integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) :: Nsmp
+      integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: Ncomp_c, Nfft_c, Nfft_r
       integer(kind = fftw_plan), intent(in) :: plan_backward_smp(Nsmp)
       complex(kind = fftw_complex), intent(in)                          &
@@ -290,7 +295,8 @@
 !
       real(kind = kreal), intent(inout) :: X_FFTW(Nfft_r,Ncomp_c)
 !
-      integer(kind = kint) :: ip, ist, num
+      integer(kind = kint) :: ip
+      integer(kind = kint_gl) :: ist, num
 !
 !
 !$omp do private(ip,ist,num)

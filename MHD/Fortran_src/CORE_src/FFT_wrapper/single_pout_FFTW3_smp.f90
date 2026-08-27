@@ -128,7 +128,7 @@
       integer(kind = fftw_plan), intent(inout) :: plan_forward(Nsmp)
       integer(kind = fftw_plan), intent(inout) :: plan_backward(Nsmp)
       integer(kind = kint), intent(inout) :: istack_sFFTW(0:Nsmp)
-      integer(kind = kint), intent(inout) :: Mmax_smp
+      integer(kind = kint_gl), intent(inout) :: Mmax_smp
       real(kind = kreal), intent(inout) :: X_FFTW(Nfft,Nsmp)
       complex(kind = fftw_complex), intent(inout)                       &
      &                                  :: C_FFTW(Nfft_c,Nsmp)
