@@ -11,7 +11,8 @@
 !!
 !!      subroutine calypso_single_RFFTMI(Nsmp, Nstacksmp, Nfft, WK)
 !!        integer(kind = kint), intent(in) ::  Nfft
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) ::  Nsmp
+!!        integer(kind = kint), intent(in) ::  Nstacksmp(0:Nsmp)
 !!        type(working_FFTPACK), intent(inout) :: WK
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT
@@ -104,7 +105,8 @@
       subroutine calypso_single_RFFTMI(Nsmp, Nstacksmp, Nfft, WK)
 !
       integer(kind = kint), intent(in) ::  Nfft
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) ::  Nsmp
+      integer(kind = kint), intent(in) ::  Nstacksmp(0:Nsmp)
 !
       type(working_FFTPACK), intent(inout) :: WK
 !

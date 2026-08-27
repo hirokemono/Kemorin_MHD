@@ -11,7 +11,8 @@
 !!
 !!      subroutine init_WK_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WK)
 !!        integer(kind = kint), intent(in) ::  Nfft
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) ::  Nsmp
+!!        integer(kind = kint), intent(in) ::  Nstacksmp(0:Nsmp)
 !!        type(working_FFTPACK), intent(inout) :: WK
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT
@@ -19,9 +20,11 @@
 !!
 !!      subroutine multi_RFFTMF_smp(Nsmp, Nstacksmp, Mmax_smp, Nfft,    &
 !!     &                                X_FFTPACK5, lSAVE, WSAVE, WORK)
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) :: Nsmp
+!!        integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
+!!        integer(kind = kint_gl), intent(in) :: Mmax_smp
 !!        integer(kind = kint), intent(in) :: M, Nfft
-!!        integer(kind = kint), intent(in) :: lSAVE, Mmax_smp
+!!        integer(kind = kint), intent(in) :: lSAVE
 !!        real(kind = 8), intent(in) :: WSAVE(lSAVE)
 !!        real(kind = kreal), intent(inout) :: X(Nfft,M)
 !!        real(kind = 8), intent(inout) :: X_FFTPACK5(Mmax_smp*Nfft,Nsmp)
@@ -45,9 +48,11 @@
 !!
 !!      subroutine multi_RFFTMB_smp(Nsmp, Nstacksmp, Mmax_smp, Nfft,    &
 !!     &                                X_FFTPACK5, lSAVE, WSAVE, WORK)
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+!!        integer(kind = kint), intent(in) :: Nsmp
+!!        integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
+!!        integer(kind = kint_gl), intent(in) :: Mmax_smp
 !!        integer(kind = kint), intent(in) :: M, Nfft
-!!        integer(kind = kint), intent(in) :: lSAVE, Mmax_smp
+!!        integer(kind = kint), intent(in) :: lSAVE
 !!        real(kind = 8), intent(in) :: WSAVE(lSAVE)
 !!        real(kind = kreal), intent(inout) :: X(Nfft,M)
 !!        real(kind = 8), intent(inout) :: X_FFTPACK5(Mmax_smp*Nfft,Nsmp)
@@ -100,7 +105,8 @@
       subroutine init_WK_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WK)
 !
       integer(kind = kint), intent(in) ::  Nfft
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) ::  Nsmp
+      integer(kind = kint), intent(in) ::  Nstacksmp(0:Nsmp)
 !
       type(working_FFTPACK), intent(inout) :: WK
 !
@@ -121,26 +127,28 @@
       subroutine multi_RFFTMF_smp(Nsmp, Nstacksmp, Mmax_smp, Nfft,      &
      &                            X_FFTPACK5, lSAVE, WSAVE, WORK)
 !
-      integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) :: Nsmp
+      integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
+      integer(kind = kint_gl), intent(in) :: Mmax_smp
       integer(kind = kint), intent(in) :: Nfft
-      integer(kind = kint), intent(in) :: lSAVE, Mmax_smp
+      integer(kind = kint), intent(in) :: lSAVE
       real(kind = 8), intent(in) :: WSAVE(lSAVE)
 !
       real(kind = 8), intent(inout) :: X_FFTPACK5(Mmax_smp*Nfft,Nsmp)
       real(kind = 8), intent(inout) :: WORK(Mmax_smp*Nfft,Nsmp)
 !
-      integer(kind = kint) :: ismp, num, nsize
-      integer(kind = kint) :: ierr
+      integer(kind = kint_gl) :: num, nsize
+      integer(kind = kint) :: ip, ierr
 !
 !
 !$omp do private(num,nsize)
-      do ismp = 1, Nsmp
-        num = Nstacksmp(ismp) - Nstacksmp(ismp-1)
-        nsize = num*Nfft
+      do ip = 1, Nsmp
+        num = Nstacksmp(ip) - Nstacksmp(ip-1)
         if(num .le. 0) cycle
 !
-        call RFFTMF(num, ione, Nfft, num, X_FFTPACK5(1,ismp), nsize,    &
-     &              WSAVE, lSAVE, WORK(1,ismp), nsize, ierr)
+        nsize = num*Nfft
+        call RFFTMF(num, ione, Nfft, num, X_FFTPACK5(1,ip), nsize,      &
+     &              WSAVE, lSAVE, WORK(1,ip), nsize, ierr)
       end do
 !$omp end do
 !
@@ -151,24 +159,26 @@
       subroutine multi_RFFTMB_smp(Nsmp, Nstacksmp, Mmax_smp, Nfft,      &
      &                            X_FFTPACK5, lSAVE, WSAVE, WORK)
 !
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) :: Nsmp
+      integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
+      integer(kind = kint_gl), intent(in) :: Mmax_smp
       integer(kind = kint), intent(in) :: Nfft
-      integer(kind = kint), intent(in) :: lSAVE, Mmax_smp
+      integer(kind = kint), intent(in) :: lSAVE
       real(kind = 8), intent(in) :: WSAVE(lSAVE)
 !
       real(kind = 8), intent(inout) :: X_FFTPACK5(Mmax_smp*Nfft,Nsmp)
       real(kind = 8), intent(inout) :: WORK(Mmax_smp*Nfft,Nsmp)
 !
-      integer(kind = kint) ::  ip, num, nsize
-      integer(kind = kint) :: ierr
+      integer(kind = kint_gl) :: num, nsize
+      integer(kind = kint) :: ip, ierr
 !
 !
 !$omp do private(num,nsize)
       do ip = 1, Nsmp
         num = Nstacksmp(ip) - Nstacksmp(ip-1)
-        nsize = num*Nfft
         if(num .le. 0) cycle
 !
+        nsize = num*Nfft
         call RFFTMB(num, ione, Nfft, num, X_FFTPACK5(1,ip), nsize,      &
      &              WSAVE, lSAVE, WORK(1,ip), nsize, ierr)
       end do

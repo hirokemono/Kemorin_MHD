@@ -66,9 +66,9 @@
 !>        number of FFT plans for SMP
         integer(kind = kint) :: Nplan_FFTPACK = 1
 !>        number of component for each FFT
-        integer(kind = kint), allocatable :: istack_FFTPACK(:)
+        integer(kind = kint_gl), allocatable :: istack_FFTPACK(:)
 !>        Maximum nuber of components for each SMP process
-        integer(kind = kint) :: Mmax_smp
+        integer(kind = kint_gl) :: Mmax_smp
 !
 !>        Data for multiple Fourier transform
         real(kind = 8), allocatable :: X_FFTPACK5(:,:)

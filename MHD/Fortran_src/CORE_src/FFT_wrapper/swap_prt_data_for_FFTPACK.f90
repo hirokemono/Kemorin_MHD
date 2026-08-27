@@ -10,16 +10,18 @@
 !!@verbatim
 !!      subroutine swap_prt_fld_to_RFFTMF(Nsmp, Nstacksmp, Mmax_smp,    &
 !!     &                                  Nfft, M, X, X_FFTPACK5)
-!!        integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
-!!        integer(kind = kint), intent(in) :: Mmax_smp
+!!        integer(kind = kint), intent(in) :: Nsmp
+!!        integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
+!!        integer(kind = kint_gl), intent(in) :: Mmax_smp
 !!        integer(kind = kint), intent(in) :: M, Nfft
 !!        real(kind = kreal), intent(in) :: X(Nfft,M)
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                   :: X_FFTPACK5(Mmax_smp*Nfft,Nsmp)
 !!      subroutine swap_prt_spectr_from_RFFTMF                          &
 !!     &         (Nsmp, Nstacksmp, Mmax_smp, Nfft, X_FFTPACK5, M, X)
-!!        integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
-!!        integer(kind = kint), intent(in) :: Mmax_smp
+!!        integer(kind = kint), intent(in) :: Nsmp
+!!        integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
+!!        integer(kind = kint_gl), intent(in) :: Mmax_smp
 !!        integer(kind = kint), intent(in) :: M, Nfft
 !!        real(kind = kreal), intent(in)                                &
 !!     &                   :: X_FFTPACK5(Mmax_smp*Nfft,Nsmp)
@@ -27,16 +29,18 @@
 !!
 !!      subroutine swap_prt_spectr_to_RFFTMB(Nsmp, Nstacksmp, Mmax_smp, &
 !!     &                                     Nfft, M, X, X_FFTPACK5)
-!!        integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
-!!        integer(kind = kint), intent(in) :: Mmax_smp
+!!        integer(kind = kint), intent(in) :: Nsmp
+!!        integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
+!!        integer(kind = kint_gl), intent(in) :: Mmax_smp
 !!        integer(kind = kint), intent(in) :: M, Nfft
 !!        real(kind = kreal), intent(in) :: X(Nfft,M)
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                   :: X_FFTPACK5(Mmax_smp*Nfft,Nsmp)
 !!      subroutine swap_prt_fld_from_RFFTMB(Nsmp, Nstacksmp, Mmax_smp,  &
 !!     &                                    Nfft, X_FFTPACK5, M, X)
-!!        integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-!!        integer(kind = kint), intent(in) :: Mmax_smp
+!!        integer(kind = kint), intent(in) :: Nsmp
+!!        integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
+!!        integer(kind = kint_gl), intent(in) :: Mmax_smp
 !!        integer(kind = kint), intent(in) :: M, Nfft
 !!        real(kind = kreal), intent(in)                                &
 !!     &                   :: X_FFTPACK5(Mmax_smp*Nfft,Nsmp)
@@ -64,15 +68,16 @@
       subroutine swap_prt_fld_to_RFFTMF(Nsmp, Nstacksmp, Mmax_smp,      &
      &                                  Nfft, M, X, X_FFTPACK5)
 !
-      integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint), intent(in) :: Mmax_smp
+      integer(kind = kint), intent(in) :: Nsmp
+      integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
+      integer(kind = kint_gl), intent(in) :: Mmax_smp
       integer(kind = kint), intent(in) :: M, Nfft
       real(kind = kreal), intent(in) :: X(Nfft,M)
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: X_FFTPACK5(Mmax_smp*Nfft,Nsmp)
 !
-      integer(kind = kint) :: ismp, ist, num
+      integer(kind = kint_gl) :: ismp, ist, num
 !
 !
 !$omp parallel do private(ist,num)
@@ -94,15 +99,16 @@
       subroutine swap_prt_spectr_from_RFFTMF                            &
      &         (Nsmp, Nstacksmp, Mmax_smp, Nfft, X_FFTPACK5, M, X)
 !
-      integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint), intent(in) :: Mmax_smp
+      integer(kind = kint), intent(in) :: Nsmp
+      integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
+      integer(kind = kint_gl), intent(in) :: Mmax_smp
       integer(kind = kint), intent(in) :: M, Nfft
       real(kind = kreal), intent(in)                                    &
      &                   :: X_FFTPACK5(Mmax_smp*Nfft,Nsmp)
 !
       real(kind = kreal), intent(inout) :: X(Nfft,M)
 !
-      integer(kind = kint) :: ismp, ist, num
+      integer(kind = kint_gl) :: ismp, ist, num
 !
 !
 !$omp parallel do private(ist,num)
@@ -123,15 +129,16 @@
       subroutine swap_prt_spectr_to_RFFTMB(Nsmp, Nstacksmp, Mmax_smp,   &
      &                                     Nfft, M, X, X_FFTPACK5)
 !
-      integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint), intent(in) :: Mmax_smp
+      integer(kind = kint), intent(in) :: Nsmp
+      integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
+      integer(kind = kint_gl), intent(in) :: Mmax_smp
       integer(kind = kint), intent(in) :: M, Nfft
 !
       real(kind = kreal), intent(in) :: X(Nfft,M)
       real(kind = kreal), intent(inout)                                 &
      &                   :: X_FFTPACK5(Mmax_smp*Nfft,Nsmp)
 !
-      integer(kind = kint) :: ismp, ist, num
+      integer(kind = kint_gl) :: ismp, ist, num
 !
 !
 !$omp parallel do private(ist,num)
@@ -152,15 +159,16 @@
       subroutine swap_prt_fld_from_RFFTMB(Nsmp, Nstacksmp, Mmax_smp,    &
      &                                    Nfft, X_FFTPACK5, M, X)
 !
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint), intent(in) :: Mmax_smp
+      integer(kind = kint), intent(in) :: Nsmp
+      integer(kind = kint_gl), intent(in) :: Nstacksmp(0:Nsmp)
+      integer(kind = kint_gl), intent(in) :: Mmax_smp
       integer(kind = kint), intent(in) :: M, Nfft
       real(kind = kreal), intent(in)                                    &
      &                   :: X_FFTPACK5(Mmax_smp*Nfft,Nsmp)
 !
       real(kind = kreal), intent(inout) :: X(Nfft,M)
 !
-      integer(kind = kint) ::  ismp, ist, num
+      integer(kind = kint_gl) ::  ismp, ist, num
 !
 !
 !$omp parallel do private(ist,num)
@@ -182,13 +190,14 @@
       subroutine swap_prt_fld_to_RFFTMF_smp(ist_smp, nnod_smp,          &
      &          Nfft, M, X, Mmax_smp, X_FFTPACK)
 !
-      integer(kind = kint), intent(in) :: ist_smp, nnod_smp
-      integer(kind = kint), intent(in) :: M, Nfft, Mmax_smp
+      integer(kind = kint_gl), intent(in) :: ist_smp, nnod_smp
+      integer(kind = kint_gl), intent(in) :: Mmax_smp
+      integer(kind = kint), intent(in) :: M, Nfft
       real(kind = kreal), intent(in) :: X(Nfft,M)
 !
       real(kind = kreal), intent(inout) :: X_FFTPACK(Mmax_smp*Nfft)
 !
-      integer(kind = kint) ::  i, j, inum, inod_c
+      integer(kind = kint_gl) ::  i, j, inum, inod_c
 !
 !
       do i = 1, Nfft
@@ -206,13 +215,14 @@
       subroutine swap_prt_spec_from_RFFTMF_smp(ist_smp, nnod_smp,       &
      &          Nfft, Mmax_smp, X_FFTPACK, M, X)
 !
-      integer(kind = kint), intent(in) :: ist_smp, nnod_smp
-      integer(kind = kint), intent(in) :: M, Nfft, Mmax_smp
+      integer(kind = kint_gl), intent(in) :: ist_smp, nnod_smp
+      integer(kind = kint_gl), intent(in) :: Mmax_smp
+      integer(kind = kint), intent(in) :: M, Nfft
       real(kind = kreal), intent(in) :: X_FFTPACK(Mmax_smp*Nfft)
 !
       real(kind = kreal), intent(inout) :: X(Nfft,M)
 !
-      integer(kind = kint) ::  i, j, inum, inod_c
+      integer(kind = kint_gl) ::  i, j, inum, inod_c
 !
 !
       do inum = 1, nnod_smp
@@ -239,13 +249,14 @@
       subroutine swap_prt_spec_to_RFFTMB_smp(ist_smp, nnod_smp,         &
      &          Nfft, M, X, Mmax_smp, X_FFTPACK)
 !
-      integer(kind = kint), intent(in) :: ist_smp, nnod_smp
-      integer(kind = kint), intent(in) :: M, Nfft, Mmax_smp
+      integer(kind = kint_gl), intent(in) :: ist_smp, nnod_smp
+      integer(kind = kint_gl), intent(in) :: Mmax_smp
+      integer(kind = kint), intent(in) :: M, Nfft
       real(kind = kreal), intent(in) :: X(Nfft,M)
 !
       real(kind = kreal), intent(inout) :: X_FFTPACK(Mmax_smp*Nfft)
 !
-      integer(kind = kint) ::  i, j, inum, inod_c
+      integer(kind = kint_gl) ::  i, j, inum, inod_c
 !
 !
       do inum = 1, nnod_smp
@@ -272,13 +283,14 @@
       subroutine swap_prt_fld_from_RFFTMB_smp(ist_smp, nnod_smp,        &
      &          Nfft, Mmax_smp, X_FFTPACK, M, X)
 !
-      integer(kind = kint), intent(in) :: ist_smp, nnod_smp
-      integer(kind = kint), intent(in) :: M, Nfft, Mmax_smp
+      integer(kind = kint_gl), intent(in) :: ist_smp, nnod_smp
+      integer(kind = kint_gl), intent(in) :: Mmax_smp
+      integer(kind = kint), intent(in) :: M, Nfft
       real(kind = kreal), intent(in) :: X_FFTPACK(Mmax_smp*Nfft)
 !
       real(kind = kreal), intent(inout) :: X(Nfft,M)
 !
-      integer(kind = kint) ::  i, j, inum, inod_c
+      integer(kind = kint_gl) ::  i, j, inum, inod_c
 !
 !
       do inum = 1, nnod_smp
