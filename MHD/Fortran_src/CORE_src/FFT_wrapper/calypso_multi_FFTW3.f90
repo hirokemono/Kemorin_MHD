@@ -158,7 +158,7 @@
 !
       subroutine verify_wk_FFTW_mul_type(Nsmp, Nstacksmp, Nfft, WK)
 !
-      integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
+      integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: Nfft
 !
       type(working_mul_FFTW), intent(inout) :: WK

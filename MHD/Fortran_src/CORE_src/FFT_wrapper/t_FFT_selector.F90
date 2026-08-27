@@ -248,8 +248,8 @@
 #ifdef FFTW3
       else if(iflag_FFT .eq. (iflag_FFTW + iflag_once_fft)) then
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTW'
-        call verify_wk_FFTW_mul_type(Nsmp, Nstacksmp,                   &
-     &      Nfft, WKS%WK_MUL_FFTW)
+        call verify_wk_FFTW_mul_type(Nsmp, Nstacksmp, Nfft,             &
+     &                               WKS%WK_MUL_FFTW)
       else if(iflag_FFT .eq. (iflag_FFTW + iflag_single_fft)) then
         if(iflag_debug .gt. 0) write(*,*) 'Use single FFTW transforms'
         call verify_wk_FFTW_type(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTW)
