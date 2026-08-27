@@ -82,7 +82,7 @@
 !>        flag for length of Fourier transform
         integer(kind = kint) :: iflag_fft_len =  -1
 !>        flag for number of components for Fourier transform
-        integer(kind = kint) :: iflag_fft_comp = -1
+        integer(kind = kint_gl) :: iflag_fft_comp = -1
       end type working_FFTPACK
 !
       private :: dealloc_work_4_FFTPACK_t, dealloc_const_FFTPACK_t
