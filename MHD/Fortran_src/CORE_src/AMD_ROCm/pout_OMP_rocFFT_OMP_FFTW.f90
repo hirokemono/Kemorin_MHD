@@ -18,14 +18,14 @@
 !!        type(calypso_rocFFT_params), intent(inout) :: fwd_rocFFT
 !!        type(calypso_rocFFT_params), intent(inout) :: bwd_rocFFT
 !!        type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
-!!        type(working_OMP_FFTW), intent(inout) :: WK_OMP_FFTW
+!!        type(working_mul_FFTW), intent(inout) :: WK_OMP_FFTW
 !!
 !!      subroutine pout_fwd_OMP_rocFFT_OMP_FFTW3(Ncomp, Ncomp_CPU,      &
 !!     &          fwd_rocFFT, WK_rocFFT, WK_OMP_FFTW, X, elapsed)
 !!        integer(kind = kint), intent(in) :: Ncomp, Ncomp_CPU
 !!        type(calypso_rocFFT_params), intent(in), target :: fwd_rocFFT
 !!        type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
-!!        type(working_OMP_FFTW), intent(inout) :: WK_OMP_FFTW
+!!        type(working_mul_FFTW), intent(inout) :: WK_OMP_FFTW
 !!        real(kind = kreal), intent(inout) :: X(Ncomp,fwd_rocFFT%Nfft)
 !!        real(kind = kreal), intent(inout) :: elapsed(4)
 !!      subroutine pout_bwd_OMP_rocFFT_OMP_FFTW3(Ncomp, Ncomp_CPU,      &
@@ -33,14 +33,14 @@
 !!        integer(kind = kint), intent(in) :: Ncomp, Ncomp_CPU
 !!        type(calypso_rocFFT_params), intent(in), target :: bwd_rocFFT
 !!        type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
-!!        type(working_OMP_FFTW), intent(inout) :: WK_OMP_FFTW
+!!        type(working_mul_FFTW), intent(inout) :: WK_OMP_FFTW
 !!        real(kind = kreal), intent(inout) :: X(Ncomp,bwd_rocFFT%Nfft)
 !!        real(kind = kreal), intent(inout) :: elapsed(4)
 !!@endverbatim
       module pout_OMP_rocFFT_OMP_FFTW
 !
       use t_multi_rocFFT_wrapper
-      use t_OMP_FFTW_wrapper
+      use t_multi_FFTW_wrapper
 !
       implicit none
 !
@@ -55,6 +55,7 @@
      &          WK_rocFFT, WK_OMP_FFTW)
 !
       use multi_pout_complex_rocFFT
+      use t_OMP_FFTW_wrapper
 !
       integer(kind = kint), intent(in) :: ncomp_GPU, Ncomp_CPU
       integer(kind = kint), intent(in) :: Nfft
@@ -62,7 +63,7 @@
       type(calypso_rocFFT_params), intent(inout) :: fwd_rocFFT
       type(calypso_rocFFT_params), intent(inout) :: bwd_rocFFT
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
-      type(working_OMP_FFTW), intent(inout) :: WK_OMP_FFTW
+      type(working_mul_FFTW), intent(inout) :: WK_OMP_FFTW
 !
 !
       call calypso_pout_rocFFT_init(ncomp_GPU, ncomp_GPU, Nfft,         &
@@ -76,10 +77,12 @@
       subroutine fin_pout_OMP_rocFFT_OMP_FFTW3                          &
      &         (fwd_rocFFT, bwd_rocFFT, WK_rocFFT, WK_OMP_FFTW)
 !
+      use t_OMP_FFTW_wrapper
+!
       type(calypso_rocFFT_params), intent(inout) :: fwd_rocFFT
       type(calypso_rocFFT_params), intent(inout) :: bwd_rocFFT
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
-      type(working_OMP_FFTW), intent(inout) :: WK_OMP_FFTW
+      type(working_mul_FFTW), intent(inout) :: WK_OMP_FFTW
 !
 !
       call calypso_rocFFT_fin(fwd_rocFFT, bwd_rocFFT, WK_rocFFT)
@@ -103,7 +106,7 @@
       type(calypso_rocFFT_params), intent(in), target :: fwd_rocFFT
 !
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
-      type(working_OMP_FFTW), intent(inout) :: WK_OMP_FFTW
+      type(working_mul_FFTW), intent(inout) :: WK_OMP_FFTW
       real(kind = kreal), intent(inout) :: X(Ncomp,fwd_rocFFT%Nfft)
       real(kind = kreal), intent(inout) :: elapsed(4)
 !
@@ -136,7 +139,7 @@
 !
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
-      call dfftw_execute_dft_r2c(WK_OMP_FFTW%omp_plan_fwd,              &
+      call dfftw_execute_dft_r2c(WK_OMP_FFTW%plan_mul_fwd(1),           &
      &    WK_OMP_FFTW%X_FFTW_mul(1,1), WK_OMP_FFTW%C_FFTW_mul(1,1))
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
 !$omp end parallel
@@ -174,13 +177,12 @@
       type(calypso_rocFFT_params), intent(in), target :: bwd_rocFFT
 !
       type(calypso_rocFFT_work), intent(inout) :: WK_rocFFT
-      type(working_OMP_FFTW), intent(inout) :: WK_OMP_FFTW
+      type(working_mul_FFTW), intent(inout) :: WK_OMP_FFTW
       real(kind = kreal), intent(inout) :: X(Ncomp,bwd_rocFFT%Nfft)
       real(kind = kreal), intent(inout) :: elapsed(4)
 !
       real(kind = kreal) :: start
       real(kind = kreal) :: st_c, st_g
-      integer(kind = kint) :: i, ist
 !
 !
       start = OMP_GET_WTIME()
@@ -207,7 +209,7 @@
 !
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
-      call dfftw_execute_dft_c2r(WK_OMP_FFTW%omp_plan_bwd,              &
+      call dfftw_execute_dft_c2r(WK_OMP_FFTW%plan_mul_bwd(1),           &
      &    WK_OMP_FFTW%C_FFTW_mul(1,1), WK_OMP_FFTW%X_FFTW_mul(1,1))
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
 !$omp end parallel

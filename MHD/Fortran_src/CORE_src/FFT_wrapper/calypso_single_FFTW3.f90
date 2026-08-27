@@ -106,7 +106,8 @@
       call alloc_work_4_FFTW_t(Nsmp, Nfft, WK)
       call init_single_FFTW_smp(Nsmp, Nstacksmp, Nfft, WK%Nfft_c,       &
      &                          WK%plan_forward, WK%plan_backward,      &
-     &                          WK%istack_sFFTW, WK%X_FFTW, WK%C_FFTW)
+     &                          WK%istack_sFFTW, WK%Mmax_smp,           &
+     &                           WK%X_FFTW, WK%C_FFTW)
 !
       end subroutine init_FFTW_type
 !

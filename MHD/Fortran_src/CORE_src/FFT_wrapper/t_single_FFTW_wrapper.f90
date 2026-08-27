@@ -66,7 +66,7 @@
 !
 !>      structure for working data for FFTW
       type working_FFTW
-!>        number of FT plans for SMP
+!>        number of FFT plans for SMP
         integer(kind = kint) :: Nplan_sFFTW = 1
 !>        plan ID for backward transform
         integer(kind = fftw_plan), allocatable :: plan_backward(:)
@@ -75,6 +75,9 @@
 !
 !>        number of component for each FFT
         integer(kind = kint), allocatable :: istack_sFFTW(:)
+!>        Maximum nuber of components for each SMP process
+        integer(kind = kint) :: Mmax_smp
+!
 !>        Complax data size
         integer(kind = kint) :: NFFT_c
 !>        normalization parameter for FFTW (= 1 / Nfft)

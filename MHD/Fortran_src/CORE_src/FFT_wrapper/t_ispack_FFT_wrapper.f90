@@ -64,6 +64,7 @@
         integer(kind = kint), allocatable :: istack_ISPACK(:)
 !>        Maximum nuber of components for each SMP process
         integer(kind = kint) :: Mmax_smp
+!
 !>        Data for multiple Fourier transform
         real(kind = 8), allocatable :: X_ispack(:,:)
 !>        Work area for ISPACK

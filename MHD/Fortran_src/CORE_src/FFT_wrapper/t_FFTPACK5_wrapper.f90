@@ -63,12 +63,13 @@
 !
 !>      structure for working data for FFTPACK5
       type working_FFTPACK
-!>        number of FT plans for SMP
+!>        number of FFT plans for SMP
         integer(kind = kint) :: Nplan_FFTPACK = 1
 !>        number of component for each FFT
         integer(kind = kint), allocatable :: istack_FFTPACK(:)
 !>        Maximum nuber of components for each SMP process
         integer(kind = kint) :: Mmax_smp
+!
 !>        Data for multiple Fourier transform
         real(kind = 8), allocatable :: X_FFTPACK5(:,:)
 !

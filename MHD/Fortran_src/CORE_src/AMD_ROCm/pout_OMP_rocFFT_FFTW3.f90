@@ -155,7 +155,7 @@
 !
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
-      call multi_fwd_FFTW3_smp(WK_FFTW%plan_fowd_mul,                   &
+      call multi_fwd_FFTW3_smp(WK_FFTW%plan_mul_fwd,                    &
      &    WK_FFTW%Nplan_FFTW, WK_FFTW%istack_FFTW,                      &
      &    Ncomp_CPU, int(fwd_rocFFT%Nfft), WK_FFTW%X_FFTW_mul(1,1),     &
      &    WK_FFTW%Nfft_c, WK_FFTW%C_FFTW_mul(1,1))
@@ -228,7 +228,7 @@
 !
 !!   3. The rest of the CPU threads immediately and execute
       st_c = OMP_GET_WTIME()
-      call multi_bwd_FFTW3_smp(WK_FFTW%plan_back_mul,                   &
+      call multi_bwd_FFTW3_smp(WK_FFTW%plan_mul_bwd,                    &
      &    WK_FFTW%Nplan_FFTW, WK_FFTW%istack_FFTW,                      &
      &    Ncomp_CPU, WK_FFTW%Nfft_c, WK_FFTW%C_FFTW_mul(1,1),           &
      &    int(bwd_rocFFT%Nfft), WK_FFTW%X_FFTW_mul(1,1))

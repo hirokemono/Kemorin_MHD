@@ -10,12 +10,14 @@
 !! ------------------------------------------------------------------
 !!      subroutine init_single_FFTW_smp(Nsmp, Nstacksmp, Nfft, NFFT_c,  &
 !!     &                                plan_forward, plan_backward,    &
-!!     &                                istack_sFFTW, X_FFTW, C_FFTW)
+!!     &                                istack_sFFTW, Mmax_smp,         &
+!!     &                                X_FFTW, C_FFTW)
 !!        integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
 !!        integer(kind = kint), intent(in) :: Nfft, Nfft_c
 !!        integer(kind = fftw_plan), intent(inout) :: plan_forward(Nsmp)
 !!        integer(kind = fftw_plan), intent(inout) :: plan_backward(Nsmp)
 !!        integer(kind = kint), intent(inout) :: istack_sFFTW(0:Nsmp)
+!!        integer(kind = kint), intent(inout) :: Mmax_smp
 !!        real(kind = kreal), intent(inout) :: X_FFTW(Nfft,Nsmp)
 !!        complex(kind = fftw_complex), intent(inout)                   &
 !!     &                                  :: C_FFTW(Nfft_c,Nsmp)
@@ -117,7 +119,8 @@
 !
       subroutine init_single_FFTW_smp(Nsmp, Nstacksmp, Nfft, NFFT_c,    &
      &                                plan_forward, plan_backward,      &
-     &                                istack_sFFTW, X_FFTW, C_FFTW)
+     &                                istack_sFFTW, Mmax_smp,           &
+     &                                X_FFTW, C_FFTW)
 !
       integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: Nfft, Nfft_c
@@ -125,6 +128,7 @@
       integer(kind = fftw_plan), intent(inout) :: plan_forward(Nsmp)
       integer(kind = fftw_plan), intent(inout) :: plan_backward(Nsmp)
       integer(kind = kint), intent(inout) :: istack_sFFTW(0:Nsmp)
+      integer(kind = kint), intent(inout) :: Mmax_smp
       real(kind = kreal), intent(inout) :: X_FFTW(Nfft,Nsmp)
       complex(kind = fftw_complex), intent(inout)                       &
      &                                  :: C_FFTW(Nfft_c,Nsmp)
@@ -140,7 +144,12 @@
         call dfftw_plan_dft_c2r_1d(plan_backward(j), Nfft4,             &
      &      C_FFTW(1,j), X_FFTW(1,j), FFTW_KEMO_EST)
       end do
+!
       istack_sFFTW(0:Nsmp) = Nstacksmp(0:Nsmp)
+      Mmax_smp = 0
+      do j = 1, Nsmp
+        Mmax_smp = max(Mmax_smp,(Nstacksmp(j) - Nstacksmp(j-1)))
+      end do
 !
       end subroutine init_single_FFTW_smp
 !

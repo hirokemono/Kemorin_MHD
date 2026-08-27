@@ -28,10 +28,11 @@
       use m_precision
       use m_constants
 !
-      use t_OMP_FFTW_wrapper
+      use t_multi_FFTW_wrapper
       use t_fft_test_data
       use t_parameters_FFT_tests
       use t_ctl_data_4_FFT_tests
+      use t_OMP_FFTW_wrapper
       use OMP_FFTW3_wrapper
 !
       implicit none
@@ -45,7 +46,7 @@
       type(FFT_tests_ctl), save :: fft_c1
       type(FFT_test_parameters), save :: fft_test_p1
 !
-      type(working_OMP_FFTW) :: WK_OMP_FFTW_t
+      type(working_mul_FFTW) :: WK_OMP_FFTW_t
       type(fft_test_data) :: ft3
       integer(kind = kint) :: iloop = 0
 !

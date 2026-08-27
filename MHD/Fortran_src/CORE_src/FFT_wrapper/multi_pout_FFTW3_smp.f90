@@ -113,7 +113,7 @@
 !
       start = OMP_GET_WTIME()
 !$omp parallel
-      call multi_fwd_FFTW3_smp(WK%plan_fowd_mul,                        &
+      call multi_fwd_FFTW3_smp(WK%plan_mul_fwd,                         &
      &    WK%Nplan_FFTW, WK%istack_FFTW, Ncomp, Nfft,                   &
      &    WK%X_FFTW_mul(1,1), WK%Nfft_c, WK%C_FFTW_mul(1,1))
 !$omp end parallel
@@ -156,7 +156,7 @@
 !
       start = OMP_GET_WTIME()
 !$omp parallel
-      call multi_bwd_FFTW3_smp(WK%plan_back_mul,                        &
+      call multi_bwd_FFTW3_smp(WK%plan_mul_bwd,                         &
      &    WK%Nplan_FFTW, WK%istack_FFTW, Ncomp, WK%Nfft_c,              &
      &    WK%C_FFTW_mul(1,1), Nfft, WK%X_FFTW_mul(1,1))
 !$omp end parallel

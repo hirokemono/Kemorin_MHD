@@ -106,7 +106,7 @@
       start = OMP_GET_WTIME()
 !$omp parallel
       call multi_fwd_FFTW3_smp                                          &
-     &   (WK%plan_fowd_mul, WK%Nplan_FFTW, WK%istack_FFTW,              &
+     &   (WK%plan_mul_fwd, WK%Nplan_FFTW, WK%istack_FFTW,               &
      &    Ncomp, Nfft, X, WK%Nfft_c, WK%C_FFTW_mul)
 !$omp end parallel
       elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
@@ -148,7 +148,7 @@
       start = OMP_GET_WTIME()
 !$omp parallel
       call multi_bwd_FFTW3_smp                                          &
-     &   (WK%plan_back_mul, WK%Nplan_FFTW, WK%istack_FFTW,              &
+     &   (WK%plan_mul_bwd, WK%Nplan_FFTW, WK%istack_FFTW,               &
      &    Ncomp,  WK%Nfft_c, WK%C_FFTW_mul, Nfft, X)
 !$omp end parallel
       elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start

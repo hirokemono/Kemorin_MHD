@@ -132,8 +132,8 @@
       call alloc_mul_FFTW_plan_t(Nsmp, Nstacksmp(Nsmp), Nfft, WK)
       call init_pout_FFTW_mul_smp                                       &
      &   (Nsmp, Nstacksmp, Nstacksmp(Nsmp), Nfft, WK%Nfft_c,            &
-     &    WK%plan_fowd_mul, WK%plan_back_mul, WK%istack_FFTW,           &
-     &    WK%X_FFTW_mul, WK%C_FFTW_mul)
+     &    WK%plan_mul_fwd, WK%plan_mul_bwd,                             &
+     &    WK%istack_FFTW, WK%Mmax_smp, WK%X_FFTW_mul, WK%C_FFTW_mul)
 !
       end subroutine init_FFTW_mul_type
 !
@@ -147,7 +147,7 @@
 !
 !
       call destroy_FFTW_mul_smp                                         &
-     &   (Nsmp, WK%plan_fowd_mul, WK%plan_back_mul)
+     &   (Nsmp, WK%plan_mul_fwd, WK%plan_mul_bwd)
       call dealloc_mul_FFTW_plan_t(WK)
 !
       end subroutine finalize_FFTW_mul_type
@@ -179,8 +179,8 @@
 !
       subroutine init_pout_FFTW_mul_smp                                 &
      &         (Nsmp, Nstacksmp, Ncomp, Nfft, Nfft_c,                   &
-     &          plan_forward_smp, plan_backward_smp, istack_smp_FFTW,   &
-     &          X_FFTW, C_FFTW)
+     &          plan_forward_smp, plan_backward_smp,                    &
+     &          istack_smp_FFTW, Mmax_smp, X_FFTW, C_FFTW)
 !
       integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: Nfft, Nfft_c, Ncomp
@@ -190,6 +190,7 @@
       integer(kind = fftw_plan), intent(inout)                          &
      &                          :: plan_backward_smp(Nsmp)
       integer(kind = kint), intent(inout) :: istack_smp_FFTW(0:Nsmp)
+      integer(kind = kint), intent(inout) :: Mmax_smp
       real(kind = kreal), intent(inout) :: X_FFTW(Nfft,Ncomp)
       complex(kind = fftw_complex), intent(inout)                       &
      &                          :: C_FFTW(Nfft_c,Ncomp)
@@ -199,6 +200,10 @@
 !
 !
       istack_smp_FFTW(0:Nsmp) = Nstacksmp(0:Nsmp)
+      Mmax_smp = 0
+      do ip = 1, Nsmp
+        Mmax_smp = max(Mmax_smp, (Nstacksmp(ip) - Nstacksmp(ip-1)))
+      end do
 !
       Nfft4 = int(Nfft,KIND(Nfft4))
       do ip = 1, Nsmp
