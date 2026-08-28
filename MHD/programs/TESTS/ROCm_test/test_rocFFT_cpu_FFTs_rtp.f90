@@ -59,7 +59,7 @@
       integer(kind = kint) :: i, nd, icou
 !
 !
-      write(*,'(a)') '-----  Test prt rocFFT and FFTPACK -----'
+      write(*,'(a)') '-----  Test rtp rocFFT and CPU FFT -----'
 !
       call init_FFT_mode_flags()
       call default_FFT_test_parameters(test_name, def_fname,            &
@@ -77,10 +77,10 @@
 !     & .and. ((fft_test_p1%iflag_FFT/10) .ne. (iflag_rocFFT/10))) then
 !        fft_test_p1%iflag_FFT = iflag_OMP_rocFFT
 !      end if
-      write(fft_test_p1%test_name,'(3a)') trim(fft_test_p%FFT_name),    &
-     &                             , '_', trim(fft_test_p%CPU_FFT_name)
-      write(*,*) 'fft_test_p1%iflag_FFT', fft_test_p1%iflag_FFT,        &
-     &          '  ', trim(fft_test_p1%test_name)
+      write(fft_test_p1%test_name,'(3a)') trim(fft_test_p1%FFT_name),   &
+     &                              '_', trim(fft_test_p1%CPU_FFT_name)
+      write(*,*) 'fft_test_p1%iflag_FFT',                               &
+     &          fft_test_p1%iflag_FFT, fft_test_p1%iflag_CPU_FFT
 !
       ncomp_GPU = fft_test_p1%ratio_rocFFT * fft_test_p1%Ncomp_test
       ncomp_CPU = fft_test_p1%Ncomp_test - ncomp_GPU
@@ -129,7 +129,7 @@
 !
 !   Finalize
       start = OMP_GET_WTIME()
-      call finalize_rocFFT_FFTs(iflag_CPU_FFT, np_smp,                  &
+      call finalize_rocFFT_FFTs(fft_test_p1%iflag_CPU_FFT, np_smp,      &
      &                          fwd, bwd, WK_rocFFT, WK_FFTs1)
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
@@ -145,4 +145,4 @@
 !
       end program test_rocFFT_cpu_FFTs_rtp
 !
-! mpif90 --offload-arch=gfx942 -mcmodel=medium -mcmodel=medium -O3 -g -fopenmp -fopenmp-target-fast  -I. -I/home/hrmatsui/src_kemo/work -I/opt/rocm-7.2.0/include/hipfort/amdgcn -DPNG_OUTPUT -DZLIB_IO -DFFTW3 -D_AMD_ROCM_ -o ./test_rocFFT_cpu_FFTs_rtp test_rocFFT_cpu_FFTs_rtp.f90 /home/hrmatsui/src_kemo/work/m_FFT_size.o /home/hrmatsui/src_kemo/work/t_fft_test_data.o -L/home/hrmatsui/src_kemo/work -lkemo_core -lkemo_c -L/home/hrmatsui/local/amd/lib -lpng -L/home/hrmatsui/local/amd/lib -lz -L/home/hrmatsui/local/amd/lib -lfftw3 -L/opt/rocm-7.2.0/lib -lrocfft -lrocblas -lhipfort-amdgcn -lamdhip64
+! mpif90 --offload-arch=gfx942 -mcmodel=medium -mcmodel=medium -O3 -g -fopenmp -fopenmp-target-fast  -I. -I/home/hrmatsui/src_kemo/work -I/opt/rocm-7.2.0/include/hipfort/amdgcn -DPNG_OUTPUT -DZLIB_IO -DFFTW3 -D_AMD_ROCM_ -o ./test_rocFFT_cpu_FFTs_rtp test_rocFFT_cpu_FFTs_rtp.f90 -L/home/hrmatsui/src_kemo/work -lkemo_core -lkemo_c -L/home/hrmatsui/local/amd/lib -lpng -L/home/hrmatsui/local/amd/lib -lz -L/home/hrmatsui/local/amd/lib -lfftw3 -L/opt/rocm-7.2.0/lib -lrocfft -lrocblas -lhipfort-amdgcn -lamdhip64
