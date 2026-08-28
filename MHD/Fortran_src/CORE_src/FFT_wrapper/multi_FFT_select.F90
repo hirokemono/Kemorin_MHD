@@ -2,65 +2,63 @@
 !!@brief  module multi_FFT_select
 !!
 !!@author H. Matsui
-!!@date Programmed in Sep., 2026
-!>@brief  Selector for FFT
+!!@date Programmed in Apr., 2026
+!
+!>@brief FFT selector
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!   wrapper subroutine for initierize FFT
+!! wrapper subroutine for forward Fourier transform by FFTPACK5
 !! ------------------------------------------------------------------
-!!      subroutine select_multi_FFT_init(iflag_FFT, Nsmp, Nstacksmp,    &
-!!     &                                 Ncomp, Nfft, WKS)
+!!
+!!      subroutine select_pin_fwd_FFTs(iflag_FFT, Ncomp, Nfft, X,       &
+!!     &          WK_FFTs, elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) :: iflag_FFT
-!!        integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
-!!        integer(kind = kint), intent(in) :: Nfft, Ncomp
-!!        type(working_FFTs), intent(inout) :: WKS
-!!
-!! ------------------------------------------------------------------
-!!   wrapper subroutine for finalize FFT
-!! ------------------------------------------------------------------
-!!      subroutine select_multi_FFT_fin(iflag_FFT, Nsmp, WKS)
+!!        integer(kind = kint), intent(in) :: Ncomp, Nfft
+!!        type(working_FFTs), intent(inout) :: WK_FFTs
+!!        real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
+!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
+!!      subroutine select_pout_fwd_FFTs(iflag_FFT, Ncomp, Nfft, X,      &
+!!     &          WK_FFTs, elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) :: iflag_FFT
-!!        integer(kind = kint), intent(in) :: Nsmp
-!!        type(working_FFTs), intent(inout) :: WKS
+!!        integer(kind = kint), intent(in) :: Ncomp, Nfft
+!!        type(working_FFTs), intent(inout) :: WK_FFTs
+!!        real(kind = kreal), intent(inout) :: X(Ncomp, Nfft)
+!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !!
 !! ------------------------------------------------------------------
-!!   wrapper subroutine for refresh FFT
-!! ------------------------------------------------------------------
-!!      subroutine select_multi_FFT_verify(iflag_FFT, Nsmp, Nstacksmp,  &
-!!     &                                   Ncomp, Nfft, WKS)
-!!        integer(kind = kint), intent(in) :: iflag_FFT
-!!        integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
-!!        integer(kind = kint), intent(in) :: Nfft, Ncomp
-!!        type(working_FFTs), intent(inout) :: WKS
-!!
-!! ------------------------------------------------------------------
-!!
-!!   a_{k} = \frac{2}{Nfft}
-!!          \sum_{j=0}^{Nfft-1} [x_{j} \cos (\frac{2\pi j k}{Nfft})]
-!!   b_{k} = \frac{2}{Nfft}
-!!          \sum_{j=0}^{Nfft-1} [x_{j} \sin (\frac{2\pi j k}{Nfft})]
+!!   a_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j}
+!!          *  \cos (\frac{2\pi j k}{Nfft})
+!!   b_{k} = \frac{2}{Nfft} \sum_{j=0}^{Nfft-1} x_{j}
+!!          *  \sin (\frac{2\pi j k}{Nfft})
 !!
 !!   a_{0} = \frac{1}{Nfft} \sum_{j=0}^{Nfft-1} x_{j}
 !!    K = Nfft/2....
-!!   a_{k} = \frac{1}{Nfft}
-!!          \sum_{j=0}^{Nfft-1} [x_{j} \cos (\frac{2\pi j k}{Nfft})]
+!!   a_{k} = \frac{1}{Nfft} \sum_{j=0}^{Nfft-1} x_{j}
+!!          * \cos (\frac{2\pi j k}{Nfft})
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine backward_FFT_select(iflag_FFT, M, Nfft, X, WKS,      &
-!!     &                               elapsed_fft, elapsed_cpy)
+!! ------------------------------------------------------------------
+!! wrapper subroutine for backward Fourier transform by FFTPACK5
+!! ------------------------------------------------------------------
+!!
+!!      subroutine select_pin_bwd_FFTs(iflag_FFT, Ncomp, Nfft, X,       &
+!!     &          WK_FFTs, elapsed_fft, elapsed_cpy)
 !!        integer(kind = kint), intent(in) :: iflag_FFT
-!!        integer(kind = kint), intent(in) :: M, Nfft
-!!        real(kind = kreal), intent(inout) :: X(M,Nfft)
-!!        type(working_FFTs), intent(inout) :: WKS
+!!        integer(kind = kint), intent(in) :: Ncomp, Nfft
+!!        type(working_FFTs), intent(inout) :: WK_FFTs
+!!        real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
 !!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
-!! ------------------------------------------------------------------
+!!      subroutine select_pout_bwd_FFTs(iflag_FFT, Ncomp, Nfft, X,      &
+!!     &          WK_FFTs, elapsed_fft, elapsed_cpy)
+!!        integer(kind = kint), intent(in) :: iflag_FFT
+!!        integer(kind = kint), intent(in) :: Ncomp, Nfft
+!!        type(working_FFTs), intent(inout) :: WK_FFTs
+!!        real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
+!!        real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !!
 !! ------------------------------------------------------------------
-!!   wrapper subroutine for backward FFT
-!! ------------------------------------------------------------------
-!!
 !!   x_{k} = a_{0} + (-1)^{j} a_{Nfft/2} + sum_{k=1}^{Nfft/2-1}
 !!          (a_{k} \cos(2\pijk/Nfft) + b_{k} \sin(2\pijk/Nfft))
 !!
@@ -79,14 +77,26 @@
 !!
 !! ------------------------------------------------------------------
 !!@endverbatim
+!!
+!!@n @param Nsmp  Number of SMP processors
+!!@n @param Nstacksmp(0:Nsmp)   End number for each SMP process
+!!@n @param M           Number of components for Fourier transforms
+!!@n @param Nfft        Data length for eadh FFT
+!!@n @param X(Nfft,M)  Data for Fourier transform
+!!
+!!@n @param Mmax_smp    Maximum number of component for each SMP process
+!!@n @param X_FFTPACK5(Mmax_smp*Nfft,Nsmp)
+!!                 Data for multiple Fourier transform
+!!@n @param lSAVE                     Size of work constant for FFTPACK
+!!@n @param WSAVE(lSAVE)              Work constatnts for FFTPACK
+!!@n @param WORK(Mmax_smp*Nfft,Nsmp)  Work area for FFTPACK
 !
       module multi_FFT_select
 !
       use omp_lib
 !
       use m_precision
-      use m_machine_parameter
-      use m_FFT_selector
+      use m_constants
 !
       use t_FFT_selector
 !
@@ -98,137 +108,148 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine select_multi_FFT_init(iflag_FFT, Nsmp, Nstacksmp,      &
-     &                                 Ncomp, Nfft, WKS)
+      subroutine select_pin_fwd_FFTs(iflag_FFT, Ncomp, Nfft, X,         &
+     &          WK_FFTs, elapsed_fft, elapsed_cpy)
 !
-      use transfer_to_long_integers
-      use calypso_multi_fftpack
-      use calypso_multi_ispack
-      use calypso_multi_ispack3
-#ifdef FFTW3
-      use calypso_multi_FFTW3
-#endif
-#ifdef OMP_FFTW3
-      use t_OMP_FFTW_wrapper
-#endif
+      use multi_pin_FFT_select
+      use sel_swap_field_pin_FFT
 !
       integer(kind = kint), intent(in) :: iflag_FFT
+      integer(kind = kint), intent(in) :: Ncomp, Nfft
 !
-      integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint), intent(in) :: Nfft, Ncomp
+      type(working_FFTs), intent(inout) :: WK_FFTs
+      real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
+      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
-      type(working_FFTs), intent(inout) :: WKS
+      real(kind = kreal) :: start
 !
 !
-      if     ((iflag_FFT/10) .eq. (iflag_ISPACK0/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'init_wk_ispack_t'
-        call init_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
-      else if((iflag_FFT/10) .eq. (iflag_ISPACK3/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'init_wk_ispack3_t'
-        call init_wk_ispack3_t(Nsmp, Nstacksmp,                         &
-     &                         cast_long(Nfft), WKS%WK_ISPACK3)
-#ifdef FFTW3
-      else if((iflag_FFT/10) .eq. (iflag_FFTW/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'init_FFTW_mul_type'
-        call init_FFTW_mul_type(Nsmp, Nstacksmp, Nfft, WKS%WK_MUL_FFTW)
-#endif
-#ifdef OMP_FFTW3
-      else if((iflag_FFT/10) .eq. (iflag_OMP_FFTW/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'init_OMP_FFTW_type'
-        call init_OMP_FFTW_type(Ncomp, Nfft, WKS%WK_MUL_FFTW)
-#endif
-      else if((iflag_FFT/10) .eq. (iflag_FFTPACK/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'init_WK_FFTPACK_t'
-        call init_WK_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTPACK)
-      end if
+      start = OMP_GET_WTIME()
+      call sel_swap_pin_field_to_FFT(iflag_FFT, Ncomp, Nfft,            &
+     &                               X(1,1), WK_FFTs)
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
-      end subroutine select_multi_FFT_init
+      start = OMP_GET_WTIME()
+!$omp parallel
+      call select_fwd_pin_FFT_smp(iflag_FFT, Ncomp, Nfft, X, WK_FFTs)
+!$omp end parallel
+      elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
+!
+      start = OMP_GET_WTIME()
+      call sel_swap_prt_spectr_from_FFT(iflag_FFT, WK_FFTs,             &
+     &                                  Ncomp, Nfft, X(1,1))
+!
+      end subroutine select_pin_fwd_FFTs
 !
 ! ------------------------------------------------------------------
 !
-      subroutine select_multi_FFT_fin(iflag_FFT, Nsmp, WKS)
+      subroutine select_pin_bwd_FFTs(iflag_FFT, Ncomp, Nfft, X,         &
+     &          WK_FFTs, elapsed_fft, elapsed_cpy)
 !
-#ifdef FFTW3
-      use calypso_multi_FFTW3
-#endif
-#ifdef OMP_FFTW3
-      use t_OMP_FFTW_wrapper
-#endif
+      use multi_pin_FFT_select
+      use sel_swap_field_pin_FFT
 !
       integer(kind = kint), intent(in) :: iflag_FFT
-      integer(kind = kint), intent(in) :: Nsmp
+      integer(kind = kint), intent(in) :: Ncomp, Nfft
 !
-      type(working_FFTs), intent(inout) :: WKS
+      type(working_FFTs), intent(inout) :: WK_FFTs
+      real(kind = kreal), intent(inout) :: X(Nfft,Ncomp)
+      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
+!
+      real(kind = kreal) :: start
 !
 !
-      if     ((iflag_FFT/10) .eq. (iflag_ISPACK0/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'finalize_wk_ispack_t'
-        call finalize_wk_ispack_t(WKS%WK_ISPACK1)
-      else if((iflag_FFT/10) .eq. (iflag_ISPACK3/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'finalize_wk_ispack3_t'
-        call finalize_wk_ispack3_t(WKS%WK_ISPACK3)
-#ifdef FFTW3
-      else if((iflag_FFT/10) .eq. (iflag_FFTW/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'finalize_FFTW_mul_type'
-        call finalize_FFTW_mul_type(Nsmp, WKS%WK_MUL_FFTW)
-#endif
-#ifdef OMP_FFTW3
-      else if((iflag_FFT/10) .eq. (iflag_OMP_FFTW/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'finalize_OMP_FFTW_type'
-        call finalize_OMP_FFTW_type(WKS%WK_MUL_FFTW)
-#endif
-      else if((iflag_FFT/10) .eq. (iflag_FFTPACK/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'finalize_WK_FFTPACK_t'
-        call finalize_WK_FFTPACK_t(WKS%WK_FFTPACK)
-      end if
+      start = OMP_GET_WTIME()
+      call sel_swap_pin_spectr_to_FFT(iflag_FFT, Ncomp,                 &
+     &                                Nfft, X(1,1), WK_FFTs)
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
-      end subroutine select_multi_FFT_fin
+      start = OMP_GET_WTIME()
+!$omp parallel
+      call select_bwd_pin_FFT_smp(iflag_FFT, WK_FFTs,                   &
+     &                            Ncomp, Nfft, X(1,1))
+!$omp end parallel
+      elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
+!
+      start = OMP_GET_WTIME()
+      call sel_swap_pin_field_from_FFT(iflag_FFT, WK_FFTs, Ncomp,       &
+     &                                 Nfft, X(1,1))
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+!
+      end subroutine select_pin_bwd_FFTs
+!
+! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
+      subroutine select_pout_fwd_FFTs(iflag_FFT, Ncomp, Nfft, X,        &
+     &          WK_FFTs, elapsed_fft, elapsed_cpy)
+!
+      use multi_pout_FFT_select
+      use sel_copy_field_pout_FFT
+!
+      integer(kind = kint), intent(in) :: iflag_FFT
+      integer(kind = kint), intent(in) :: Ncomp, Nfft
+!
+      type(working_FFTs), intent(inout) :: WK_FFTs
+      real(kind = kreal), intent(inout) :: X(Ncomp, Nfft)
+      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
+!
+      real(kind = kreal) :: start
+!
+!
+      start = OMP_GET_WTIME()
+      call sel_norm_pout_field_to_FFT(iflag_FFT, Ncomp, Ncomp, Nfft,    &
+     &                                ione, X(1,1), WK_FFTs)
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+!
+      start = OMP_GET_WTIME()
+!$omp parallel
+      call select_fwd_pout_FFT_smp(iflag_FFT, Ncomp, Nfft, WK_FFTs)
+!$omp end parallel
+      elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
+!
+      start = OMP_GET_WTIME()
+      call sel_norm_pout_spectr_from_FFT(iflag_FFT, Ncomp, WK_FFTs,     &
+     &                                   Ncomp, Nfft, ione, X(1,1))
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+!
+      end subroutine select_pout_fwd_FFTs
 !
 ! ------------------------------------------------------------------
 !
-      subroutine select_multi_FFT_verify(iflag_FFT, Nsmp, Nstacksmp,    &
-     &                                   Ncomp, Nfft, WKS)
+      subroutine select_pout_bwd_FFTs(iflag_FFT, Ncomp, Nfft, X,        &
+     &          WK_FFTs, elapsed_fft, elapsed_cpy)
 !
-      use transfer_to_long_integers
-#ifdef FFTW3
-      use calypso_multi_FFTW3
-#endif
-#ifdef OMP_FFTW3
-      use t_OMP_FFTW_wrapper
-#endif
+      use multi_pout_FFT_select
+      use sel_copy_field_pout_FFT
 !
       integer(kind = kint), intent(in) :: iflag_FFT
+      integer(kind = kint), intent(in) :: Ncomp, Nfft
 !
-      integer(kind = kint), intent(in) :: Nsmp, Nstacksmp(0:Nsmp)
-      integer(kind = kint), intent(in) :: Nfft, Ncomp
+      type(working_FFTs), intent(inout) :: WK_FFTs
+      real(kind = kreal), intent(inout) :: X(Ncomp,Nfft)
+      real(kind = kreal), intent(inout) :: elapsed_fft, elapsed_cpy
 !
-      type(working_FFTs), intent(inout) :: WKS
+      real(kind = kreal) :: start
 !
 !
-      if     ((iflag_FFT/10) .eq. (iflag_ISPACK0/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'verify_wk_ispack_t'
-        call verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
-      else if((iflag_FFT/10) .eq. (iflag_ISPACK3/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'verify_wk_ispack3_t'
-        call verify_wk_ispack3_t(Nsmp, Nstacksmp,                       &
-     &                           cast_long(Nfft), WKS%WK_ISPACK3)
-#ifdef FFTW3
-      else if((iflag_FFT/10) .eq. (iflag_FFTW/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'verify_wk_FFTW_mul_type'
-        call verify_wk_FFTW_mul_type(Nsmp, Nstacksmp, Nfft,             &
-     &                               WKS%WK_MUL_FFTW)
-#endif
-#ifdef OMP_FFTW3
-      else if((iflag_FFT/10) .eq. (iflag_OMP_FFTW/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'verify_wk_OMP_FFTW_type'
-        call verify_wk_OMP_FFTW_type(Ncomp, Nfft, WKS%WK_MUL_FFTW)
-#endif
-      else if((iflag_FFT/10) .eq. (iflag_FFTPACK/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'verify_wk_FFTPACK_t'
-        call verify_wk_FFTPACK_t(Nsmp, Nstacksmp, Nfft, WKS%WK_FFTPACK)
-      end if
+      start = OMP_GET_WTIME()
+      call sel_copy_pout_spectr_to_FFT(iflag_FFT, Ncomp, Ncomp, Nfft,   &
+     &                                 ione, X(1,1), WK_FFTs)
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
 !
-      end subroutine select_multi_FFT_verify
+      start = OMP_GET_WTIME()
+!$omp parallel
+      call select_bwd_pout_FFT_smp(iflag_FFT, Ncomp, Nfft, WK_FFTs)
+!$omp end parallel
+      elapsed_fft = elapsed_fft + OMP_GET_WTIME() - start
+!
+      start = OMP_GET_WTIME()
+      call sel_copy_pout_field_from_FFT(iflag_FFT, Ncomp, WK_FFTs,      &
+     &                                  Ncomp, Nfft, ione, X(1,1))
+      elapsed_cpy = elapsed_cpy + OMP_GET_WTIME() - start
+!
+      end subroutine select_pout_bwd_FFTs
 !
 ! ------------------------------------------------------------------
 !

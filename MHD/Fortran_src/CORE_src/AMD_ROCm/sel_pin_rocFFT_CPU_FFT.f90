@@ -10,7 +10,7 @@
 !!@verbatim
 !!      subroutine init_pin_rocFFT_FFTs(iflag_CPU_FFT,                  &
 !!     &          Ncomp, Ncomp_GPU, Ncomp_CPU, Nfft, Nsmp,              &
-!!     &          fwd_rocFFT, bwd_rocFFT, WK_rocFFT, WK_FFTPACK)
+!!     &          fwd_rocFFT, bwd_rocFFT, WK_rocFFT, WK_FFTs)
 !!        integer(kind = kint), intent(in) :: iflag_CPU_FFT
 !!        integer(kind = kint), intent(in) :: Nsmp
 !!        integer(kind = kint), intent(in) :: Ncomp, Ncomp_GPU, Ncomp_CPU
@@ -57,10 +57,10 @@
 !
       subroutine init_pin_rocFFT_FFTs(iflag_CPU_FFT,                    &
      &          Ncomp, Ncomp_GPU, Ncomp_CPU, Nfft, Nsmp,                &
-     &          fwd_rocFFT, bwd_rocFFT, WK_rocFFT, WK_FFTPACK)
+     &          fwd_rocFFT, bwd_rocFFT, WK_rocFFT, WK_FFTs)
 !
       use multi_pin_complex_rocFFT
-      use multi_FFT_select
+      use select_multi_FFT_init
       use cal_minmax_and_stacks
 !
       integer(kind = kint), intent(in) :: iflag_CPU_FFT
@@ -85,8 +85,8 @@
 !
       call calypso_pin_rocFFT_init(Ncomp_GPU, Ncomp_GPU, Nfft,          &
      &                             fwd_rocFFT, bwd_rocFFT, WK_rocFFT)
-      call select_multi_FFT_init(iflag_CPU_FFT, Nsmp, istack_smp,       &
-     &                           Ncomp_CPU, Nfft, WK_FFTs)
+      call sel_multi_FFT_init(iflag_CPU_FFT, Nsmp, istack_smp,          &
+     &                        Ncomp_CPU, Nfft, WK_FFTs)
       deallocate(istack_smp)
 !
       end subroutine init_pin_rocFFT_FFTs
@@ -213,7 +213,7 @@
      &    int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1),                 &
      &    int(bwd_rocFFT%Nfft), X(1,1))
       call sel_swap_pin_field_from_FFT(iflag_CPU_FFT, WK_FFTs,          &
-     &    Ncomp_CPU, int(bwd_rocFFT%Nfft), X(1,bwd_rocFFT%Ncomp+1)
+     &    Ncomp_CPU, int(bwd_rocFFT%Nfft), X(1,bwd_rocFFT%Ncomp+1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
       end subroutine sel_pin_bwd_rocFFT_FFTs
