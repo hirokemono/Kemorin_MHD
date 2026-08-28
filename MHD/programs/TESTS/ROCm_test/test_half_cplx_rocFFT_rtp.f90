@@ -1,4 +1,26 @@
+!>@file   test_half_cplx_rocFFT_rtp.f90
+!!@brief  program test_half_cplx_rocFFT_rtp
+!!
+!!@author H. Matsui
+!!@date Programmed in MArch., 2026
 !
+!>@brief Test program of complex rocFFT and FFTPACK
+!!      with outer series array
+!!
+!!@verbatim
+!! ----------------------------------------------------------------------
+!!     Control file example
+!! ----------------------------------------------------------------------
+!!  begin FFT_test_ctl
+!!    output_file_name    'rtp_cplx_rocFFT_FFTPACK_test.dat'
+!!
+!!    FFT_length_ctl         128
+!!    num_series_ctl          24
+!!    num_test_loop_ctl       10
+!!  end FFT_test_ctl
+!!
+!! ----------------------------------------------------------------------
+!!@endverbatim
       program test_half_cplx_rocFFT_rtp
 !
       use iso_c_binding
@@ -20,7 +42,7 @@
       character(len = kchara), parameter                                &
      &             :: test_name = 'rtp_complex_rocFFT_FFTPACK'
       character(len = kchara), parameter                                &
-     &             :: def_fname = 'rtp_half_cplx_rocFFT_test.dat'
+     &             :: def_fname = 'rtp_cplx_rocFFT_FFTPACK_test.dat'
 !
       character(len = kchara) :: ctl_file_name
       type(FFT_tests_ctl), save :: fft_c1
@@ -50,7 +72,6 @@
       else
         write(*,*) 'No control file name in command: Use default'
       end if
-      iflag_debug = 1
 !
       ncomp_GPU = fft_test_p1%ratio_rocFFT * fft_test_p1%Ncomp_test
       ncomp_CPU = fft_test_p1%Ncomp_test - ncomp_GPU

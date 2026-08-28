@@ -46,6 +46,7 @@
       module sel_pin_rocFFT_CPU_FFT
 !
       use t_multi_rocFFT_wrapper
+      use t_FFT_selector
 !
       implicit none
 !

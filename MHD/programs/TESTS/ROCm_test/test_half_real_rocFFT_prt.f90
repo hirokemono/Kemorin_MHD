@@ -1,4 +1,25 @@
+!>@file   test_half_real_rocFFT_prt.f90
+!!@brief  program test_half_real_rocFFT_prt
+!!
+!!@author H. Matsui
+!!@date Programmed in March, 2026
 !
+!>@brief Test program of real rocFFT and FFTPACK
+!!      with inner series array
+!!
+!!@verbatim
+!! ----------------------------------------------------------------------
+!!     Control file example
+!! ----------------------------------------------------------------------
+!!  begin FFT_test_ctl
+!!    output_file_name    'prt_real_rocFFT_FFTPACK_test.dat'
+!!
+!!    FFT_length_ctl         128
+!!    num_series_ctl          24
+!!    num_test_loop_ctl       10
+!!  end FFT_test_ctl
+!! ----------------------------------------------------------------------
+!!@endverbatim
       program test_half_real_rocFFT_prt
 !
       use iso_c_binding
@@ -20,7 +41,7 @@
       character(len = kchara), parameter                                &
      &             :: test_name = 'prt_real_rocFFT_FFTPACK'
       character(len = kchara), parameter                                &
-     &             :: def_fname = 'prt_half_real_rocFFT_test.dat'
+     &             :: def_fname = 'prt_real_rocFFT_FFTPACK_test.dat'
 !
       character(len = kchara) :: ctl_file_name
       type(FFT_tests_ctl), save :: fft_c1
@@ -50,7 +71,6 @@
       else
         write(*,*) 'No control file name in command: Use default'
       end if
-      iflag_debug = 1
 !
       ncomp_GPU = fft_test_p1%ratio_rocFFT * fft_test_p1%Ncomp_test
       ncomp_CPU = fft_test_p1%Ncomp_test - ncomp_GPU

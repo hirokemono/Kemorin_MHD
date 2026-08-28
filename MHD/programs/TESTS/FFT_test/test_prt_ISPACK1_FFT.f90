@@ -65,7 +65,6 @@
         write(*,*) 'No control file name in command: Use default'
       end if
 !
-      iflag_debug = 1
       call init_fft_test_data                                           &
      &   (fft_test_p1%Ncomp_test, fft_test_p1%Nfft_test, ft0)
       call swap_fft_test_input_to_pin(ft0)

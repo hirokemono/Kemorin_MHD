@@ -29,6 +29,12 @@
 !
 !>        Integer flag for FFT selection
         integer(kind = kint) :: iflag_FFT
+!>        Integer flag for CPU FFT selection
+        integer(kind = kint) :: iflag_CPU_FFT
+!>        FFT name
+        character(len = kchara) :: FFT_name
+!>        CPU FFT name
+        character(len = kchara) :: CPU_FFT_name
 !
 !>        Length of FFT
         integer(kind = kint) :: Nfft_test =  ngrid
@@ -65,10 +71,17 @@
 !
       use m_FFT_labels
       use t_ctl_data_4_FFT_tests
+      use skip_comment_f
 !
       type(FFT_tests_ctl), intent(in) :: fft_c
       type(FFT_test_parameters), intent(inout) :: fft_test_p
 !
+!
+      iflag_debug = 0
+      if((fft_c%debug_flag_ctl%iflag .gt. 0)                            &
+     &   .and. yes_flag(fft_c%debug_flag_ctl%charavalue)) then
+        iflag_debug = 1
+      end if
 !
       if(fft_c%FFT_test_output_ctl%iflag .gt. 0) then
         fft_test_p%file_name = fft_c%FFT_test_output_ctl%charavalue
@@ -86,6 +99,13 @@
       fft_test_p%iflag_FFT                                              &
      &     = set_fft_library_ctl(fft_c%FFT_lib_ctl%iflag,               &
      &                           fft_c%FFT_lib_ctl%charavalue)
+      fft_test_p%FFT_name = find_FFT_label(fft_test_p%iflag_FFT)
+!
+      fft_test_p%iflag_CPU_FFT                                          &
+     &     = set_fft_library_ctl(fft_c%second_FFT_lib_ctl%iflag,        &
+     &                           fft_c%second_FFT_lib_ctl%charavalue)
+      fft_test_p%CPU_FFT_name                                           &
+     &     = find_FFT_label(fft_test_p%iflag_CPU_FFT)
 !
       end subroutine set_FFT_test_parameters
 !

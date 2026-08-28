@@ -1,4 +1,24 @@
+!>@file   test_rocfft.f90
+!!@brief  program test_rocfft
+!!
+!!@author H. Matsui
+!!@date Programmed in March, 2026
 !
+!> @brief Test program of rocFFT with inner series array
+!!
+!!@verbatim
+!! ----------------------------------------------------------------------
+!!     Control file example
+!! ----------------------------------------------------------------------
+!!  begin FFT_test_ctl
+!!    output_file_name    'FFT_test.dat'
+!!
+!!    FFT_length_ctl         128
+!!    num_series_ctl          24
+!!    num_test_loop_ctl       10
+!!  end FFT_test_ctl
+!! ----------------------------------------------------------------------
+!!@endverbatim
       program test_rocfft
 !
       use iso_c_binding

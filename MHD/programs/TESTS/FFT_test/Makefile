@@ -8,6 +8,9 @@ FFT_TEST_DIR =       $$(TESTS_DIR)/FFT_test
 
 TARGET_FFT_TEST =      test_fft
 
+TARGET_SELECT_PRT_FFT_TEST = $$(TEST_BUILD_DIR)/test_prt_select_FFT
+TARGET_SELECT_RTP_FFT_TEST = $$(TEST_BUILD_DIR)/test_rtp_select_FFT
+
 TARGET_FFTPACK_TEST =  $$(TEST_BUILD_DIR)/test_FFTPACK
 TARGET_ISPACK1_TEST =  $$(TEST_BUILD_DIR)/test_ISPACK1
 TARGET_ISPACK3_TEST =  $$(TEST_BUILD_DIR)/test_ISPACK3
@@ -27,6 +30,8 @@ TARGET_CMPR_FFT_TEST =   $$(TEST_BUILD_DIR)/compare_fft_test
 TARGET_FFT_LABEL_CHECK = $$(TEST_BUILD_DIR)/check_FFT_labels
 
 TARGETS_FFT_TEST = \
+'$$(TARGET_SELECT_PRT_FFT_TEST)' \
+'$$(TARGET_SELECT_RTP_FFT_TEST)' \
 '$$(TARGET_FFT_TEST)' \
 '$$(TARGET_FFTPACK_TEST)' \
 '$$(TARGET_ISPACK1_TEST)' \
@@ -118,6 +123,9 @@ t_fft_test_data.o \
 FFT_test_loop.o \
 test_FFT.o
 
+MOD_SELECT_PRT_FFT_TEST = test_prt_select_FFT.o
+MOD_SELECT_RTP_FFT_TEST = test_rtp_select_FFT.o
+
 MOD_FFTPACK_TEST =     test_FFTPACK5.o
 MOD_FFW3_F_TEST =      test_FFTW3.o
 MOD_ISPACK1_TEST =     test_ISPACK1_FFT.o
@@ -149,6 +157,8 @@ dir_list:
 	@echo 'FFT_TEST_DIR =  $(FFT_TEST_DIR)'          >> $(MAKENAME)
 
 target_list:
+	@echo 'TARGET_SELECT_PRT_FFT_TEST = $(TARGET_SELECT_PRT_FFT_TEST)' >> $(MAKENAME)
+	@echo 'TARGET_SELECT_RTP_FFT_TEST = $(TARGET_SELECT_RTP_FFT_TEST)' >> $(MAKENAME)
 	@echo 'TARGET_FFT_TEST =         $(TARGET_FFT_TEST)'          >> $(MAKENAME)
 	@echo 'TARGET_FFTPACK_TEST =     $(TARGET_FFTPACK_TEST)'      >> $(MAKENAME)
 	@echo 'TARGET_ISPACK1_TEST =     $(TARGET_ISPACK1_TEST)'      >> $(MAKENAME)
@@ -172,6 +182,22 @@ target_task:
 	-o '$$(TARGET_FFT_TEST)' \
 	'$$(MOD_FFTS_TEST)'  \
 	'-L. $$(LIBS_FFT_TEST)  $$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_SELECT_PRT_FFT_TEST):' \
+	'$$(MOD_SELECT_PRT_FFT_TEST) $$(MOD_FFT_TEST)'  \
+	'$$(LIB_FILES_FFT_TEST)' >> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_SELECT_PRT_FFT_TEST)' \
+	'$$(MOD_SELECT_PRT_FFT_TEST) $$(MOD_FFT_TEST)'  \
+	'-L. $$(LIBS_FFT_TEST) $$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_SELECT_RTP_FFT_TEST):' \
+	'$$(MOD_SELECT_RTP_FFT_TEST) $$(MOD_FFT_TEST)'  \
+	'$$(LIB_FILES_FFT_TEST)' >> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_SELECT_RTP_FFT_TEST)' \
+	'$$(MOD_SELECT_RTP_FFT_TEST) $$(MOD_FFT_TEST)'  \
+	'-L. $$(LIBS_FFT_TEST) $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_FFTPACK_TEST):' \
 	'$$(MOD_FFTPACK_TEST) $$(MOD_FFT_TEST)'  \
@@ -302,6 +328,10 @@ mod_list:
 	@echo  $(MOD_FFT_TEST)        >> $(MAKENAME)
 	@echo  MOD_FFTS_TEST=      \\  >> $(MAKENAME)
 	@echo  $(MOD_FFTS_TEST)        >> $(MAKENAME)
+	@echo  MOD_SELECT_PRT_FFT_TEST= \\ >> $(MAKENAME)
+	@echo  $(MOD_SELECT_PRT_FFT_TEST)  >> $(MAKENAME)
+	@echo  MOD_SELECT_RTP_FFT_TEST= \\ >> $(MAKENAME)
+	@echo  $(MOD_SELECT_RTP_FFT_TEST)  >> $(MAKENAME)
 	@echo  MOD_FFTPACK_TEST=       \\  >> $(MAKENAME)
 	@echo  $(MOD_FFTPACK_TEST)         >> $(MAKENAME)
 	@echo  MOD_ISPACK1_TEST=       \\  >> $(MAKENAME)

@@ -1,5 +1,24 @@
+!>@file   test_OMP_rocFFT_prt.f90
+!!@brief  program test_OMP_rocFFT_prt
+!!
+!!@author H. Matsui
+!!@date Programmed in March, 2026
 !
-! Copyright AMD 2024-2025, MIT License, contact Bob.Robey@amd.com
+!> @brief Test program of OpenMP rocFFT with inner series array
+!!
+!!@verbatim
+!! ----------------------------------------------------------------------
+!!     Control file example
+!! ----------------------------------------------------------------------
+!!  begin FFT_test_ctl
+!!    output_file_name       'prt_rocFFT_test.dat'
+!!
+!!    FFT_length_ctl         128
+!!    num_series_ctl          24
+!!    num_test_loop_ctl       10
+!!  end FFT_test_ctl
+!! ----------------------------------------------------------------------
+!!@endverbatim
       program test_rocBLAS_DGEMM
 !
 !

@@ -1,4 +1,24 @@
+!>@file   test_rocFFT_FFTPACK_rtp.f90
+!!@brief  program test_rocFFT_FFTPACK_rtp
+!!
+!!@author H. Matsui
+!!@date Programmed in March, 2026
 !
+!> @brief Test program of rocFFT and FFTPACK with out series array
+!!
+!!@verbatim
+!! ----------------------------------------------------------------------
+!!     Control file example
+!! ----------------------------------------------------------------------
+!!  begin FFT_test_ctl
+!!    output_file_name       'rtp_half_OMP_rocFFT_test.dat'
+!!
+!!    FFT_length_ctl         128
+!!    num_series_ctl          24
+!!    num_test_loop_ctl       10
+!!  end FFT_test_ctl
+!! ----------------------------------------------------------------------
+!!@endverbatim
       program test_rocFFT_FFTPACK_rtp
 !
       use iso_c_binding
@@ -20,7 +40,7 @@
 !
       character(len = kchara) :: test_name = 'rtp_rocFFT_FFTPACK'
       character(len = kchara), parameter                                &
-     &             :: def_fname = 'rtp_half_OMP_rocFFT_test.dat'
+     &             :: def_fname = 'rtp_rocFFT_FFTPECK_test.dat'
 !
       character(len = kchara) :: ctl_file_name
       type(FFT_tests_ctl), save :: fft_c1
@@ -52,7 +72,6 @@
         write(*,*) 'No control file name in command: Use default'
       end if
 !
-      iflag_debug = 1
       if(    ((fft_test_p1%iflag_FFT/10) .ne. (iflag_OMP_rocFFT/10))    &
      & .and. ((fft_test_p1%iflag_FFT/10) .ne. (iflag_real_rocFFT/10))   &
      & .and. ((fft_test_p1%iflag_FFT/10) .ne. (iflag_rocFFT/10))) then

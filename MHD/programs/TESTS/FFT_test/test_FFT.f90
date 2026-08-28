@@ -20,7 +20,6 @@
 !
       call init_FFT_mode_flags()
 !
-      iflag_debug = 1
       write(*,'(a)') '-----  Test FFT  -----'
       call init_fft_test_data(n_field, ngrid, ft0)
 !

@@ -1,4 +1,26 @@
+!>@file   test_cplx_rocFFT_rtp.f90
+!!@brief  program test_cplx_rocFFT_rtp
+!!
+!!@author H. Matsui
+!!@date Programmed in MArch., 2026
 !
+!>@brief Test program of complex rocFFT
+!!      with outer series array
+!!
+!!@verbatim
+!! ----------------------------------------------------------------------
+!!     Control file example
+!! ----------------------------------------------------------------------
+!!  begin FFT_test_ctl
+!!    output_file_name    'rtp_rocFFT_test.dat'
+!!
+!!    FFT_length_ctl         128
+!!    num_series_ctl          24
+!!    num_test_loop_ctl       10
+!!  end FFT_test_ctl
+!!
+!! ----------------------------------------------------------------------
+!!@endverbatim
       program test_cplx_rocFFT_rtp
 !
       use iso_c_binding
@@ -48,7 +70,6 @@
         write(*,*) 'No control file name in command: Use default'
       end if
 !
-      iflag_debug = 1
       call init_fft_test_data                                           &
      &   (fft_test_p1%Ncomp_test, fft_test_p1%Nfft_test, ft1)
 !

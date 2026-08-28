@@ -1,5 +1,11 @@
+!>@file   test_HIPmBLAS_DGEMM.f90
+!!@brief  program test_HIPmBLAS_DGEMM
+!!
+!!@author H. Matsui
+!!@date Programmed in March, 2026
 !
-! Copyright AMD 2024-2025, MIT License, contact Bob.Robey@amd.com
+!>@brief Test program of Matrix-matrix products with HIPmBLAS
+!!
       program test_HIPmBLAS_DGEMM
 !
 !

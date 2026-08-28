@@ -1,18 +1,17 @@
-!>@file   test_half_OMP_rocFFT_rtp.f90
-!!@brief  program test_half_OMP_rocFFT_rtp
+!>@file   test_rocFFT_cpu_FFTs_rtp.f90
+!!@brief  program test_rocFFT_cpu_FFTs_rtp
 !!
 !!@author H. Matsui
 !!@date Programmed in March, 2026
 !
-!>@brief Test program of OpenMP rocFFT and FFTPACK
-!!      with outer series array
+!> @brief Test program of rocFFT and FFTPACK with outer series array
 !!
 !!@verbatim
 !! ----------------------------------------------------------------------
 !!     Control file example
 !! ----------------------------------------------------------------------
 !!  begin FFT_test_ctl
-!!    output_file_name    'rtp_OMP_rocFFT_FFTPACK.dat'
+!!    output_file_name       'rtp_rocFFT_CPU_FFTs_test.dat'
 !!
 !!    FFT_length_ctl         128
 !!    num_series_ctl          24
@@ -20,7 +19,7 @@
 !!  end FFT_test_ctl
 !! ----------------------------------------------------------------------
 !!@endverbatim
-      program test_half_OMP_rocFFT_rtp
+      program test_rocFFT_cpu_FFTs_rtp
 !
       use iso_c_binding
       use omp_lib
@@ -28,20 +27,20 @@
       use m_precision
       use m_constants
       use m_machine_parameter
+      use m_FFT_labels
 !
       use t_fft_test_data
       use t_parameters_FFT_tests
       use t_ctl_data_4_FFT_tests
       use t_multi_rocFFT_wrapper
-      use t_FFTPACK5_wrapper
-      use pout_OMP_rocFFT_FFTPACK
+      use t_FFT_selector
+      use sel_pout_rocFFT_CPU_FFT
 !
       implicit none
 !
+      character(len = kchara) :: test_name = 'prt_rocFFT_CPU_FFTs'
       character(len = kchara), parameter                                &
-     &             :: test_name = 'rtp_OpenMP_rocFFT_FFTPACK'
-      character(len = kchara), parameter                                &
-     &             :: def_fname = 'rtp_OMP_rocFFT_FFTPACK.dat'
+     &             :: def_fname = 'rtp_rocFFT_CPU_FFTs_test.dat'
 !
       character(len = kchara) :: ctl_file_name
       type(FFT_tests_ctl), save :: fft_c1
@@ -53,15 +52,16 @@
       type(calypso_rocFFT_params), target :: fwd
       type(calypso_rocFFT_params), target :: bwd
       type(calypso_rocFFT_work), target :: WK_rocFFT
-      type(working_FFTPACK) :: WK_FFTPACK_T
+      type(working_FFTs) :: WK_FFTs1
 !
       integer(kind = kint) :: ncomp_GPU
       integer(kind = kint) :: ncomp_CPU
       integer(kind = kint) :: i, nd, icou
 !
 !
-      write(*,'(a)') '-----  Test rtp OpenMP rocFFT and FFTPACK -----'
+      write(*,'(a)') '-----  Test prt rocFFT and FFTPACK -----'
 !
+      call init_FFT_mode_flags()
       call default_FFT_test_parameters(test_name, def_fname,            &
      &                                 fft_test_p1)
       if(command_argument_count() .ge. 1) then
@@ -72,6 +72,16 @@
         write(*,*) 'No control file name in command: Use default'
       end if
 !
+!      if(    ((fft_test_p1%iflag_FFT/10) .ne. (iflag_OMP_rocFFT/10))   &
+!     & .and. ((fft_test_p1%iflag_FFT/10) .ne. (iflag_real_rocFFT/10))  &
+!     & .and. ((fft_test_p1%iflag_FFT/10) .ne. (iflag_rocFFT/10))) then
+!        fft_test_p1%iflag_FFT = iflag_OMP_rocFFT
+!      end if
+      write(fft_test_p1%test_name,'(3a)') trim(fft_test_p%FFT_name),    &
+     &                             , '_', trim(fft_test_p%CPU_FFT_name)
+      write(*,*) 'fft_test_p1%iflag_FFT', fft_test_p1%iflag_FFT,        &
+     &          '  ', trim(fft_test_p1%test_name)
+!
       ncomp_GPU = fft_test_p1%ratio_rocFFT * fft_test_p1%Ncomp_test
       ncomp_CPU = fft_test_p1%Ncomp_test - ncomp_GPU
       call init_fft_test_data                                           &
@@ -79,11 +89,12 @@
 !
 !   Initialize Fourier transform
       start = OMP_GET_WTIME()
-      call init_pout_OMP_rocFFT_FFTPACK(ft1%nfld, Ncomp_GPU, Ncomp_CPU, &
-     &    ft1%ngrd, np_smp, fwd, bwd, WK_rocFFT, WK_FFTPACK_T)
+      call init_pout_rocFFT_FFTs(fft_test_p1%iflag_CPU_FFT,             &
+     &    ft1%nfld, Ncomp_GPU, Ncomp_CPU, ft1%ngrd, np_smp,             &
+     &    fwd, bwd, WK_rocFFT, WK_FFTs1)
       elapsed(1) = OMP_GET_WTIME() - start
 !
-      elapsed(2:6) = zero
+      elapsed(2:4) = zero
       do icou = 1, fft_test_p1%Nloop_test + 1
         if(mod(icou, 20) .eq. 0) write(*,*) 'loop count: ', icou
 !
@@ -94,8 +105,10 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Forward transform
-        call pout_fwd_OMP_rocFFT_FFTPACK(ft1%nfld, fwd, WK_rocFFT,      &
-     &      WK_FFTPACK_T, ft1%s_k(1,1), elapsed(2:5))
+        call sel_pout_fwd_rocFFT_FFTs                                   &
+     &     (fft_test_p1%iflag_FFT, fft_test_p1%iflag_CPU_FFT,           &
+     &      ft1%nfld, Ncomp_CPU, fwd, WK_rocFFT, WK_FFTs1,              &
+     &      ft1%s_k(1,1), elapsed(2:5))
 !
         start = OMP_GET_WTIME()
 !$omp parallel workshare
@@ -104,8 +117,10 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Backword transform
-        call pout_bwd_OMP_rocFFT_FFTPACK(ft1%nfld, bwd, WK_rocFFT,      &
-     &      WK_FFTPACK_T, ft1%f_x(1,1), elapsed(2:5))
+        call sel_pout_bwd_rocFFT_FFTs                                   &
+     &     (fft_test_p1%iflag_FFT, fft_test_p1%iflag_CPU_FFT,           &
+     &      ft1%nfld, Ncomp_CPU, bwd, WK_rocFFT, WK_FFTs1,              &
+     &      ft1%f_x(1,1), elapsed(2:5))
         if(icou .eq. 1) elapsed(6:9) = elapsed(2:5)
       end do
       elapsed(6) = elapsed(2) - elapsed(6)
@@ -114,7 +129,8 @@
 !
 !   Finalize
       start = OMP_GET_WTIME()
-      call calypso_rocFFT_fin(fwd, bwd, WK_rocFFT)
+      call finalize_rocFFT_FFTs(iflag_CPU_FFT, np_smp,                  &
+     &                          fwd, bwd, WK_rocFFT, WK_FFTs1)
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
   10  continue
@@ -127,6 +143,6 @@
 !
       stop 'finish'
 !
-      end program test_half_OMP_rocFFT_rtp
+      end program test_rocFFT_cpu_FFTs_rtp
 !
-! mpif90 --offload-arch=gfx942 -mcmodel=medium -mcmodel=medium -O3 -g -fopenmp -fopenmp-target-fast  -I. -I/home/hrmatsui/src_kemo/work -I/opt/rocm-7.2.0/include/hipfort/amdgcn -DPNG_OUTPUT -DZLIB_IO -DFFTW3 -D_AMD_ROCM_ -o ./test_half_OMP_rocFFT_rtp test_half_OMP_rocFFT_rtp.f90 /home/hrmatsui/src_kemo/work/m_FFT_size.o /home/hrmatsui/src_kemo/work/t_fft_test_data.o -L/home/hrmatsui/src_kemo/work -lkemo_core -lkemo_c -lfftpack.5d -L/home/hrmatsui/local/amd/lib -lpng -L/home/hrmatsui/local/amd/lib -lz -L/home/hrmatsui/local/amd/lib -lfftw3 -L/opt/rocm-7.2.0/lib -lrocfft -lrocblas -lhipfort-amdgcn -lamdhip64
+! mpif90 --offload-arch=gfx942 -mcmodel=medium -mcmodel=medium -O3 -g -fopenmp -fopenmp-target-fast  -I. -I/home/hrmatsui/src_kemo/work -I/opt/rocm-7.2.0/include/hipfort/amdgcn -DPNG_OUTPUT -DZLIB_IO -DFFTW3 -D_AMD_ROCM_ -o ./test_rocFFT_cpu_FFTs_rtp test_rocFFT_cpu_FFTs_rtp.f90 /home/hrmatsui/src_kemo/work/m_FFT_size.o /home/hrmatsui/src_kemo/work/t_fft_test_data.o -L/home/hrmatsui/src_kemo/work -lkemo_core -lkemo_c -L/home/hrmatsui/local/amd/lib -lpng -L/home/hrmatsui/local/amd/lib -lz -L/home/hrmatsui/local/amd/lib -lfftw3 -L/opt/rocm-7.2.0/lib -lrocfft -lrocblas -lhipfort-amdgcn -lamdhip64

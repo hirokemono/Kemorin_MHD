@@ -1,4 +1,24 @@
+!>@file   test_OMP_rocFFT_prt.f90
+!!@brief  program test_OMP_rocFFT_prt
+!!
+!!@author H. Matsui
+!!@date Programmed in March, 2026
 !
+!> @brief Test program of OpenMP rocFFT with inner series array
+!!
+!!@verbatim
+!! ----------------------------------------------------------------------
+!!     Control file example
+!! ----------------------------------------------------------------------
+!!  begin FFT_test_ctl
+!!    output_file_name       'prt_rocFFT_test.dat'
+!!
+!!    FFT_length_ctl         128
+!!    num_series_ctl          24
+!!    num_test_loop_ctl       10
+!!  end FFT_test_ctl
+!! ----------------------------------------------------------------------
+!!@endverbatim
       program test_OMP_rocFFT_prt
 !
       use iso_c_binding
@@ -57,7 +77,6 @@
       write(*,*) 'fft_test_p1%iflag_FFT', fft_test_p1%iflag_FFT,        &
      &          '  ', trim(fft_test_p1%test_name)
 !
-      iflag_debug = 1
       call init_fft_test_data                                           &
      &   (fft_test_p1%Ncomp_test, fft_test_p1%Nfft_test, ft1)
       call swap_fft_test_input_to_pin(ft1)

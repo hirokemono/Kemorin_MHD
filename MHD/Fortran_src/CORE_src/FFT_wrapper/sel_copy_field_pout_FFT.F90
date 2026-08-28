@@ -112,6 +112,7 @@
 !
       use transfer_to_long_integers
       use copy_field_for_FFT
+      use swap_rtp_data_for_FFTW
       use normalize_for_FFTW
       use normalize_for_OMP_FFTW
       use normalize_for_FFTPACK

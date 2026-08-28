@@ -53,6 +53,7 @@
       integer(kind = kint) :: iloop = 0
 !
 !
+      write(*,'(a)') '-----  Test ISPACK3  -----'
       call default_FFT_test_parameters(test_name, def_fname,            &
      &                                 fft_test_p1)
       if(command_argument_count() .ge. 1) then
@@ -63,8 +64,6 @@
         write(*,*) 'No control file name in command: Use default'
       end if
 !
-      write(*,'(a)') '-----  Test ISPACK3  -----'
-      iflag_debug = 1
       call init_fft_test_data                                           &
      &   (fft_test_p1%Ncomp_test, fft_test_p1%Nfft_test, ft0)
       Nfft8 = ft0%ngrd

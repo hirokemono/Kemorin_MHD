@@ -3,10 +3,7 @@
 !!
 !!@author H. Matsui
 !!@date Programmed in Oct., 2009
-!
-!      module phi_inside_FFT_selector
-!
-!
+!!
 !>@brief  Selector of Fourier transform using structure
 !!
 !!@verbatim

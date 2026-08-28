@@ -1,5 +1,26 @@
+!!>@file   test_OMP_rocFFT_ISPACK1_rtp.f90
+!!@brief  program test_OMP_rocFFT_ISPACK1_rtp
+!!
+!!@author H. Matsui
+!!@date Programmed in March, 2026
 !
-      program test_OMP_rocFFT_FFTW3_rtp
+!>@brief Test program of OpenMP rocFFT and ISPACK1
+!!       with outer series array
+!!
+!!@verbatim
+!! ----------------------------------------------------------------------
+!!     Control file example
+!! ----------------------------------------------------------------------
+!!  begin FFT_test_ctl
+!!    output_file_name       'rtp_OpenMP_rocFFT_ISPACK1_test.dat'
+!!
+!!    FFT_length_ctl         128
+!!    num_series_ctl          24
+!!    num_test_loop_ctl       10
+!!  end FFT_test_ctl
+!! ----------------------------------------------------------------------
+!!@endverbatim
+      program test_OMP_rocFFT_ISPACK1_rtp
 !
       use iso_c_binding
       use omp_lib
@@ -51,7 +72,6 @@
       else
         write(*,*) 'No control file name in command: Use default'
       end if
-      iflag_debug = 1
 !
       ncomp_GPU = fft_test_p1%ratio_rocFFT * fft_test_p1%Ncomp_test
       ncomp_CPU = fft_test_p1%Ncomp_test - ncomp_GPU
@@ -108,6 +128,6 @@
 !
       stop 'finish'
 !
-      end program test_OMP_rocFFT_FFTW3_rtp
+      end program test_OMP_rocFFT_ISPACK1_rtp
 !
-! mpif90 --offload-arch=gfx942 -mcmodel=medium -mcmodel=medium -O3 -g -fopenmp -fopenmp-target-fast  -I. -I/home/hrmatsui/src_kemo/work -I/opt/rocm-7.2.0/include/hipfort/amdgcn -DPNG_OUTPUT -DZLIB_IO -DFFTW3 -D_AMD_ROCM_ -o ./test_OMP_rocFFT_FFTW3_rtp test_OMP_rocFFT_FFTW3_rtp.f90 /home/hrmatsui/src_kemo/work/m_FFT_size.o /home/hrmatsui/src_kemo/work/t_fft_test_data.o -L/home/hrmatsui/src_kemo/work -lkemo_core -lkemo_c -lfftpack.5d -L/home/hrmatsui/local/amd/lib -lpng -L/home/hrmatsui/local/amd/lib -lz -L/home/hrmatsui/local/amd/lib -lfftw3 -L/opt/rocm-7.2.0/lib -lrocfft -lrocblas -lhipfort-amdgcn -lamdhip64
+! mpif90 --offload-arch=gfx942 -mcmodel=medium -mcmodel=medium -O3 -g -fopenmp -fopenmp-target-fast  -I. -I/home/hrmatsui/src_kemo/work -I/opt/rocm-7.2.0/include/hipfort/amdgcn -DPNG_OUTPUT -DZLIB_IO -DFFTW3 -D_AMD_ROCM_ -o ./test_OMP_rocFFT_ISPACK1_rtp test_OMP_rocFFT_ISPACK1_rtp.f90 /home/hrmatsui/src_kemo/work/m_FFT_size.o /home/hrmatsui/src_kemo/work/t_fft_test_data.o -L/home/hrmatsui/src_kemo/work -lkemo_core -lkemo_c -lfftpack.5d -L/home/hrmatsui/local/amd/lib -lpng -L/home/hrmatsui/local/amd/lib -lz -L/home/hrmatsui/local/amd/lib -lfftw3 -L/opt/rocm-7.2.0/lib -lrocfft -lrocblas -lhipfort-amdgcn -lamdhip64

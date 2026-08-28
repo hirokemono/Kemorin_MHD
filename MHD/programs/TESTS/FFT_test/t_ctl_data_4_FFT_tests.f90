@@ -18,6 +18,8 @@
 !! ----------------------------------------------------------------------
 !!
 !!  begin FFT_test_ctl
+!!    debug_flag_ctl     ON
+!!
 !!    output_file_name    'test_ISPACK3.dat'
 !!
 !!    FFT_library_ctl        'rocFFT_real'
@@ -50,6 +52,9 @@
 !>        Block name
         character(len=kchara) :: block_name = 'FFT_test_ctl'
 !
+!>        Debug flag
+        type(read_character_item) :: debug_flag_ctl
+!
 !>        Structure for output file name
         type(read_character_item) :: FFT_test_output_ctl
 !
@@ -74,6 +79,8 @@
       character(len=kchara), parameter, private                         &
      &      :: hd_FFT_tests_ctll = 'FFT_test_ctl'
 !
+      character(len=kchara), parameter, private                         &
+     &      :: hd_debug_flag_ctl =      'debug_flag_ctl'
       character(len=kchara), parameter, private                         &
      &      :: hd_FFT_test_output_ctl = 'output_file_name'
       character(len=kchara), parameter, private                         &
@@ -157,6 +164,7 @@
       type(FFT_tests_ctl), intent(inout) :: fft_c
 !
 !
+      fft_c%debug_flag_ctl%iflag =      0
       fft_c%FFT_test_output_ctl%iflag = 0
 !
       fft_c%FFT_lib_ctl%iflag =         0
@@ -192,6 +200,8 @@
         if(c_buf%iend .gt. 0) exit
         if(check_end_flag(c_buf, hd_block)) exit
 !
+        call read_chara_ctl_type(c_buf, hd_debug_flag_ctl,              &
+     &                           fft_c%debug_flag_ctl)
         call read_chara_ctl_type(c_buf, hd_FFT_test_output_ctl,         &
      &                           fft_c%FFT_test_output_ctl)
 !
@@ -232,7 +242,8 @@
 !
       if(fft_c%i_FFT_tests_ctl .le. 0) return
 !
-      maxlen = len_trim(hd_FFT_test_output_ctl)
+      maxlen = len_trim(hd_debug_flag_ctl)
+      maxlen = max(maxlen, len_trim(hd_FFT_test_output_ctl))
       maxlen = max(maxlen, len_trim(hd_FFT_lib_ctl))
       maxlen = max(maxlen, len_trim(hd_2nd_FFT_lib_ctl))
       maxlen = max(maxlen, len_trim(hd_FFT_length_ctl))
@@ -242,6 +253,8 @@
 !
       level = write_begin_flag_for_ctl(id_control, level, hd_block)
 !
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &                            fft_c%debug_flag_ctl)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &                            fft_c%FFT_test_output_ctl)
 !
@@ -272,6 +285,8 @@
 !
 !
       fft_c%block_name = trim(hd_block)
+      call init_chara_ctl_item_label(hd_debug_flag_ctl,                 &
+     &                               fft_c%debug_flag_ctl)
       call init_chara_ctl_item_label(hd_FFT_test_output_ctl,            &
      &                               fft_c%FFT_test_output_ctl)
 !

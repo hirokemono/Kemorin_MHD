@@ -91,20 +91,23 @@
 !
 !
       if     ((iflag_FFT/10) .eq. (iflag_ISPACK0/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'multi_FTTRUF_smp'
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &        'multi_FTTRUF_smp', omp_get_thread_num()
         call multi_FTTRUF_smp(WKS%WK_ISPACK1%Nplan_ISPACK,              &
      &      WKS%WK_ISPACK1%istack_ISPACK, WKS%WK_ISPACK1%Mmax_smp,      &
      &      Nfft, WKS%WK_ISPACK1%X_ispack, WKS%WK_ISPACK1%IT_ispack,    &
      &      WKS%WK_ISPACK1%T_ispack, WKS%WK_ISPACK1%WORK_ispack)
       else if((iflag_FFT/10) .eq. (iflag_ISPACK3/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'multi_FXRTFA_smp'
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &        'multi_FXRTFA_smp', omp_get_thread_num()
         call multi_FXRTFA_smp(WKS%WK_ISPACK3%Nplan_ISPACK3,             &
      &      WKS%WK_ISPACK3%istack_ISPACK3, WKS%WK_ISPACK3%Mmax_smp,     &
      &      cast_long(Nfft), WKS%WK_ISPACK3%X_ispack,                   &
      &      WKS%WK_ISPACK3%IT_ispack, WKS%WK_ISPACK3%T_ispack)
 #ifdef FFTW3
       else if((iflag_FFT/10) .eq. (iflag_FFTW/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'multi_fwd_FFTW3_smp'
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &        'multi_fwd_FFTW3_smp', omp_get_thread_num()
         call multi_fwd_FFTW3_smp(WKS%WK_mul_FFTW%plan_mul_fwd,          &
      &      WKS%WK_mul_FFTW%Nplan_FFTW, WKS%WK_mul_FFTW%istack_FFTW,    &
      &      Ncomp, Nfft, WKS%WK_mul_FFTW%X_FFTW_mul(1,1),               &
@@ -112,13 +115,15 @@
 #endif
 #ifdef OMP_FFTW3
       else if((iflag_FFT/10) .eq. (iflag_OMP_FFTW/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'dfftw_execute_dft_r2c'
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &        'dfftw_execute_dft_r2c', omp_get_thread_num()
         call dfftw_execute_dft_r2c(WKS%WK_mul_FFTW%plan_mul_fwd(1),     &
      &                             WKS%WK_mul_FFTW%X_FFTW_mul(1,1),     &
      &                             WKS%WK_mul_FFTW%C_FFTW_mul(1,1))
 #endif
       else if((iflag_FFT/10) .eq. (iflag_FFTPACK/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'multi_RFFTMF_smp'
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &        'multi_RFFTMF_smp', omp_get_thread_num()
         call multi_RFFTMF_smp                                           &
      &    (WKS%WK_FFTPACK%Nplan_FFTPACK, WKS%WK_FFTPACK%istack_FFTPACK, &
      &     WKS%WK_FFTPACK%Mmax_smp, Nfft, WKS%WK_FFTPACK%X_FFTPACK5,    &
@@ -148,20 +153,23 @@
       type(working_FFTs), intent(inout) :: WKS
 !
       if     ((iflag_FFT/10) .eq. (iflag_ISPACK0/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'multi_FTTRUB_smp'
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &        'multi_FTTRUB_smp', omp_get_thread_num()
         call multi_FTTRUB_smp(WKS%WK_ISPACK1%Nplan_ISPACK,              &
      &      WKS%WK_ISPACK1%istack_ISPACK, WKS%WK_ISPACK1%Mmax_smp,      &
      &      Nfft, WKS%WK_ISPACK1%X_ispack, WKS%WK_ISPACK1%IT_ispack,    &
      &      WKS%WK_ISPACK1%T_ispack, WKS%WK_ISPACK1%WORK_ispack)
       else if((iflag_FFT/10) .eq. (iflag_ISPACK3/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'multi_FXRTBA_smp'
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &        'multi_FXRTBA_smp', omp_get_thread_num()
         call multi_FXRTBA_smp(WKS%WK_ISPACK3%Nplan_ISPACK3,             &
      &      WKS%WK_ISPACK3%istack_ISPACK3, WKS%WK_ISPACK3%Mmax_smp,     &
      &      cast_long(Nfft), WKS%WK_ISPACK3%X_ispack,                   &
      &      WKS%WK_ISPACK3%IT_ispack, WKS%WK_ISPACK3%T_ispack)
 #ifdef FFTW3
       else if((iflag_FFT/10) .eq. (iflag_FFTW/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'multi_bwd_FFTW3_smp'
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &        'multi_bwd_FFTW3_smp', omp_get_thread_num()
         call multi_bwd_FFTW3_smp(WKS%WK_mul_FFTW%plan_mul_bwd,          &
      &      WKS%WK_mul_FFTW%Nplan_FFTW, WKS%WK_mul_FFTW%istack_FFTW,    &
      &      Ncomp, WKS%WK_mul_FFTW%Nfft_c,                              &
@@ -170,13 +178,15 @@
 #endif
 #ifdef OMP_FFTW3
       else if((iflag_FFT/10) .eq. (iflag_OMP_FFTW/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'dfftw_execute_dft_c2r'
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &        'dfftw_execute_dft_c2r', omp_get_thread_num()
         call dfftw_execute_dft_c2r(WKS%WK_mul_FFTW%plan_mul_bwd(1),     &
      &                             WKS%WK_mul_FFTW%C_FFTW_mul(1,1),     &
      &                             WKS%WK_mul_FFTW%X_FFTW_mul(1,1))
 #endif
       else if((iflag_FFT/10) .eq. (iflag_FFTPACK/10)) then
-        if(iflag_debug .gt. 0) write(*,*) 'multi_RFFTMB_smp'
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &        'multi_RFFTMB_smp', omp_get_thread_num()
         call multi_RFFTMB_smp(WKS%WK_FFTPACK%Nplan_FFTPACK,             &
      &      WKS%WK_FFTPACK%istack_FFTPACK, WKS%WK_FFTPACK%Mmax_smp,     &
      &      Nfft, WKS%WK_FFTPACK%X_FFTPACK5,                            &
