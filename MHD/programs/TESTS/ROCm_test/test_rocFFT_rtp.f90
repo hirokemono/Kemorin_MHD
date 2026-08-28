@@ -60,7 +60,6 @@
 !
       write(*,'(a)') '-----  Test rtp rocFFT  -----'
 !
-      call init_FFT_mode_flags()
       call default_FFT_test_parameters(test_name, def_fname,            &
      &                                 fft_test_p1)
       if(command_argument_count() .ge. 1) then

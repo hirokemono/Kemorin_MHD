@@ -7,6 +7,23 @@
 !> @brief Control data structure for FFT tests
 !!
 !!@verbatim
+!!      subroutine default_FFT_test_parameters(test_name, def_fname,    &
+!!     &                                       fft_test_p)
+!!        character(len = kchara), intent(in) :: test_name, def_fname
+!!        type(FFT_test_parameters), intent(inout) :: fft_test_p
+!!      subroutine set_FFT_test_parameters(fft_c, fft_test_p)
+!!        type(FFT_tests_ctl), intent(in) :: fft_c
+!!        type(FFT_test_parameters), intent(inout) :: fft_test_p
+!!
+!!      subroutine write_fft_test_elapsed(fft_test_p, elapsed)
+!!        type(FFT_test_parameters), intent(in) :: fft_test_p
+!!        real(kind = kreal), intent(in) :: elapsed(3)
+!!      subroutine write_rocFFT_test_elapsed(fft_test_p, elapsed)
+!!        type(FFT_test_parameters), intent(in) :: fft_test_p
+!!        real(kind = kreal), intent(in) :: elapsed(4)
+!!      subroutine write_sharing_FFT_test_elapsed(fft_test_p, elapsed)
+!!        type(FFT_test_parameters), intent(in) :: fft_test_p
+!!        real(kind = kreal), intent(in) :: elapsed(9)
 !!@endverbatim
 !
       module t_parameters_FFT_tests
