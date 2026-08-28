@@ -6,8 +6,9 @@ SHELL           = /bin/sh
 #
 #  directories of Kemo's Dynamo toolkit
 #
-SRCDIR = /Users/matsui/src_kemo
+SRCDIR = ~/src_kemo
 BUILDDIR= $(SRCDIR)/bin
+MAKEDIR = $(SRCDIR)/work
 #
 GMAKE = make
 MPIRUN = mpirun
@@ -32,10 +33,16 @@ test:
 	@echo '# -----------------------------------------------------------'
 	@echo '#'
 	@cd eq_symmetry_fields; \
-		$(GMAKE) BUILDDIR="$(BUILDDIR)" \
-		GMAKE="$(GMAKE)" MPIRUN="$(MPIRUN)"  TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
-		TARGET_SPH_SNAP="$(TARGET_SPH_SNAP)" TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
-		TARGET_COMPARE_PSF="$(TARGET_COMPARE_PSF)" TARGET_PSF_2_VTK="$(TARGET_PSF_2_VTK)" \
+		$(GMAKE) \
+		SRCDIR="$(SRCDIR)" \
+		MAKEDIR="$(MAKEDIR)" \
+		BUILDDIR="$(BUILDDIR)" \
+		MPIRUN="$(MPIRUN)" \
+		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
+		TARGET_SPH_SNAP="$(TARGET_SPH_SNAP)" \
+		TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
+		TARGET_COMPARE_PSF="$(TARGET_COMPARE_PSF)" \
+		TARGET_PSF_2_VTK="$(TARGET_PSF_2_VTK)" \
 		test
 	
 	@echo '#'
@@ -44,8 +51,12 @@ test:
 	@echo '# -----------------------------------------------------------'
 	@echo '#'
 	cd static_heat_source_by_rst; \
-		$(GMAKE) SRCDIR="$(SRCDIR)" MPIRUN="$(MPIRUN)" \
-		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
+		$(GMAKE) \
+		SRCDIR="$(SRCDIR)" \
+		MAKEDIR="$(MAKEDIR)" \
+		MPIRUN="$(MPIRUN)" \
+		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
+		TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
 		TARGET_SPH_PICK_MODE_CHECK="$(TARGET_SPH_PICK_MODE_CHECK)" \
 		test
 	
@@ -55,8 +66,12 @@ test:
 	@echo '# -----------------------------------------------------------'
 	@echo '#'
 	cd static_heat_source_by_ref; \
-		$(GMAKE) SRCDIR="$(SRCDIR)" MPIRUN="$(MPIRUN)" \
-		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
+		$(GMAKE) \
+		SRCDIR="$(SRCDIR)" \
+		MAKEDIR="$(MAKEDIR)" \
+		MPIRUN="$(MPIRUN)" \
+		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
+		TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
 		TARGET_SPH_PICK_MODE_CHECK="$(TARGET_SPH_PICK_MODE_CHECK)" \
 		test
 	
@@ -66,8 +81,12 @@ test:
 	@echo '# -----------------------------------------------------------'
 	@echo '#'
 	cd perturbation_scalars_by_ref; \
-		$(GMAKE) SRCDIR="$(SRCDIR)" MPIRUN="$(MPIRUN)" \
-		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" TARGET_SPH_REF_CHECK="$(TARGET_SPH_REF_CHECK)" \
+		$(GMAKE) \
+		SRCDIR="$(SRCDIR)" \
+		MAKEDIR="$(MAKEDIR)" \
+		MPIRUN="$(MPIRUN)" \
+		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
+		TARGET_SPH_REF_CHECK="$(TARGET_SPH_REF_CHECK)" \
 		TARGET_SPH_PICK_MODE_CHECK="$(TARGET_SPH_PICK_MODE_CHECK)" \
 		test
 		
@@ -77,8 +96,12 @@ test:
 	@echo '# -----------------------------------------------------------'
 	@echo '#'
 	cd perturbation_scalars_by_file; \
-		$(GMAKE) SRCDIR="$(SRCDIR)" MPIRUN="$(MPIRUN)" \
-		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" TARGET_SPH_REF_CHECK="$(TARGET_SPH_REF_CHECK)" \
+		$(GMAKE) \
+		SRCDIR="$(SRCDIR)" \
+		MAKEDIR="$(MAKEDIR)" \
+		MPIRUN="$(MPIRUN)" \
+		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
+		TARGET_SPH_REF_CHECK="$(TARGET_SPH_REF_CHECK)" \
 		TARGET_SPH_PICK_MODE_CHECK="$(TARGET_SPH_PICK_MODE_CHECK)" \
 		test
 	
@@ -88,8 +111,12 @@ test:
 	@echo '# -----------------------------------------------------------'
 	@echo '#'
 	cd static_heat_source_inner_core; \
-		$(GMAKE) SRCDIR="$(SRCDIR)" MPIRUN="$(MPIRUN)" \
-		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" TARGET_SPH_REF_CHECK="$(TARGET_SPH_REF_CHECK)" \
+		$(GMAKE) \
+		SRCDIR="$(SRCDIR)" \
+		MAKEDIR="$(MAKEDIR)" \
+		MPIRUN="$(MPIRUN)" \
+		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
+		TARGET_SPH_REF_CHECK="$(TARGET_SPH_REF_CHECK)" \
 		TARGET_SPH_PICK_MODE_CHECK="$(TARGET_SPH_PICK_MODE_CHECK)" \
 		test
 	
@@ -99,8 +126,10 @@ test:
 	@echo '# -----------------------------------------------------------'
 	@echo '#'
 	cd heterogineous_temp_static; \
-		$(GMAKE) MPIRUN="$(MPIRUN)" \
-		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
+		$(GMAKE) \
+		MPIRUN="$(MPIRUN)" \
+		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
+		TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
 		TARGET_SPH_PICK_MODE_CHECK="$(TARGET_SPH_PICK_MODE_CHECK)" \
 		test
 		
@@ -110,8 +139,10 @@ test:
 	@echo '# -----------------------------------------------------------'
 	@echo '#'
 	cd heterogineous_temp_evolve; \
-		$(GMAKE) MPIRUN="$(MPIRUN)" \
-		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
+		$(GMAKE) \
+		MPIRUN="$(MPIRUN)" \
+		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
+		TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
 		TARGET_SPH_PICK_MODE_CHECK="$(TARGET_SPH_PICK_MODE_CHECK)" \
 		test
 	

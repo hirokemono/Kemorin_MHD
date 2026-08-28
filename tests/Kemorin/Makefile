@@ -6,7 +6,8 @@ SHELL           = /bin/sh
 #
 #  directories of Kemo's Dynamo toolkit
 #
-SRCDIR = /Users/matsui/src_kemo
+SRCDIR = ~/src_kemo
+MAKEDIR = $(SRCDIR)/work
 #
 MHDDIR =  $(SRCDIR)/MHD
 BUILDDIR= $(SRCDIR)/bin
@@ -51,8 +52,11 @@ test:
 	@echo "# Tests in Mesh directory..."
 	@echo '# -----------------------------------------------------------'
 	@cd Mesh; \
-		$(GMAKE) BUILDDIR="$(BUILDDIR)" \
-		GMAKE="$(GMAKE)" MPIRUN="$(MPIRUN)" \
+		$(GMAKE) \
+		BUILDDIR="$(BUILDDIR)" \
+		MAKEDIR="$(MAKEDIR)" \
+		GMAKE="$(GMAKE)" \
+		MPIRUN="$(MPIRUN)" \
 		TARGET_GEN_SPH_GRID="$(TARGET_GEN_SPH_GRID)" \
 		TARGET_CHECK_SPH_GRID="$(TARGET_CHECK_SPH_GRID)" \
 		TARGET_TEST_SPH_GRID="$(TARGET_TEST_SPH_GRID)" \
@@ -62,8 +66,11 @@ test:
 	@echo "# Tests in Models directory..."
 	@echo '# -----------------------------------------------------------'
 	@cd Models; \
-		$(GMAKE) BUILDDIR="$(BUILDDIR)" \
-		GMAKE="$(GMAKE)" MPIRUN="$(MPIRUN)" \
+		$(GMAKE) \
+		BUILDDIR="$(BUILDDIR)" \
+		MAKEDIR="$(MAKEDIR)" \
+		GMAKE="$(GMAKE)" \
+		MPIRUN="$(MPIRUN)" \
 		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
 		TARGET_SPH_LICV="$(TARGET_SPH_LICV)" \
 		TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \

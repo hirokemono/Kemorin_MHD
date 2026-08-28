@@ -7,7 +7,7 @@ LOCALDIR= $(HOMEDIR)/local
 
 
 
-WORKDIR= $(HOMEDIR)/src_kemo/work
+MAKEDIR= $(HOMEDIR)/src_kemo/work
 MHDDIR =    $(HOMEDIR)/src_kemo
 
 C_SRCDIR= /Users/matsui/src_kemo/MHD/C_src
@@ -30,7 +30,7 @@ OPTFLAGS = -O3 -Wall -g
 #   Library settings
 #
 KEMO_INC = -I. $(KEMO_C_ICLUDES)
-LIB_KEMO_C = -L$(WORKDIR) -lkemo_c $(PNG_LIBS) $(ZLIB_LIBS)
+LIB_KEMO_C = -L$(MAKEDIR) -lkemo_c $(PNG_LIBS) $(ZLIB_LIBS)
 
 ZLIB_LIBS = `pkg-config --cflags --libs zlib`
 #

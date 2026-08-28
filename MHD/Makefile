@@ -31,8 +31,7 @@ FEM_UTIL_BINDIR= $(BUILDDIR)/FEM_utils
 #    Name of Makefiles
 #
 MAKENAME=       $(MAKEDIR)/Makefile
-EXP_MAKEHEAD=   $(EXPDIR)/Makefile.header
-TESTS_MAKEHEAD= $(TESTDIR)/Makefile.header
+TESTS_MAKEHEAD= $(MAKEDIR)/Makefile.header
 #
 #   AMD ROCm settings
 #
@@ -271,17 +270,6 @@ makemake:
 		MAKENAME="$(TESTS_MAKEHEAD)"
 	@echo '#' >> $(TESTS_MAKEHEAD)
 	$(GMAKE) makelib_list MAKENAME="$(TESTS_MAKEHEAD)"
-	
-	@echo '#' > $(EXP_MAKEHEAD)
-	@echo '# -----------------------------------------------------------' >> $(EXP_MAKEHEAD)
-	@echo '# Makefile header for Kemorin Dynamo example' >> $(EXP_MAKEHEAD)
-	@echo '# -----------------------------------------------------------' >> $(EXP_MAKEHEAD)
-	@echo '#' >> $(EXP_MAKEHEAD)
-	$(GMAKE) makeheaders       \
-		MAKEDIR="$(MAKEDIR)"   \
-		MAKENAME="$(EXP_MAKEHEAD)"
-	@echo '#' >> $(EXP_MAKEHEAD)
-	$(GMAKE) makelib_list MAKENAME="$(EXP_MAKEHEAD)"
 	
 	@echo "# create Makefile"
 	@echo '#' > $(MAKENAME)

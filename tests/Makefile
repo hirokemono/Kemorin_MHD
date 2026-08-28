@@ -4,7 +4,8 @@
 #
 SHELL           = /bin/sh
 #
-SRCDIR = /Users/matsui/src_kemo
+SRCDIR = ~/src_kemo
+MAKEDIR = $(SRCDIR)/work
 #
 MHDDIR =  $(SRCDIR)/MHD
 BUILDDIR= $(SRCDIR)/bin
@@ -52,7 +53,9 @@ test:
 	@echo '# -----------------------------------------------------------'
 	@echo '# -----------------------------------------------------------'
 	@cd Calypso; $(GMAKE) GMAKE="$(GMAKE)" \
-		SRCDIR="$(SRCDIR)" BUILDDIR="$(BUILDDIR)" \
+		SRCDIR="$(SRCDIR)" \
+		BUILDDIR="$(BUILDDIR)" \
+		MAKEDIR="$(MAKEDIR)" \
 		MPIRUN="$(MPIRUN)" \
 		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
 		TARGET_SPH_SNAP="$(TARGET_SPH_SNAP)" \
@@ -80,7 +83,9 @@ test:
 	@echo '# -----------------------------------------------------------'
 	@echo '# -----------------------------------------------------------'
 	@cd Kemorin; $(GMAKE) GMAKE="$(GMAKE)" \
-		SRCDIR="$(SRCDIR)" BUILDDIR="$(BUILDDIR)" \
+		SRCDIR="$(SRCDIR)" \
+		BUILDDIR="$(BUILDDIR)" \
+		MAKEDIR="$(MAKEDIR)" \
 		MPIRUN="$(MPIRUN)" \
 		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
 		TARGET_SPH_SNAP="$(TARGET_SPH_SNAP)" \

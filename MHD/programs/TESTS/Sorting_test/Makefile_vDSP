@@ -5,7 +5,7 @@
 HOMEDIR= $(HOME)
 SRCDIR = $(HOME)/src_kemo
 MHDDIR = $(SRCDIR)/MHD
-WORKDIR = $(SRCDIR)/work
+MAKEDIR = $(SRCDIR)/work
 
 LOCALDIR= $(HOMEDIR)/local
 
@@ -18,7 +18,7 @@ OPTFLAGS = -O3 -Wall -g $(COCOA_FLAG)
 #
 KEMO_INCLUDES = -I. -I$(MHDDIR)/C_src/CORE_C
 
-LIB_KEMO_C = -L$(WORKDIR) -lkemo_c -framework accelerate
+LIB_KEMO_C = -L$(MAKEDIR) -lkemo_c -framework accelerate
 
 #
 

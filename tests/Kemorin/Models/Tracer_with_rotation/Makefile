@@ -2,9 +2,11 @@
 #  Makefile for Kemo's Dynamo toolkit
 #    Written by H. Matsui
 #
-SRCDIR = /Users/matsui/src_kemo
 
-include $(SRCDIR)/tests/Makefile.header
+SRCDIR = ~/src_kemo
+MAKEDIR = $(SRCDIR)/work
+
+include $(MAKEDIR)/Makefile.header
 
 SRC_SPH_INITIAL =    main_sph_initial_fld.f90
 TARGET_SPH_INITIAL = sph_initial_field

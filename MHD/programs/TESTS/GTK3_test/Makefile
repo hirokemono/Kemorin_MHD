@@ -1,7 +1,7 @@
 SHELL = /bin/sh
 
 SRCDIR = /Users/matsui/src_kemo
-WORKDIR = $(SRCDIR)/work
+MAKEDIR = $(SRCDIR)/work
 CC=gcc
 F90=gfortran
 
@@ -11,7 +11,7 @@ OPTFLAGS = -O3 -Wall -g  -D__APPLE__
 CXXFLAGS =  -D__APPLE__
 
 KEMO_INCLUDE = -I. -I./GTK \
--I$(WORKDIR) \
+-I$(MAKEDIR) \
 -I$(SRCDIR)/MHD/C_src/CORE_C \
 -I$(SRCDIR)/MHD/C_src/GTK \
 -I$(SRCDIR)/MHD/C_src/CONTROLS

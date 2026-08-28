@@ -20,8 +20,7 @@ EXPDIR=         $(SRCDIR)/examples
 TESTDIR=        $(SRCDIR)/tests
 
 MAKENAME=       $(MAKEDIR)/Makefile
-EXP_MAKEHEAD=   $(EXPDIR)/Makefile.header
-TESTS_MAKEHEAD= $(TESTDIR)/Makefile.header
+TESTS_MAKEHEAD= $(MAKEDIR)/Makefile.header
 
 #
 #   BLAS settings
@@ -201,18 +200,6 @@ makemake:
 	@echo '# -----------------------------------------------------------' >> $(TESTS_MAKEHEAD)
 	$(GMAKE) makelib_list \
 		MAKENAME="$(TESTS_MAKEHEAD)"
-	
-	echo '#' > $(EXP_MAKEHEAD)
-	echo '# Makefile header for Calypso Dynamo example' >> $(EXP_MAKEHEAD)
-	echo '#' >> $(EXP_MAKEHEAD)
-	$(GMAKE) makeheaders \
-		MAKENAME="$(EXP_MAKEHEAD)"
-	@echo '#' >> $(EXP_MAKEHEAD)
-	@echo '# -----------------------------------------------------------' >> $(EXP_MAKEHEAD)
-	@echo '# library lists' >> $(EXP_MAKEHEAD)
-	@echo '# -----------------------------------------------------------' >> $(EXP_MAKEHEAD)
-	$(GMAKE) makelib_list \
-		MAKENAME="$(EXP_MAKEHEAD)"
 	
 	echo '#' > $(MAKENAME)
 	echo '# Makefile for Calypso Dynamo simulation package' >> $(MAKENAME)
