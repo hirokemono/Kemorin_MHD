@@ -16,7 +16,7 @@
       character(len=kchara) :: file_name_1, file_name_2
 !
 !
-      if(command_argument_count() .le. 1) then
+      if(command_argument_count() .lt. 2) then
         write(*,*) 'compare_fft_test FFT_TEST_RESULT_1 FFT_TEST_RESULT_2'
         stop
       end if

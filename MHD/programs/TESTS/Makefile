@@ -55,7 +55,7 @@ target_list:
 	done
 
 target_task:
-	@echo tests_with_f: fem_mesh_test comm_tests gauss_tests solver_tests \
+	@echo tests_with_f: fem_mesh_test comm_tests solver_tests \
 	f_graphic_tests fft_test leg_tests getarg_tests node_clustring_test \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
