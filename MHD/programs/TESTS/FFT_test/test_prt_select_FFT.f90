@@ -107,6 +107,6 @@
 !
       call write_fft_test_elapsed(fft_test_p1, ft1%elapsed(1))
 !
-      stop 'finish'
+      stop
       end program test_prt_select_FFT
 

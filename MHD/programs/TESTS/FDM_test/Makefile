@@ -8,7 +8,7 @@ FDM_TEST_DIR =       $$(TESTS_DIR)/FDM_test
 
 TARGET_FDM_TEST =      test_fdm
 
-TARGETS_FFT_TEST = \
+TARGET_FDM_TEST = \
 '$$(TARGET_FDM_TEST)'
 
 LIBS_FDM_TEST = \
@@ -46,7 +46,7 @@ target_list:
 	@echo 'TARGET_FDM_TEST =      $$(TEST_BUILD_DIR)/$(TARGET_FDM_TEST)'     >> $(MAKENAME)
 
 target_task:
-	@echo fft_test: $(TARGETS_FFT_TEST) >> $(MAKENAME)
+	@echo fdm_test: $(TARGET_FDM_TEST) >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_FDM_TEST)': '$$(MOD_FDM_TEST)' \
 	'$$(LIB_FILES_FDM_TEST)' >> $(MAKENAME)

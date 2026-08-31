@@ -91,8 +91,9 @@ dir_list:
 target_list:
 	@echo 'TARGET_SELECT_PRT_FFT_TEST = $(TARGET_SELECT_PRT_FFT_TEST)' >> $(MAKENAME)
 	@echo 'TARGET_SELECT_RTP_FFT_TEST = $(TARGET_SELECT_RTP_FFT_TEST)' >> $(MAKENAME)
-	@echo 'TARGET_SGL_FFW3_TEST =    $(TARGET_SGL_FFW3_TEST)'     >> $(MAKENAME)
-	@echo 'TARGET_FFT_LABEL_CHECK =  $(TARGET_FFT_LABEL_CHECK)'   >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo TARGETS_FFT_TEST =       $(TARGETS_FFT_TEST)       >> $(MAKENAME)
+	@echo TARGETS_EACH_FFT_TEST =  $(TARGETS_EACH_FFT_TEST)  >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
@@ -106,8 +107,8 @@ target_list:
 	@echo '#' >> $(MAKENAME)
 
 target_task:
-	@echo fft_test:      $$(TARGETS_FFT_TEST) >> $(MAKENAME)
-	@echo each_fft_test: $$TARGETS_EACH_FFT_TEST) >> $(MAKENAME)
+	@echo 'fft_test:      $$(TARGETS_FFT_TEST)'      >> $(MAKENAME)
+	@echo 'each_fft_test: $$(TARGETS_EACH_FFT_TEST)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_SELECT_PRT_FFT_TEST):' \
 	'$$(MOD_SELECT_PRT_FFT_TEST)'  \

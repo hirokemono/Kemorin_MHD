@@ -20,17 +20,6 @@ include $(MAKEDIR)/Makefile.header
 TARGET_SELECT_PRT_FFT_TEST = $(BUILDDIR)/tests/test_prt_select_FFT
 TARGET_SELECT_RTP_FFT_TEST = $(BUILDDIR)/tests/test_rtp_select_FFT
 #
-TARGET_FFTPACK_TEST =  $(BUILDDIR)/tests/test_rtp_FFTPACK
-TARGET_ISPACK1_TEST =  $(BUILDDIR)/tests/test_rtp_ISPACK1
-TARGET_ISPACK3_TEST =  $(BUILDDIR)/tests/test_rtp_ISPACK3
-TARGET_FFW3_F_TEST =   $(BUILDDIR)/tests/test_rtp_FFTW3_f
-TARGET_SGL_FFW3_TEST = $(BUILDDIR)/tests/test_single_FFTW3
-TARGET_OMP_FFW3_TEST = $(BUILDDIR)/tests/test_rtp_omp_FFTW3
-TARGET_PRT_FFTPACK_TEST =  $(BUILDDIR)/tests/test_prt_FFTPACK
-TARGET_PRT_ISPACK1_TEST =  $(BUILDDIR)/tests/test_prt_ISPACK1
-TARGET_PRT_ISPACK3_TEST =  $(BUILDDIR)/tests/test_prt_ISPACK3
-TARGET_PRT_FFW3_F_TEST =   $(BUILDDIR)/tests/test_prt_FFTW3_f
-
 TARGET_CMPR_FFT_TEST = compare_fft_test
 SRC_CMPR_FFT_TEST = $(FFT_TEST_DIR)/compare_FFT_test/compare_FFT_test.f90
 

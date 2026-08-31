@@ -141,7 +141,7 @@
      &                   fft_test_p%nfft_test, fft_test_p%Ncomp_test,   &
      &                   fft_test_p%nloop_test
       write(*, '(a,1pE16.6e3)') 'Initialize:      ', elapsed(1)
-      write(*, '(2a,1pE16.6e3)') trim(fft_test_p%test_name),            &
+      write(*, '(2a,1pE16.6e3)') trim(fft_test_p%FFT_name),             &
      &                                         ': ', elapsed(2)
       write(*, '(a,1pE16.6e3)') 'Data copy:       ', elapsed(3)
       write(*, '(a,1pE16.6e3)') 'Total FFT:       ',                    &
@@ -166,7 +166,7 @@
      &                   fft_test_p%nfft_test, fft_test_p%Ncomp_test,   &
      &                   fft_test_p%nloop_test
       write(*, '(a,1pE16.6e3)') 'Initialize:      ', elapsed(1)
-      write(*, '(2a,1pE16.6e3)') trim(fft_test_p%test_name),            &
+      write(*, '(2a,1pE16.6e3)') trim(fft_test_p%FFT_name),             &
      &                                         ': ', elapsed(2)
       write(*, '(a,1pE16.6e3)')                                         &
      &                'Time for rocFFT w/o first: ', elapsed(4)
@@ -193,7 +193,7 @@
      &                   fft_test_p%nfft_test, fft_test_p%Ncomp_test,   &
      &                   fft_test_p%nloop_test
       write(*,'(a,1pE16.6e3)') 'Initialize:      ', elapsed(1)
-      write(*,'(2a,1pE16.6e3)') trim(fft_test_p%test_name),             &
+      write(*,'(2a,1pE16.6e3)') trim(fft_test_p%FFT_name),              &
      &                                         ': ', elapsed(2)
       write(*,'(a,1pE16.6e3)') 'Time for rocFFT w/o first: ',elapsed(6)
       write(*,'(a,1pE16.6e3)') 'Time for FFT on CPU:       ',elapsed(8)
