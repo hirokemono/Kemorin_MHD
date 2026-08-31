@@ -52,7 +52,6 @@ multi_pout_FFTPACK_smp.o \
 calypso_multi_fftpack.o \
 t_FFTPACK5_wrapper.o \
 \
-m_FFT_size.o      \
 t_fft_test_data.o \
 test_FFTPACK5.o
 
@@ -69,7 +68,6 @@ multi_pout_FFTW3_smp.o \
 calypso_multi_FFTW3.o \
 t_multi_FFTW_wrapper.o \
 \
-m_FFT_size.o      \
 t_fft_test_data.o \
 test_FFTW3.o
 
@@ -86,7 +84,6 @@ single_pin_FFTW3_smp.o \
 single_pout_FFTW3_smp.o \
 calypso_single_FFTW3.o \
 \
-m_FFT_size.o      \
 t_fft_test_data.o \
 test_single_FFTW3.o
 
@@ -96,7 +93,6 @@ m_constants.o \
 m_machine_parameter.o \
 \
 compare_FFT_test.o \
-m_FFT_size.o      \
 t_fft_test_data.o
 
 MOD_CMPR_FFT_TEST = \

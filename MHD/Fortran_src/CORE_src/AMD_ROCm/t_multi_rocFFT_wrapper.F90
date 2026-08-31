@@ -17,9 +17,6 @@
 !!        type(calypso_rocFFT_work), intent(inout), target :: WK_fft
 !!      subroutine calypso_fwd_rocFFT_init(fwd)
 !!      subroutine calypso_bwd_rocFFT_init(bwd)
-!!      subroutine calypso_rocFFT_fin(fwd, bwd)
-!!        type(calypso_rocFFT_params), intent(inout), target :: fwd
-!!        type(calypso_rocFFT_params), intent(inout), target :: bwd
 !!      subroutine calypso_rocFFT_alloc(fwd, bwd, WK_fft)
 !!        type(calypso_rocFFT_params), intent(in) :: fwd, bwd
 !!        type(calypso_rocFFT_work), intent(inout), target :: WK_fft

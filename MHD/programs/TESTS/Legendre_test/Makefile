@@ -88,15 +88,15 @@ lib_name:
 
 mod_list:
 	@echo  MOD_SMDT_POLY_TEST=  \\ >> $(MAKENAME)
-	@echo  $(MOD_SMDT_POLY_TEST) >> $(MAKENAME)
-	@echo  MOD_SPH_TRIINT=  \\ >> $(MAKENAME)
-	@echo  $(MOD_SPH_TRIINT) >> $(MAKENAME)
-	@echo  MOD_MAG_SMDT=  \\ >> $(MAKENAME)
-	@echo  $(MOD_MAG_SMDT) >> $(MAKENAME)
-	@echo  MOD_MAG16_SMDT=  \\ >> $(MAKENAME)
-	@echo  $(MOD_MAG16_SMDT) >> $(MAKENAME)
-	@echo  MOD_ACDC_SMDT=  \\ >> $(MAKENAME)
-	@echo  $(MOD_ACDC_SMDT) >> $(MAKENAME)
+	@echo  $(MOD_SMDT_POLY_TEST)   >> $(MAKENAME)
+	@echo  MOD_SPH_TRIINT=  \\     >> $(MAKENAME)
+	@echo  $(MOD_SPH_TRIINT)       >> $(MAKENAME)
+	@echo  MOD_MAG_SMDT=  \\       >> $(MAKENAME)
+	@echo  $(MOD_MAG_SMDT)         >> $(MAKENAME)
+	@echo  MOD_MAG16_SMDT=  \\     >> $(MAKENAME)
+	@echo  $(MOD_MAG16_SMDT)       >> $(MAKENAME)
+	@echo  MOD_ACDC_SMDT=  \\      >> $(MAKENAME)
+	@echo  $(MOD_ACDC_SMDT)        >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
 depends:

@@ -147,8 +147,8 @@
       subroutine init_rtp_complex_rocFFT(sph_rtp, comm_rtp,             &
      &          ncomp_bwd, ncomp_fwd, rocFFT_f, flag_fft)
 !
+      use calypso_rocFFT_init
       use set_comm_table_rtp_OMP_FFTW
-      use multi_pout_complex_rocFFT
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -259,6 +259,8 @@
 ! ------------------------------------------------------------------
 !
       subroutine finalize_sph_rocFFT(rocFFT_f, flag_fft)
+!
+      use calypso_rocFFT_init
 !
       type(work_for_field_rocFFT), intent(inout) :: rocFFT_f
       logical, intent(inout) :: flag_fft

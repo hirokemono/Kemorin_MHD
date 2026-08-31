@@ -36,8 +36,6 @@
       use select_multi_FFT_init
       use multi_FFT_select
 !
-!      use m_FFT_labels
-!
       implicit none
 !
       character(len = kchara), parameter                                &
