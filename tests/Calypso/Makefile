@@ -7,6 +7,7 @@ SHELL           = /bin/sh
 #  directories of Kemo's Dynamo toolkit
 #
 SRCDIR = ~/src_kemo
+MAKEDIR = $(SRCDIR)/work
 BUILDDIR= $(SRCDIR)/bin
 #
 MHDDIR =  $(SRCDIR)/MHD
@@ -25,8 +26,6 @@ TARGET_SPH_PICK_MODE_CHECK = $(BUILDDIR)/tests/sph_picked_mode_check
 TARGET_SPH_REF_CHECK =       $(BUILDDIR)/tests/sph_ref_field_check
 #
 TARGET_GEN_SPH_GRID =        $(BUILDDIR)/utilities/gen_sph_grids
-TARGET_CHECK_SPH_GRID =      $(BUILDDIR)/tests/check_sph_grids
-TARGET_TEST_SPH_GRID =       $(BUILDDIR)/tests/check_sph_comms
 
 TARGET_NEWSPH=               $(BUILDDIR)/utilities/assemble_sph
 TARGET_CMP_SPH_RST=          $(BUILDDIR)/tests/compare_sph_restart
@@ -72,12 +71,10 @@ test:
 	@echo '#'
 	cd Communication_check; \
 		$(GMAKE) \
-		BUILDDIR="$(BUILDDIR)" \
+		SRCDIR="$(SRCDIR)" \
+		MAKEDIR="$(MAKEDIR)" \
 		GMAKE="$(GMAKE)" \
 		MPIRUN="$(MPIRUN)"  \
-		TARGET_GEN_SPH_GRID="$(TARGET_GEN_SPH_GRID)" \
-		TARGET_CHECK_SPH_GRID="$(TARGET_CHECK_SPH_GRID)" \
-		TARGET_TEST_SPH_GRID="$(TARGET_TEST_SPH_GRID)" \
 		test
 	@echo '#'
 	@echo '# -----------------------------------------------------------'
