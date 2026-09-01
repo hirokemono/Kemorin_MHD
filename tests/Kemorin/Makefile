@@ -48,6 +48,18 @@ TARGET_CMP_SPH_RST=          $(BUILDDIR)/tests/compare_sph_restart
 all: test
 
 test:
+	@echo '#'
+	@echo '# -----------------------------------------------------------'
+	@echo "#   Test in FFT_test directory..."
+	@echo '# -----------------------------------------------------------'
+	@echo '#'
+	cd FFT_test; \
+		$(GMAKE) \
+		SRCDIR="$(SRCDIR)" \
+		MAKEDIR="$(MAKEDIR)" \
+		GMAKE="$(GMAKE)" \
+		test
+	
 	@echo '# -----------------------------------------------------------'
 	@echo "# Tests in Mesh directory..."
 	@echo '# -----------------------------------------------------------'
@@ -81,6 +93,7 @@ test:
 
 
 clean:
+	cd FFT_test; make clean
 	cd Mesh; make clean
 	cd Models; make clean
 	

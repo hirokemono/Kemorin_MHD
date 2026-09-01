@@ -24,14 +24,6 @@ TARGET_SPH_ENE_CHECK =       $(BUILDDIR)/tests/sph_ene_check
 TARGET_SPH_PICK_MODE_CHECK = $(BUILDDIR)/tests/sph_picked_mode_check
 TARGET_SPH_REF_CHECK =       $(BUILDDIR)/tests/sph_ref_field_check
 #
-TARGET_GAUSS_TEST =          $(BUILDDIR)/tests/gauss_points
-TARGET_CMP_GAUSS_TEST =      $(BUILDDIR)/tests/compare_gauss_points
-#
-TARGET_FFTPACK_TEST =        $(BUILDDIR)/tests/test_FFTPACK
-TARGET_FFW3_F_TEST =         $(BUILDDIR)/tests/test_FFTW3_f
-TARGET_SGL_FFTW3_TEST =       $(BUILDDIR)/tests/test_single_FFTW3
-TARGET_CMPR_FFT_TEST =       $(BUILDDIR)/tests/compare_fft_test
-
 TARGET_GEN_SPH_GRID =        $(BUILDDIR)/utilities/gen_sph_grids
 TARGET_CHECK_SPH_GRID =      $(BUILDDIR)/tests/check_sph_grids
 TARGET_TEST_SPH_GRID =       $(BUILDDIR)/tests/check_sph_comms
@@ -56,9 +48,9 @@ test:
 	@echo '#'
 	cd Gauss_point_test; \
 		$(GMAKE) \
-		BUILDDIR="$(BUILDDIR)" \
-		TARGET_GAUSS_TEST="$(TARGET_GAUSS_TEST)" \
-		TARGET_CMP_GAUSS_TEST="$(TARGET_CMP_GAUSS_TEST)" \
+		SRCDIR="$(SRCDIR)" \
+		MAKEDIR="$(MAKEDIR)" \
+		GMAKE="$(GMAKE)" \
 		test
 	
 	@echo '#'
@@ -68,12 +60,9 @@ test:
 	@echo '#'
 	cd FFT_test; \
 		$(GMAKE) \
-		BUILDDIR="$(BUILDDIR)" \
+		SRCDIR="$(SRCDIR)" \
+		MAKEDIR="$(MAKEDIR)" \
 		GMAKE="$(GMAKE)" \
-		TARGET_FFTPACK_TEST="$(TARGET_FFTPACK_TEST)" \
-		TARGET_FFW3_F_TEST="$(TARGET_FFW3_F_TEST)" \
-		TARGET_SGL_FFTW3_TEST="$(TARGET_SGL_FFTW3_TEST)" \
-		TARGET_CMPR_FFT_TEST="$(TARGET_CMPR_FFT_TEST)" \
 		test
 	
 	@echo '#'

@@ -6,36 +6,37 @@ SHELL           = /bin/sh
 #
 #  directories of Kemo's Dynamo toolkit
 #
+CURRENTDIR=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+
 SRCDIR = ~/src_kemo
 MAKEDIR = $(SRCDIR)/work
 
 TESTS_DIR =      $(SRCDIR)/MHD/programs/TESTS
 GAUSS_TEST_DIR = $(TESTS_DIR)/Gauss_point_test
 
+GMAKE = make
+
 include $(MAKEDIR)/Makefile.header
 
-TARGET_GAUSS_TEST =     ./gauss_points
-TARGET_CMP_GAUSS_TEST = ./compare_gauss_points
+TARGET_GAUSS_TEST =     $(CURRENTDIR)/gauss_points
+TARGET_CMP_GAUSS_TEST = $(CURRENTDIR)/compare_gauss_points
 
-SRC_GAUSS_TEST =  \
-$(GAUSS_TEST_DIR)/test_gauss_points.f90 \
-$(GAUSS_TEST_DIR)/gauss_points_IO.f90
-
-SRC_CMP_GAUSS_TEST = \
-$(GAUSS_TEST_DIR)/compare_gauss_points.f90 \
-$(GAUSS_TEST_DIR)/gauss_points_IO.f90
+TARGETS = \
+$(TARGET_GAUSS_TEST) \
+$(TARGET_CMP_GAUSS_TEST)
 
 all: test
 
-$(TARGET_GAUSS_TEST): $(SRC_GAUSS_TEST) $(MAKEDIR)/$(LIB_MESH_FILE)
-	$(F90) $(F90OPTFLAGS) -o $@ $(SRC_GAUSS_TEST) \
-	-L$(MAKEDIR) $(LIB_MESH) $(F90LIBS)
-$(TARGET_CMP_GAUSS_TEST): $(SRC_CMP_GAUSS_TEST) $(MAKEDIR)/$(LIB_MESH_FILE)
-	$(F90) $(F90OPTFLAGS) -o $@ $(SRC_CMP_GAUSS_TEST) \
-	-L$(MAKEDIR) $(LIB_MESH) $(F90LIBS)
-
-test: $(TARGET_GAUSS_TEST) $(TARGET_CMP_GAUSS_TEST)
+test:
 	make dataclean
+	
+	cd $(MAKEDIR); \
+		$(GMAKE) \
+		TARGET_GAUSS_TEST='$(TARGET_GAUSS_TEST)' \
+		TARGET_CMP_GAUSS_TEST='$(TARGET_CMP_GAUSS_TEST)' \
+		$(TARGETS)
+	
+	
 	$(TARGET_GAUSS_TEST) 32
 	$(TARGET_CMP_GAUSS_TEST)  reference/gauss_point32.dat gauss_point32.dat > log.txt
 	@if [ `tail -n 1 log.txt` != 0 ]; then\
@@ -48,6 +49,6 @@ dataclean:
 	rm -f *.dat log.txt
 
 clean: dataclean
-	rm -fr $(TARGET_GAUSS_TEST)* $(TARGET_CMP_GAUSS_TEST)*
+	rm -fr $(TARGETS)
 
 distclean: clean
