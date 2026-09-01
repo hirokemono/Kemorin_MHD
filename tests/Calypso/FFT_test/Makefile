@@ -6,116 +6,86 @@ SHELL           = /bin/sh
 #
 #  directories of Kemo's Dynamo toolkit
 #
-GMAKE = make
-SRCDIR = /Users/matsui/src_kemo
-MAKEDIR = $(SRCDIR)/work
-BUILDDIR= $(SRCDIR)/bin
-
 CURRENTDIR=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 
-TESTS_DIR =      $(SRCDIR)/MHD/programs/TESTS
-FFT_TEST_DIR = $(TESTS_DIR)/FFT_test
+SRCDIR = /Users/matsui/src_kemo
+MAKEDIR = $(SRCDIR)/work
+
+GMAKE = make
 
 include $(MAKEDIR)/Makefile.header
 
-
-#
-TARGET_SELECT_PRT_FFT_TEST = $(BUILDDIR)/tests/test_prt_select_FFT
-TARGET_SELECT_RTP_FFT_TEST = $(BUILDDIR)/tests/test_rtp_select_FFT
-#
 TARGET_CMPR_FFT_TEST =     $(CURRENTDIR)/compare_FFT_test
 
 TARGET_RTP_FFTPACK_TEST =  $(CURRENTDIR)/test_rtp_FFTPACK
-TARGET_RTP_ISPACK1_TEST =  $(CURRENTDIR)/test_rtp_ISPACK1
-TARGET_RTP_ISPACK3_TEST =  $(CURRENTDIR)/test_rtp_ISPACK3
 TARGET_PRT_FFTPACK_TEST =  $(CURRENTDIR)/test_prt_FFTPACK
-TARGET_PRT_ISPACK1_TEST =  $(CURRENTDIR)/test_prt_ISPACK1
-TARGET_PRT_ISPACK3_TEST =  $(CURRENTDIR)/test_prt_ISPACK3
 TARGET_RTP_FFTW_TEST =     $(CURRENTDIR)/test_rtp_FFTW
 TARGET_PRT_FFTW_TEST =     $(CURRENTDIR)/test_prt_FFTW
 TARGET_RTP_SGL_FFTW_TEST = $(CURRENTDIR)/test_rtp_single_FFTW
-TARGET_RTP_OMP_FFTW_TEST = $(CURRENTDIR)/test_rtp_OMP_FFTW
 
-TARGETS_FFT_TEST = \
+TARGETS_FFTPACK_TEST = \
 		$(TARGET_RTP_FFTPACK_TEST) \
-		$(TARGET_RTP_ISPACK1_TEST) \
-		$(TARGET_RTP_ISPACK3_TEST) \
 		$(TARGET_PRT_FFTPACK_TEST) \
-		$(TARGET_PRT_ISPACK1_TEST) \
-		$(TARGET_PRT_ISPACK3_TEST) \
-		$(TARGET_RTP_FFTW_TEST) \
-		$(TARGET_PRT_FFTW_TEST) \
-		$(TARGET_RTP_SGL_FFTW_TEST) \
-		$(TARGET_RTP_OMP_FFTW_TEST) \
 		$(TARGET_CMPR_FFT_TEST)
 
-ifdef FFTW3_OMP_LIBS
-  SUBDIRS+= OpenMP_FFTW3_rtp
-endif
+TARGETS_FFTW_TEST = \
+		$(TARGET_RTP_FFTW_TEST) \
+		$(TARGET_PRT_FFTW_TEST) \
+		$(TARGET_RTP_SGL_FFTW_TEST)
 
+TEST_LIST= test_fftpack
+
+ifdef FFTW3_LIBS
+  TEST_LIST+= test_fftw
+endif
 
 
 all: test
 
-test: 
-	
+test: $(TEST_LIST)
+	@echo 'FFT check finished'
+
+test_fftpack:
 	cd $(MAKEDIR); \
 		$(GMAKE) \
 		TARGET_RTP_FFTPACK_TEST='$(TARGET_RTP_FFTPACK_TEST)' \
-		TARGET_RTP_ISPACK1_TEST='$(TARGET_RTP_ISPACK1_TEST)' \
-		TARGET_RTP_ISPACK3_TEST='$(TARGET_RTP_ISPACK3_TEST)' \
 		TARGET_PRT_FFTPACK_TEST='$(TARGET_PRT_FFTPACK_TEST)' \
-		TARGET_PRT_ISPACK1_TEST='$(TARGET_PRT_ISPACK1_TEST)' \
-		TARGET_PRT_ISPACK3_TEST='$(TARGET_PRT_ISPACK3_TEST)' \
-		TARGET_RTP_FFTW_TEST='$(TARGET_RTP_FFTW_TEST)' \
-		TARGET_PRT_FFTW_TEST='$(TARGET_PRT_FFTW_TEST)' \
-		TARGET_RTP_SGL_FFTW_TEST='$(TARGET_RTP_SGL_FFTW_TEST)' \
-		TARGET_RTP_OMP_FFTW_TEST='$(TARGET_RTP_OMP_FFTW_TEST)' \
 		TARGET_CMPR_FFT_TEST='$(TARGET_CMPR_FFT_TEST)' \
-		each_fft_test
+		$(TARGETS_FFTPACK_TEST)
 	
-	$(TARGET_RTP_OMP_FFTW_TEST) control_OpenMP_FFTW
-	$(TARGET_CMPR_FFT_TEST) 'reference/fftpack_test.dat' 'OMP_FFTW_test.dat' > log.txt
+	$(TARGET_RTP_FFTPACK_TEST) control_FFTPACK
+	$(TARGET_CMPR_FFT_TEST) 'reference/fftpack_test.dat' 'FFTPACK_test.dat' > log.txt
 	@if [ `tail -n 1 log.txt` != 0 ]; then\
-		echo 'Failed OpenMP FFTW3 check'; \
+		echo 'Failed Phi inside FFTW3 check'; \
 		exit 1;\
 	fi
-	rm OMP_FFTW_test.dat
+	rm FFTPACK_test.dat
 	
-	$(TARGET_SELECT_RTP_FFT_TEST) control_FFTW
-	$(TARGET_CMPR_FFT_TEST) 'reference/fftpack_test.dat' 'FFTW_test.dat' > log.txt
-	@if [ `tail -n 1 log.txt` != 0 ]; then\
-		echo 'Failed FFTW3 check'; \
-		exit 1;\
-	fi
-	rm FFTW_test.dat
-	
-	$(TARGET_SELECT_RTP_FFT_TEST) control_ISPACK3
-	$(TARGET_CMPR_FFT_TEST) 'reference/fftpack_test.dat' 'ISPACK3_test.dat' > log.txt
-	@if [ `tail -n 1 log.txt` != 0 ]; then\
-		echo 'Failed ISPACK3 check'; \
-		exit 1;\
-	fi
-	rm ISPACK3_test.dat
-	
-	$(TARGET_SELECT_RTP_FFT_TEST) control_ISPACK1
-	$(TARGET_CMPR_FFT_TEST) 'reference/fftpack_test.dat' 'ISPACK1_test.dat' > log.txt
-	@if [ `tail -n 1 log.txt` != 0 ]; then\
-		echo 'Failed ISPACK1 check'; \
-		exit 1;\
-	fi
-	rm ISPACK1_test.dat
-	
-	$(TARGET_SELECT_RTP_FFT_TEST) control_FFTPACK
+	$(TARGET_PRT_FFTPACK_TEST) control_FFTPACK
 	$(TARGET_CMPR_FFT_TEST) 'reference/fftpack_test.dat' 'FFTPACK_test.dat' > log.txt
 	@if [ `tail -n 1 log.txt` != 0 ]; then\
 		echo 'Failed FFTPACK check'; \
 		exit 1;\
 	fi
 	rm FFTPACK_test.dat
+
+test_fftw:
+	cd $(MAKEDIR); \
+		$(GMAKE) \
+		TARGET_RTP_FFTW_TEST='$(TARGET_RTP_FFTW_TEST)' \
+		TARGET_PRT_FFTW_TEST='$(TARGET_PRT_FFTW_TEST)' \
+		TARGET_RTP_SGL_FFTW_TEST='$(TARGET_RTP_SGL_FFTW_TEST)' \
+		$(TARGETS_FFTW_TEST)
 	
+	$(TARGET_RTP_FFTW_TEST) control_FFTW
+	$(TARGET_CMPR_FFT_TEST) 'reference/fftpack_test.dat' 'FFTW_test.dat' > log.txt
+	@if [ `tail -n 1 log.txt` != 0 ]; then\
+		echo 'Failed Phi outside FFTW3 check'; \
+		exit 1;\
+	fi
+	rm FFTW_test.dat
 	
-	$(TARGET_SELECT_PRT_FFT_TEST) control_FFTW
+	$(TARGET_PRT_FFTW_TEST) control_FFTW
 	$(TARGET_CMPR_FFT_TEST) 'reference/fftpack_test.dat' 'FFTW_test.dat' > log.txt
 	@if [ `tail -n 1 log.txt` != 0 ]; then\
 		echo 'Failed Phi inside FFTW3 check'; \
@@ -123,35 +93,18 @@ test:
 	fi
 	rm FFTW_test.dat
 	
-	$(TARGET_SELECT_PRT_FFT_TEST) control_ISPACK3
-	$(TARGET_CMPR_FFT_TEST) 'reference/fftpack_test.dat' 'ISPACK3_test.dat' > log.txt
+	$(TARGET_RTP_SGL_FFTW_TEST) control_FFTW
+	$(TARGET_CMPR_FFT_TEST) 'reference/fftpack_test.dat' 'FFTW_test.dat' > log.txt
 	@if [ `tail -n 1 log.txt` != 0 ]; then\
-		echo 'Failed Phi inside ISPACK3 check'; \
+		echo 'Failed Phi inside FFTW check'; \
 		exit 1;\
 	fi
-	rm ISPACK3_test.dat
-	
-	$(TARGET_SELECT_PRT_FFT_TEST) control_ISPACK1
-	$(TARGET_CMPR_FFT_TEST) 'reference/fftpack_test.dat' 'ISPACK1_test.dat' > log.txt
-	@if [ `tail -n 1 log.txt` != 0 ]; then\
-		echo 'Failed Phi inside ISPACK1 check'; \
-		exit 1;\
-	fi
-	rm ISPACK1_test.dat
-	
-	$(TARGET_SELECT_PRT_FFT_TEST) control_FFTPACK
-	$(TARGET_CMPR_FFT_TEST) 'reference/fftpack_test.dat' 'FFTPACK_test.dat' > log.txt
-	@if [ `tail -n 1 log.txt` != 0 ]; then\
-		echo 'Failed Phi inside FFTPACK check'; \
-		exit 1;\
-	fi
-	rm FFTPACK_test.dat
-	
-	echo 'FFT check finished'
+	rm FFTW_test.dat
+
 
 
 clean:
 	rm -f *.dat log.txt
-	rm -fr $(TARGETS_FFT_TEST)
+	rm -fr $(TARGETS_FFTPACK_TEST) $(TARGETS_FFTW_TEST)
 
 distclean: clean
