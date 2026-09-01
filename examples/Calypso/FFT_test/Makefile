@@ -30,12 +30,16 @@ $(TARGET_CMPR_FFT_TEST): $(SRC_CMPR_FFT_TEST) $(MAKEDIR)/$(LIB_MESH_FILE)
 
 
 
-all: test
+
+all:
 
 test: 
 	make clean
 	
-	cd 
+	cd $(MAKEDIR); \
+		$(GMAKE) \
+		SRC_CMPR_FFT_TEST= "$(TARGET_CMPR_FFT_TEST)" \
+		$(TARGET_CMPR_FFT_TEST)
 	
 	
 	$(TARGET_SELECT_RTP_FFT_TEST) control_OpenMP_FFTW

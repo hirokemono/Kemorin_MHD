@@ -1,7 +1,7 @@
 #
 #
 #
-TEST_RTP_SGL_FFTW_DIR =    $$(FFT_TEST_DIR)/single_FFTW_rtp
+TEST_RTP_SGL_FFTW_DIR =    $$(FFT_TEST_DIR)/single_FFTW3_rtp
 TARGET_RTP_SGL_FFTW_TEST = $$(TEST_BUILD_DIR)/test_rtp_single_FFTW
 TARGETS = 
 

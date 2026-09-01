@@ -30,7 +30,7 @@ TARGET_CMP_GAUSS_TEST =      $(BUILDDIR)/tests/compare_gauss_points
 #
 TARGET_FFTPACK_TEST =        $(BUILDDIR)/tests/test_FFTPACK
 TARGET_FFW3_F_TEST =         $(BUILDDIR)/tests/test_FFTW3_f
-TARGET_SGL_FFW3_TEST =       $(BUILDDIR)/tests/test_single_FFTW3
+TARGET_SGL_FFTW3_TEST =       $(BUILDDIR)/tests/test_single_FFTW3
 TARGET_CMPR_FFT_TEST =       $(BUILDDIR)/tests/compare_fft_test
 
 TARGET_GEN_SPH_GRID =        $(BUILDDIR)/utilities/gen_sph_grids
