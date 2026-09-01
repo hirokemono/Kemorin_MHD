@@ -23,7 +23,7 @@ target_list:
 target_task:
 	@echo '$$(TARGET_PRT_FFTPACK_TEST)': \
 	'$$(MOD_PRT_FFTPACK_TEST)' \
-	'$$(LIB_MESH_FILE) $$(LIB_FFTPACK_FILE))' \
+	'$$(LIB_MESH_FILE) $$(LIB_FFTPACK_FILE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_PRT_FFTPACK_TEST)' \
