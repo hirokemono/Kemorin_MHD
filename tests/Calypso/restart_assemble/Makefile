@@ -6,6 +6,8 @@ SHELL           = /bin/sh
 #
 #  directories of Kemo's Dynamo toolkit
 #
+CURRENTDIR=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+
 SRCDIR = /Users/matsui/src_kemo
 BUILDDIR= $(SRCDIR)/bin
 #

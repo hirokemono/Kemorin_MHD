@@ -41,8 +41,7 @@ target_list:
 
 target_task:
 	@echo gauss_tests:  \
-	'$$(TARGET_GAUSS_TEST)       $$(TARGET_DIGIT_TEST) '     \
-	'$$(TARGET_CMP_GAUSS_TEST)'  >> $(MAKENAME)
+	'$$(TARGET_GAUSS_TEST) $$(TARGET_DIGIT_TEST) '  >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_DIGIT_TEST)': '$$(MOD_DIGIT_TEST)' \
 	'$$(LIB_FILES_MESH_TEST)' >> $(MAKENAME)

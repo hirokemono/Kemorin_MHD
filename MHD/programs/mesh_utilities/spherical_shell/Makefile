@@ -72,8 +72,8 @@ target_list:
 target_task:
 	@echo sph_utils:   \
 	'$$(TARGET_GEN_SPH_GRID)     $$(TARGET_GEN_SPH_W_LIC)' \
-	'$$(TARGET_MAKE_SPH_RADIUS)  $$(TARGET_TEST_SPH_GRID)'  \
-	'$$(TARGET_GEN_SPH_GRID_TEST) $$(TARGET_CHECK_SPH_GRID)' >> $(MAKENAME)
+	'$$(TARGET_MAKE_SPH_RADIUS)  $$(TARGET_GEN_SPH_GRID_TEST)'  \
+	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_GEN_SPH_GRID)': '$$(MOD_GEN_SPH_GRID)' \
 	'$$(LIB_FILES_MESH_UTIL)' \
