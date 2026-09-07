@@ -6,22 +6,43 @@ SHELL           = /bin/sh
 #
 #  directories of Kemo's Dynamo toolkit
 #
+CURRENTDIR=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+
 SRCDIR = /Users/matsui/src_kemo
+MAKEDIR = $(SRCDIR)/work
 BUILDDIR = $(SRCDIR)/bin
 #
+GMAKE = make
 MPIRUN = mpirun
+NP = 6
+
 TARGET_SPH_MHD =             $(BUILDDIR)/sph_mhd
-TARGET_SPH_ENE_CHECK =       $(BUILDDIR)/tests/sph_ene_check
-TARGET_SPH_PICK_MODE_CHECK = $(BUILDDIR)/tests/sph_picked_mode_check
-TARGET_COMPARE_PSF =         $(SRCDIR)/bin/tests/compare_psf
+
+TARGET_SPH_ENE_CHECK =       $(CURRENTDIR)/sph_ene_check
+TARGET_SPH_PICK_MODE_CHECK = $(CURRENTDIR)/sph_picked_mode_check
+TARGET_COMPARE_PSF =         $(CURRENTDIR)/compare_psf
+
+TARGETS= \
+$(TARGET_SPH_ENE_CHECK) \
+$(TARGET_SPH_PICK_MODE_CHECK) \
+$(TARGET_COMPARE_PSF)
+
 #
 
 all: test
 
-test: 
-	make clean
+targets:
+	cd $(MAKEDIR); \
+		$(GMAKE) \
+		TARGET_SPH_ENE_CHECK='$(TARGET_SPH_ENE_CHECK)' \
+		TARGET_SPH_PICK_MODE_CHECK='$(TARGET_SPH_PICK_MODE_CHECK)' \
+		TARGET_COMPARE_PSF='$(TARGET_COMPARE_PSF)' \
+		$(TARGETS)
+
+test: targets
+	make dataclean
 	
-	$(MPIRUN) -np 6 $(TARGET_SPH_MHD)
+	$(MPIRUN) -np $(NP) $(TARGET_SPH_MHD)
 	
 	@sync
 	@echo 'Compare with reference mean square data'
@@ -68,7 +89,14 @@ test:
 	
 	@echo 'Velocity filtering check in full sphere by static model is finished'
 
-clean:
+dataclean:
 	rm -f *.dat *.txt rst_6/rst.* monitor/*.dat monitor/*.dat.gz sections/*.gz field/out.*
+
+clean:
+	$(GMAKE) dataclean
+	rm -rf $(TARGET_SPH_ENE_CHECK)* \
+	$(TARGET_SPH_PICK_MODE_CHECK)* \
+	$(TARGET_COMPARE_PSF)*
+
 
 distclean: clean

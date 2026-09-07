@@ -18,8 +18,8 @@ GMAKE= make
 MPIRUN= mpirun   
 NP = 3
 
-TARGET_NEWSPH= $(SRCDIR)/bin/utilities/assemble_sph
-TARGET_CMP_SPH_RST=  $(SRCDIR)/bin/tests/compare_sph_restart
+TARGET_NEWSPH=      $(SRCDIR)/bin/utilities/assemble_sph
+TARGET_CMP_SPH_RST= $(CURRENTDIR)/compare_sph_restart
 #
 #
 

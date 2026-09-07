@@ -6,17 +6,23 @@ SHELL           = /bin/sh
 #
 #  directories of Kemo's Dynamo toolkit
 #
+CURRENTDIR=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+
 SRCDIR = /Users/matsui/src_kemo
-BUILDDIR= $(SRCDIR)/bin
+MAKEDIR = $(SRCDIR)/work
+BUILDDIR = $(SRCDIR)/bin
+#
+TARGET_GEN_SPH_GRID =    $(BUILDDIR)/utilities/gen_sph_grids
+TARGET_CHECK_SPH_GRID =  $(CURRENTDIR)/check_sph_grids
+TARGET_TEST_SPH_GRID =   $(CURRENTDIR)/check_sph_comms
+
+TARGETS= \
+$(TARGET_CHECK_SPH_GRID) \
+$(TARGET_TEST_SPH_GRID)
 #
 GMAKE = make
-
-TARGET_GEN_SPH_GRID =    $(BUILDDIR)/utilities/gen_sph_grids
-TARGET_CHECK_SPH_GRID =  $(BUILDDIR)/tests/check_sph_grids
-TARGET_TEST_SPH_GRID =   $(BUILDDIR)/tests/check_sph_comms
-#
-NP = 6
 MPIRUN= mpirun
+NP = 6
 MPI_GEN =   $(MPIRUN) -np $(NP) $(TARGET_GEN_SPH_GRID)
 MPI_CHECK = $(MPIRUN) -np $(NP) $(TARGET_CHECK_SPH_GRID)
 MPI_TEST =  $(MPIRUN) -np $(NP) $(TARGET_TEST_SPH_GRID)
@@ -27,7 +33,14 @@ MPI_TEST =  $(MPIRUN) -np $(NP) $(TARGET_TEST_SPH_GRID)
 
 all: test
 
-test: 
+targets:
+	cd $(MAKEDIR); \
+		$(GMAKE) \
+		TARGET_CHECK_SPH_GRID='$(TARGET_CHECK_SPH_GRID)' \
+		TARGET_TEST_SPH_GRID='$(TARGET_TEST_SPH_GRID)' \
+		$(TARGETS)
+
+test: targets
 	@echo '#'
 	@echo '# -----------------------------------------------------------'
 	@echo '#   Test spherical harmonics indexining'
@@ -50,11 +63,16 @@ test:
 	
 	@rm -f *.dat *.txt
 
-clean:
+dataclean:
 	cd full_sphere; make clean
 	cd full_sphere_w_external; make clean
 	
 	rm -f reference/in.*
 	rm -f mpif.h *.o *.mod *~ *.par *.diag *.a *.f90
+
+clean:
+	$(GMAKE) dataclean
+	rm -rf $(TARGET_CHECK_SPH_GRID)* \
+	$(TARGET_TEST_SPH_GRID)*
 
 distclean: clean

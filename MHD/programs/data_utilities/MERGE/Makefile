@@ -94,8 +94,9 @@ target_task:
 	@echo assembles: \
 	'$$(TARGET_MERGE)        $$(TARGET_M_MESH)'            \
 	'$$(TARGET_NEWUDT)       $$(TARGET_NEWRST)'            \
-	'$$(TARGET_NEWSPH)       $$(TARGET_CMP_SPH_RST)'       \
-	'$$(TARGET_UPDATE_RST)   $$(TARGET_ADD_TIME_SPH)' \
+	'$$(TARGET_NEWSPH)'       \
+	'$$(TARGET_UPDATE_RST)'   \
+	'$$(TARGET_ADD_TIME_SPH)' \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_MERGE)': '$$(MOD_MERGE_UCD) $$(LIB_FILES_MERGE)' \

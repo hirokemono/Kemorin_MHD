@@ -6,7 +6,7 @@ SHELL           = /bin/sh
 #
 #  directories of Kemo's Dynamo toolkit
 #
-SRCDIR = ~/src_kemo
+SRCDIR = /Users/matsui/src_kemo
 MAKEDIR = $(SRCDIR)/work
 BUILDDIR= $(SRCDIR)/bin
 #
@@ -23,13 +23,9 @@ TARGET_PSF_2_VTK =           $(BUILDDIR)/utilities/section_to_VTK
 TARGET_COMPARE_PSF =         $(BUILDDIR)/tests/compare_psf
 TARGET_SPH_ENE_CHECK =       $(BUILDDIR)/tests/sph_ene_check
 TARGET_SPH_PICK_MODE_CHECK = $(BUILDDIR)/tests/sph_picked_mode_check
-TARGET_SPH_REF_CHECK =       $(BUILDDIR)/tests/sph_ref_field_check
 #
 TARGET_GEN_SPH_GRID =        $(BUILDDIR)/utilities/gen_sph_grids
-
 TARGET_NEWSPH=               $(BUILDDIR)/utilities/assemble_sph
-TARGET_CMP_SPH_RST=          $(BUILDDIR)/tests/compare_sph_restart
-
 TARGET_CONTROL_MHD_CHECK =   $(BUILDDIR)/utilities/check_control_mhd
 
 #
@@ -88,7 +84,6 @@ test:
 		MPIRUN="$(MPIRUN)"  \
 		TARGET_GEN_SPH_GRID="$(TARGET_GEN_SPH_GRID)" \
 		TARGET_NEWSPH="$(TARGET_NEWSPH)" \
-		TARGET_CMP_SPH_RST="$(TARGET_CMP_SPH_RST)" \
 		test
 	
 	@echo '#'
@@ -138,7 +133,6 @@ test:
 		TARGET_COMPARE_PSF="$(TARGET_COMPARE_PSF)" \
 		TARGET_PSF_2_VTK="$(TARGET_PSF_2_VTK)" \
 		TARGET_SPH_PICK_MODE_CHECK="$(TARGET_SPH_PICK_MODE_CHECK)" \
-		TARGET_SPH_REF_CHECK="$(TARGET_SPH_REF_CHECK)" \
 		test
 	
 	@echo "# --------- Calypso tests finished! -------------------------"

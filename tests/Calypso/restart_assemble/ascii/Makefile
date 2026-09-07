@@ -20,7 +20,7 @@ NP = 3
 
 TARGET_GEN_SPH_GRID= $(BUILDDIR)/utilities/gen_sph_grids
 TARGET_NEWSPH=       $(BUILDDIR)/utilities/assemble_sph
-TARGET_CMP_SPH_RST=  $(BUILDDIR)/tests/compare_sph_restart
+TARGET_CMP_SPH_RST=  $(CURRENTDIR)/compare_sph_restart
 #
 #
 

@@ -8,7 +8,7 @@ SHELL           = /bin/sh
 #
 CURRENTDIR=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 
-SRCDIR = ~/src_kemo
+SRCDIR = /Users/matsui/src_kemo
 MAKEDIR = $(SRCDIR)/work
 
 TESTS_DIR =      $(SRCDIR)/MHD/programs/TESTS

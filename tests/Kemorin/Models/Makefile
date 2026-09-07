@@ -6,7 +6,7 @@ SHELL           = /bin/sh
 #
 #  directories of Kemo's Dynamo toolkit
 #
-SRCDIR = ~/src_kemo
+SRCDIR = /Users/matsui/src_kemo
 MAKEDIR = $(SRCDIR)/work
 BUILDDIR= $(SRCDIR)/bin
 #
@@ -18,7 +18,6 @@ TARGET_SPH_LICV =             $(BUILDDIR)/sph_licv
 TARGET_SPH_ENE_CHECK =       $(BUILDDIR)/tests/sph_ene_check
 TARGET_SPH_PICK_MODE_CHECK = $(BUILDDIR)/tests/sph_picked_mode_check
 TARGET_COMPARE_PSF =         $(SRCDIR)/bin/tests/compare_psf
-TARGET_SPH_REF_CHECK =       $(BUILDDIR)/tests/sph_ref_field_check
 #
 #  -------------------------------------------------------------------------
 #
@@ -63,10 +62,11 @@ test:
 	@echo '#'
 	@cd static_latent_heat_by_ctl; \
 		$(GMAKE) MPIRUN="$(MPIRUN)" \
+		GMAKE="$(GMAKE)" \
+		SRCDIR="$(SRCDIR)" \
 		MAKEDIR="$(MAKEDIR)" \
+		BUILDDIR="$(BUILDDIR)" \
 		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
-		TARGET_SPH_PICK_MODE_CHECK="$(TARGET_SPH_PICK_MODE_CHECK)" \
-		TARGET_SPH_REF_CHECK="$(TARGET_SPH_REF_CHECK)" \
 		test
 	
 	@echo '#'
@@ -76,9 +76,11 @@ test:
 	@echo '#'
 	@cd full_sphere_v_filter_static; \
 		$(GMAKE) MPIRUN="$(MPIRUN)" \
+		GMAKE="$(GMAKE)" \
+		SRCDIR="$(SRCDIR)" \
 		MAKEDIR="$(MAKEDIR)" \
+		BUILDDIR="$(BUILDDIR)" \
 		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
-		TARGET_SPH_PICK_MODE_CHECK="$(TARGET_SPH_PICK_MODE_CHECK)" \
 		test
 	
 	@rm -f *.dat *.txt

@@ -74,8 +74,7 @@ target_list:
 
 target_task:
 	@echo sph_data_util: \
-	'$$(TARGET_TAVE_SPH_ENE_SPEC)    $$(TARGET_SPH_ENE_CHECK)' \
-	'$$(TARGET_SPH_PICK_MODE_CHECK)  $$(TARGET_SPH_REF_CHECK)' \
+	'$$(TARGET_TAVE_SPH_ENE_SPEC)' \
 	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	@echo '$$(TARGET_TAVE_SPH_ENE_SPEC)': '$$(MOD_TAVE_SPH_ENE_SPEC)' \

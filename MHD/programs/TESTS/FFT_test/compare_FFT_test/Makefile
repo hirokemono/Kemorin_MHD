@@ -17,7 +17,6 @@ dir_list:
 
 target_list:
 	@echo 'TARGET_CMPR_FFT_TEST = $(TARGET_CMPR_FFT_TEST)' >> $(MAKENAME)
-	@echo '$(TARGETS) += $$(TARGET_CMPR_FFT_TEST)'         >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:

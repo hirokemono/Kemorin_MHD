@@ -3,7 +3,7 @@
 #    Written by H. Matsui
 #
 
-SRCDIR = ~/src_kemo
+SRCDIR = /Users/matsui/src_kemo
 MAKEDIR = $(SRCDIR)/work
 
 include $(MAKEDIR)/Makefile.header
