@@ -20,9 +20,6 @@ MPIRUN= mpirun
 TARGET_SPH_MHD =             $(BUILDDIR)/sph_mhd
 TARGET_SPH_SNAP =            $(BUILDDIR)/sph_snapshot
 TARGET_PSF_2_VTK =           $(BUILDDIR)/utilities/section_to_VTK
-TARGET_COMPARE_PSF =         $(BUILDDIR)/tests/compare_psf
-TARGET_SPH_ENE_CHECK =       $(BUILDDIR)/tests/sph_ene_check
-TARGET_SPH_PICK_MODE_CHECK = $(BUILDDIR)/tests/sph_picked_mode_check
 #
 TARGET_GEN_SPH_GRID =        $(BUILDDIR)/utilities/gen_sph_grids
 TARGET_NEWSPH=               $(BUILDDIR)/utilities/assemble_sph
@@ -105,14 +102,12 @@ test:
 	@echo '#'
 	cd Dynamo_Benchmark; \
 		$(GMAKE) \
-		BUILDDIR="$(BUILDDIR)" \
 		GMAKE="$(GMAKE)" \
 		MPIRUN="$(MPIRUN)"  \
+		SRCDIR="$(SRCDIR)" \
+		BUILDDIR="$(BUILDDIR)" \
 		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
 		TARGET_SPH_SNAP="$(TARGET_SPH_SNAP)" \
-		TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
-		TARGET_COMPARE_PSF="$(TARGET_COMPARE_PSF)" \
-		TARGET_PSF_2_VTK="$(TARGET_PSF_2_VTK)" \
 		test
 	
 	@echo '#'
@@ -122,17 +117,14 @@ test:
 	@echo '#'
 	cd Models; \
 		$(GMAKE) \
+		GMAKE="$(GMAKE)" \
+		MPIRUN="$(MPIRUN)"  \
 		SRCDIR="$(SRCDIR)" \
 		BUILDDIR="$(BUILDDIR)" \
 		MAKEDIR="$(MAKEDIR)" \
-		GMAKE="$(GMAKE)" \
-		MPIRUN="$(MPIRUN)"  \
 		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
 		TARGET_SPH_SNAP="$(TARGET_SPH_SNAP)" \
-		TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
-		TARGET_COMPARE_PSF="$(TARGET_COMPARE_PSF)" \
 		TARGET_PSF_2_VTK="$(TARGET_PSF_2_VTK)" \
-		TARGET_SPH_PICK_MODE_CHECK="$(TARGET_SPH_PICK_MODE_CHECK)" \
 		test
 	
 	@echo "# --------- Calypso tests finished! -------------------------"

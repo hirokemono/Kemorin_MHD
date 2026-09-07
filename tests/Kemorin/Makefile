@@ -22,7 +22,6 @@ TARGET_SPH_LICV =            $(BUILDDIR)/sph_licv
 TARGET_PSF_2_VTK =           $(BUILDDIR)/utilities/section_to_VTK
 TARGET_COMPARE_PSF =         $(BUILDDIR)/tests/compare_psf
 TARGET_SPH_ENE_CHECK =       $(BUILDDIR)/tests/sph_ene_check
-TARGET_SPH_PICK_MODE_CHECK = $(BUILDDIR)/tests/sph_picked_mode_check
 #
 TARGET_GAUSS_TEST =          $(BUILDDIR)/tests/gauss_points
 #
@@ -77,7 +76,6 @@ test:
 		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
 		TARGET_SPH_LICV="$(TARGET_SPH_LICV)" \
 		TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
-		TARGET_SPH_PICK_MODE_CHECK="$(TARGET_SPH_PICK_MODE_CHECK)" \
 		TARGET_COMPARE_PSF="$(TARGET_COMPARE_PSF)" \
 		test
 

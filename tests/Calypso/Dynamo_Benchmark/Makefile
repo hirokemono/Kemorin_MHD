@@ -6,29 +6,45 @@ SHELL           = /bin/sh
 #
 #  directories of Kemo's Dynamo toolkit
 #
+CURRENTDIR=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+
 SRCDIR = /Users/matsui/src_kemo
 BUILDDIR= $(SRCDIR)/bin
+MAKEDIR = $(SRCDIR)/work
 #
-MPIRUN = mpirun
 TARGET_SPH_MHD =       $(BUILDDIR)/sph_mhd
 TARGET_SPH_SNAP =      $(BUILDDIR)/sph_snapshot
-TARGET_SPH_ENE_CHECK = $(BUILDDIR)/tests/sph_ene_check
-TARGET_COMPARE_PSF =   $(BUILDDIR)/tests/compare_psf
-TARGET_PSF_2_VTK =     $(BUILDDIR)/utilities/section_to_VTK
+
+TARGET_SPH_ENE_CHECK = $(CURRENTDIR)/sph_ene_check
+TARGET_COMPARE_PSF =   $(CURRENTDIR)/compare_psf
+
+TARGETS= \
+$(TARGET_SPH_ENE_CHECK) \
+$(TARGET_COMPARE_PSF)
+#
+GMAKE = make
+MPIRUN = mpirun
 #
 #  -------------------------------------------------------------------------
 #
 
 all: test
 
-test:
+targets:
+	cd $(MAKEDIR); \
+		$(GMAKE) \
+		TARGET_SPH_ENE_CHECK='$(TARGET_SPH_ENE_CHECK)' \
+		TARGET_COMPARE_PSF='$(TARGET_COMPARE_PSF)' \
+		$(TARGETS)
+
+test: targets
 	@echo '#'
 	@echo '# -----------------------------------------------------------'
 	@echo "# Test in Dynamobench_Case0 directory..."
 	@echo '# -----------------------------------------------------------'
 	@echo '#'
 	@cd Dynamobench_Case0; \
-		$(GMAKE) MPIRUN="$(MPIRUN)" \
+		$(GMAKE) GMAKE="$(GMAKE)" MPIRUN="$(MPIRUN)" \
 		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
 		test
 	@echo '#'
@@ -37,7 +53,7 @@ test:
 	@echo '# -----------------------------------------------------------'
 	@echo '#'
 	@cd Dynamobench_Case1; \
-		$(GMAKE) MPIRUN="$(MPIRUN)" \
+		$(GMAKE) GMAKE="$(GMAKE)" MPIRUN="$(MPIRUN)" \
 		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
 		test
 	@echo '#'
@@ -46,7 +62,7 @@ test:
 	@echo '# -----------------------------------------------------------'
 	@echo '#'
 	@cd Dynamobench_Case2; \
-		$(GMAKE) MPIRUN="$(MPIRUN)" TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
+		$(GMAKE) GMAKE="$(GMAKE)" MPIRUN="$(MPIRUN)" TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
 		TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" TARGET_COMPARE_PSF="$(TARGET_COMPARE_PSF)" \
 		test
 	@echo '#'
@@ -55,7 +71,7 @@ test:
 	@echo '# -----------------------------------------------------------'
 	@echo '#'
 	@cd Dynamobench_Case2_cont; \
-		$(GMAKE) MPIRUN="$(MPIRUN)" TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
+		$(GMAKE) GMAKE="$(GMAKE)" MPIRUN="$(MPIRUN)" TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
 		TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" TARGET_COMPARE_PSF="$(TARGET_COMPARE_PSF)" \
 		test
 	@echo '#'
@@ -64,7 +80,7 @@ test:
 	@echo '# -----------------------------------------------------------'
 	@echo '#'
 	@cd snapshot_test; \
-		$(GMAKE) MPIRUN="$(MPIRUN)" TARGET_SPH_SNAP="$(TARGET_SPH_SNAP)" \
+		$(GMAKE) GMAKE="$(GMAKE)" MPIRUN="$(MPIRUN)" TARGET_SPH_SNAP="$(TARGET_SPH_SNAP)" \
 		TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" TARGET_COMPARE_PSF="$(TARGET_COMPARE_PSF)" \
 		test
 	
@@ -78,5 +94,7 @@ clean:
 	cd snapshot_test; make clean
 	
 	rm -f *.o *.mod *~
+	rm -fr $(TARGET_COMPARE_PSF)*
+	rm -fr $(TARGET_SPH_ENE_CHECK)*
 
 distclean: clean

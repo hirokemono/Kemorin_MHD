@@ -2,33 +2,54 @@
 #  Makefile for Kemo's Dynamo toolkit
 #    Written by H. Matsui
 #
+SHELL           = /bin/sh
+#
+#  directories of Kemo's Dynamo toolkit
+#
+CURRENTDIR=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 
 SRCDIR = /Users/matsui/src_kemo
+BUILDDIR = $(SRCDIR)/bin
 MAKEDIR = $(SRCDIR)/work
 
 include $(MAKEDIR)/Makefile.header
 
 SRC_SPH_INITIAL =    main_sph_initial_fld.f90
-TARGET_SPH_INITIAL = sph_initial_field
+TARGET_SPH_INITIAL = $(CURRENTDIR)/sph_initial_field
 
 #
-MPIRUN = mpirun
 TARGET_SPH_MHD =             $(BUILDDIR)/sph_mhd
-TARGET_SPH_ENE_CHECK =       $(BUILDDIR)/tests/sph_ene_check
-TARGET_SPH_PICK_MODE_CHECK = $(BUILDDIR)/tests/sph_picked_mode_check
-TARGET_COMPARE_PSF =         $(SRCDIR)/bin/tests/compare_psf
+
+TARGET_SPH_ENE_CHECK =       $(CURRENTDIR)/sph_ene_check
+TARGET_SPH_PICK_MODE_CHECK = $(CURRENTDIR)/sph_picked_mode_check
+TARGET_COMPARE_PSF =         $(CURRENTDIR)/compare_psf
+
+TARGETS= \
+$(TARGET_SPH_ENE_CHECK) \
+$(TARGET_SPH_PICK_MODE_CHECK) \
+$(TARGET_COMPARE_PSF)
 #
+GMAKE = make
+MPIRUN = mpirun
+NP = 6
 
 all: test
 
 $(TARGET_SPH_INITIAL): $(SRC_SPH_INITIAL)
 	$(F90) $(F90OPTFLAGS) -o $@ $< -L$(MAKEDIR) $(LIBS_SPH_MHD) $(F90LIBS)
 
-test:
-	make clean
-	make $(TARGET_SPH_INITIAL)
-	$(MPIRUN) -np 6 $(TARGET_SPH_INITIAL)
-	$(MPIRUN) -np 6 $(TARGET_SPH_MHD)
+targets: $(TARGET_SPH_INITIAL)
+	cd $(MAKEDIR); \
+		$(GMAKE) \
+		TARGET_SPH_ENE_CHECK='$(TARGET_SPH_ENE_CHECK)' \
+		TARGET_SPH_PICK_MODE_CHECK='$(TARGET_SPH_PICK_MODE_CHECK)' \
+		TARGET_COMPARE_PSF='$(TARGET_COMPARE_PSF)' \
+		$(TARGETS)
+
+test: targets
+	$(GMAKE) dataclean
+	$(MPIRUN) -np $(NP) $(TARGET_SPH_INITIAL)
+	$(MPIRUN) -np $(NP) $(TARGET_SPH_MHD)
 	
 	@sync
 	@echo 'Compare with reference mean square data'
@@ -53,12 +74,18 @@ test:
 	@echo 'Static solid body rotation is finished'
 
 
-clean:
+dataclean:
 	rm -f *~ *.txt
 	rm -f radial_point.dat time_total.dat
 	rm -f monitor/[a-q,s-z,A-Q,S-Z]*
 	rm -f sections/[a-q,s-z,A-Q,S-Z]*
 	rm -f rst_6/rst.*
-	rm -fr $(TARGET_SPH_INITIAL) $(TARGET_SPH_INITIAL).dSYM
+
+clean:
+	$(GMAKE) dataclean
+	rm -fr $(TARGET_COMPARE_PSF)*
+	rm -fr $(TARGET_SPH_ENE_CHECK)*
+	rm -fr $(TARGET_SPH_PICK_MODE_CHECK)*
+	rm -fr $(TARGET_SPH_INITIAL)*
 
 distclean: clean
