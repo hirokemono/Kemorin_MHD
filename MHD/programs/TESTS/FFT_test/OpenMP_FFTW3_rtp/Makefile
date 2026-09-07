@@ -5,7 +5,7 @@ TEST_RTP_OMP_FFTW_DIR =    $$(FFT_TEST_DIR)/OpenMP_FFTW3_rtp
 TARGET_RTP_OMP_FFTW_TEST = $$(TEST_BUILD_DIR)/test_rtp_OMP_FFTW
 TARGETS = 
 
-SOURCES = $(shell ls *.f90)
+SOURCES = $(shell ls *.f90 *.F90)
 MOD_RTP_OMP_FFTW_TEST = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
