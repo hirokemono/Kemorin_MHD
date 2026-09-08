@@ -77,6 +77,7 @@
       type(FFT_test_parameters), intent(inout) :: fft_test_p
 !
 !
+      fft_test_p%FFT_name =  test_name
       fft_test_p%test_name = test_name
       fft_test_p%file_name = def_fname
 !

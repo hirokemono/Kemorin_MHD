@@ -56,7 +56,7 @@ test_fftpack:
 	$(TARGET_RTP_FFTPACK_TEST) control_FFTPACK
 	$(TARGET_CMPR_FFT_TEST) 'reference/fftpack_test.dat' 'FFTPACK_test.dat' > log.txt
 	@if [ `tail -n 1 log.txt` != 0 ]; then\
-		echo 'Failed Phi inside FFTW3 check'; \
+		echo 'Failed Phi outside FFTPACK check'; \
 		exit 1;\
 	fi
 	rm FFTPACK_test.dat
@@ -64,7 +64,7 @@ test_fftpack:
 	$(TARGET_PRT_FFTPACK_TEST) control_FFTPACK
 	$(TARGET_CMPR_FFT_TEST) 'reference/fftpack_test.dat' 'FFTPACK_test.dat' > log.txt
 	@if [ `tail -n 1 log.txt` != 0 ]; then\
-		echo 'Failed FFTPACK check'; \
+		echo 'Failed Phi inside FFTPACK check'; \
 		exit 1;\
 	fi
 	rm FFTPACK_test.dat

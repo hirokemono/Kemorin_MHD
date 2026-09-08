@@ -63,6 +63,8 @@
       write(*,'(a)') '----- Test rtp OpenMP rocFFT and ISPACK v3 -----'
 !
       call default_FFT_test_parameters(test_name, def_fname,            &
+      fft_test_p1%CPU_FFT_name = 'ISPACK_V3'
+!
      &                                 fft_test_p1)
       if(command_argument_count() .ge. 1) then
         call get_command_argument(1, ctl_file_name)

@@ -65,6 +65,8 @@
 !
       call default_FFT_test_parameters(test_name, def_fname,            &
      &                                 fft_test_p1)
+      fft_test_p1%CPU_FFT_name = 'ISPACK_V0.97'
+!
       if(command_argument_count() .ge. 1) then
         call get_command_argument(1, ctl_file_name)
         call read_control_file_FFT_tests(ctl_file_name, fft_c1)
