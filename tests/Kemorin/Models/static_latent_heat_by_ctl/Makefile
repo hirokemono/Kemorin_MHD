@@ -36,8 +36,7 @@ targets:
 		TARGET_SPH_REF_CHECK='$(TARGET_SPH_REF_CHECK)' \
 		$(TARGETS)
 
-test: targets
-	$(GMAKE) dataclean
+test: dataclean targets
 	$(MPIRUN) -np $(NP) $(TARGET_SPH_MHD)
 	
 	@sync
@@ -60,8 +59,7 @@ dataclean:
 	rm -f rst_2/rst.*
 	rm -f fort.*
 
-clean:
-	$(GMAKE) dataclean
+clean: dataclean
 	rm -rf $(TARGET_SPH_PICK_MODE_CHECK)* \
 	$(TARGET_SPH_REF_CHECK)*
 

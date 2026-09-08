@@ -20,10 +20,6 @@ TARGET_SPH_MHD =             $(BUILDDIR)/sph_mhd
 TARGET_SPH_SNAP =            $(BUILDDIR)/sph_snapshot
 TARGET_SPH_LICV =            $(BUILDDIR)/sph_licv
 TARGET_PSF_2_VTK =           $(BUILDDIR)/utilities/section_to_VTK
-TARGET_COMPARE_PSF =         $(BUILDDIR)/tests/compare_psf
-TARGET_SPH_ENE_CHECK =       $(BUILDDIR)/tests/sph_ene_check
-#
-TARGET_GAUSS_TEST =          $(BUILDDIR)/tests/gauss_points
 #
 TARGET_FFTPACK_TEST =        $(BUILDDIR)/tests/test_FFTPACK
 TARGET_FFW3_F_TEST =         $(BUILDDIR)/tests/test_FFTW3_f
@@ -75,8 +71,6 @@ test:
 		MPIRUN="$(MPIRUN)" \
 		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
 		TARGET_SPH_LICV="$(TARGET_SPH_LICV)" \
-		TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
-		TARGET_COMPARE_PSF="$(TARGET_COMPARE_PSF)" \
 		test
 
 

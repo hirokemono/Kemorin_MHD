@@ -33,9 +33,7 @@ targets:
 		TARGET_SPH_PICK_MODE_CHECK='$(TARGET_SPH_PICK_MODE_CHECK)' \
 		$(TARGETS)
 
-test: targets
-	make dataclean
-	
+test: dataclean targets
 	$(MPIRUN) -np $(NP) $(TARGET_SPH_LICV)
 	
 	@sync
@@ -61,8 +59,7 @@ test: targets
 dataclean:
 	rm -f *.dat *.txt rst_6/rst.* monitor/*.dat monitor/*.dat.gz field/out.*
 
-clean:
-	$(GMAKE) dataclean
+clean: dataclean
 	rm -rf $(TARGET_SPH_ENE_CHECK)*
 	rm -rf $(TARGET_SPH_PICK_MODE_CHECK)*
 

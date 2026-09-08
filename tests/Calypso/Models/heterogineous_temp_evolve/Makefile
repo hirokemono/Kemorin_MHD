@@ -34,8 +34,7 @@ targets:
 		TARGET_SPH_ENE_CHECK='$(TARGET_SPH_ENE_CHECK)' \
 		$(TARGETS)
 
-test: targets
-	make dataclean
+test: dataclean targets
 	$(MPIRUN) -np $(NP) $(TARGET_SPH_MHD)
 	
 	@sync
@@ -93,8 +92,7 @@ dataclean:
 	rm -f monitor/*.dat
 	rm -f rst_2/rst.*
 
-clean:
-	$(GMAKE) dataclean
+clean: dataclean
 	rm -rf $(TARGET_SPH_PICK_MODE_CHECK)* \
 	$(TARGET_SPH_ENE_CHECK)*
 

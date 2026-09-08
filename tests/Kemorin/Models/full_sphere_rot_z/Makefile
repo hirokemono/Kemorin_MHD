@@ -36,9 +36,7 @@ targets:
 		TARGET_COMPARE_PSF='$(TARGET_COMPARE_PSF)' \
 		$(TARGETS)
 
-test: targets
-	make dataclean
-	
+test: dataclean targets
 	$(MPIRUN) -np $(NP) $(TARGET_SPH_MHD)
 	
 	@sync
@@ -66,8 +64,7 @@ test: targets
 dataclean:
 	rm -f *.dat *.txt rst_6/rst.* monitor/*.dat monitor/*.dat.gz sections/*.gz field/out.*
 
-clean:
-	$(GMAKE) dataclean
+clean: dataclean
 	rm -fr $(TARGET_SPH_ENE_CHECK)*
 	rm -fr $(TARGET_SPH_PICK_MODE_CHECK)*
 	rm -fr $(TARGET_COMPARE_PSF)*

@@ -34,8 +34,7 @@ targets:
 		TARGET_COMPARE_PSF='$(TARGET_COMPARE_PSF)' \
 		$(TARGETS)
 
-test: targets
-	make dataclean
+test: dataclean targets
 	$(MPIRUN) -np $(NP) $(TARGET_SPH_MHD)
 	
 	@sync
@@ -68,8 +67,7 @@ dataclean:
 	rm -f sections/[A-Q,S-Z,a-q,s-z]*
 	rm -f isosurfaces/[A-Q,S-Z,a-q,s-z]*
 
-clean:
-	$(GMAKE) dataclean
+clean: dataclean
 	rm -rf $(TARGET_SPH_ENE_CHECK)*
 	rm -rf $(TARGET_COMPARE_PSF)*
 

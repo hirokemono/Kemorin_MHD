@@ -28,8 +28,7 @@ targets:
 		TARGET_SPH_PICK_MODE_CHECK='$(TARGET_SPH_PICK_MODE_CHECK)' \
 		$(TARGET_SPH_PICK_MODE_CHECK)
 
-test: targets
-	make dataclean
+test: dataclean targets
 	$(MPIRUN) -np $(NP) $(TARGET_SPH_MHD)
 	
 	@sync
@@ -46,8 +45,7 @@ dataclean:
 	rm -f radial_point.dat time_total.dat
 	rm -f rst_1/rst.*
 
-clean:
-	$(GMAKE) dataclean
+clean: dataclean
 	rm -rf $(TARGET_SPH_PICK_MODE_CHECK)*
 
 distclean: clean

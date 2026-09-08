@@ -27,9 +27,7 @@ $(TARGET_CMP_GAUSS_TEST)
 
 all: test
 
-test:
-	make dataclean
-	
+test: dataclean targets
 	cd $(MAKEDIR); \
 		$(GMAKE) \
 		TARGET_GAUSS_TEST='$(TARGET_GAUSS_TEST)' \

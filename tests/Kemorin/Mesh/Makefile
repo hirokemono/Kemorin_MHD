@@ -70,8 +70,7 @@ dataclean:
 	rm -f reference/in.*
 	rm -f mpif.h *.o *.mod *~ *.par *.diag *.a *.f90
 
-clean:
-	$(GMAKE) dataclean
+clean: dataclean
 	rm -rf $(TARGET_CHECK_SPH_GRID)* \
 	$(TARGET_TEST_SPH_GRID)*
 

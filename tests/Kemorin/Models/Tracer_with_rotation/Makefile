@@ -46,8 +46,7 @@ targets: $(TARGET_SPH_INITIAL)
 		TARGET_COMPARE_PSF='$(TARGET_COMPARE_PSF)' \
 		$(TARGETS)
 
-test: targets
-	$(GMAKE) dataclean
+test: dataclean targets
 	$(MPIRUN) -np $(NP) $(TARGET_SPH_INITIAL)
 	$(MPIRUN) -np $(NP) $(TARGET_SPH_MHD)
 	
@@ -82,8 +81,7 @@ dataclean:
 	rm -f tracer/[a-q,s-z,A-Q,S-Z]*
 	rm -f rst_6/rst.*
 
-clean:
-	$(GMAKE) dataclean
+clean: dataclean
 	rm -fr $(TARGET_COMPARE_PSF)*
 	rm -fr $(TARGET_SPH_ENE_CHECK)*
 	rm -fr $(TARGET_SPH_PICK_MODE_CHECK)*

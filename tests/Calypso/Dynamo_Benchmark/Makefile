@@ -17,13 +17,23 @@ TARGET_SPH_SNAP =      $(BUILDDIR)/sph_snapshot
 
 TARGET_SPH_ENE_CHECK = $(CURRENTDIR)/sph_ene_check
 TARGET_COMPARE_PSF =   $(CURRENTDIR)/compare_psf
+TARGET_PSF_2_VTK =     $(CURRENTDIR)/section_to_VTK
 
 TARGETS= \
 $(TARGET_SPH_ENE_CHECK) \
-$(TARGET_COMPARE_PSF)
+$(TARGET_COMPARE_PSF) \
+$(TARGET_PSF_2_VTK)
 #
 GMAKE = make
 MPIRUN = mpirun
+#
+SUBDIRS= \
+Dynamobench_Case0 \
+Dynamobench_Case1 \
+Dynamobench_Case2 \
+Dynamobench_Case2_cont \
+snapshot_test
+
 #
 #  -------------------------------------------------------------------------
 #
@@ -35,66 +45,43 @@ targets:
 		$(GMAKE) \
 		TARGET_SPH_ENE_CHECK='$(TARGET_SPH_ENE_CHECK)' \
 		TARGET_COMPARE_PSF='$(TARGET_COMPARE_PSF)' \
+		TARGET_PSF_2_VTK='$(TARGET_PSF_2_VTK)' \
 		$(TARGETS)
 
 test: targets
-	@echo '#'
-	@echo '# -----------------------------------------------------------'
-	@echo "# Test in Dynamobench_Case0 directory..."
-	@echo '# -----------------------------------------------------------'
-	@echo '#'
-	@cd Dynamobench_Case0; \
-		$(GMAKE) GMAKE="$(GMAKE)" MPIRUN="$(MPIRUN)" \
-		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
-		test
-	@echo '#'
-	@echo '# -----------------------------------------------------------'
-	@echo "# Test in Dynamobench_Case1 directory..."
-	@echo '# -----------------------------------------------------------'
-	@echo '#'
-	@cd Dynamobench_Case1; \
-		$(GMAKE) GMAKE="$(GMAKE)" MPIRUN="$(MPIRUN)" \
-		TARGET_SPH_MHD="$(TARGET_SPH_MHD)" TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
-		test
-	@echo '#'
-	@echo '# -----------------------------------------------------------'
-	@echo "# Test in Dynamobench_Case2 directory..."
-	@echo '# -----------------------------------------------------------'
-	@echo '#'
-	@cd Dynamobench_Case2; \
-		$(GMAKE) GMAKE="$(GMAKE)" MPIRUN="$(MPIRUN)" TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
-		TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" TARGET_COMPARE_PSF="$(TARGET_COMPARE_PSF)" \
-		test
-	@echo '#'
-	@echo '# -----------------------------------------------------------'
-	@echo "# Test in Dynamobench_Case2_cont directory..."
-	@echo '# -----------------------------------------------------------'
-	@echo '#'
-	@cd Dynamobench_Case2_cont; \
-		$(GMAKE) GMAKE="$(GMAKE)" MPIRUN="$(MPIRUN)" TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
-		TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" TARGET_COMPARE_PSF="$(TARGET_COMPARE_PSF)" \
-		test
-	@echo '#'
-	@echo '# -----------------------------------------------------------'
-	@echo "# Test in snapshot_test directory..."
-	@echo '# -----------------------------------------------------------'
-	@echo '#'
-	@cd snapshot_test; \
-		$(GMAKE) GMAKE="$(GMAKE)" MPIRUN="$(MPIRUN)" TARGET_SPH_SNAP="$(TARGET_SPH_SNAP)" \
-		TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" TARGET_COMPARE_PSF="$(TARGET_COMPARE_PSF)" \
-		test
+	@for dir in $(SUBDIRS); do \
+		( \
+		echo '#'; \
+		echo '# -----------------------------------------------------------'; \
+		echo '# Test in' $${dir} 'directory...'; \
+		echo '# -----------------------------------------------------------'; \
+		echo '#'; \
+		cd $${dir}; \
+		$(GMAKE) \
+			GMAKE="$(GMAKE)" \
+			MPIRUN="$(MPIRUN)" \
+			SRCDIR="$(SRCDIR)" \
+			MAKEDIR="$(MAKEDIR)" \
+			BUILDDIR="$(BUILDDIR)" \
+			TARGET_SPH_MHD="$(TARGET_SPH_MHD)" \
+			TARGET_SPH_SNAP="$(TARGET_SPH_SNAP)" \
+			TARGET_SPH_ENE_CHECK="$(TARGET_SPH_ENE_CHECK)" \
+			TARGET_COMPARE_PSF="$(TARGET_COMPARE_PSF)" \
+			TARGET_PSF_2_VTK="$(TARGET_PSF_2_VTK)" \
+			test \
+		) \
+	done
 	
 	rm -f *.o *.mod *~
 
 clean:
-	cd Dynamobench_Case0; make clean
-	cd Dynamobench_Case1; make clean
-	cd Dynamobench_Case2; make clean
-	cd Dynamobench_Case2_cont; make clean
-	cd snapshot_test; make clean
+	@for dir in $(SUBDIRS); do \
+	  (cd $${dir}; $(GMAKE) clean) \
+	done
 	
 	rm -f *.o *.mod *~
 	rm -fr $(TARGET_COMPARE_PSF)*
 	rm -fr $(TARGET_SPH_ENE_CHECK)*
+	rm -fr $(TARGET_PSF_2_VTK)*
 
 distclean: clean
