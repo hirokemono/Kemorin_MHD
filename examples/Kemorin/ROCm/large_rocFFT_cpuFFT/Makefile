@@ -38,7 +38,7 @@ targets:
 		$(TARGETS)
 
 test: dataclean targets
-	$(TARGET_PRT_FFTPACK_TEST)
+	$(TARGET_PRT_FFTPACK_TEST) control_rocFFT_base
 	
 	sed -e s/OpenMP_rocFFT/OpenMP_rocFFT/g control_rocFFT_base > control_tmp
 	sed -e s/FFTPACK/ISPACK/g control_tmp > control_rocFFT
