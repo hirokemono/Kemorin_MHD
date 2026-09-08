@@ -96,7 +96,6 @@
 !
       use m_elapsed_labels_SPH_TRNS
       use calypso_multi_rocFFT
-      use multi_pin_complex_rocFFT
       use set_comm_table_rtp_OMP_FFTW
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -147,7 +146,6 @@
 !
       use m_elapsed_labels_SPH_TRNS
       use calypso_multi_rocFFT
-      use multi_pin_complex_rocFFT
       use set_comm_table_rtp_OMP_FFTW
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp

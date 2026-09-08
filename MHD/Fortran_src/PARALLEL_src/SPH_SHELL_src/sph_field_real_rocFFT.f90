@@ -79,8 +79,8 @@
       subroutine init_prt_real_rocFFT(sph_rtp, comm_rtp,                &
      &          ncomp_bwd, ncomp_fwd, rocFFT_f, flag_fft)
 !
+      use calypso_rocFFT_init
       use comm_table_pin_real_rocFFT
-      use multi_pin_complex_rocFFT
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp

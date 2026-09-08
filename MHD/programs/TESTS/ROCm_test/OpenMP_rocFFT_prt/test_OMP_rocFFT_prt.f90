@@ -34,7 +34,6 @@
       use t_ctl_data_4_FFT_tests
       use t_multi_rocFFT_wrapper
       use calypso_rocFFT_init
-      use multi_pin_complex_rocFFT
       use multi_pin_OpenMP_rocFFT
 !
       implicit none

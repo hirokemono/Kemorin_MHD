@@ -60,7 +60,7 @@
      &          Ncomp, Ncomp_GPU, Ncomp_CPU, Nfft, Nsmp,                &
      &          fwd_rocFFT, bwd_rocFFT, WK_rocFFT, WK_FFTs)
 !
-      use multi_pin_complex_rocFFT
+      use calypso_rocFFT_init
       use select_multi_FFT_init
       use cal_minmax_and_stacks
 !

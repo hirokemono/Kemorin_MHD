@@ -96,7 +96,6 @@
 !
       use m_elapsed_labels_SPH_TRNS
       use calypso_multi_rocFFT
-      use multi_pin_complex_rocFFT
       use comm_table_pin_real_rocFFT
       use copy_field_for_FFT
 !
@@ -147,7 +146,6 @@
 !
       use m_elapsed_labels_SPH_TRNS
       use calypso_multi_rocFFT
-      use multi_pin_complex_rocFFT
       use comm_table_pin_real_rocFFT
       use copy_field_for_FFT
 !

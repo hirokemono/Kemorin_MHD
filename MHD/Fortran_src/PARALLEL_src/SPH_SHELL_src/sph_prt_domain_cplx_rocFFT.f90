@@ -96,7 +96,6 @@
 !
       use m_elapsed_labels_SPH_TRNS
       use calypso_multi_rocFFT
-      use multi_pin_complex_rocFFT
       use copy_field_for_FFT
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -154,7 +153,6 @@
 !
       use m_elapsed_labels_SPH_TRNS
       use calypso_multi_rocFFT
-      use multi_pin_complex_rocFFT
       use copy_sph_FFTW_from_recv
       use copy_field_for_FFT
 !

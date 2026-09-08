@@ -96,7 +96,6 @@
 !
       use m_elapsed_labels_SPH_TRNS
       use calypso_multi_rocFFT
-      use multi_pin_complex_rocFFT
       use comm_table_pout_real_rocFFT
       use set_comm_table_rtp_OMP_FFTW
 !
@@ -147,7 +146,6 @@
 !
       use m_elapsed_labels_SPH_TRNS
       use calypso_multi_rocFFT
-      use multi_pin_complex_rocFFT
       use comm_table_pout_real_rocFFT
       use set_comm_table_rtp_OMP_FFTW
 !
