@@ -39,7 +39,10 @@ single_complex_rocFFT_rtp \
 single_real_rocFFT_prt \
 single_real_rocFFT_rtp
 
-TARGETS_EACH_ROCFFT_TEST = 
+SUBDIRS+= $(EACH_TEST_DIR)
+
+
+TARGETS_EACH_ROCFFT_TEST =
 
 LIBS_ROCM_TEST =    \
 '$$(LIB_MESH)'      \
