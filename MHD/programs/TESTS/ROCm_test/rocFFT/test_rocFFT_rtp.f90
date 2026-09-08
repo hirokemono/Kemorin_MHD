@@ -35,7 +35,6 @@
       use t_ctl_data_4_FFT_tests
       use t_multi_rocFFT_wrapper
       use calypso_rocFFT_init
-      use multi_pout_complex_rocFFT
       use select_pout_rocFFT
 !
       implicit none

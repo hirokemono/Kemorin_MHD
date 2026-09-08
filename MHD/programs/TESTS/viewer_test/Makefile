@@ -1,7 +1,7 @@
 #
 #
 #
-GRAPHIC_TEST_DIR = $$(TESTS_DIR)/viewer_test
+VIEWER_TEST_DIR = $$(TESTS_DIR)/viewer_test
 
 TARGET_CPSF_READ_TEST = test_read_psf_c
 
@@ -17,7 +17,7 @@ test_read_psf_data.o
 #
 
 dir_list:
-	@echo 'GRAPHIC_TEST_DIR =   $(GRAPHIC_TEST_DIR)'      >> $(MAKENAME)
+	@echo 'VIEWER_TEST_DIR = $(VIEWER_TEST_DIR)' >> $(MAKENAME)
 
 target_list:
 	@echo 'TARGET_CPSF_READ_TEST = $$(TEST_BUILD_DIR)/$(TARGET_CPSF_READ_TEST)' \
