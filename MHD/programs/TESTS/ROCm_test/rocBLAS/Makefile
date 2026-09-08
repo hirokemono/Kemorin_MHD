@@ -41,8 +41,6 @@ target_list:
 target_task:
 	@echo rocBLAS_tests: \
 	'$$(TARGET_ROCM_DGEMM_TEST)  ' \
-	'$$(TARGET_ROCFFT_PRT_TEST)              $$(TARGET_ROCFFT_RTP_TEST)       ' \
-	'$$(TARGET_ROCFFT_CPU_FFT_PRT_TEST)      $$(TARGET_ROCFFT_CPU_FFT_RTP_TEST) ' \
 	 >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_ROCM_DGEMM_TEST): $$(MOD_ROCM_DGEMM_TEST) $$(LIB_FILES_ROCM_TEST)' \
