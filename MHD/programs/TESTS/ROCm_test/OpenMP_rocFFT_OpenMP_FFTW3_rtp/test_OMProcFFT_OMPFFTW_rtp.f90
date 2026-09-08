@@ -12,7 +12,7 @@
 !!     Control file example
 !! ----------------------------------------------------------------------
 !!  begin FFT_test_ctl
-!!    output_file_name       'rtp_OpenMP_rocFFT_FFTW_test.dat'
+!!    output_file_name       'rtp_OpenMP_rocFFT_OFFTW_test.dat'
 !!
 !!    FFT_length_ctl         128
 !!    num_series_ctl          24
@@ -39,9 +39,9 @@
       implicit none
 !
       character(len = kchara), parameter                                &
-     &             :: test_name = 'rtp_OpenMP_rocFFT_FFTW'
+     &             :: test_name = 'rtp_OpenMP_rocFFT_OMP_FFTW'
       character(len = kchara), parameter                                &
-     &             :: def_fname = 'rtp_OpenMP_rocFFT_FFTW_test.dat'
+     &             :: def_fname = 'rtp_OpenMP_rocFFT_OFFTW_test.dat'
 !
       character(len = kchara) :: ctl_file_name
       type(FFT_tests_ctl), save :: fft_c1
