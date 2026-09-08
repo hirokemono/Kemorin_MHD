@@ -6,7 +6,7 @@ TARGET_OMP_ROCFFT_ISPACK3_RTP_TEST = $$(TEST_BUILD_DIR)/test_OMP_rocFFT_ISPACK3_
 TARGETS = 
 
 SOURCES = $(shell ls *.f90)
-MOD_OMP_ROCFFT_ISPACK3_PRT_TEST = $(addsuffix .o,$(basename $(SOURCES)) )
+MOD_OMP_ROCFFT_ISPACK3_RTP_TEST = $(addsuffix .o,$(basename $(SOURCES)) )
 
 #
 #  ------------------------------------------------------------------
@@ -23,11 +23,11 @@ target_list:
 
 target_task:
 	@echo '$$(TARGET_OMP_ROCFFT_ISPACK3_RTP_TEST)': \
-	'$$(MOD_OMP_ROCFFT_ISPACK3_PRT_TEST) $$(LIB_FILES_ROCM_TEST)' \
+	'$$(MOD_OMP_ROCFFT_ISPACK3_RTP_TEST) $$(LIB_FILES_ROCM_TEST)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_OMP_ROCFFT_ISPACK3_RTP_TEST)' \
-	'$$(MOD_OMP_ROCFFT_ISPACK3_PRT_TEST)' \
+	'$$(MOD_OMP_ROCFFT_ISPACK3_RTP_TEST)' \
 	'-L. $$(LIBS_ROCM_TEST) $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
@@ -37,8 +37,8 @@ lib_name:
 lib_tasks:
 
 mod_list:
-	@echo  MOD_OMP_ROCFFT_ISPACK3_PRT_TEST=  \\ >> $(MAKENAME)
-	@echo  $(MOD_OMP_ROCFFT_ISPACK3_PRT_TEST)   >> $(MAKENAME)
+	@echo  MOD_OMP_ROCFFT_ISPACK3_RTP_TEST=  \\ >> $(MAKENAME)
+	@echo  $(MOD_OMP_ROCFFT_ISPACK3_RTP_TEST)   >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
 depends:
