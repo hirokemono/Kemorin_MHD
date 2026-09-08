@@ -6,7 +6,6 @@ GRAPHIC_TEST_DIR = $$(TESTS_DIR)/graphic_test
 TARGET_BMP_TEST =      test_BMP_files
 TARGET_C_PNG_TEST =    test_PNG_C
 
-TARGET_CPSF_READ_TEST = test_read_psf_c
 TARGET_CBMP_READ_TEST = test_read_bmp
 TARGET_CBMP_GZ_TEST =   test_read_gzipped_bmp
 TARGET_CPNG_READ_TEST = test_read_png
@@ -32,9 +31,6 @@ test_read_psf_data.o
 
 OBJ_CPNG_READ_TEST = \
 test_read_png_c.o
-
-OBJ_CBMP_READ_TEST = \
-test_read_bmp_c.o
 
 MOD_CBMP_GZ_TEST = \
 test_read_gzipped_bmp_c.o
@@ -62,8 +58,6 @@ target_list:
 	@echo 'TARGET_BMP_TEST =       $$(TEST_BUILD_DIR)/$(TARGET_BMP_TEST)'     \
 	>> $(MAKENAME)
 	@echo 'TARGET_C_PNG_TEST =     $$(TEST_BUILD_DIR)/$(TARGET_C_PNG_TEST)' \
-	>> $(MAKENAME)
-	@echo 'TARGET_CPSF_READ_TEST = $$(TEST_BUILD_DIR)/$(TARGET_CPSF_READ_TEST)' \
 	>> $(MAKENAME)
 	@echo 'TARGET_CBMP_READ_TEST = $$(TEST_BUILD_DIR)/$(TARGET_CBMP_READ_TEST)' \
 	>> $(MAKENAME)
@@ -102,18 +96,6 @@ target_task:
 	'$$(MOD_C_PNG_TEST)' \
 	'$$(PNG_LIBS) $$(ZLIB_LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_CPSF_READ_TEST)': '$$(OBJ_CPSF_READ_TEST) $$(LIB_KEMO_C_FILE)' \
-	 >> $(MAKENAME)
-	@echo '	''$$(CC)' '$$(OPTFLAGS)' -o '$$(TARGET_CPSF_READ_TEST)' \
-	'$$(OBJ_CPSF_READ_TEST)' \
-	'-L. $$(LIB_KEMO_C) $$(OPENGL_LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_CBMP_READ_TEST)': '$$(OBJ_CBMP_READ_TEST) $$(LIB_KEMO_C_FILE)' \
-	 >> $(MAKENAME)
-	@echo '	''$$(CC)' '$$(OPTFLAGS)' -o '$$(TARGET_CBMP_READ_TEST)' \
-	'$$(OBJ_CBMP_READ_TEST)' \
-	'-L. $$(LIB_KEMO_C)  $$(PNG_LIBS) $$(ZLIB_LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_CBMP_GZ_TEST)': '$$(MOD_CBMP_GZ_TEST) $$(LIB_KEMO_C_FILE)' \
 	 >> $(MAKENAME)
 	@echo '	''$$(CC)' '$$(OPTFLAGS)' -o '$$(TARGET_CBMP_GZ_TEST)' \
@@ -151,8 +133,6 @@ mod_list:
 	@echo  $(MOD_C_PNG_TEST)        >> $(MAKENAME)
 	@echo  OBJ_CPSF_READ_TEST=  \\  >> $(MAKENAME)
 	@echo  $(OBJ_CPSF_READ_TEST)    >> $(MAKENAME)
-	@echo  OBJ_CBMP_READ_TEST=  \\  >> $(MAKENAME)
-	@echo  $(OBJ_CBMP_READ_TEST)    >> $(MAKENAME)
 	@echo  MOD_CBMP_GZ_TEST=    \\  >> $(MAKENAME)
 	@echo  $(MOD_CBMP_GZ_TEST)      >> $(MAKENAME)
 	@echo  OBJ_CPNG_READ_TEST=  \\  >> $(MAKENAME)

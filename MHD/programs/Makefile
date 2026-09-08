@@ -38,6 +38,7 @@ dir_list:
 		cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
+		OPENGL_LIBS='$(OPENGL_LIBS)' \
 		ROCM_CFLAGS='$(ROCM_CFLAGS)' \
 		MAKENAME='$(MAKENAME)' \
 		dir_list \
@@ -51,6 +52,7 @@ target_list:
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		BUILDDIR='$(BUILDDIR)' \
+		OPENGL_LIBS='$(OPENGL_LIBS)' \
 		ROCM_CFLAGS='$(ROCM_CFLAGS)' \
 		MAKENAME='$(MAKENAME)' \
 		target_list \
@@ -78,6 +80,7 @@ target_task:
 		FORTRAN_C_CONNECT='$(FORTRAN_C_CONNECT)' \
 		FFTW3_LIBS='$(FFTW3_LIBS)' \
 		FFTW3_OMP_LIBS='$(FFTW3_OMP_LIBS)' \
+		OPENGL_LIBS='$(OPENGL_LIBS)' \
 		ROCM_CFLAGS='$(ROCM_CFLAGS)' \
 		target_task \
 		) \
@@ -92,6 +95,7 @@ lib_name:
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
 		FORTRAN_C_CONNECT='$(FORTRAN_C_CONNECT)' \
+		OPENGL_LIBS='$(OPENGL_LIBS)' \
 		lib_name \
 		) \
 	done
@@ -125,6 +129,7 @@ mod_list:
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
+		OPENGL_LIBS='$(OPENGL_LIBS)' \
 		ROCM_CFLAGS='$(ROCM_CFLAGS)' \
 		mod_list \
 		) \
@@ -145,6 +150,7 @@ depends:
 		DEPFLAGS='$(DEPFLAGS)' \
 		OPTFLAGS='$(OPTFLAGS)' \
 		C_INCLUDE='$(C_INCLUDE)' \
+		OPENGL_LIBS='$(OPENGL_LIBS)' \
 		FFMPEG_CFLAGS='$(FFMPEG_CFLAGS)' \
 		ROCM_CFLAGS='$(ROCM_CFLAGS)' \
 		depends; \
@@ -156,6 +162,7 @@ clean:
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
+		OPENGL_LIBS='$(OPENGL_LIBS)' \
 		ROCM_CFLAGS='$(ROCM_CFLAGS)' \
 		clean \
 		) \

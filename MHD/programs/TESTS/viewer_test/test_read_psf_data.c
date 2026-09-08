@@ -6,7 +6,6 @@
 #include "read_psf_data_viewer_c.h"
 #include "take_normal_psf_c.h"
 #include "check_psf_data_viewer_c.h"
-#include "select_read_psf_viewer_c.h"
 #include "set_kemoviewer_ucd_data.h"
 
 
