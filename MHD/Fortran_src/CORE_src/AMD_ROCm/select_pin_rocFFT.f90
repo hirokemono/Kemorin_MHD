@@ -71,6 +71,7 @@
       module select_pin_rocFFT
 !
       use m_precision
+      use m_machine_parameter
       use m_constants
       use m_FFT_selector
 !
@@ -172,17 +173,17 @@
 !
 !
       if((iflag_FFT/10) .eq. (iflag_rocFFT/10)) then
-        write(*,*) 'norm_prt_from_fwd_OMP_FFTW'
-      call norm_prt_from_fwd_OMP_FFTW(int(fwd_rocFFT%Ncomp),            &
-     &    int(WK_rocFFT%NFFT_c), WK_rocFFT%C_rocFFT(1),                 &
-     &    int(fwd_rocFFT%Nfft), X(1,1))
+        if(iflag_debug .gt. 0) write(*,*) 'norm_prt_from_fwd_OMP_FFTW'
+        call norm_prt_from_fwd_OMP_FFTW(int(fwd_rocFFT%Ncomp),          &
+     &      int(WK_rocFFT%NFFT_c), WK_rocFFT%C_rocFFT(1),               &
+     &      int(fwd_rocFFT%Nfft), X(1,1))
 !      else if((iflag_FFT/10) .eq. (iflag_real_rocFFT/10)) then
 !      else if((iflag_FFT/10) .eq. (iflag_OMP_rocFFT/10)) then
       else
-        write(*,*) 'norm_prt_from_fwd_rocFFT'
-      call norm_prt_from_fwd_rocFFT(int(fwd_rocFFT%Ncomp),              &
-     &    int(WK_rocFFT%NFFT_r), WK_rocFFT%X_rocFFT(1),                 &
-     &    int(fwd_rocFFT%Nfft), X(1,1))
+        if(iflag_debug .gt. 0) write(*,*) 'norm_prt_from_fwd_rocFFT'
+        call norm_prt_from_fwd_rocFFT(int(fwd_rocFFT%Ncomp),            &
+     &      int(WK_rocFFT%NFFT_r), WK_rocFFT%X_rocFFT(1),               &
+     &      int(fwd_rocFFT%Nfft), X(1,1))
       end if
 !
       end subroutine sel_norm_pin_from_fwd_rocFFT
@@ -204,17 +205,17 @@
 !
 !
       if((iflag_FFT/10) .eq. (iflag_rocFFT/10)) then
-        write(*,*) 'norm_prt_to_bwd_OMP_FFTW'
-      call norm_prt_to_bwd_OMP_FFTW                                     &
-     &   (int(bwd_rocFFT%Ncomp), int(bwd_rocFFT%Nfft), X(1,1),          &
-     &    int(WK_rocFFT%Nfft_c), WK_rocFFT%C_rocFFT(1))
+        if(iflag_debug .gt. 0)write(*,*) 'norm_prt_to_bwd_OMP_FFTW'
+       call norm_prt_to_bwd_OMP_FFTW                                    &
+     &    (int(bwd_rocFFT%Ncomp), int(bwd_rocFFT%Nfft), X(1,1),         &
+     &     int(WK_rocFFT%Nfft_c), WK_rocFFT%C_rocFFT(1))
 !      else if((iflag_FFT/10) .eq. (iflag_real_rocFFT/10)) then
 !      else if((iflag_FFT/10) .eq. (iflag_OMP_rocFFT/10)) then
       else
-        write(*,*) 'norm_prt_to_bwd_rocFFT'
-      call norm_prt_to_bwd_rocFFT                                       &
-     &   (int(bwd_rocFFT%Ncomp), int(bwd_rocFFT%Nfft), X(1,1),          &
-     &    int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1))
+        if(iflag_debug .gt. 0) write(*,*) 'norm_prt_to_bwd_rocFFT'
+        call norm_prt_to_bwd_rocFFT                                     &
+     &     (int(bwd_rocFFT%Ncomp), int(bwd_rocFFT%Nfft), X(1,1),        &
+     &      int(WK_rocFFT%Nfft_r), WK_rocFFT%X_rocFFT(1))
       end if
 !
       end subroutine sel_norm_prt_to_bwd_rocFFT

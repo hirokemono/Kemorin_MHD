@@ -1,0 +1,14 @@
+begin FFT_test_ctl
+  debug_flag_ctl      'On'
+!
+  output_file_name       'rocFFT_test.dat'
+  FFT_library_ctl        'OpenMP_rocFFT'
+  2nd_FFT_library_ctl    'FFTPACK'
+!
+  FFT_length_ctl         128
+  num_series_ctl           8
+  num_test_loop_ctl        1
+!
+  split_ratio_ctl         0.5
+end FFT_test_ctl
+
