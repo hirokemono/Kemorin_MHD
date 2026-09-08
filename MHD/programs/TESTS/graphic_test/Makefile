@@ -26,11 +26,11 @@ MOD_C_PNG_TEST = \
 test_wt_png_c.o \
 write_image_2_png.o
 
-OBJ_CPSF_READ_TEST = \
-test_read_psf_data.o
-
 OBJ_CPNG_READ_TEST = \
 test_read_png_c.o
+
+OBJ_CBMP_READ_TEST = \
+test_read_bmp_c.o
 
 MOD_CBMP_GZ_TEST = \
 test_read_gzipped_bmp_c.o
@@ -96,6 +96,12 @@ target_task:
 	'$$(MOD_C_PNG_TEST)' \
 	'$$(PNG_LIBS) $$(ZLIB_LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_CBMP_READ_TEST)': '$$(OBJ_CBMP_READ_TEST) $$(LIB_KEMO_C_FILE)' \
+	 >> $(MAKENAME)
+	@echo '	''$$(CC)' '$$(OPTFLAGS)' -o '$$(TARGET_CBMP_READ_TEST)' \
+	'$$(OBJ_CBMP_READ_TEST)' \
+	'-L. $$(LIB_KEMO_C)  $$(PNG_LIBS) $$(ZLIB_LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_CBMP_GZ_TEST)': '$$(MOD_CBMP_GZ_TEST) $$(LIB_KEMO_C_FILE)' \
 	 >> $(MAKENAME)
 	@echo '	''$$(CC)' '$$(OPTFLAGS)' -o '$$(TARGET_CBMP_GZ_TEST)' \
@@ -131,8 +137,8 @@ mod_list:
 	@echo  $(MOD_BMP_TEST)          >> $(MAKENAME)
 	@echo  MOD_C_PNG_TEST=    \\    >> $(MAKENAME)
 	@echo  $(MOD_C_PNG_TEST)        >> $(MAKENAME)
-	@echo  OBJ_CPSF_READ_TEST=  \\  >> $(MAKENAME)
-	@echo  $(OBJ_CPSF_READ_TEST)    >> $(MAKENAME)
+	@echo  OBJ_CBMP_READ_TEST=  \\  >> $(MAKENAME)
+	@echo  $(OBJ_CBMP_READ_TEST)    >> $(MAKENAME)
 	@echo  MOD_CBMP_GZ_TEST=    \\  >> $(MAKENAME)
 	@echo  $(MOD_CBMP_GZ_TEST)      >> $(MAKENAME)
 	@echo  OBJ_CPNG_READ_TEST=  \\  >> $(MAKENAME)
