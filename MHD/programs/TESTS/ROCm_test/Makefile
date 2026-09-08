@@ -6,9 +6,9 @@ ROCM_TEST_DIR = $$(TESTS_DIR)/ROCm_test
 
 SUBDIRS = \
 rocBLAS \
-rocFFT \
+rocFFT
 
-EACH_TEST_DIR = \ 
+EACH_TEST_DIR = \
 complex_rocFFT_prt \
 complex_rocFFT_rtp \
 real_rocFFT_prt \
@@ -91,7 +91,7 @@ target_list:
 
 target_task:
 	@echo ROCm_tests: rocBLAS_tests rocFFT_tests            >> $(MAKENAME)
-	 @echo each_rocFFT_tests: $$(TARGETS_EACH_ROCFFT_TEST)  >> $(MAKENAME)
+	@echo each_rocFFT_tests: $$(TARGETS_EACH_ROCFFT_TEST)   >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
