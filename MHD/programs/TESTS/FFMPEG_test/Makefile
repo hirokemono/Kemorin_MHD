@@ -4,7 +4,7 @@
 #
 #
 
-FFMPEG_TEST_DIR =       $$(TESTS_DIR)/FFT_test
+FFMPEG_TEST_DIR =       $$(TESTS_DIR)/FFMPEG_test
 
 TARGET_FFMPEG_TEST =   png2mp4
 

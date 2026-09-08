@@ -19,15 +19,10 @@ MPIRUN= mpirun
 TARGET_SPH_MHD =             $(BUILDDIR)/sph_mhd
 TARGET_SPH_SNAP =            $(BUILDDIR)/sph_snapshot
 TARGET_SPH_LICV =            $(BUILDDIR)/sph_licv
-TARGET_PSF_2_VTK =           $(BUILDDIR)/utilities/section_to_VTK
 #
-TARGET_FFTPACK_TEST =        $(BUILDDIR)/tests/test_FFTPACK
-TARGET_FFW3_F_TEST =         $(BUILDDIR)/tests/test_FFTW3_f
-TARGET_SGL_FFTW3_TEST =      $(BUILDDIR)/tests/test_single_FFTW3
-
 TARGET_GEN_SPH_GRID =        $(BUILDDIR)/utilities/gen_sph_grids
 TARGET_NEWSPH=               $(BUILDDIR)/utilities/assemble_sph
-
+TARGET_PSF_2_VTK =           $(BUILDDIR)/utilities/section_to_VTK
 #
 #  -------------------------------------------------------------------------
 #

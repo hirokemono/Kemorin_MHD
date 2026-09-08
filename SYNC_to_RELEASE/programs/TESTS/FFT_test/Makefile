@@ -12,16 +12,6 @@ TARGET_SGL_FFTW3_TEST = test_single_FFTW3
 
 TARGET_CMPR_FFT_TEST = compare_fft_test
 
-TARGETS_FFT_TEST = \
-'$$(TARGET_FFTPACK_TEST)'
-
-ifdef FFTW3_LIBS
-  TARGETS_FFT_TEST+= \
-   '$$(TARGET_FFW3_F_TEST)' \
-   '$$(TARGET_SGL_FFTW3_TEST)'
-endif
-
-
 LIBS_FFT_TEST = \
 '$$(LIB_MESH)'      \
 '$$(LIB_FFTPACK)'   \
@@ -118,8 +108,6 @@ target_list:
 	@echo 'TARGET_CMPR_FFT_TEST = $$(TEST_BUILD_DIR)/$(TARGET_CMPR_FFT_TEST)' >> $(MAKENAME)
 
 target_task:
-	@echo fft_test: $(TARGETS_FFT_TEST) >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_FFTPACK_TEST)': '$$(MOD_FFTPACK_TEST)' \
 	'$$(LIB_FFTPACK_FILE)' >> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \

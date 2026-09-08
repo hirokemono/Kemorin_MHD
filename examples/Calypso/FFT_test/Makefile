@@ -6,23 +6,23 @@ SHELL           = /bin/sh
 #
 #  directories of Kemo's Dynamo toolkit
 #
+CURRENTDIR=$(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+
 SRCDIR = /Users/matsui/src_kemo
 MAKEDIR = $(SRCDIR)/work
 BUILDDIR= $(SRCDIR)/bin
 
 TESTS_DIR =      $(SRCDIR)/MHD/programs/TESTS
-FFT_TEST_DIR = $(TESTS_DIR)/FFT_test
-
-include $(MAKEDIR)/Makefile.header
-
 
 #
-TARGET_SELECT_PRT_FFT_TEST = $(BUILDDIR)/tests/test_prt_select_FFT
-TARGET_SELECT_RTP_FFT_TEST = $(BUILDDIR)/tests/test_rtp_select_FFT
-#
-TARGET_CMPR_FFT_TEST = compare_fft_test
-SRC_CMPR_FFT_TEST = $(FFT_TEST_DIR)/compare_FFT_test/compare_FFT_test.f90
+TARGET_SELECT_PRT_FFT_TEST = $(CURRENTDIR)/test_prt_select_FFT
+TARGET_SELECT_RTP_FFT_TEST = $(CURRENTDIR)/test_rtp_select_FFT
+TARGET_CMPR_FFT_TEST =       $(CURRENTDIR)/compare_fft_test
 
+TARGETS = \
+$(TARGET_SELECT_PRT_FFT_TEST) \
+$(TARGET_SELECT_RTP_FFT_TEST) \
+$(TARGET_CMPR_FFT_TEST)
 
 $(TARGET_CMPR_FFT_TEST): $(SRC_CMPR_FFT_TEST) $(MAKEDIR)/$(LIB_MESH_FILE)
 	$(F90) $(F90OPTFLAGS) -o $@ $(SRC_CMPR_FFT_TEST) \
@@ -33,15 +33,15 @@ $(TARGET_CMPR_FFT_TEST): $(SRC_CMPR_FFT_TEST) $(MAKEDIR)/$(LIB_MESH_FILE)
 
 all:
 
-test: 
-	make clean
-	
+targets:
 	cd $(MAKEDIR); \
 		$(GMAKE) \
-		SRC_CMPR_FFT_TEST= "$(TARGET_CMPR_FFT_TEST)" \
-		$(TARGET_CMPR_FFT_TEST)
-	
-	
+		TARGET_SELECT_PRT_FFT_TEST='$(TARGET_SELECT_PRT_FFT_TEST)' \
+		TARGET_SELECT_RTP_FFT_TEST='$(TARGET_SELECT_RTP_FFT_TEST)' \
+		TARGET_CMPR_FFT_TEST='$(TARGET_CMPR_FFT_TEST)' \
+		$(TARGETS)
+
+test: dataclean targets
 	$(TARGET_SELECT_RTP_FFT_TEST) control_OpenMP_FFTW
 	$(TARGET_CMPR_FFT_TEST) 'reference/fftpack_test.dat' 'OMP_FFTW_test.dat' > log.txt
 	@if [ `tail -n 1 log.txt` != 0 ]; then\
@@ -117,9 +117,12 @@ test:
 	
 	echo 'FFT check finished'
 
-
-clean:
+dataclean:
 	rm -f *.dat log.txt
-	rm -fr $(TARGET_CMPR_FFT_TEST)* $(TARGET_CMPR_FFT_TEST)*
+
+clean: dataclean
+	rm -fr $(TARGET_SELECT_PRT_FFT_TEST)*
+	rm -fr $(TARGET_SELECT_RTP_FFT_TEST)*
+	rm -fr $(TARGET_CMPR_FFT_TEST)*
 
 distclean: clean

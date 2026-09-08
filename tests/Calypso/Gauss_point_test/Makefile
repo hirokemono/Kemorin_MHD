@@ -27,14 +27,14 @@ $(TARGET_CMP_GAUSS_TEST)
 
 all: test
 
-test: dataclean targets
+targets:
 	cd $(MAKEDIR); \
 		$(GMAKE) \
 		TARGET_GAUSS_TEST='$(TARGET_GAUSS_TEST)' \
 		TARGET_CMP_GAUSS_TEST='$(TARGET_CMP_GAUSS_TEST)' \
 		$(TARGETS)
-	
-	
+
+test: dataclean targets
 	$(TARGET_GAUSS_TEST) 32
 	$(TARGET_CMP_GAUSS_TEST)  reference/gauss_point32.dat gauss_point32.dat > log.txt
 	@if [ `tail -n 1 log.txt` != 0 ]; then\

@@ -34,11 +34,9 @@ endif
 TARGET_SELECT_PRT_FFT_TEST = $$(TEST_BUILD_DIR)/test_prt_select_FFT
 TARGET_SELECT_RTP_FFT_TEST = $$(TEST_BUILD_DIR)/test_rtp_select_FFT
 
-TARGETS_FFT_TEST = \
+TARGETS_EACH_FFT_TEST =
 '$$(TARGET_SELECT_PRT_FFT_TEST)' \
 '$$(TARGET_SELECT_RTP_FFT_TEST)'
-
-TARGETS_EACH_FFT_TEST = 
 
 LIBS_FFT_TEST = \
 '$$(LIB_MESH)'      \
@@ -92,7 +90,6 @@ target_list:
 	@echo 'TARGET_SELECT_PRT_FFT_TEST = $(TARGET_SELECT_PRT_FFT_TEST)' >> $(MAKENAME)
 	@echo 'TARGET_SELECT_RTP_FFT_TEST = $(TARGET_SELECT_RTP_FFT_TEST)' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@echo TARGETS_FFT_TEST =       $(TARGETS_FFT_TEST)       >> $(MAKENAME)
 	@echo TARGETS_EACH_FFT_TEST =  $(TARGETS_EACH_FFT_TEST)  >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
@@ -107,7 +104,6 @@ target_list:
 	@echo '#' >> $(MAKENAME)
 
 target_task:
-	@echo 'fft_test:      $$(TARGETS_FFT_TEST)'      >> $(MAKENAME)
 	@echo 'each_fft_test: $$(TARGETS_EACH_FFT_TEST)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_SELECT_PRT_FFT_TEST):' \
