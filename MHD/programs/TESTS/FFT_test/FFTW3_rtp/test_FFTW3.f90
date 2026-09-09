@@ -53,7 +53,7 @@
 !
 !
 !
-      write(*,'(a)') '-----  Test FFTW  -----'
+      write(*,'(a)') '-----  Test FFTW with outer series data -----'
       call default_FFT_test_parameters(test_name, def_fname,            &
      &                                 fft_test_p1)
       if(command_argument_count() .ge. 1) then
