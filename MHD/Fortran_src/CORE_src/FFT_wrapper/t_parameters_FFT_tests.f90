@@ -193,14 +193,16 @@
       write(*,'(a,3i6)')  'Num (point, field, loop): ',                 &
      &                   fft_test_p%nfft_test, fft_test_p%Ncomp_test,   &
      &                   fft_test_p%nloop_test
-      write(*,'(a,1pE16.6e3)') 'Initialize:      ', elapsed(1)
-      write(*,'(2a,1pE16.6e3)') trim(fft_test_p%FFT_name),              &
-     &                                         ': ', elapsed(2)
-      write(*,'(a,1pE16.6e3)') 'Time for rocFFT w/o first: ',elapsed(6)
-      write(*,'(a,1pE16.6e3)') 'Time for FFT on CPU:       ',elapsed(8)
-      write(*,'(a,1pE16.6e3)') 'Time for FFT on GPU:       ',elapsed(9)
-      write(*,'(a,1pE16.6e3)') 'Data copy:       ', elapsed(3)
-      write(*,'(a,1pE16.6e3)') 'Total FFT:       ',                     &
+      write(*,'(a,1pE16.6e3)') 'Initialize:      ',  elapsed(1)
+      write(*,'(4a,1pE16.6e3)') trim(fft_test_p%FFT_name), '_',         &
+     &         trim(fft_test_p%CPU_FFT_name), ': ',  elapsed(2)
+      write(*,'(a,1pE16.6e3)') 'FFT on GPU:       ', elapsed(5)
+      write(*,'(a,1pE16.6e3)') 'FFT on CPU:       ', elapsed(4)
+      write(*,'(a,1pE16.6e3)') 'Time for FFT w/o first: ', elapsed(6)
+      write(*,'(a,1pE16.6e3)') 'FFT on GPU w/o first: ',   elapsed(9)
+      write(*,'(a,1pE16.6e3)') 'FFT on CPU w/o first: ',   elapsed(8)
+      write(*,'(a,1pE16.6e3)') 'Data copy:            ',   elapsed(3)
+      write(*,'(a,1pE16.6e3)') 'Total FFT:            ',                &
      &                                 (elapsed(2) + elapsed(3))
       write(*,'(a)') '-----------------------------'
       write(*,'(a)') ' '

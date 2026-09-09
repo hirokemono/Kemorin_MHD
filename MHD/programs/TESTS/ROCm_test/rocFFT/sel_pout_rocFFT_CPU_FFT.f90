@@ -170,10 +170,14 @@
 !$omp end single nowait
 !
 !!   3. The rest of the CPU threads immediately and execute
+!$omp single
       st_c = OMP_GET_WTIME()
+!$omp end single nowait
       call select_fwd_pout_FFT_smp(iflag_CPU_FFT, Ncomp_CPU,            &
      &                             int(fwd_rocFFT%Nfft), WK_FFTs)
+!$omp single
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
+!$omp end single nowait
 !$omp end parallel
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
@@ -232,10 +236,14 @@
 !$omp end single nowait
 !
 !!   3. The rest of the CPU threads immediately and execute
+!$omp single
       st_c = OMP_GET_WTIME()
+!$omp end single nowait
       call select_bwd_pout_FFT_smp(iflag_CPU_FFT, Ncomp_CPU,            &
      &                             int(bwd_rocFFT%Nfft), WK_FFTs)
+!$omp single
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
+!$omp end single nowait
 !$omp end parallel
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !

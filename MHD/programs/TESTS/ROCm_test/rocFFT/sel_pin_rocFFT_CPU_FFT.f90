@@ -116,7 +116,7 @@
       real(kind = kreal), intent(inout) :: X(fwd_rocFFT%Nfft,Ncomp)
       real(kind = kreal), intent(inout) :: elapsed(4)
 !
-      real(kind = kreal) :: start, st_c, st_g
+      real(kind = kreal) :: start, st_g, st_c
 !
 !
       start = OMP_GET_WTIME()
@@ -128,8 +128,8 @@
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
 !!   1. Create a CPU thread team
-      start = OMP_GET_WTIME()
 !      write(*,*) 'OMP parallel start', OMP_GET_WTIME()
+      start = OMP_GET_WTIME()
 !$omp parallel
 !!
 !!   2. Isolate a single thread to spawn the GPU work asynchronously
@@ -142,10 +142,14 @@
 !
 !!   3. The rest of the CPU threads immediately and execute
 !      write(*,*) 'FFT loop start', OMP_GET_WTIME() - start
+!$omp single
       st_c = OMP_GET_WTIME()
+!$omp end single nowait
       call select_fwd_pin_FFT_smp(iflag_CPU_FFT, Ncomp_CPU,             &
      &    int(fwd_rocFFT%Nfft), X(1,fwd_rocFFT%Ncomp+1), WK_FFTs)
+!$omp single
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
+!$omp end single nowait
 !$omp end parallel
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
@@ -180,8 +184,8 @@
       real(kind = kreal), intent(inout) :: X(bwd_rocFFT%Nfft,Ncomp)
       real(kind = kreal), intent(inout) :: elapsed(4)
 !
-      real(kind = kreal) :: start
-      real(kind = kreal) :: st_c, st_g
+      real(kind = kreal) :: start, st_g, st_c
+!
 !
       start = OMP_GET_WTIME()
       call sel_norm_prt_to_bwd_rocFFT(iflag_GPU_FFT, ione, Ncomp,       &
@@ -190,8 +194,8 @@
      &    int(bwd_rocFFT%Nfft), X(1,bwd_rocFFT%Ncomp+1), WK_FFTs)
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
 !
-!      write(*,*) 'OMP parallel start', OMP_GET_WTIME()
 !!   1. Create a CPU thread team
+!      write(*,*) 'OMP parallel start', OMP_GET_WTIME()
       start = OMP_GET_WTIME()
 !$omp parallel
 !!   2. Isolate a single thread to spawn the GPU work asynchronously
@@ -202,10 +206,14 @@
 !$omp end single nowait
 !
 !!   3. The rest of the CPU threads immediately and execute
+!$omp single
       st_c = OMP_GET_WTIME()
+!$omp end single nowait
       call select_bwd_pin_FFT_smp(iflag_CPU_FFT, WK_FFTs,               &
      &    Ncomp_CPU, int(bwd_rocFFT%Nfft), X(1,bwd_rocFFT%Ncomp+1))
+!$omp single
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
+!$omp end single nowait
 !$omp end parallel
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
