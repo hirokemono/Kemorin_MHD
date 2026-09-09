@@ -40,6 +40,10 @@
 !!@endverbatim
       module pin_real_rocFFT_FFTPACK
 !
+      use omp_lib
+      use m_precision
+      use m_machine_parameter
+!
       use t_multi_rocFFT_wrapper
       use t_FFTPACK5_wrapper
 !
@@ -146,7 +150,7 @@
 !
 !$omp single
       st_g = OMP_GET_WTIME()
-      write(*,*) 'calypso_forward_rocFFT_r2r'
+      if(iflag_debug .gt. 0) rite(*,*) 'calypso_forward_rocFFT_r2r'
       call calypso_forward_rocFFT_r2r(fwd_rocFFT%rocFFT_plan,           &
      &    fwd_rocFFT%rocFFT_wk_info, fwd_rocFFT%Ncomp,                  &
      &    WK_rocFFT%aNfft, WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT(1),     &
@@ -156,13 +160,17 @@
 !
 !!   3. The rest of the CPU threads immediately and execute
 !      write(*,*) 'FFT loop start', OMP_GET_WTIME() - start
+!$omp single
       st_c = OMP_GET_WTIME()
+!$omp end single nowait
       call multi_RFFTMF_smp(WK_FFTPACK%Nplan_FFTPACK,                   &
      &    WK_FFTPACK%istack_FFTPACK, WK_FFTPACK%Mmax_smp,               &
      &    int(fwd_rocFFT%Nfft), WK_FFTPACK%X_FFTPACK5,                  &
      &    WK_FFTPACK%lsave_FFTPACK, WK_FFTPACK%WSAVE_FFTPACK,           &
      &    WK_FFTPACK%WORK_FFTPACK)
+!$omp single
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
+!$omp end single nowait
 !$omp end parallel
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
@@ -221,7 +229,7 @@
 !!   2. Isolate a single thread to spawn the GPU work asynchronously
 !$omp single
       st_g = OMP_GET_WTIME()
-      write(*,*) 'calypso_backward_rocFFT_r2r'
+      if(iflag_debug .gt. 0) write(*,*) 'calypso_backward_rocFFT_r2r'
       call calypso_backward_rocFFT_r2r                                  &
      &   (bwd_rocFFT%rocFFT_plan, bwd_rocFFT%rocFFT_wk_info,            &
      &    bwd_rocFFT%Ncomp, WK_rocFFT%Nfft_r, WK_rocFFT%X_rocFFT(1),    &
@@ -230,13 +238,17 @@
 !$omp end single nowait
 !
 !!   3. The rest of the CPU threads immediately and execute
+!$omp single
       st_c = OMP_GET_WTIME()
+!$omp end single nowait
       call multi_RFFTMB_smp(WK_FFTPACK%Nplan_FFTPACK,                   &
      &    WK_FFTPACK%istack_FFTPACK, WK_FFTPACK%Mmax_smp,               &
      &    int(bwd_rocFFT%Nfft), WK_FFTPACK%X_FFTPACK5,                  &
      &    WK_FFTPACK%lsave_FFTPACK, WK_FFTPACK%WSAVE_FFTPACK,           &
      &    WK_FFTPACK%WORK_FFTPACK)
+!$omp single
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
+!$omp end single nowait
 !$omp end parallel
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !

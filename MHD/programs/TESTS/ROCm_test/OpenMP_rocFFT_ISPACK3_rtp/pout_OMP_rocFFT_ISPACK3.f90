@@ -40,6 +40,9 @@
 !!@endverbatim
       module pout_OMP_rocFFT_ISPACK3
 !
+      use omp_lib
+      use m_precision
+!
       use t_multi_rocFFT_wrapper
       use t_ispack3_FFT_wrapper
 !
@@ -154,12 +157,16 @@
 !$omp end single nowait
 !
 !!   3. The rest of the CPU threads immediately and execute
+!$omp single
       st_c = OMP_GET_WTIME()
+!$omp end single nowait
       call multi_FXRTFA_smp(WK_ISPACK3%Nplan_ISPACK3,                   &
      &    WK_ISPACK3%istack_ISPACK3, WK_ISPACK3%Mmax_smp,               &
      &    fwd_rocFFT%Nfft, WK_ISPACK3%X_ispack, WK_ISPACK3%IT_ispack,   &
      &    WK_ISPACK3%T_ispack)
+!$omp single
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
+!$omp end single nowait
 !$omp end parallel
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
@@ -172,10 +179,6 @@
      &    fwd_rocFFT%Nfft, WK_ISPACK3%X_ispack(1,1),                    &
      &    cast_long(Ncomp), X(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
-!
-!      write(*,*) 'CPU FFT clock',   elapsed(3)
-!      write(*,*) 'GPU FFT clock',   elapsed(4)
-!      write(*,*) 'Total FFT clock', elapsed(1)
 !
       end subroutine pout_fwd_OMP_rocFFT_ISPACK3
 !
@@ -227,12 +230,16 @@
 !$omp end single nowait
 !
 !!   3. The rest of the CPU threads immediately and execute
+!$omp single
       st_c = OMP_GET_WTIME()
+!$omp end single nowait
       call multi_FXRTBA_smp(WK_ISPACK3%Nplan_ISPACK3,                   &
      &    WK_ISPACK3%istack_ISPACK3, WK_ISPACK3%Mmax_smp,               &
      &    bwd_rocFFT%Nfft, WK_ISPACK3%X_ispack,                         &
      &    WK_ISPACK3%IT_ispack, WK_ISPACK3%T_ispack)
+!$omp single
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
+!$omp end single nowait
 !$omp end parallel
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
@@ -245,10 +252,6 @@
      &    bwd_rocFFT%Nfft, WK_ISPACK3%X_ispack(1,1),                    &
      &    cast_long(Ncomp), X(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
-!
-!      write(*,*) 'CPU FFT clock',   elapsed(3)
-!      write(*,*) 'GPU FFT clock',   elapsed(4)
-!      write(*,*) 'Total FFT clock', elapsed(1)
 !
       end subroutine pout_bwd_OMP_rocFFT_ISPACK3
 !

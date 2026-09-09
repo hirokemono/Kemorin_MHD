@@ -40,6 +40,9 @@
 !!@endverbatim
       module pout_OMP_rocFFT_FFTPACK
 !
+      use omp_lib
+      use m_precision
+!
       use t_multi_rocFFT_wrapper
       use t_FFTPACK5_wrapper
 !
@@ -150,13 +153,17 @@
 !$omp end single nowait
 !
 !!   3. The rest of the CPU threads immediately and execute
+!$omp single
       st_c = OMP_GET_WTIME()
+!$omp end single nowait
       call multi_RFFTMF_smp(WK_FFTPACK%Nplan_FFTPACK,                   &
      &    WK_FFTPACK%istack_FFTPACK, WK_FFTPACK%Mmax_smp,               &
      &    int(fwd_rocFFT%Nfft), WK_FFTPACK%X_FFTPACK5,                  &
      &    WK_FFTPACK%lsave_FFTPACK, WK_FFTPACK%WSAVE_FFTPACK,           &
      &    WK_FFTPACK%WORK_FFTPACK)
+!$omp single
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
+!$omp end single nowait
 !$omp end parallel
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
@@ -168,10 +175,6 @@
      &    WK_FFTPACK%istack_FFTPACK, WK_FFTPACK%Mmax_smp,               &
      &    int(fwd_rocFFT%Nfft), WK_FFTPACK%X_FFTPACK5, Ncomp, X(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
-!
-!      write(*,*) 'CPU FFT clock',   elapsed(3)
-!      write(*,*) 'GPU FFT clock',   elapsed(4)
-!      write(*,*) 'Total FFT clock', elapsed(1)
 !
       end subroutine pout_fwd_OMP_rocFFT_FFTPACK
 !
@@ -221,13 +224,17 @@
 !$omp end single nowait
 !
 !!   3. The rest of the CPU threads immediately and execute
+!$omp single
       st_c = OMP_GET_WTIME()
+!$omp end single nowait
       call multi_RFFTMB_smp(WK_FFTPACK%Nplan_FFTPACK,                   &
      &    WK_FFTPACK%istack_FFTPACK, WK_FFTPACK%Mmax_smp,               &
      &    int(bwd_rocFFT%Nfft), WK_FFTPACK%X_FFTPACK5,                  &
      &    WK_FFTPACK%lsave_FFTPACK, WK_FFTPACK%WSAVE_FFTPACK,           &
      &    WK_FFTPACK%WORK_FFTPACK)
+!$omp single
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
+!$omp end single nowait
 !$omp end parallel
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
@@ -239,10 +246,6 @@
      &    WK_FFTPACK%istack_FFTPACK, WK_FFTPACK%Mmax_smp,               &
      &    int(bwd_rocFFT%Nfft), WK_FFTPACK%X_FFTPACK5, Ncomp, X(1,1))
       elapsed(2) = elapsed(2) + OMP_GET_WTIME() - start
-!
-!      write(*,*) 'CPU FFT clock',   elapsed(3)
-!      write(*,*) 'GPU FFT clock',   elapsed(4)
-!      write(*,*) 'Total FFT clock', elapsed(1)
 !
       end subroutine pout_bwd_OMP_rocFFT_FFTPACK
 !

@@ -39,6 +39,9 @@
 !!@endverbatim
       module pout_OMP_rocFFT_OMP_FFTW
 !
+      use omp_lib
+      use m_precision
+!
       use t_multi_rocFFT_wrapper
       use t_multi_FFTW_wrapper
 !
@@ -139,10 +142,14 @@
 !$omp end single nowait
 !
 !!   3. The rest of the CPU threads immediately and execute
+!$omp single
       st_c = OMP_GET_WTIME()
+!$omp end single nowait
       call dfftw_execute_dft_r2c(WK_OMP_FFTW%plan_mul_fwd(1),           &
      &    WK_OMP_FFTW%X_FFTW_mul(1,1), WK_OMP_FFTW%C_FFTW_mul(1,1))
+!$omp single
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
+!$omp end single nowait
 !$omp end parallel
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !
@@ -209,10 +216,14 @@
 !$omp end single nowait
 !
 !!   3. The rest of the CPU threads immediately and execute
+!$omp single
       st_c = OMP_GET_WTIME()
+!$omp end single nowait
       call dfftw_execute_dft_c2r(WK_OMP_FFTW%plan_mul_bwd(1),           &
      &    WK_OMP_FFTW%C_FFTW_mul(1,1), WK_OMP_FFTW%X_FFTW_mul(1,1))
+!$omp single
       elapsed(3) = elapsed(3) + OMP_GET_WTIME() - st_c
+!$omp end single nowait
 !$omp end parallel
       elapsed(1) = elapsed(1) + OMP_GET_WTIME() - start
 !

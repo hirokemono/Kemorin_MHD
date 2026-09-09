@@ -53,6 +53,9 @@
 !!@endverbatim
       module sel_pout_rocFFT_CPU_FFT
 !
+      use omp_lib
+      use m_precision
+!
       use t_multi_rocFFT_wrapper
       use t_FFT_selector
 !
