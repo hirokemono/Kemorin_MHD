@@ -62,8 +62,8 @@
         call set_FFT_test_parameters(fft_c1, fft_test_p1)
       else
         write(*,*) 'No control file name in command: Use default'
-        fft_test_p1%FFT_name = test_name
       end if
+      fft_test_p1%FFT_name = test_name
 !
       call init_fft_test_data                                           &
      &   (fft_test_p1%Ncomp_test, fft_test_p1%Nfft_test, ft3)
