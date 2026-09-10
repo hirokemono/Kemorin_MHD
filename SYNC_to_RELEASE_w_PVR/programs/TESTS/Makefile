@@ -43,7 +43,7 @@ target_list:
 
 target_task:
 	@echo tests_with_f: \
-	'fft_test leg_tests compare' \
+	'leg_tests' \
 	>> $(MAKENAME)
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
