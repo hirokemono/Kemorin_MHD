@@ -9,6 +9,6 @@ begin FFT_test_ctl
   num_series_ctl           8
   num_test_loop_ctl        1
 !
-  split_ratio_ctl         0.5
+  GPU_ratio_ctl           0.5
 end FFT_test_ctl
 

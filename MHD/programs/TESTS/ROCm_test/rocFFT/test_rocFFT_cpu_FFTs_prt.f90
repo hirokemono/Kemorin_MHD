@@ -55,8 +55,6 @@
       type(calypso_rocFFT_work), target :: WK_rocFFT
       type(working_FFTs) :: WK_FFTs1
 !
-      integer(kind = kint) :: ncomp_GPU
-      integer(kind = kint) :: ncomp_CPU
       integer(kind = kint) :: i, nd, icou
 !
 !
@@ -84,8 +82,6 @@
       write(*,*) 'fft_test_p1%iflag_FFT',                               &
      &          fft_test_p1%iflag_FFT, fft_test_p1%iflag_CPU_FFT
 !
-      ncomp_GPU = fft_test_p1%ratio_rocFFT * fft_test_p1%Ncomp_test
-      ncomp_CPU = fft_test_p1%Ncomp_test - ncomp_GPU
       call init_fft_test_data                                           &
      &   (fft_test_p1%Ncomp_test, fft_test_p1%Nfft_test, ft1)
       call swap_fft_test_input_to_pin(ft1)
@@ -93,8 +89,8 @@
 !   Initialize Fourier transform
       start = OMP_GET_WTIME()
       call init_pin_rocFFT_FFTs(fft_test_p1%iflag_CPU_FFT,              &
-     &    ft1%nfld, Ncomp_GPU, Ncomp_CPU, ft1%ngrd, np_smp,             &
-     &    fwd, bwd, WK_rocFFT, WK_FFTs1)
+     &    ft1%nfld, fft_test_p1%nfld_GPU, fft_test_p1%nfld_CPU,         &
+     &    ft1%ngrd, np_smp, fwd, bwd, WK_rocFFT, WK_FFTs1)
       elapsed(1) = OMP_GET_WTIME() - start
 !
       elapsed(2:4) = zero
@@ -110,7 +106,7 @@
 !   Forward transform
         call sel_pin_fwd_rocFFT_FFTs                                    &
      &     (fft_test_p1%iflag_FFT, fft_test_p1%iflag_CPU_FFT,           &
-     &      ft1%nfld, Ncomp_CPU, fwd, WK_rocFFT, WK_FFTs1,              &
+     &      ft1%nfld, fft_test_p1%nfld_CPU, fwd, WK_rocFFT, WK_FFTs1,   &
      &      ft1%s_k(1,1), elapsed(2:5))
 !
         start = OMP_GET_WTIME()
@@ -122,7 +118,7 @@
 !   Backword transform
         call sel_pin_bwd_rocFFT_FFTs                                    &
      &     (fft_test_p1%iflag_FFT, fft_test_p1%iflag_CPU_FFT,           &
-     &      ft1%nfld, Ncomp_CPU, bwd, WK_rocFFT, WK_FFTs1,              &
+     &      ft1%nfld, fft_test_p1%nfld_CPU, bwd, WK_rocFFT, WK_FFTs1,   &
      &      ft1%f_x(1,1), elapsed(2:5))
         if(icou .eq. 1) elapsed(6:9) = elapsed(2:5)
       end do

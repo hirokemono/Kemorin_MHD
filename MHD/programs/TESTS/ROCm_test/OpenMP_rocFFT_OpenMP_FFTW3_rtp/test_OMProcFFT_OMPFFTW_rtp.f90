@@ -55,8 +55,6 @@
       type(calypso_rocFFT_work), target :: WK_rocFFT
       type(working_mul_FFTW), save:: WK_FFTW1
 !
-      integer(kind = kint) :: ncomp_GPU
-      integer(kind = kint) :: ncomp_CPU
       integer(kind = kint) :: i, nd, icou
 !
 !
@@ -74,14 +72,13 @@
         write(*,*) 'No control file name in command: Use default'
       end if
 !
-      ncomp_GPU = fft_test_p1%ratio_rocFFT * fft_test_p1%Ncomp_test
-      ncomp_CPU = fft_test_p1%Ncomp_test - ncomp_GPU
       call init_fft_test_data                                           &
      &   (fft_test_p1%Ncomp_test, fft_test_p1%Nfft_test, ft1)
 !
 !   Initialize Fourier transform
       start = OMP_GET_WTIME()
-      call init_pout_OMP_rocFFT_OMP_FFTW3(Ncomp_GPU, Ncomp_CPU,         &
+      call init_pout_OMP_rocFFT_OMP_FFTW3                               &
+     &   (fft_test_p1%nfld_GPU, fft_test_p1%nfld_CPU,                   &
      &    ft1%ngrd, fwd, bwd, WK_rocFFT, WK_FFTW1)
       elapsed(1) = OMP_GET_WTIME() - start
 !
@@ -96,8 +93,9 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Forward transform
-        call pout_fwd_OMP_rocFFT_OMP_FFTW3(ft1%nfld, Ncomp_CPU,         &
-     &      fwd, WK_rocFFT, WK_FFTW1, ft1%s_k(1,1), elapsed(2:5))
+        call pout_fwd_OMP_rocFFT_OMP_FFTW3                              &
+     &     (ft1%nfld, fft_test_p1%nfld_CPU, fwd, WK_rocFFT,             &
+     &      WK_FFTW1, ft1%s_k(1,1), elapsed(2:5))
 !
         start = OMP_GET_WTIME()
 !$omp parallel workshare
@@ -106,8 +104,9 @@
         elapsed(3) = elapsed(3) + OMP_GET_WTIME() - start
 !
 !   Backword transform
-        call pout_bwd_OMP_rocFFT_OMP_FFTW3(ft1%nfld, Ncomp_CPU,         &
-     &      bwd, WK_rocFFT, WK_FFTW1, ft1%f_x(1,1), elapsed(2:5))
+        call pout_bwd_OMP_rocFFT_OMP_FFTW3                              &
+     &     (ft1%nfld, fft_test_p1%nfld_CPU, bwd, WK_rocFFT,             &
+     &      WK_FFTW1, ft1%f_x(1,1), elapsed(2:5))
         if(icou .eq. 1) elapsed(6:9) = elapsed(2:5)
       end do
       elapsed(6) = elapsed(2) - elapsed(6)

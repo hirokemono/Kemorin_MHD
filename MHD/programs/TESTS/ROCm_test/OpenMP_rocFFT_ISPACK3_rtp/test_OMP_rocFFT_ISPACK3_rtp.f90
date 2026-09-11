@@ -55,8 +55,6 @@
       type(calypso_rocFFT_work), target :: WK_rocFFT
       type(working_ISPACK3), save:: WK_ISPACK3
 !
-      integer(kind = kint) :: ncomp_GPU
-      integer(kind = kint) :: ncomp_CPU
       integer(kind = kint) :: i, nd, icou
 !
 !
@@ -74,14 +72,13 @@
         write(*,*) 'No control file name in command: Use default'
       end if
 !
-      ncomp_GPU = fft_test_p1%ratio_rocFFT * fft_test_p1%Ncomp_test
-      ncomp_CPU = fft_test_p1%Ncomp_test - ncomp_GPU
       call init_fft_test_data                                           &
      &   (fft_test_p1%Ncomp_test, fft_test_p1%Nfft_test, ft1)
 !
 !   Initialize Fourier transform
       start = OMP_GET_WTIME()
-      call init_pout_OMP_rocFFT_ISPACK3(ft1%nfld, Ncomp_GPU, Ncomp_CPU, &
+      call init_pout_OMP_rocFFT_ISPACK3                                 &
+     &   (ft1%nfld, fft_test_p1%nfld_GPU, fft_test_p1%nfld_CPU,         &
      &    ft1%ngrd, np_smp, fwd, bwd, WK_rocFFT, WK_ISPACK3)
       elapsed(1) = OMP_GET_WTIME() - start
 !
