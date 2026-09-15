@@ -22,17 +22,13 @@ MOD_KEMOVIEW_MAIN = \
 kemoviewer_f.o \
 \
 kemo_mesh_viewer_glut.o \
-kemoview_glut_console_input.o \
-\
-'$$(OBJ_KEMOVIEW_GLUT)'
+kemoview_glut_console_input.o
 
 MOD_KEMOVIEW_GLUT = \
 kemoviewer_glut.o \
 \
 kemo_mesh_viewer_glut.o \
-kemoview_glut_console_input.o \
-\
-'$$(OBJ_KEMOVIEW_GLUT)'
+kemoview_glut_console_input.o
 
 #
 #  -------------------------------------------------------------------------

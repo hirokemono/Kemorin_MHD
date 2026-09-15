@@ -8,8 +8,7 @@ OBJ_KEMOVIEW_GLUI =     \
 kemoviewer_glui.o            \
 kemo_mesh_viewer_glui.o      \
 kemoview_glui_window_input.o \
-kemoview_fileselector_glui.o \
-'$$(OBJ_KEMOVIEW_GLUT)'
+kemoview_fileselector_glui.o
 
 #
 #  -------------------------------------------------------------------------

@@ -51,6 +51,7 @@ lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(OBJ_SHADERS)' >> $(MAKENAME)
 
 mod_list:
+	@echo  OBJS_C+= '$$(OBJ_SHADERS)'  >> $(MAKENAME)
 	@echo  OBJ_SHADERS=  \\ >> $(MAKENAME)
 	@echo  $(OBJ_SHADERS)   >> $(MAKENAME)
 	@echo   >> $(MAKENAME)

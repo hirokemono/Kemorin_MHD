@@ -38,8 +38,10 @@ lib_name:
 libtarget:
 
 lib_archve: libtarget
+	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(OBJ_KEMOVIEW_GLUT)' >> $(MAKENAME)
 
 mod_list:
+	@echo  OBJS_C+= '$$(OBJ_KEMOVIEW_GLUT)' >> $(MAKENAME)
 	@echo  OBJ_KEMOVIEW_GLUT=  \\ >> $(MAKENAME)
 	@echo  $(OBJ_KEMOVIEW_GLUT)   >> $(MAKENAME)
 	@echo   >> $(MAKENAME)

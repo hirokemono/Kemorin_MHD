@@ -7,19 +7,13 @@ C_SRCDIR = $$(MHDDIR)/C_src
 LIB_KEMO_C =       -lkemo_c
 LIB_KEMO_C_FILE = libkemo_c.a
 
-OBJS_C= \
-$$(OBJ_KEMO_C) \
-$$(OBJ_CTL_C)
+OBJS_C=
 
 SUBDIRS =     \
 CORE_C        \
 CONTROLS
 
 ifdef OPENGL_LIBS
-  OBJS_C+= \
-    $$(OBJ_C_GL)     \
-    $$(OBJ_SHADERS)  \
-    $$(OBJ_GTK_C)
   SUBDIRS+=   \
     KEMO_GL   \
     GLSL      \
@@ -58,7 +52,7 @@ lib_tasks: libtarget lib_archve
 	@echo '#' >> $(MAKENAME)
 
 libtarget:
-	@echo  '$$(LIB_KEMO_C_FILE): $(OBJS_C)' >> $(MAKENAME)
+	@echo  '$$(LIB_KEMO_C_FILE): $$(OBJS_C)' >> $(MAKENAME)
 
 lib_archve: libtarget
 	@for dir in $(SUBDIRS); do \
@@ -72,6 +66,7 @@ lib_archve: libtarget
 
 
 mod_list:
+	@echo  'OBJS_C = $(OBJS_C)' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \

@@ -11,9 +11,7 @@ SRC_C = $(shell ls *.c)
 
 MOD_KEMOVIEW_GLFW = \
 kemoviewer_glfw_gtk.o \
-kemo_mesh_viewer_glfw_gtk.o \
-\
-'$$(OBJ_KEMOVIEW_GLUT)'
+kemo_mesh_viewer_glfw_gtk.o
 
 GLUT_LIBS= \
   $$(GTK3_LIBS) \

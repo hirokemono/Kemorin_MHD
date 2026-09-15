@@ -10,9 +10,7 @@ tree_view_real2_GTK.o \
 tree_view_4_pvr_colormap.o \
 \
 kemo_mesh_viewer_gtk.o \
-kemoviewer_gtk.o \
-\
-'$$(OBJ_KEMOVIEW_GLUT)'
+kemoviewer_gtk.o
 
 #
 #  -------------------------------------------------------------------------

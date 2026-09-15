@@ -19,8 +19,6 @@
 #include "kemoview_gtk_routines.h"
 #include "view_modifier_glfw.h"
 
-#include "view_modifier_glfw.h"
-
 /*  prototypes */
 
 GtkWidget * init_num_threads_menu_frame(struct kemoviewer_gl_type *kemo_gl);

@@ -42,7 +42,7 @@ lib_tasks: libtarget lib_archve
 	@echo '#' >> $(MAKENAME)
 
 libtarget:
-	@echo  '$$(LIB_CALYPSO_C_FILE): $(OBJS_C)' >> $(MAKENAME)
+	@echo  '$$(LIB_CALYPSO_C_FILE): $$(OBJS_C)' >> $(MAKENAME)
 
 lib_archve:
 	@for dir in $(SUBDIRS); do \

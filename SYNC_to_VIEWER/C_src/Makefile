@@ -7,18 +7,11 @@ C_SRCDIR = $$(MHDDIR)/C_src
 LIB_KEMO_C =       -lcalypso_viz
 LIB_KEMO_C_FILE = libcalypso_viz.a
 
-OBJS_C= \
-$$(OBJ_KEMO_C) \
-$$(OBJ_CTL_C)
+OBJS_C=
 
 SUBDIRS =     \
 CORE_C        \
 CONTROLS
-
-OBJS_C+= \
-  $$(OBJ_C_GL)     \
-  $$(OBJ_SHADERS)  \
-  $$(OBJ_GTK_C)
 
 SUBDIRS+=   \
   KEMO_GL   \
@@ -57,7 +50,7 @@ lib_tasks: libtarget lib_archve
 	@echo '#' >> $(MAKENAME)
 
 libtarget:
-	@echo  '$$(LIB_KEMO_C_FILE): $(OBJS_C)' >> $(MAKENAME)
+	@echo  '$$(LIB_KEMO_C_FILE): $$(OBJS_C)' >> $(MAKENAME)
 
 lib_archve: 
 	@for dir in $(SUBDIRS); do \

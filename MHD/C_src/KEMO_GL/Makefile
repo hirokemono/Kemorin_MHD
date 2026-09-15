@@ -24,6 +24,7 @@ lib_archve: libtarget
 
 
 mod_list:
+	@echo  OBJS_C+= '$$(OBJ_C_GL)'  >> $(MAKENAME)
 	@echo  OBJ_C_GL=  \\ >> $(MAKENAME)
 	@echo  $(OBJ_C_GL) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)

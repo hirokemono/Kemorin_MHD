@@ -104,6 +104,7 @@ lib_archve: libtarget
 
 
 mod_list:
+	@echo  OBJS_C+= '$$(OBJ_KEMO_C)'  >> $(MAKENAME)
 	@echo  OBJ_KEMO_C=  \\ >> $(MAKENAME)
 	@echo  $(OBJ_KEMO_C)   >> $(MAKENAME)
 	@echo   >> $(MAKENAME)

@@ -31,7 +31,7 @@ GtkWidget *gtk_win;
 
 struct main_buttons *mbot;
 
-static void mainloop_4_glfw(){
+static void mainloop_glfw_gtk(){
     int icou = 0;
     int jcou = 0;
 	/* Loop until the user closes the window */
@@ -300,7 +300,7 @@ int draw_mesh_kemo(void) {
     /* gtk_set_locale(); */
     gtk_init(&narg_glut, &arg_glut);
 	kemoview_main_window(single_kemoview);
-	mainloop_4_glfw();
+	mainloop_glfw_gtk();
 	glfwTerminate();
 	
 	dealloc_main_buttons(mbot);
