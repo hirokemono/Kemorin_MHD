@@ -19,8 +19,8 @@
 #define COLUMN_FIELD_INDEX    0
 #define COLUMN_FIELD_NAME     1
 #define COLUMN_FIELD_MATH     2
-#define COLUMN_FORTH   3
-#define COLUMN_FIFTH   4
+#define COLUMN_FORTH          3
+#define COLUMN_FIFTH          4
 #define COLUMN_NUM_COMP       5
 #define COLUMN_QUADRATURE     6
 

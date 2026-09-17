@@ -198,8 +198,8 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
     g_signal_connect(G_OBJECT(quitButton), "clicked",
                      G_CALLBACK(gtkWindowclose_CB), NULL);
     
-    GtkWidget *vbox_main = make_gtk_main_menu_box(mbot, quitButton, gtk_win,
-                                                  kemoview_gl);
+    GtkWidget *vbox_main = make_gtk3_main_menu_box(mbot, quitButton, gtk_win,
+                                                   kemoview_gl);
     mbot->psf_gmenu->iflag_psfBox =      0;
     mbot->tracer_gmenu->iflag_flineBox = 0;
     mbot->fline_gmenu->iflag_flineBox =  0;

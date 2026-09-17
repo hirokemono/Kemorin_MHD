@@ -93,7 +93,7 @@ static void open_file_CB(GtkButton *button, gpointer user_data){
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 
-    int iflag_set = kemoview_gtk_read_file_select(button, user_data);
+    int iflag_set = kemoview_gtk3_read_file_select(button, user_data);
     if(iflag_set == IZERO) return;
     GtkEntry *entry = GTK_ENTRY(user_data);
     struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(user_data), "buttons");
@@ -162,7 +162,7 @@ static void gtkhidetest_CB(GtkButton *button, gpointer user_data){
 static void image_save_CB(GtkButton *button, gpointer user_data){
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
-    int iflag_set = kemoview_gtk_save_file_select(button, user_data);
+    int iflag_set = kemoview_gtk3_save_file_select(button, user_data);
     int id_imagefmt_by_input;
     int i_quilt;
     
@@ -225,8 +225,8 @@ static void image_save_CB(GtkButton *button, gpointer user_data){
     return;
 };
 
-GtkWidget * make_gtk_open_file_box(struct kemoviewer_gl_type *kemo_gl,
-                                   GtkWidget *main_window, struct main_buttons *mbot){
+static GtkWidget * make_gtk3_open_file_box(struct kemoviewer_gl_type *kemo_gl,
+                                           GtkWidget *main_window, struct main_buttons *mbot){
     GtkWidget *hbox_open;
     /*
     GtkWidget *testButton = gtk_button_new_with_label("On");
@@ -256,9 +256,8 @@ GtkWidget * make_gtk_open_file_box(struct kemoviewer_gl_type *kemo_gl,
     return hbox_open;
 }
 
-GtkWidget * make_gtk_save_file_box(struct main_buttons *mbot,
-                                   GtkWidget *quitButton,
-                                   struct kemoviewer_gl_type *kemo_gl){
+static GtkWidget * make_gtk3_save_file_box(GtkWidget *quitButton,
+                                        struct kemoviewer_gl_type *kemo_gl){
     GtkWidget *savebox;
     GtkWidget *entry_save_file = gtk_entry_new();
     g_object_set_data(G_OBJECT(entry_save_file), "kemoview_gl", (gpointer) kemo_gl);
@@ -287,13 +286,13 @@ GtkWidget * make_gtk_save_file_box(struct main_buttons *mbot,
     return savebox;
 };
 
-GtkWidget * make_gtk_main_menu_box(struct main_buttons *mbot,
-                                   GtkWidget *quitButton, GtkWidget *main_window,
-                                   struct kemoviewer_gl_type *kemo_gl){
+GtkWidget * make_gtk3_main_menu_box(struct main_buttons *mbot,
+                                    GtkWidget *quitButton, GtkWidget *main_window,
+                                    struct kemoviewer_gl_type *kemo_gl){
     GtkWidget *vbox_menu;
     
-    GtkWidget *hbox_open = make_gtk_open_file_box(kemo_gl, main_window, mbot);
-    GtkWidget *savebox = make_gtk_save_file_box(mbot, quitButton, kemo_gl);
+    GtkWidget *hbox_open = make_gtk3_open_file_box(kemo_gl, main_window, mbot);
+    GtkWidget *savebox = make_gtk3_save_file_box(quitButton, kemo_gl);
     
     GtkWidget *hbox_viewtype = make_gtk_viewmode_menu_box(kemo_gl, mbot->view_menu);
     GtkWidget *hbox_axis = make_axis_menu_box(kemo_gl, main_window);

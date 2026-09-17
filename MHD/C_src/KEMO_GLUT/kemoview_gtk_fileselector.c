@@ -19,7 +19,7 @@ static int iflag_set;
    Constract input windows
 */
 
-int kemoview_gtk_read_file_select(GtkButton *button, gpointer entry_data){
+int kemoview_gtk3_read_file_select(GtkButton *button, gpointer entry_data){
 	int response;
 	GtkEntry *entry = GTK_ENTRY(entry_data);
     GtkWidget *parent = GTK_WIDGET(g_object_get_data(G_OBJECT(entry_data), "parent"));
@@ -54,7 +54,7 @@ int kemoview_gtk_read_file_select(GtkButton *button, gpointer entry_data){
 	return iflag_set;
 }
 
-int kemoview_gtk_save_file_select(GtkButton *button, gpointer data){
+int kemoview_gtk3_save_file_select(GtkButton *button, gpointer data){
 	int response;
 	GtkWidget *parent;
 	GtkEntry *entry = GTK_ENTRY(data);
@@ -96,7 +96,7 @@ int kemoview_gtk_save_file_select(GtkButton *button, gpointer data){
 struct kv_string * kemoview_read_file_panel(GtkWidget *window_cmap){
 	GtkWidget *entry = gtk_entry_new();
 	g_object_set_data(G_OBJECT(entry), "parent", (gpointer) window_cmap);
-	int iflag_set = kemoview_gtk_read_file_select(NULL, G_OBJECT(entry));
+	int iflag_set = kemoview_gtk3_read_file_select(NULL, G_OBJECT(entry));
 	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_selected_filename);
 	if(iflag_set == IZERO){
 		filename->string[0] = '\0';
@@ -106,7 +106,7 @@ struct kv_string * kemoview_read_file_panel(GtkWidget *window_cmap){
 struct kv_string * kemoview_save_file_panel(GtkWidget *window_cmap){
 	GtkWidget *entry = gtk_entry_new();
 	g_object_set_data(G_OBJECT(entry), "parent", (gpointer) window_cmap);
-	int iflag_set = kemoview_gtk_save_file_select(NULL, G_OBJECT(entry));
+	int iflag_set = kemoview_gtk3_save_file_select(NULL, G_OBJECT(entry));
 	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_selected_filename);
 	if(iflag_set == IZERO){
 		filename->string[0] = '\0';
@@ -129,7 +129,7 @@ void set_pickup_command_gtk(struct kv_string *filename){
 	entry = gtk_entry_new();
 	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)ftmpw_f);
 	
-	int iflag_set = kemoview_gtk_read_file_select(NULL, entry);
+	int iflag_set = kemoview_gtk3_read_file_select(NULL, entry);
 	
 	kemoview_alloc_copy_string(gtk_selected_filename, filename);
 	return;

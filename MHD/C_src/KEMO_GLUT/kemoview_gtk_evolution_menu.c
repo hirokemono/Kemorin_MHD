@@ -66,7 +66,7 @@ static void evolution_save_CB(GtkButton *button, gpointer user_data){
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
                              
-    kemoview_gtk_save_file_select(button, G_OBJECT(entry));
+    kemoview_gtk3_save_file_select(button, G_OBJECT(entry));
 	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
 	struct kv_string *stripped_ext = kemoview_alloc_kvstring();
 	struct kv_string *file_prefix = kemoview_alloc_kvstring();
