@@ -8,6 +8,8 @@ CURRENTDIR = $(shell pwd)
 SRC_KEMO_C = $(shell ls *.c)
 INC_KEMO_C = $(addsuffix .h,$(basename $(SRC_KEMO_C)) )
 
+OBJS_LIST= OBJS_C
+
 OBJ_KEMO_C = \
  calypso_param_c.o \
  \
@@ -104,7 +106,7 @@ lib_archve: libtarget
 
 
 mod_list:
-	@echo  OBJS_C+= '$$(OBJ_KEMO_C)'  >> $(MAKENAME)
+	@echo  '$(OBJS_LIST)+= $$(OBJ_KEMO_C)' >> $(MAKENAME)
 	@echo  OBJ_KEMO_C=  \\ >> $(MAKENAME)
 	@echo  $(OBJ_KEMO_C)   >> $(MAKENAME)
 	@echo   >> $(MAKENAME)

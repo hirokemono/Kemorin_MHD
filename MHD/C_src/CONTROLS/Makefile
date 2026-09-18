@@ -8,6 +8,8 @@ SRC_CTL_C = $(shell ls *.c)
 INC_CTL_C = $(addsuffix .h,$(basename $(SRC_CTL_C)) )
 OBJ_CTL_C = $(addsuffix .o,$(basename $(SRC_CTL_C)) )
 
+OBJS_LIST = OBJS_C
+
 #
 #  ------------------------------------------------------------------
 #
@@ -24,7 +26,7 @@ lib_archve: libtarget
 
 
 mod_list:
-	@echo  OBJS_C+= '$$(OBJ_CTL_C)'  >> $(MAKENAME)
+	@echo  '$(OBJS_LIST)+= $$(OBJ_CTL_C)' >> $(MAKENAME)
 	@echo  OBJ_CTL_C=  \\ >> $(MAKENAME)
 	@echo  $(OBJ_CTL_C)   >> $(MAKENAME)
 	@echo   >> $(MAKENAME)

@@ -26,6 +26,9 @@ endif
 
 OBJ_KEMOVIEW_GLUT= $(addsuffix .o,$(basename $(SRC_GLUT_C)) )
 
+OBJS_LIST= OBJS_C
+
+
 #
 #  ------------------------------------------------------------------
 #
@@ -41,7 +44,7 @@ lib_archve: libtarget
 	@echo '	''$$(AR)' '$$(ARFLUGS)' rcsv '$$@' '$$(OBJ_KEMOVIEW_GLUT)' >> $(MAKENAME)
 
 mod_list:
-	@echo  OBJS_C+= '$$(OBJ_KEMOVIEW_GLUT)' >> $(MAKENAME)
+	@echo  '$(OBJS_LIST)+= $$(OBJ_KEMOVIEW_GLUT)' >> $(MAKENAME)
 	@echo  OBJ_KEMOVIEW_GLUT=  \\ >> $(MAKENAME)
 	@echo  $(OBJ_KEMOVIEW_GLUT)   >> $(MAKENAME)
 	@echo   >> $(MAKENAME)

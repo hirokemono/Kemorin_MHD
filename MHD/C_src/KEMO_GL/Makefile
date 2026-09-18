@@ -8,6 +8,8 @@ SRC_C_GL = $(shell ls *.c)
 INC_C_GL = $(addsuffix .h,$(basename $(SRC_C_GL)) )
 OBJ_C_GL = $(addsuffix .o,$(basename $(SRC_C_GL)) )
 
+OBJS_LIST= OBJS_C
+
 #
 #  ------------------------------------------------------------------
 #
@@ -24,7 +26,7 @@ lib_archve: libtarget
 
 
 mod_list:
-	@echo  OBJS_C+= '$$(OBJ_C_GL)'  >> $(MAKENAME)
+	@echo  '$(OBJS_LIST)+= $$(OBJ_C_GL)'  >> $(MAKENAME)
 	@echo  OBJ_C_GL=  \\ >> $(MAKENAME)
 	@echo  $(OBJ_C_GL) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)

@@ -19,6 +19,9 @@ CURRENTDIR = $(shell pwd)
 SRC_MAKE_SHADER = $(MAKE_C_SHADER).f90
 SRC_SHADERS = $(shell ls *.vert *.frag)
 
+OBJS_LIST= OBJS_GTK3
+
+
 GLUT_INCLUDES= \
   $$(C_INCLUDE)   \
   $$(GTK3_CFLAGS) \
@@ -51,7 +54,7 @@ lib_archve: libtarget
 	@echo '	$$(AR) $$(ARFLUGS) rcsv $$@ $$(OBJ_SHADERS)' >> $(MAKENAME)
 
 mod_list:
-	@echo  OBJS_C+= '$$(OBJ_SHADERS)'  >> $(MAKENAME)
+	@echo  '$(OBJS_LIST)+= $$(OBJ_SHADERS)' >> $(MAKENAME)
 	@echo  OBJ_SHADERS=  \\ >> $(MAKENAME)
 	@echo  $(OBJ_SHADERS)   >> $(MAKENAME)
 	@echo   >> $(MAKENAME)

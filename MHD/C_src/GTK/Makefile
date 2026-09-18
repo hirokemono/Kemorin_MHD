@@ -8,6 +8,8 @@ SRC_GTK_C = $(shell ls *.c)
 INC_GTK_C = $(addsuffix .h,$(basename $(SRC_GTK_C)) )
 OBJ_GTK_C = $(addsuffix .o,$(basename $(SRC_GTK_C)) )
 
+OBJS_LIST= OBJS_GTK3
+
 #
 #  ------------------------------------------------------------------
 #
@@ -24,7 +26,7 @@ lib_archve: libtarget
 
 
 mod_list:
-	@echo  OBJS_C+= '$$(OBJ_GTK_C)'  >> $(MAKENAME)
+	@echo  '$(OBJS_LIST)+= $$(OBJ_GTK_C)'  >> $(MAKENAME)
 	@echo  OBJ_GTK_C=  \\ >> $(MAKENAME)
 	@echo  $(OBJ_GTK_C)   >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
