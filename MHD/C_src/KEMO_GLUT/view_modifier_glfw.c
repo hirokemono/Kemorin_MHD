@@ -105,7 +105,6 @@ void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
         begin[0] = begin_right[0];
         begin[1] = begin_right[1];
 	};
-	
 	if (button_function == ZOOM){
 		factor = -0.5*(ypos-begin[1]);
 		kemoview_zooming(factor, kemoview_GLFW);
@@ -123,8 +122,8 @@ void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
 		gTrackBallRotation[2] = ZERO;
 		gTrackBallRotation[3] = ZERO;
 		
-		kemoview_startTrackball( begin[0], (-begin[1]), kemoview_GLFW);
-		kemoview_rollToTrackball( xpos, (-ypos), kemoview_GLFW);
+		kemoview_startTrackball(begin[0], (-begin[1]), kemoview_GLFW);
+		kemoview_rollToTrackball(xpos, (-ypos), kemoview_GLFW);
 		kemoview_drugging_addToRotationTrackball(kemoview_GLFW);
 	}
 	else if (button_function == SCALE){
@@ -156,6 +155,8 @@ void mousePosCB(GLFWwindow *window, double xpos, double ypos) {
 		begin_right[0] = xpos;
 		begin_right[1] = ypos;
 	};
+
+    draw_fast_gl(kemoGL_GLFW);
 	return;
 }
 
@@ -275,9 +276,7 @@ static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int
 		current_scale = current_scale * factor;
 		kemoview_set_view_parameter(ISET_SCALE, 0, current_scale, kemoview_GLFW);
  	};
-	
     draw_fast_gl(kemoGL_GLFW);
-	glfwSwapBuffers(window);
 	return;
 }
 

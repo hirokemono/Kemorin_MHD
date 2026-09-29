@@ -295,7 +295,7 @@ GtkWidget * init_viewmatrix_menu_expander(struct kemoviewer_gl_type *kemo_gl,
 	g_signal_connect(view_menu->spin_rotation_x, "value-changed", 
 					 G_CALLBACK(spin_x_CB), (gpointer) kemo_gl);
 	view_menu->spin_rotation_y = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_rotation_y), 0, 3);
-	g_signal_connect(view_menu->spin_rotation_y, "value-changed", 
+	g_signal_connect(view_menu->spin_rotation_y, "value-changed",
 					 G_CALLBACK(spin_y_CB), (gpointer) kemo_gl);
 	view_menu->spin_rotation_z = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_rotation_z), 0, 3);
 	g_signal_connect(view_menu->spin_rotation_z, "value-changed", 

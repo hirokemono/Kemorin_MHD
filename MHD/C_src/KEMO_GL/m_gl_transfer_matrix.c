@@ -852,13 +852,13 @@ void gl_startTrackball(double x, double y, struct view_element *view){
 };
 /* calculated rotation based on current mouse position */
 void gl_rollToTrackball(double x, double y, struct view_element *view){
-	rollToTrackball_c (x, y, view->rotate_dragging);
+	rollToTrackball_c(x, y, view->rotate_dragging);
 	return;
 };
 /* add a GL rotation (dA) to an existing GL rotation (A) */
 void gl_drag_addToRotationTrackball(struct view_element *view){
 	if (view->rotate_dragging[0] != ZERO)
-    addToRotationTrackball_c (view->rotate_dragging, view->rotation);
+    addToRotationTrackball_c(view->rotate_dragging, view->rotation);
 	view->rotate_dragging [0] = ZERO;
 	view->rotate_dragging [1] = ZERO;
 	view->rotate_dragging [2] = ZERO;

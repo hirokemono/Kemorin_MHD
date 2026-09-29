@@ -28,11 +28,11 @@ double draw_rotate_views_lc(GLFWwindow *glfw_win,
         kemoview_set_view_integer(ISET_ROTATE_INCREMENT, (i*inc_deg),
                                   kemo_gl->kemoview_data);
         
-        gettimeofday( &startwtime, NULL );
+        gettimeofday(&startwtime, NULL);
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
         kemoview_modify_anaglyph(kemo_gl);
         glfwSwapBuffers(glfw_win);
-        gettimeofday(&endwtime, NULL );
+        gettimeofday(&endwtime, NULL);
         seq_time = (double)( ( endwtime.tv_usec - startwtime.tv_usec ) / 1.0e6
                              + endwtime.tv_sec - startwtime.tv_sec );
         accum_time = accum_time + seq_time;
