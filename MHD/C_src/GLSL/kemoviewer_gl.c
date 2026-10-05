@@ -109,6 +109,15 @@ struct gl_texure_image * kemoview_get_gl_buffer_to_bmp(struct kemoviewer_type *k
     return image_t;
 };
 
+struct gl_texure_image * kemoview_sel_anaglyph_gl_buf_to_rgb(struct kemoviewer_type *kemo_sgl,
+                                                             struct kemoview_VAOs *kemo_VAOs,
+                                                             struct kemoview_shaders *kemo_shaders){
+    struct gl_texure_image *image_t = select_anaglyph_to_rgb_gl(kemo_sgl,
+                                                                kemo_VAOs,
+                                                                kemo_shaders);
+    return image_t;
+};
+
 void kemoview_add_quilt_img(int istep_quilt, struct kemoviewer_type *kemo_sgl,
                             struct kemoview_VAOs *kemo_VAOs,
                             struct kemoview_shaders *kemo_shaders,

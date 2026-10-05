@@ -44,5 +44,9 @@ void select_modify_anaglyph(struct kemoviewer_type *kemoview,
                             struct kemoview_VAOs *kemo_VAOs,
                             struct kemoview_shaders *kemo_shaders);
 
+struct gl_texure_image * select_anaglyph_to_rgb_gl(struct kemoviewer_type *kemoview,
+                                                   struct kemoview_VAOs *kemo_VAOs,
+                                                   struct kemoview_shaders *kemo_shaders);
+
 #endif /* KEMOVIEW_GL_DRAW_OBJECTS_ */
 

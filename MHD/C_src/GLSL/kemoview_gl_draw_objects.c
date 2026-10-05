@@ -109,3 +109,16 @@ void select_modify_anaglyph(struct kemoviewer_type *kemoview,
         update_draw_objects_gl3(kemoview, kemo_VAOs, kemo_shaders);
     }
 };
+
+struct gl_texure_image * select_anaglyph_to_rgb_gl(struct kemoviewer_type *kemoview,
+                                                   struct kemoview_VAOs *kemo_VAOs,
+                                                   struct kemoview_shaders *kemo_shaders){
+    struct gl_texure_image *render_image;
+    if(kemoview->view_s->iflag_view_type == VIEW_STEREO){
+        render_image = draw_anaglyph_to_rgb_gl(kemoview, kemo_VAOs, kemo_shaders);
+    }else{
+        render_image = draw_objects_to_rgb_gl(kemoview, kemo_VAOs, kemo_shaders);
+    }
+    return render_image;
+};
+

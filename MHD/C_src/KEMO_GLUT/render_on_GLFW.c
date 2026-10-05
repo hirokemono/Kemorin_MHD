@@ -199,3 +199,11 @@ void write_evolution_views(GLFWwindow *glfw_win,
     glfwSwapBuffers(glfw_win);
 	return;
 };
+
+struct gl_texure_image * sel_draw_GLFW_anaglyph_to_rgb(struct kemoviewer_gl_type *kemo_gl){
+    struct gl_texure_image *render_image;
+    render_image = kemoview_sel_anaglyph_gl_buf_to_rgb(kemo_gl->kemoview_data,
+                                                       kemo_gl->kemo_VAOs,
+                                                       kemo_gl->kemo_shaders);
+    return render_image;
+};

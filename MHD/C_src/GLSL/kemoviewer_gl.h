@@ -59,6 +59,9 @@ struct kemoviewer_gl_type{
     struct gl_texure_image * kemoview_get_gl_buffer_to_bmp(struct kemoviewer_type *kemo_sgl,
                                                            struct kemoview_VAOs *kemo_VAOs,
                                                            struct kemoview_shaders *kemo_shaders);
+    struct gl_texure_image * kemoview_sel_anaglyph_gl_buf_to_rgb(struct kemoviewer_type *kemo_sgl,
+                                                                 struct kemoview_VAOs *kemo_VAOs,
+                                                                 struct kemoview_shaders *kemo_shaders);
     void kemoview_add_quilt_img(int istep_quilt, struct kemoviewer_type *kemo_sgl,
                                 struct kemoview_VAOs *kemo_VAOs,
                                 struct kemoview_shaders *kemo_shaders,
