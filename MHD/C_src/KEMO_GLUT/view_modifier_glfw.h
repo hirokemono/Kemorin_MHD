@@ -50,4 +50,8 @@ void sel_write_rotate_views(struct kemoviewer_gl_type *kemo_gl,
 void sel_write_evolution_views(struct kemoviewer_gl_type *kemo_gl,
                                int iflag_img, struct kv_string *image_prefix,
                                int i_fps, int ist_udt, int ied_udt, int inc_udt);
+
+struct gl_texure_image * sel_draw_GLFW_buffer_to_rgb(struct kemoviewer_gl_type *kemo_gl);
+struct gl_texure_image * sel_draw_GLFW_anaglyph_to_rgb(struct kemoviewer_gl_type *kemo_gl);
+
 #endif

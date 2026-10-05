@@ -48,5 +48,4 @@ void write_evolution_views(GLFWwindow *glfw_win,
                            int iflag_img, struct kv_string *image_prefix,
                            int npix_x, int npix_y, unsigned char *image);
 
-struct gl_texure_image * sel_draw_GLFW_anaglyph_to_rgb(struct kemoviewer_gl_type *kemo_gl);
 #endif /* RENDER_ON_GLFW_ */
