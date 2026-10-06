@@ -251,6 +251,10 @@
 #define COASTLINE_TUBE         48
 #define IMAGE_FORMAT_FLAG      51
 
+#define X_AXIS 1
+#define Y_AXIS 2
+#define Z_AXIS 3
+
 #define EPSILON  1.e-9
 
 #define OFF 0

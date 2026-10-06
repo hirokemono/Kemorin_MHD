@@ -9,10 +9,6 @@
 
 #include "kemoview_gtk_rotation_menu.h"
 
-#define X_AXIS 1
-#define Y_AXIS 2
-#define Z_AXIS 3
-
 struct rotation_gtk_menu * init_rotation_menu_box(void){
 	struct rotation_gtk_menu *rot_gmenu
 			= (struct rotation_gtk_menu *)  malloc(sizeof(struct rotation_gtk_menu));
