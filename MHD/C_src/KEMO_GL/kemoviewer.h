@@ -608,6 +608,8 @@ extern "C" {
 
     struct kv_string * kemoview_get_group_name(struct kemoviewer_type *kemoviewer,
                                                int selected, int i);
+/* Basic text treatment */
+    int kemoview_compare_string(int length, const char *string1, const char *string2);
 
 #ifdef __cplusplus
 }
