@@ -88,6 +88,7 @@
       use input_control_sph_MHD
       use sph_SGS_mhd_monitor_data_IO
       use forth_fdm_node_coefs
+      use t_tc_region_monitor
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(FEM_mesh_field_data), intent(in) :: FEM_dat
@@ -206,6 +207,12 @@
      &    SPH_WK%r_2nd, SPH_WK%trans_p, FEM_dat%field,                  &
      &    SPH_SGS, SPH_MHD, SPH_WK%MHD_mats, SPH_WK%monitor,            &
      &    m_SR%SR_sig, m_SR%SR_r)
+!
+      call init_tc_region_monitor(SPH_MHD%sph, SPH_WK%trans_p%leg,      &
+     &                            SPH_WK%monitor%tc_mon)
+      call output_tc_region_monitor(MHD_step%time_d, SPH_MHD%sph,       &
+     &    SPH_MHD%ipol, SPH_MHD%fld, SPH_WK%trns_WK%trns_MHD,           &
+     &    SPH_WK%monitor%tc_mon)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
       call calypso_mpi_barrier
 !
@@ -227,6 +234,7 @@
       use sph_SGS_MHD_rst_IO_control
       use output_viz_file_control
       use sph_SGS_mhd_monitor_data_IO
+      use t_tc_region_monitor
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
 !
@@ -267,6 +275,12 @@
      &    SPH_MHD%fld, m_SR%SR_sig, m_SR%SR_r)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+4)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+1)
+!
+!*  -----------  regional energy monitor (uses rtp fields above) ------
+!*
+      call output_tc_region_monitor(MHD_step%time_d, SPH_MHD%sph,       &
+     &    SPH_MHD%ipol, SPH_MHD%fld, SPH_WK%trns_WK%trns_MHD,           &
+     &    SPH_WK%monitor%tc_mon)
 !
 !* ----  Update fields after time evolution ------------------------=
 !*

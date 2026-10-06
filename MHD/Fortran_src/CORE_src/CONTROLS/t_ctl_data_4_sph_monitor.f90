@@ -69,6 +69,10 @@
 !!    begin sph_dipolarity_ctl
 !!      ...
 !!    end sph_dipolarity_ctl
+!!
+!!    begin tc_region_monitor_ctl
+!!      ...
+!!    end tc_region_monitor_ctl
 !!  end sph_monitor_ctl
 !!
 !! -----------------------------------------------------------------
@@ -87,6 +91,7 @@
       use t_ctl_data_mid_equator
       use t_ctl_data_dynamobench
       use t_ctl_data_sph_dipolarity
+      use t_ctl_data_tc_region_monitor
       use skip_comment_f
 !
       implicit  none
@@ -124,6 +129,9 @@
 !
 !>        Structure for dipolarity setting
         type(sph_dipolarity_control) :: fdip_ctl
+!
+!>        Structure for regional energy monitor setting
+        type(tc_region_monitor_control) :: tc_ctl
 !
 !>        Structure for volume spectrum file prefix
         type(read_character_item) :: volume_pwr_spectr_prefix
@@ -187,6 +195,7 @@
       call dealloc_gauss_spectr_control(smonitor_ctl%g_pwr)
       call reset_ctl_data_dynamobench(smonitor_ctl%dbench_ctl)
       call dealloc_sph_dipolarity_ctl(smonitor_ctl%fdip_ctl)
+      call dealloc_tc_region_monitor_ctl(smonitor_ctl%tc_ctl)
 !
       smonitor_ctl%volume_average_prefix%iflag =         0
       smonitor_ctl%volume_pwr_spectr_prefix%iflag =      0

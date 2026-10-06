@@ -102,6 +102,7 @@
       use cal_CMB_dipolarity
       use cal_typical_scale
       use pick_CMB_average
+      use t_tc_region_monitor
 !
       type(sph_monitor_control), intent(in) :: smonitor_ctl
       type(MHD_BC_lists), intent(in) :: MHD_BC
@@ -155,6 +156,9 @@
      &    smonitor_ctl%CMB_ave_file_format_ctl, monitor%ave_CMB)
 !
       call set_control_circles_def(smonitor_ctl, monitor%mul_circle)
+!
+      call set_ctl_tc_region_monitor(smonitor_ctl%tc_ctl,               &
+     &                               monitor%tc_mon)
 !
       end subroutine set_control_SPH_MHD_monitors
 !

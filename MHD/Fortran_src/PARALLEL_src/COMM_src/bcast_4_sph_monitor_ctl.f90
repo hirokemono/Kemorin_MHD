@@ -27,6 +27,7 @@
       private :: bcast_each_vol_spectr_ctl, bcast_layerd_spectr_ctl
       private :: bcast_mid_eq_monitor_ctl
       private :: bcast_ctl_data_dynamobench, bcast_sph_dipolarity_ctl
+      private :: bcast_tc_region_monitor_ctl
 !
 ! -----------------------------------------------------------------------
 !
@@ -74,6 +75,7 @@
       call bcast_layerd_spectr_ctl(smonitor_ctl%lp_ctl)
 !
       call bcast_sph_dipolarity_ctl(smonitor_ctl%fdip_ctl)
+      call bcast_tc_region_monitor_ctl(smonitor_ctl%tc_ctl)
       call bcast_ctl_data_dynamobench(smonitor_ctl%dbench_ctl)
 !
 !
@@ -309,6 +311,30 @@
       call calypso_mpi_bcast_one_int(dbench_ctl%i_dynamobench_ctl, 0)
 !
       end subroutine bcast_ctl_data_dynamobench
+!
+! -----------------------------------------------------------------------
+!
+      subroutine bcast_tc_region_monitor_ctl(tc_ctl)
+!
+      use transfer_to_long_integers
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use bcast_control_arrays
+      use t_ctl_data_tc_region_monitor
+!
+      type(tc_region_monitor_control), intent(inout) :: tc_ctl
+!
+!
+      call bcast_ctl_type_c1(tc_ctl%tc_monitor_file_prefix_ctl)
+      call bcast_ctl_type_i1(tc_ctl%i_step_tc_monitor_ctl)
+      call bcast_ctl_type_r1(tc_ctl%r_split_ctl)
+      call bcast_ctl_array_r1(tc_ctl%shear_fit_radii_ctl)
+!
+      call calypso_mpi_bcast_character                                  &
+     &   (tc_ctl%block_name, cast_long(kchara), 0)
+      call calypso_mpi_bcast_one_int(tc_ctl%i_tc_region_monitor_ctl, 0)
+!
+      end subroutine bcast_tc_region_monitor_ctl
 !
 ! -----------------------------------------------------------------------
 !

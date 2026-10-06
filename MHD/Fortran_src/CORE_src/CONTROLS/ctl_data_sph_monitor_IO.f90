@@ -95,6 +95,7 @@
       use t_ctl_data_gauss_coefs
       use t_ctl_data_mid_equator
       use t_ctl_data_sph_dipolarity
+      use t_ctl_data_tc_region_monitor
       use t_ctl_data_4_sph_monitor
       use skip_comment_f
 !
@@ -112,6 +113,8 @@
      &            :: hd_pick_sph_ctl =     'pickup_spectr_ctl'
       character(len=kchara), parameter, private                         &
      &            :: hd_sph_dipolarity_ctl = 'sph_dipolarity_ctl'
+      character(len=kchara), parameter, private                         &
+     &            :: hd_tc_region_monitor = 'tc_region_monitor_ctl'
       character(len=kchara), parameter, private                         &
      &            :: hd_field_on_circle_ctl = 'fields_on_circle_ctl'
       character(len=kchara), parameter, private                         &
@@ -205,6 +208,8 @@
      &                              smonitor_ctl%lp_ctl, c_buf)
         call read_sph_dipolarity_ctl(id_control,                        &
      &      hd_sph_dipolarity_ctl, smonitor_ctl%fdip_ctl, c_buf)
+        call read_tc_region_monitor_ctl(id_control,                     &
+     &      hd_tc_region_monitor, smonitor_ctl%tc_ctl, c_buf)
         call read_ctl_data_dynamobench(id_control,                      &
      &      hd_dynamobench_ctl, smonitor_ctl%dbench_ctl, c_buf)
 !
@@ -336,6 +341,8 @@
 !
       call write_sph_dipolarity_ctl(id_control,                         &
      &                              smonitor_ctl%fdip_ctl, level)
+      call write_tc_region_monitor_ctl(id_control,                      &
+     &                                 smonitor_ctl%tc_ctl, level)
 !
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    smonitor_ctl%heat_Nusselt_file_prefix)
@@ -390,6 +397,8 @@
      &                                   smonitor_ctl%lp_ctl)
       call init_sph_dipolarity_ctl_label(hd_sph_dipolarity_ctl,         &
      &                                   smonitor_ctl%fdip_ctl)
+      call init_tc_region_monitor_ctl_label(hd_tc_region_monitor,       &
+     &                                      smonitor_ctl%tc_ctl)
       call init_ctl_data_dynamobench_label(hd_dynamobench_ctl,          &
      &                                     smonitor_ctl%dbench_ctl)
 !

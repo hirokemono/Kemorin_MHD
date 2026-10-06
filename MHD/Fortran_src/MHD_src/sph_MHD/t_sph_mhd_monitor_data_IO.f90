@@ -47,6 +47,7 @@
       use t_field_on_circle
       use t_field_4_dynamobench
       use t_CMB_average_data
+      use t_tc_region_monitor
 !
       use pickup_sph_spectr_data
 !
@@ -104,6 +105,9 @@
         type(sph_mean_squares) :: lor_spectr
 !>        Work area of mean square data
         type(sph_mean_square_work) :: WK_lor_spectr
+!
+!>        Structure of regional energy monitor
+        type(tc_region_monitor) :: tc_mon
       end type sph_mhd_monitor_data
 !
 !  --------------------------------------------------------------------
