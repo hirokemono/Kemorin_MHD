@@ -88,15 +88,13 @@ static void rotation_save_CB(GtkButton *button, gpointer user_data){
 	
 	kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
 	id_image = kemoview_set_image_file_format_id(stripped_ext);
-	if(id_image < 0) {
-		id_image = rot_gmenu->id_fmt_rot;
-	};
+	if(id_image < 0){id_image = rot_gmenu->id_fmt_rot;};
 	if(id_image == 0) return;
 	kemoview_free_kvstring(stripped_ext);
 	kemoview_free_kvstring(filename);
 	
 	gtk_window_set_focus(GTK_WINDOW(window), NULL);
-    sel_write_rotate_views(kemo_gl, rot_gmenu->id_fmt_rot, file_prefix,
+    sel_write_rotate_views(kemo_gl, id_image, file_prefix,
                            rot_gmenu->i_FPS, rot_gmenu->iaxis_rot, rot_gmenu->inc_deg);
 	
 	return;
