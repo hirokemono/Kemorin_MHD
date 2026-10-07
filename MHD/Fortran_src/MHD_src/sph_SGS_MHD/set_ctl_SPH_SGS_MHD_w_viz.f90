@@ -271,6 +271,12 @@
      &    smonitor_ctl%CMB_ave_file_format_ctl, monitor%ave_CMB)
 !
       call set_control_circles_def(smonitor_ctl, monitor%mul_circle)
+      monitor%axial_mon%enabled =                                      &
+     &   smonitor_ctl%signed_axial_field_integral_prefix%iflag .gt. 0
+      if(monitor%axial_mon%enabled) then
+        monitor%axial_mon%file_prefix =                                &
+     &     smonitor_ctl%signed_axial_field_integral_prefix%charavalue
+      end if
 !
       call set_ctl_tc_region_monitor(smonitor_ctl%tc_ctl,               &
      &                               monitor%tc_mon)

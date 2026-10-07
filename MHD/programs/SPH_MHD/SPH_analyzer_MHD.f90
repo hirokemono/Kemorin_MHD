@@ -44,6 +44,7 @@
       use t_FEM_mesh_field_data
       use t_boundary_data_sph_MHD
       use t_work_SPH_MHD
+      use t_signed_axial_field_monitor
       use t_field_data_IO
       use t_mesh_SR
 !
@@ -182,6 +183,14 @@
      &    SPH_WK%r_2nd, SPH_WK%trans_p, FEM_dat%field, SPH_MHD,         &
      &    SPH_WK%MHD_mats, SPH_WK%monitor, m_SR%SR_sig, m_SR%SR_r)
 !
+      call init_signed_axial_monitor(SPH_MHD%sph,                      &
+     &    SPH_WK%trans_p%leg, SPH_WK%monitor%axial_mon)
+      if(output_IO_flag(MHD_step%time_d%i_time_step,                   &
+     &                  MHD_step%rms_step)) then
+        call output_signed_axial_monitor(MHD_step%time_d,             &
+     &      SPH_MHD%sph%sph_rtp, SPH_WK%trns_WK%trns_MHD,             &
+     &      SPH_WK%monitor%axial_mon)
+      end if
       call init_tc_region_monitor(SPH_MHD%sph, SPH_WK%trans_p%leg,      &
      &                            SPH_WK%monitor%tc_mon)
       call output_tc_region_monitor(MHD_step%time_d, SPH_MHD%sph,       &
@@ -249,6 +258,14 @@
      &    SPH_MHD%fld, m_SR%SR_sig, m_SR%SR_r)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+4)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+1)
+!
+!*  Signed axial field: sample before derived-field processing.
+      if(output_IO_flag(MHD_step%time_d%i_time_step,                   &
+     &                  MHD_step%rms_step)) then
+        call output_signed_axial_monitor(MHD_step%time_d,             &
+     &      SPH_MHD%sph%sph_rtp, SPH_WK%trns_WK%trns_MHD,             &
+     &      SPH_WK%monitor%axial_mon)
+      end if
 !
 !*  -----------  regional energy monitor (uses rtp fields above) ------
 !*

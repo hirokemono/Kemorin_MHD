@@ -50,6 +50,8 @@
       call calypso_mpi_bcast_one_int(smonitor_ctl%i_sph_monitor, 0)
 !
       call bcast_ctl_type_c1(smonitor_ctl%volume_average_prefix)
+      call bcast_ctl_type_c1                                         &
+     &   (smonitor_ctl%signed_axial_field_integral_prefix)
       call bcast_ctl_type_c1(smonitor_ctl%volume_pwr_spectr_prefix)
       call bcast_ctl_type_c1(smonitor_ctl%volume_work_spectr_prefix)
       call bcast_ctl_type_c1(smonitor_ctl%volume_pwr_spectr_format)

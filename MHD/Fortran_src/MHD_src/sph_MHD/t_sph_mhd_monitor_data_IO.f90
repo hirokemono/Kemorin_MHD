@@ -48,6 +48,7 @@
       use t_field_4_dynamobench
       use t_CMB_average_data
       use t_tc_region_monitor
+      use t_signed_axial_field_monitor
 !
       use pickup_sph_spectr_data
 !
@@ -108,6 +109,7 @@
 !
 !>        Structure of regional energy monitor
         type(tc_region_monitor) :: tc_mon
+        type(signed_axial_field_monitor) :: axial_mon
       end type sph_mhd_monitor_data
 !
 !  --------------------------------------------------------------------

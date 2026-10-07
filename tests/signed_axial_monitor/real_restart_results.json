@@ -1,0 +1,22 @@
+[
+  {
+    "run": 6,
+    "step": 312200000,
+    "time": 624.3999986075748,
+    "Mz": -1.2459447621218218,
+    "P_plus": 5.288182947543865,
+    "P_minus": 6.534127709665686,
+    "closure": 0.0,
+    "snapshot_validation": "PASS: snapshot quadrature agrees; maximum difference 1.0248690784919745e-11"
+  },
+  {
+    "run": 11,
+    "step": 320600000,
+    "time": 641.1999985651589,
+    "Mz": 5.464265518924214,
+    "P_plus": 11.079611938044025,
+    "P_minus": 5.615346419119813,
+    "closure": 2.6645352591003757e-15,
+    "snapshot_validation": "PASS: snapshot quadrature agrees; maximum difference 2.0610180229141406e-11"
+  }
+]

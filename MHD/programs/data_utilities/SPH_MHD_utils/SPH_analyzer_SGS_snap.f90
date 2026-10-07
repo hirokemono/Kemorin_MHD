@@ -45,6 +45,7 @@
       use t_work_SPH_MHD
       use t_mesh_SR
 !
+      use t_signed_axial_field_monitor
       implicit none
 !
 ! ----------------------------------------------------------------------
@@ -170,6 +171,9 @@
       call init_tc_region_monitor(SPH_MHD%sph, SPH_WK%trans_p%leg,      &
      &                            SPH_WK%monitor%tc_mon)
 !
+      call init_signed_axial_monitor(SPH_MHD%sph,                      &
+     &    SPH_WK%trans_p%leg, SPH_WK%monitor%axial_mon)
+!
       end subroutine SPH_init_SGS_snap
 !
 ! ----------------------------------------------------------------------
@@ -227,6 +231,13 @@
      &    SPH_WK%trans_p, SPH_MHD%ipol, SPH_WK%trns_WK, SPH_SGS,        &
      &    SPH_MHD%fld, m_SR%SR_sig, m_SR%SR_r)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+4)
+!
+      if(output_IO_flag(MHD_step%time_d%i_time_step,                   &
+     &                  MHD_step%rms_step)) then
+        call output_signed_axial_monitor(MHD_step%time_d,             &
+     &      SPH_MHD%sph%sph_rtp, SPH_WK%trns_WK%trns_MHD,             &
+     &      SPH_WK%monitor%axial_mon)
+      end if
 !
       call output_tc_region_monitor(MHD_step%time_d, SPH_MHD%sph,       &
      &    SPH_MHD%ipol, SPH_MHD%fld, SPH_WK%trns_WK%trns_MHD,           &

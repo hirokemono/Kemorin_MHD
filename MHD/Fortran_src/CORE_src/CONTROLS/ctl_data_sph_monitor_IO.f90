@@ -125,6 +125,8 @@
       character(len=kchara), parameter, private                         &
      &           :: hd_voume_ave_head = 'volume_average_prefix'
       character(len=kchara), parameter, private                         &
+     &    :: hd_signed_axial = 'signed_axial_field_integral_prefix'
+      character(len=kchara), parameter, private                         &
      &           :: hd_voume_rms_head = 'volume_pwr_spectr_prefix'
       character(len=kchara), parameter, private                         &
      &            :: hd_vol_lor_wk =    'volume_work_spectr_prefix'
@@ -252,6 +254,8 @@
 !
         call read_chara_ctl_type(c_buf, hd_voume_ave_head,              &
      &      smonitor_ctl%volume_average_prefix)
+        call read_chara_ctl_type(c_buf, hd_signed_axial,               &
+     &      smonitor_ctl%signed_axial_field_integral_prefix)
         call read_chara_ctl_type(c_buf, hd_voume_rms_head,              &
      &      smonitor_ctl%volume_pwr_spectr_prefix)
         call read_chara_ctl_type(c_buf, hd_vol_lor_wk,                  &
@@ -303,6 +307,7 @@
       maxlen = max(maxlen, len_trim(hd_CMB_ave_file_prefix))
       maxlen = max(maxlen, len_trim(hd_CMB_ave_file_format))
       maxlen = max(maxlen, len_trim(hd_voume_ave_head))
+      maxlen = max(maxlen, len_trim(hd_signed_axial))
       maxlen = max(maxlen, len_trim(hd_voume_rms_head))
       maxlen = max(maxlen, len_trim(hd_vol_lor_wk))
       maxlen = max(maxlen, len_trim(hd_degree_spectr_switch))
@@ -314,6 +319,8 @@
      &                                 smonitor_ctl%block_name)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    smonitor_ctl%volume_average_prefix)
+      call write_chara_ctl_type(id_control, level, maxlen,              &
+     &    smonitor_ctl%signed_axial_field_integral_prefix)
       call write_chara_ctl_type(id_control, level, maxlen,              &
      &    smonitor_ctl%volume_pwr_spectr_prefix)
       call write_chara_ctl_type(id_control, level, maxlen,              &

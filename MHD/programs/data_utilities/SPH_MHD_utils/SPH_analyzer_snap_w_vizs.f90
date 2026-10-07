@@ -43,6 +43,7 @@
       use t_sph_mhd_monitor_data_IO
       use t_mesh_SR
 !
+      use t_signed_axial_field_monitor
       implicit none
 !
 ! ----------------------------------------------------------------------
@@ -150,6 +151,9 @@
      &    SPH_WK%MHD_mats, SPH_WK%monitor, m_SR%SR_sig, m_SR%SR_r)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
+      call init_signed_axial_monitor(SPH_MHD%sph,                      &
+     &    SPH_WK%trans_p%leg, SPH_WK%monitor%axial_mon)
+!
       end subroutine SPH_init_sph_snap_vizs
 !
 ! ----------------------------------------------------------------------
@@ -204,6 +208,13 @@
      &    SPH_model, SPH_WK%trans_p, SPH_MHD%ipol, SPH_WK%trns_WK,      &
      &    SPH_MHD%fld, m_SR%SR_sig, m_SR%SR_r)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+4)
+!
+      if(output_IO_flag(MHD_step%time_d%i_time_step,                   &
+     &                  MHD_step%rms_step)) then
+        call output_signed_axial_monitor(MHD_step%time_d,             &
+     &      SPH_MHD%sph%sph_rtp, SPH_WK%trns_WK%trns_MHD,             &
+     &      SPH_WK%monitor%axial_mon)
+      end if
 !
 !* ----  Update fields after time evolution ------------------------=
 !*

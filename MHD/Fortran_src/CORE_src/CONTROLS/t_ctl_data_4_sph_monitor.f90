@@ -137,6 +137,8 @@
         type(read_character_item) :: volume_pwr_spectr_prefix
 !>        Structure for volume average file prefix
         type(read_character_item) :: volume_average_prefix
+!>        Optional signed axial magnetic-field volume integrals
+        type(read_character_item) :: signed_axial_field_integral_prefix
 !>        Structure for volume average of work of Lorentz force file prefix
         type(read_character_item) :: volume_work_spectr_prefix
 !
@@ -198,6 +200,7 @@
       call dealloc_tc_region_monitor_ctl(smonitor_ctl%tc_ctl)
 !
       smonitor_ctl%volume_average_prefix%iflag =         0
+      smonitor_ctl%signed_axial_field_integral_prefix%iflag = 0
       smonitor_ctl%volume_pwr_spectr_prefix%iflag =      0
       smonitor_ctl%volume_work_spectr_prefix%iflag =     0
       smonitor_ctl%volume_pwr_spectr_format%iflag =      0
