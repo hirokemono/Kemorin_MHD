@@ -62,7 +62,6 @@ void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
     kemoview_free_kvstring(file_prefix);
 	
 	iflag_datatype = kemoview_open_data(filename, kemo_gl->kemoview_data);
-    kemoview_free_kvstring(filename);
 	
     init_psf_window(kemo_gl, mbot->psf_gmenu, main_window,    mbot->itemTEvo);
     init_tracer_window(kemo_gl, mbot->tracer_gmenu, main_window, mbot->itemTEvo);
@@ -100,6 +99,7 @@ static void open_file_CB(GtkButton *button, gpointer user_data){
     filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
     
     open_kemoviewer_file_glfw(kemo_gl, filename, mbot, main_window);
+    kemoview_free_kvstring(filename);
     return;
 };
 
