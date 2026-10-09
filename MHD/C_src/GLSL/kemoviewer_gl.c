@@ -43,8 +43,8 @@ void kemoview_gl_background_color(struct kemoviewer_type *kemoviewer){
 void kemoview_init_gl_background_color(struct kemoviewer_type *kemoviewer){
     init_bg_color_kemoview(kemoviewer->kemo_mesh->bg_color,
                            kemoviewer->kemo_mesh->text_color);
-    set_bg_color_kemoview(kemoviewer->kemo_mesh->bg_color,
-                          kemoviewer->kemo_mesh->text_color);
+    set_text_color_kemoview(kemoviewer->kemo_mesh->bg_color,
+                            kemoviewer->kemo_mesh->text_color);
     return;
 };
 

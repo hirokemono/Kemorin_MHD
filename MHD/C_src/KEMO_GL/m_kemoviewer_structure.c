@@ -90,14 +90,14 @@ int kemoview_get_number_of_threads(struct kemoviewer_type *kemoviewer){
 void kemoview_init_background_color(struct kemoviewer_type *kemoviewer){
     init_bg_color_kemoview(kemoviewer->kemo_mesh->bg_color,
                            kemoviewer->kemo_mesh->text_color);
-    set_bg_color_kemoview(kemoviewer->kemo_mesh->bg_color,
-                          kemoviewer->kemo_mesh->text_color);
+    set_text_color_kemoview(kemoviewer->kemo_mesh->bg_color,
+                            kemoviewer->kemo_mesh->text_color);
 };
 void kemoview_set_background_color(float color[4],
                                    struct kemoviewer_type *kemoviewer) {
     copy_rgba_color_c(color, kemoviewer->kemo_mesh->bg_color);
-    set_bg_color_kemoview(kemoviewer->kemo_mesh->bg_color,
-                          kemoviewer->kemo_mesh->text_color);
+    set_text_color_kemoview(kemoviewer->kemo_mesh->bg_color,
+                            kemoviewer->kemo_mesh->text_color);
 };
 void kemoview_get_background_color(struct kemoviewer_type *kemoviewer,
                                    float color[4]){

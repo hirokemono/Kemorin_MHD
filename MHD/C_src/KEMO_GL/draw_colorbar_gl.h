@@ -26,7 +26,7 @@ struct initial_cube_lighting{
 
 /* prototypes */
 void init_bg_color_kemoview(float bg_color[4], float text_color[4]);
-void set_bg_color_kemoview(float bg_color[4], float text_color[4]);
+void set_text_color_kemoview(float bg_color[4], float text_color[4]);
 
 struct initial_cube_lighting * init_inital_cube_lighting(void);
 

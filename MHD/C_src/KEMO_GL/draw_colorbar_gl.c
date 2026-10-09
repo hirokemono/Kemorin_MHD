@@ -13,7 +13,7 @@ static const float  white2[4] = {0.4, 0.4, 0.4, 1.0};
 static const float  white3[4] = {0.2, 0.2, 0.2, 1.0};
 static const float  shine[1] = {30.0};
 
-void set_bg_color_kemoview(float bg_color[4], float text_color[4]){
+void set_text_color_kemoview(float bg_color[4], float text_color[4]){
     int i;
     
     for(i=0;i<3;i++){
