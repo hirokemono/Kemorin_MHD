@@ -1,0 +1,13 @@
+Radial_layers, Truncation
+              63              47
+ICB_id, CMB_id
+               1              63
+Lower_boundary_ID, Lower_boundary_radius
+               1   2.493069173807303E-002
+Upper_boundary_ID, Upper_boundary_radius
+              63   1.000000000000000E+000
+Number_of_fields, Number_of_components
+               3               7
+    3    3    1
+t_step    time    K_ene_pol    K_ene_tor    K_ene    vorticity_pol    vorticity_tor    vorticity    pressure    
+               1   1.000000000000000E-004   1.416582985898810E+004   3.261489806432701E+002   1.449197883963137E+004   7.512467298449457E+005   1.395249620256683E+007   1.470374293241177E+007   0.000000000000000E+000

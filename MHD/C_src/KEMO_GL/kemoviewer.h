@@ -330,9 +330,10 @@ extern "C" {
 	
 /* Lighting parameters */
     void kemoview_init_lighting(struct kemoviewer_type *kemoviewer);
-	void kemoview_alloc_phong_light_list(int num, struct kemoviewer_type *kemoviewer);
-	void kemoview_delete_phong_light_list(int i_delete, struct kemoviewer_type *kemoviewer);
-	void kemoview_add_phong_light_list(int i_add, float r, float t, float p,
+    void kemoview_alloc_phong_light_list(int num, struct kemoviewer_type *kemoviewer);
+    void kemoview_realloc_phong_light_list(int num, struct kemoviewer_type *kemoviewer);
+    void kemoview_delete_phong_light_list(int i_delete, struct kemoviewer_type *kemoviewer);
+    void kemoview_add_phong_light_list(int i_add, float r, float t, float p,
                                        struct kemoviewer_type *kemoviewer);
 	
 	void kemoview_init_phong_light_list(struct kemoviewer_type *kemoviewer);

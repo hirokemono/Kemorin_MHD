@@ -261,6 +261,9 @@ void kemoview_init_lighting(struct kemoviewer_type *kemoviewer){
 void kemoview_alloc_phong_light_list(int num, struct kemoviewer_type *kemoviewer){
 	alloc_phong_light_list(kemoviewer->kemo_buffers->kemo_lights, num);
 };
+void kemoview_realloc_phong_light_list(int num, struct kemoviewer_type *kemoviewer){
+	realloc_phong_light_list(kemoviewer->kemo_buffers->kemo_lights, num);
+};
 
 void kemoview_delete_phong_light_list(int i_delete, struct kemoviewer_type *kemoviewer){
 	delete_phong_light_list(kemoviewer->kemo_buffers->kemo_lights, i_delete);

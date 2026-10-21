@@ -53,6 +53,7 @@ static void sync_phong_light_position_from_list(struct kemoviewer_type *kemo_sgl
 	int num = count_real3_clist(light_vws->light_rtp_vws->r3_clist_gtk);
 	dealloc_phong_light_list(light_vws->lights_gtk);
 	alloc_phong_light_list(light_vws->lights_gtk, num);
+    kemoview_realloc_phong_light_list(num, kemo_sgl);
 	for(i=0;i<num;i++){
 		set_from_real3_clist_at_index(i, light_vws->light_rtp_vws->r3_clist_gtk,
 					&r, &t, &p);
