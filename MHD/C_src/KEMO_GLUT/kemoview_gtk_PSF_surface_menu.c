@@ -74,7 +74,7 @@ static void kemoview_gtk_surfcolorsel(struct kemoviewer_gl_type *kemo_gl,
 	return;
 }
 
-static int load_texture_file_gtk(GtkWidget *window, struct kv_string *file_prefix){
+int load_texture_file_gtk3(GtkWidget *window, struct kv_string *file_prefix){
     struct kv_string *stripped_ext;
 	int id_img;
 	struct kv_string *filename= kemoview_read_file_panel(window);
@@ -94,7 +94,7 @@ static void load_texture_handler(struct kemoviewer_gl_type *kemo_gl,
                                  GtkWidget *window){
 	int id_image;
     struct kv_string *image_prefix = kemoview_alloc_kvstring();
-	id_image = load_texture_file_gtk(window, image_prefix);
+	id_image = load_texture_file_gtk3(window, image_prefix);
 	
 	if(id_image == SAVE_PNG || id_image == SAVE_BMP){
         kemoview_release_PSF_gl_texture(kemo_gl->kemoview_data, kemo_gl);

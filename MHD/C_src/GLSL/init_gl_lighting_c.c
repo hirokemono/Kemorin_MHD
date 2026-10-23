@@ -5,6 +5,7 @@
 
 
 void set_gl_bg_color(float bg_color[4]){
+    printf("glClearColor %f %f %f \n", bg_color[0], bg_color[1], bg_color[2]);
     glClearColor(bg_color[0], bg_color[1], bg_color[2], bg_color[3]);
     return;
 };

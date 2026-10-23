@@ -36,6 +36,7 @@ struct psf_surface_gtk_menu{
 
 
 /*  prototypes */
+int load_texture_file_gtk3(GtkWidget *window, struct kv_string *file_prefix);
 
 void set_gtk_surface_menu_values(struct kemoviewer_gl_type *kemo_gl,
                                  struct psf_surface_gtk_menu *gtk_psf_surface);
