@@ -23,9 +23,13 @@
 !!                   - z*s*s*s *utur + s*s*s*s *utut + 0
 !!                   + 0 + 0 + 0)
  ***********************************************************************/
+#ifndef CONVERT_SPH_TENSOR_2_XYZ_C_
+#define CONVERT_SPH_TENSOR_2_XYZ_C_
+
 
 #include <math.h>
 
+/* prototypes */
 void sph_xx_sym_tensor_by_sph_c(int numnod, const double *theta, const double *phi, 
                                 const double *st_sph, double *t_xx);
 void sph_xy_sym_tensor_by_sph_c(int numnod, const double *theta, const double *phi, 
@@ -36,5 +40,7 @@ void sph_yy_sym_tensor_by_sph_c(int numnod, const double *theta, const double *p
                                 const double *st_sph, double *t_yy);
 void sph_yz_sym_tensor_by_sph_c(int numnod, const double *theta, const double *phi, 
                                 const double *st_sph, double *t_yz);
-void sph_zz_sym_tensor_by_xyz_c(int numnod, const double *theta, const double *phi, 
+void sph_zz_sym_tensor_by_sph_c(int numnod, const double *theta, const double *phi, 
                                 const double *st_sph, double *t_zz);
+
+#endif /* CONVERT_SPH_TENSOR_2_XYZ_C_ */

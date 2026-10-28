@@ -38,8 +38,8 @@
 !!         real(kind=kreal), intent(inout) :: t_tp(numnod)
 !!
 !!   urut =         uzus
-!!   upur = (as) * ( z* upuz - s* usup)
-!!   utup = (as) * ( s* upuz + z* usup)
+!!   upur = (ar) * (-s* usup + z* upuz)
+!!   utup = (ar) * ( z* usup + s* upuz)
 !!@endverbatim
 !!
 !!@n @param  np_smp   Number of SMP processes

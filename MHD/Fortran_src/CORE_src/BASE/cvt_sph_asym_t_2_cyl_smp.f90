@@ -37,9 +37,9 @@
 !!         real(kind=kreal), intent(inout) :: t_zs(numnod)
 !!         real(kind=kreal), intent(inout) :: t_pz(numnod)
 !!
-!!   urut =         uzus
-!!   upur = (as) * ( z* upuz - s* usup)
-!!   utup = (as) * ( s* upuz + z* usup)
+!!   usup = (as) * (z* utup - s* upur)
+!!   uzus =         urut 
+!!   upuz = (as) * (s* utup + z* upur)
 !!@endverbatim
 !!
 !!@n @param  np_smp   Number of SMP processes
@@ -166,8 +166,8 @@
         do inod = ist, ied
            tpr = asym_t(inod,2)
            ttp = asym_t(inod,3)
-           t_sp(inod) = -tpr * cos(theta(inod))                         &
-     &                 + ttp * sin(theta(inod))
+           t_sp(inod) =  ttp * cos(theta(inod))                         &
+     &                 - tpr * sin(theta(inod))
         end do
       end do
 !$omp end parallel do
@@ -219,8 +219,8 @@
         do inod = ist, ied
            tpr = asym_t(inod,2)
            ttp = asym_t(inod,3)
-           t_pz(inod) =  tpr * sin(theta(inod))                         &
-     &                 + ttp * cos(theta(inod))
+           t_pz(inod) =  ttp * sin(theta(inod))                         &
+     &                 + tpr * cos(theta(inod))
         end do
       end do
 !$omp end parallel do

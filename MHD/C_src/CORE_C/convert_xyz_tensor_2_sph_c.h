@@ -22,7 +22,7 @@ void sph_tt_sym_tensor_by_xyz_c(int numnod, const double *theta, const double *p
                                 const double *st_xyz, double *t_tt);
 void sph_tp_sym_tensor_by_xyz_c(int numnod, const double *theta, const double *phi, 
                                 const double *st_xyz, double *t_tp);
-void sph_pp_sym_tensor_by_xyz_c(int numnod, const double *theta, const double *phi, 
+void sph_pp_sym_tensor_by_xyz_c(int numnod, const double *phi, 
                                 const double *st_xyz, double *t_pp);
 
 #endif /* CONVERT_XYZ_TENSOR_2_SPH_C_*/

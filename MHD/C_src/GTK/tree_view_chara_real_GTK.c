@@ -9,7 +9,7 @@
 
 /* Append new data at the end of list */
 int append_cr_item_to_tree(const int index, const char *c_tbl, const char *c_math, const double r_data, 
-			GtkTreeModel *child_model)
+                           GtkTreeModel *child_model)
 {
     GtkTreeIter iter;
     
@@ -24,9 +24,9 @@ int append_cr_item_to_tree(const int index, const char *c_tbl, const char *c_mat
 }
 
 int append_cr_list_from_ctl(int index, struct chara_real_ctl_list *head, 
-			GtkTreeView *cr_tree_view)
+			                GtkTreeView *cr_tree_view)
 {
-    GtkTreeModel *model = gtk_tree_view_get_model (cr_tree_view);  
+    GtkTreeModel *model = gtk_tree_view_get_model(cr_tree_view);
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     head = head->_next;
     while (head != NULL){
@@ -39,9 +39,9 @@ int append_cr_list_from_ctl(int index, struct chara_real_ctl_list *head,
 
 
 void cr_tree_name_edited(gchar *path_str, gchar *new_text,
-			GtkTreeView *cr_tree_view, struct chara_real_clist *cr_clist)
+                         GtkTreeView *cr_tree_view, struct chara_real_clist *cr_clist)
 {
-    GtkTreeModel *model = gtk_tree_view_get_model (cr_tree_view);  
+    GtkTreeModel *model = gtk_tree_view_get_model(cr_tree_view);
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     GtkTreePath *path = gtk_tree_path_new_from_string (path_str);  
     GtkTreePath *child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model), path);
@@ -69,7 +69,7 @@ void cr_tree_name_edited(gchar *path_str, gchar *new_text,
 void cr_tree_value_edited(gchar *path_str, gchar *new_text, 
 			GtkTreeView *cr_tree_view, struct chara_real_clist *cr_clist)
 {
-    GtkTreeModel *model = gtk_tree_view_get_model (cr_tree_view);  
+    GtkTreeModel *model = gtk_tree_view_get_model(cr_tree_view);  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     GtkTreePath *path = gtk_tree_path_new_from_string (path_str);  
     GtkTreePath *child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model), path);

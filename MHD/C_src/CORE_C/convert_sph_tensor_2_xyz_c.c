@@ -1,9 +1,9 @@
 /***********************************************************************
- *  convert_sph_tensor_2_xyz_c.c
- *
- *  Created by Hiroaki Matsui on Dec. 3, 2012
- *  Copyright 2012 Dept. of Earth and Planetary Science, UC Berkeley.
- 
+!!  convert_sph_tensor_2_xyz_c.c
+!!
+!!  Created by Hiroaki Matsui on Dec. 3, 2012
+!!  Copyright 2012 Dept. of Earth and Planetary Science, UC Berkeley.
+!!
 !!  uxux = (ar*as)^2 *(x*x*s*s *urur + x*x*z*s *urut - x*y*s*r * urup
 !!                   + x*x*z*s *utur + x*x*z*z *utut - x*y*z*r * utup
 !!                   - x*y*s*r *upur - x*y*z*r *uput + y*y*r*r * upup)
@@ -85,10 +85,10 @@ void sph_xz_sym_tensor_by_sph_c(int numnod, const double *theta, const double *p
         trp = st_sph[i+2*numnod];
         ttt = st_sph[i+3*numnod];
         ttp = st_sph[i+4*numnod];
-        t_xz[i] =  trr * cos(phi[i]) * cos(theta[i])* sin(theta[i])
+        t_xz[i] =  trr * cos(phi[i]) * cos(theta[i])*sin(theta[i])
                  + trt * cos(phi[i]) * (cos(theta[i])*cos(theta[i]) - sin(theta[i])*sin(theta[i]))
                  - trp * sin(phi[i]) * cos(theta[i])
-                 - ttt * cos(phi[i]) * cos(theta[i])* sin(theta[i])
+                 - ttt * cos(phi[i]) * cos(theta[i])*sin(theta[i])
                  + ttp * sin(phi[i]) * sin(theta[i]);
     };
     return;
@@ -137,7 +137,7 @@ void sph_yz_sym_tensor_by_sph_c(int numnod, const double *theta, const double *p
     return;
 };
 
-void sph_zz_sym_tensor_by_xyz_c(int numnod, const double *theta, const double *phi, 
+void sph_zz_sym_tensor_by_sph_c(int numnod, const double *theta, const double *phi, 
                                 const double *st_sph, double *t_zz){
     int i;
     double trr, trt;

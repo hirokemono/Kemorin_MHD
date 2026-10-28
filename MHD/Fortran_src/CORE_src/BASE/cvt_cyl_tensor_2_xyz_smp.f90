@@ -25,7 +25,7 @@
 !!      subroutine cal_yz_tensor_by_cyl_smp(np_smp, numnod,             &
 !!     &          inod_smp_stack, tensor, t_yz, xx, yy, s, a_s)
 !!      subroutine cal_zz_tensor_by_cyl_smp(np_smp, numnod,             &
-!!     &          inod_smp_stack, tensor, t_xz)
+!!     &          inod_smp_stack, tensor, t_zz)
 !!
 !!   uxux = (as)^2 *(x*x *usus - x*y *usup
 !!                 - x*y *usup + y*y *upup)
@@ -415,8 +415,8 @@
            if ( s(inod).eq.0.0 ) then
              t_yz(inod) =   tpz
            else
-             t_yz(inod) =   ( tsz * yy(inod)                          &
-     &                  +     tpz * xx(inod) )                        &
+             t_yz(inod) =   ( tsz * yy(inod)                            &
+     &                  +     tpz * xx(inod) )                          &
      &                   * a_s(inod)
            end if
 !
@@ -429,13 +429,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_zz_tensor_by_cyl_smp(np_smp, numnod,               &
-     &          inod_smp_stack, tensor, t_xz)
+     &          inod_smp_stack, tensor, t_zz)
 !
        integer (kind = kint), intent(in) :: np_smp, numnod
        integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
        real(kind=kreal), intent(in) :: tensor(numnod,6)
 !
-       real(kind=kreal), intent(inout) :: t_xz(numnod)
+       real(kind=kreal), intent(inout) :: t_zz(numnod)
 !
        integer (kind = kint) :: ip, inod, ist, ied
 !
@@ -445,7 +445,7 @@
          ist = inod_smp_stack(ip-1) + 1
          ied = inod_smp_stack(ip)
          do inod = ist, ied
-           t_xz(inod) = tensor(inod,6)
+           t_zz(inod) = tensor(inod,6)
         end do
       end do
 !$omp end parallel do

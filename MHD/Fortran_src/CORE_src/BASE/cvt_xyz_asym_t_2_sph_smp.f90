@@ -21,9 +21,9 @@
 !!      subroutine cal_tp_asym_t_smp(np_smp, numnod, inod_smp_stack,    &
 !!     &          tensor, t_tp, xx, yy, zz, r, s, a_r)
 !!
-!!   urut = (as) *   (              x   *uz*ux - y   *uy*uz)
-!!   upur = (aras) * (-s*s *ux*uy + y*z *uz*ux + x*z* uy*uz)
-!!   utup = (ar) *   (   z *ux*uy + y   *uz*ux + x   *uy*uz)
+!!   urut = (as) *   (             x*   uzux - y*  uyuz)
+!!   upur = (aras) * (-s*s* uxuy + y*z* uzux + x*z* uyuz)
+!!   utup = (ar) *   (   z* uxuy + y*   uzux + x*   uyuz)
 !!@endverbatim
 !!
 !!@n @param  np_smp   Number of SMP processes
