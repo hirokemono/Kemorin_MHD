@@ -21,9 +21,9 @@
 !!      subroutine cal_pz_asym_t_smp(np_smp, numnod, inod_smp_stack,    &
 !!     &          tensor, t_pz, xx, yy, s, a_s)
 !!
-!!   usup =         ux*uy
-!!   uzus = (as) * (      x* uz*ux - y* uy*uz)
-!!   upuz = (as) * (      y* uz*ux + x* uy*uz)
+!!   usup =         uxuy
+!!   uzus = (as) * ( x* uzux - y* uyuz)
+!!   upuz = (as) * ( y* uzux + x* uyuz)
 !!@endverbatim
 !!
 !!@n @param  np_smp   Number of SMP processes
