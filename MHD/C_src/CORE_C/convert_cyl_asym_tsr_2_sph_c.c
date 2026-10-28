@@ -89,3 +89,81 @@ void sph_pz_asym_tensor_by_sph_c(int numnod, const double *theta,
     return;
 };
 
+
+
+void set_PSF_component_name(int ncomp, int icomp, char *comp_name) {
+    int id_coord =    kemoview_get_PSF_coordinate_id();
+    
+    if(id_coord == 1){
+        if(icomp == 0){ sprintf(comp_name, "RR");
+        }else if(icomp ==  1){ sprintf(comp_name, "R-Theta");
+        }else if(icomp ==  2){ sprintf(comp_name, "R-Phi");
+        }else if(icomp ==  3){ sprintf(comp_name, "Theta-Theta");
+        }else if(icomp ==  4){ sprintf(comp_name, "Theta-Phi");
+        }else if(icomp ==  5){ sprintf(comp_name, "Phi-Phi");
+            
+        }else if(icomp ==  6){ sprintf(comp_name, "SS");
+        }else if(icomp ==  7){ sprintf(comp_name, "S-Phi");
+        }else if(icomp ==  8){ sprintf(comp_name, "SZ");
+        }else if(icomp ==  9){ sprintf(comp_name, "Phi-Z");
+        }else if(icomp == 10){ sprintf(comp_name, "ZZ");
+            
+        }else if(icomp == 11){ sprintf(comp_name, "XX");
+        }else if(icomp == 12){ sprintf(comp_name, "XY");
+        }else if(icomp == 13){ sprintf(comp_name, "XZ");
+        }else if(icomp == 14){ sprintf(comp_name, "YY");
+        }else if(icomp == 15){ sprintf(comp_name, "YZ");
+            
+        }else if(icomp == 16){ sprintf(comp_name, "magnitude");
+        };
+    }else if(id_coord == 2){
+        if(icomp == 0){ sprintf(comp_name, "SS");
+        }else if(icomp ==  1){ sprintf(comp_name, "S-Phi");
+        }else if(icomp ==  2){ sprintf(comp_name, "SZ");
+        }else if(icomp ==  3){ sprintf(comp_name, "Phi-Phi");
+        }else if(icomp ==  4){ sprintf(comp_name, "Phi-Z");
+        }else if(icomp ==  5){ sprintf(comp_name, "ZZ");
+            
+        }else if(icomp ==  6){ sprintf(comp_name, "RR");
+        }else if(icomp ==  7){ sprintf(comp_name, "R-Theta");
+        }else if(icomp ==  8){ sprintf(comp_name, "R-Phi");
+        }else if(icomp ==  9){ sprintf(comp_name, "Theta-Theta");
+        }else if(icomp == 10){ sprintf(comp_name, "Theta-Phi");
+            
+        }else if(icomp == 11){ sprintf(comp_name, "XX");
+        }else if(icomp == 12){ sprintf(comp_name, "XY");
+        }else if(icomp == 13){ sprintf(comp_name, "XZ");
+        }else if(icomp == 14){ sprintf(comp_name, "YY");
+        }else if(icomp == 15){ sprintf(comp_name, "YZ");
+            
+        }else if(icomp == 16){ sprintf(comp_name, "magnitude");
+        }
+    } else {
+        if(icomp == 0){ sprintf(comp_name, "XX");
+        }else if(icomp ==  1){ sprintf(comp_name, "XY");
+        }else if(icomp ==  2){ sprintf(comp_name, "XZ");
+        }else if(icomp ==  3){ sprintf(comp_name, "YY");
+        }else if(icomp ==  4){ sprintf(comp_name, "YZ");
+        }else if(icomp ==  5){ sprintf(comp_name, "ZZ");
+            
+        }else if(icomp ==  6){ sprintf(comp_name, "RR");
+        }else if(icomp ==  7){ sprintf(comp_name, "R-Theta");
+        }else if(icomp ==  8){ sprintf(comp_name, "R-Phi");
+        }else if(icomp ==  9){ sprintf(comp_name, "Theta-Theta");
+        }else if(icomp == 10){ sprintf(comp_name, "Theta-Phi");
+        }else if(icomp == 11){ sprintf(comp_name, "Phi-Phi");
+            
+        }else if(icomp == 12){ sprintf(comp_name, "SS");
+        }else if(icomp == 13){ sprintf(comp_name, "S-Phi");
+        }else if(icomp == 14){ sprintf(comp_name, "SZ");
+        }else if(icomp == 15){ sprintf(comp_name, "Phi-Z");
+            
+        }else if(icomp == 16){ sprintf(comp_name, "magnitude");
+        };
+    };
+    
+    if(icomp == ncomp) sprintf(comp_name,"magnitude");
+    
+    return;
+};
+
