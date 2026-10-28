@@ -6,12 +6,12 @@
  !!
  !!
  !!   urut =         uzus
- !!   upur = (as) * ( z* upuz - s* usup)
- !!   utup = (as) * ( s* upuz + z* usup)
+ !!   upur = (as) * (-s* usup + z* upuz)
+ !!   utup = (as) * ( z* usup + s* upuz)
  !!
- !!   usup = (as) * (z* utup - s* upur)
+ !!   usup = (as) * (-s* upur + z* utup)
  !!   uzus =         urut 
- !!   upuz = (as) * (s* utup + z* upur)
+ !!   upuz = (as) * ( z* upur + s* utup)
  ***********************************************************************/
 
 #include <math.h>
@@ -33,8 +33,8 @@ void sph_pr_asym_tensor_by_cyl_c(int numnod, const double *theta,
     for(i=0;i<numnod;i++){
         tsp = st_cyl[i];
         tpz = st_cyl[i+2*numnod];
-        t_pr[i] = -tsp * sin(theta[i])
-                 + tpz * cos(theta[i]);
+        t_pr[i] =  tpz * cos(theta[i])
+                 - tsp * sin(theta[i]);
     };
     return;
 };
@@ -46,8 +46,8 @@ void sph_tp_asym_tensor_by_cyl_c(int numnod, const double *theta,
     for(i=0;i<numnod;i++){
         tsp = st_cyl[i];
         tpz = st_cyl[i+2*numnod];
-        t_tp[i] =  tsp * cos(theta[i])
-                 + tpz * sin(theta[i]);
+        t_tp[i] =  tpz * sin(theta[i])
+                 + tsp * cos(theta[i]);
     };
     return;
 };

@@ -37,9 +37,9 @@
 !!         real(kind=kreal), intent(inout) :: t_zs(numnod)
 !!         real(kind=kreal), intent(inout) :: t_pz(numnod)
 !!
-!!   usup = (as) * (z* utup - s* upur)
-!!   uzus =         urut 
-!!   upuz = (as) * (s* utup + z* upur)
+!!   usup = (as) * (-s* upur + z* utup)
+!!   uzus =         urut
+!!   upuz = (as) * ( z* upur + s* utup)
 !!@endverbatim
 !!
 !!@n @param  np_smp   Number of SMP processes
@@ -95,11 +95,11 @@
            tpr = asym_t(inod,2)
            ttp = asym_t(inod,3)
 !
-           tsph(inod,1) = -tpr * cos(theta(inod))                       &
-     &                   + ttp * sin(theta(inod))
-           tsph(inod,2) =  trt
-           tsph(inod,3) =  tpr * sin(theta(inod))                       &
+           tsph(inod,1) = -tpr * sin(theta(inod))                       &
      &                   + ttp * cos(theta(inod))
+           tsph(inod,2) =  trt
+           tsph(inod,3) =  tpr * cos(theta(inod))                       &
+     &                   + ttp * sin(theta(inod))
         end do
       end do
 !$omp end parallel do
@@ -131,11 +131,11 @@
            tpr = asym_t(inod,2)
            ttp = asym_t(inod,3)
 !
-           asym_t(inod,1) = -tpr * cos(theta(inod))                     &
-     &                     + ttp * sin(theta(inod))
-           asym_t(inod,2) =  trt
-           asym_t(inod,3) =  tpr * sin(theta(inod))                     &
+           asym_t(inod,1) = -tpr * sin(theta(inod))                     &
      &                     + ttp * cos(theta(inod))
+           asym_t(inod,2) =  trt
+           asym_t(inod,3) =  tpr * cos(theta(inod))                     &
+     &                     + ttp * sin(theta(inod))
         end do
       end do
 !$omp end parallel do
@@ -166,8 +166,8 @@
         do inod = ist, ied
            tpr = asym_t(inod,2)
            ttp = asym_t(inod,3)
-           t_sp(inod) =  ttp * cos(theta(inod))                         &
-     &                 - tpr * sin(theta(inod))
+           t_sp(inod) = -tpr * sin(theta(inod))                         &
+     &                 + ttp * cos(theta(inod))
         end do
       end do
 !$omp end parallel do
@@ -219,8 +219,8 @@
         do inod = ist, ied
            tpr = asym_t(inod,2)
            ttp = asym_t(inod,3)
-           t_pz(inod) =  ttp * sin(theta(inod))                         &
-     &                 + tpr * cos(theta(inod))
+           t_pz(inod) =  tpr * cos(theta(inod))                         &
+     &                 + ttp * sin(theta(inod))
         end do
       end do
 !$omp end parallel do
