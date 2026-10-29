@@ -37,4 +37,4 @@ GtkWidget * draw_current_psf_set_hbox(int id_current_psf,
                                       int *index);
 GtkWidget * draw_viz_field_gtk_box(struct kemoviewer_gl_type *kemo_gl, int id_model);
 GtkWidget * draw_viz_component_gtk_box(struct kemoviewer_gl_type *kemo_gl, int id_model);
-#endif
+#endif /* !KEMOVIEW_GTK_FLINE_SELECTORS_ */

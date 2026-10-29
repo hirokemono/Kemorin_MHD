@@ -137,7 +137,7 @@ void sph_yz_sym_tensor_by_sph_c(int numnod, const double *theta, const double *p
     return;
 };
 
-void sph_zz_sym_tensor_by_sph_c(int numnod, const double *theta, const double *phi, 
+void sph_zz_sym_tensor_by_sph_c(int numnod, const double *theta, 
                                 const double *st_sph, double *t_zz){
     int i;
     double trr, trt;

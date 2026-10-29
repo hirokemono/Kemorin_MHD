@@ -25,14 +25,14 @@
 void sph_rt_asym_tensor_by_xyz_c(int numnod, const double *phi, 
                                  const double *at_xyz, double *t_rt);
 void sph_pr_asym_tensor_by_xyz_c(int numnod, const double *theta, const double *phi, 
-            const double *at_xyz, double *t_rp);
+                                 const double *at_xyz, double *t_rp);
 void sph_tp_asym_tensor_by_xyz_c(int numnod, const double *theta, const double *phi, 
-            const double *at_xyz, double *t_tp);
+                                 const double *at_xyz, double *t_tp);
 
 void sph_sp_asym_tensor_by_xyz_c(int numnod, const double *at_xyz, double *t_sp);
 void sph_zs_asym_tensor_by_xyz_c(int numnod, const double *phi, 
                                  const double *at_xyz, double *t_zs);
 void sph_pz_asym_tensor_by_xyz_c(int numnod, const double *phi, 
-            const double *at_xyz, double *t_pz);
+                                 const double *at_xyz, double *t_pz);
 
 #endif /* CONVERT_XYZ_ASYM_TSR_2_SPH_C_*/

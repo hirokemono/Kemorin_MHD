@@ -90,80 +90,140 @@ void sph_pz_asym_tensor_by_sph_c(int numnod, const double *theta,
 };
 
 
+const char * const hd_scalar =   "scalar";
+const char * const hd_magitude = "magnitude";
 
-void set_PSF_component_name(int ncomp, int icomp, char *comp_name) {
-    int id_coord =    kemoview_get_PSF_coordinate_id();
-    
-    if(id_coord == 1){
-        if(icomp == 0){ sprintf(comp_name, "RR");
-        }else if(icomp ==  1){ sprintf(comp_name, "R-Theta");
-        }else if(icomp ==  2){ sprintf(comp_name, "R-Phi");
-        }else if(icomp ==  3){ sprintf(comp_name, "Theta-Theta");
-        }else if(icomp ==  4){ sprintf(comp_name, "Theta-Phi");
-        }else if(icomp ==  5){ sprintf(comp_name, "Phi-Phi");
-            
-        }else if(icomp ==  6){ sprintf(comp_name, "SS");
-        }else if(icomp ==  7){ sprintf(comp_name, "S-Phi");
-        }else if(icomp ==  8){ sprintf(comp_name, "SZ");
-        }else if(icomp ==  9){ sprintf(comp_name, "Phi-Z");
-        }else if(icomp == 10){ sprintf(comp_name, "ZZ");
-            
-        }else if(icomp == 11){ sprintf(comp_name, "XX");
-        }else if(icomp == 12){ sprintf(comp_name, "XY");
-        }else if(icomp == 13){ sprintf(comp_name, "XZ");
-        }else if(icomp == 14){ sprintf(comp_name, "YY");
-        }else if(icomp == 15){ sprintf(comp_name, "YZ");
-            
-        }else if(icomp == 16){ sprintf(comp_name, "magnitude");
-        };
-    }else if(id_coord == 2){
-        if(icomp == 0){ sprintf(comp_name, "SS");
-        }else if(icomp ==  1){ sprintf(comp_name, "S-Phi");
-        }else if(icomp ==  2){ sprintf(comp_name, "SZ");
-        }else if(icomp ==  3){ sprintf(comp_name, "Phi-Phi");
-        }else if(icomp ==  4){ sprintf(comp_name, "Phi-Z");
-        }else if(icomp ==  5){ sprintf(comp_name, "ZZ");
-            
-        }else if(icomp ==  6){ sprintf(comp_name, "RR");
-        }else if(icomp ==  7){ sprintf(comp_name, "R-Theta");
-        }else if(icomp ==  8){ sprintf(comp_name, "R-Phi");
-        }else if(icomp ==  9){ sprintf(comp_name, "Theta-Theta");
-        }else if(icomp == 10){ sprintf(comp_name, "Theta-Phi");
-            
-        }else if(icomp == 11){ sprintf(comp_name, "XX");
-        }else if(icomp == 12){ sprintf(comp_name, "XY");
-        }else if(icomp == 13){ sprintf(comp_name, "XZ");
-        }else if(icomp == 14){ sprintf(comp_name, "YY");
-        }else if(icomp == 15){ sprintf(comp_name, "YZ");
-            
-        }else if(icomp == 16){ sprintf(comp_name, "magnitude");
-        }
-    } else {
-        if(icomp == 0){ sprintf(comp_name, "XX");
-        }else if(icomp ==  1){ sprintf(comp_name, "XY");
-        }else if(icomp ==  2){ sprintf(comp_name, "XZ");
-        }else if(icomp ==  3){ sprintf(comp_name, "YY");
-        }else if(icomp ==  4){ sprintf(comp_name, "YZ");
-        }else if(icomp ==  5){ sprintf(comp_name, "ZZ");
-            
-        }else if(icomp ==  6){ sprintf(comp_name, "RR");
-        }else if(icomp ==  7){ sprintf(comp_name, "R-Theta");
-        }else if(icomp ==  8){ sprintf(comp_name, "R-Phi");
-        }else if(icomp ==  9){ sprintf(comp_name, "Theta-Theta");
-        }else if(icomp == 10){ sprintf(comp_name, "Theta-Phi");
-        }else if(icomp == 11){ sprintf(comp_name, "Phi-Phi");
-            
-        }else if(icomp == 12){ sprintf(comp_name, "SS");
-        }else if(icomp == 13){ sprintf(comp_name, "S-Phi");
-        }else if(icomp == 14){ sprintf(comp_name, "SZ");
-        }else if(icomp == 15){ sprintf(comp_name, "Phi-Z");
-            
-        }else if(icomp == 16){ sprintf(comp_name, "magnitude");
-        };
-    };
-    
-    if(icomp == ncomp) sprintf(comp_name,"magnitude");
-    
-    return;
-};
+const char * const hd_x = "X";
+const char * const hd_y = "Y";
+const char * const hd_z = "Z";
+
+const char * const hd_r = "R";
+const char * const hd_t = "Theta";
+const char * const hd_p = "Phi";
+const char * const hd_s = "S";
+
+const char * const xyz_vector_list[] = {hd_x,
+                                        hd_y,
+                                        hd_z,
+                                        hd_r,
+                                        hd_t,
+                                        hd_p,
+                                        hd_s,
+                                        hd_magitude,
+                                        NULL};
+
+const char * const sph_vector_list[] = {hd_r,
+                                        hd_t,
+                                        hd_p,
+                                        hd_s,
+                                        hd_z,
+                                        hd_x,
+                                        hd_y,
+                                        hd_magitude,
+                                        NULL};
+
+const char * const cyl_vector_list[] = {hd_s,
+                                        hd_p,
+                                        hd_z,
+                                        hd_r,
+                                        hd_t,
+                                        hd_x,
+                                        hd_y,
+                                        hd_magitude,
+                                        NULL};
+
+
+const char * const xyz_tensor_list[] = {hd_xx,
+                                        hd_xy,
+                                        hd_xz,
+                                        hd_yy,
+                                        hd_yz,
+                                        hd_zz,
+                                        hd_rr,
+                                        hd_rt,
+                                        hd_rp,
+                                        hd_tt,
+                                        hd_tp,
+                                        hd_pp,
+                                        hd_ss,
+                                        hd_sp,
+                                        hd_sz,
+                                        hd_pz,
+                                        hd_magitude,
+                                        NULL};
+
+const char * const sph_tensor_list[] = {hd_rr,
+                                        hd_rt,
+                                        hd_rp,
+                                        hd_tt,
+                                        hd_tp,
+                                        hd_pp,
+                                        hd_ss,
+                                        hd_sp,
+                                        hd_sz,
+                                        hd_pz,
+                                        hd_zz,
+                                        hd_xx,
+                                        hd_xy,
+                                        hd_xz,
+                                        hd_yy,
+                                        hd_yz,
+                                        hd_magitude,
+                                        NULL};
+
+const char * const cyl_tensor_list[] = {hd_ss,
+                                        hd_sp,
+                                        hd_sz,
+                                        hd_pp,
+                                        hd_pz,
+                                        hd_zz,
+                                        hd_rr,
+                                        hd_rt,
+                                        hd_rp,
+                                        hd_tt,
+                                        hd_tp,
+                                        hd_xx,
+                                        hd_xy,
+                                        hd_xz,
+                                        hd_yy,
+                                        hd_yz,
+                                        hd_magitude,
+                                        NULL};
+
+
+const char * const xyz_asym_tsr_list[] = {hd_xy,
+                                          hd_zx,
+                                          hd_yz,
+                                          hd_rt,
+                                          hd_pr,
+                                          hd_tp,
+                                          hd_sp,
+                                          hd_zs,
+                                          hd_pz,
+                                          hd_magitude,
+                                          NULL};
+
+const char * const sph_asym_tsr_list[] = {hd_rt,
+                                          hd_pr,
+                                          hd_tp,
+                                          hd_sp,
+                                          hd_zs,
+                                          hd_pz,
+                                          hd_xy,
+                                          hd_zx,
+                                          hd_yz,
+                                          hd_magitude,
+                                          NULL};
+
+const char * const cyl_asym_tsr_list[] = {hd_sp,
+                                          hd_zs,
+                                          hd_pz,
+                                          hd_rt,
+                                          hd_pr,
+                                          hd_tp,
+                                          hd_xy,
+                                          hd_zx,
+                                          hd_yz,
+                                          hd_magitude,
+                                          NULL};
 

@@ -40,7 +40,7 @@ void sph_yy_sym_tensor_by_sph_c(int numnod, const double *theta, const double *p
                                 const double *st_sph, double *t_yy);
 void sph_yz_sym_tensor_by_sph_c(int numnod, const double *theta, const double *phi, 
                                 const double *st_sph, double *t_yz);
-void sph_zz_sym_tensor_by_sph_c(int numnod, const double *theta, const double *phi, 
+void sph_zz_sym_tensor_by_sph_c(int numnod, const double *theta,
                                 const double *st_sph, double *t_zz);
 
 #endif /* CONVERT_SPH_TENSOR_2_XYZ_C_ */

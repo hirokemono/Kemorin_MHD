@@ -16,7 +16,6 @@ void sph_sp_sym_tensor_by_xyz_c(int numnod, const double *phi,
                                 const double *st_xyz, double *t_sp);
 void sph_sz_sym_tensor_by_xyz_c(int numnod, const double *phi, 
                                 const double *st_xyz, double *t_sz);
-
 void sph_pz_sym_tensor_by_xyz_c(int numnod, const double *phi, 
                                 const double *st_xyz, double *t_pz);
 void sph_zz_sym_tensor_by_xyz_c(int numnod, const double *st_xyz, double *t_zz);
