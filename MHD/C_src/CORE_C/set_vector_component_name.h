@@ -56,6 +56,38 @@ const char * const hd_s = "S";
 const char * const hd_magitude = "magnitude";
 
 
+const char * const hd_scalar =   "scalar";
+const char * const xyz_vector_list[] = {hd_x,
+                                        hd_y,
+                                        hd_z,
+                                        hd_r,
+                                        hd_t,
+                                        hd_p,
+                                        hd_s,
+                                        hd_magitude,
+                                        NULL};
+
+const char * const sph_vector_list[] = {hd_r,
+                                        hd_t,
+                                        hd_p,
+                                        hd_s,
+                                        hd_z,
+                                        hd_x,
+                                        hd_y,
+                                        hd_magitude,
+                                        NULL};
+
+const char * const cyl_vector_list[] = {hd_s,
+                                        hd_p,
+                                        hd_z,
+                                        hd_r,
+                                        hd_t,
+                                        hd_x,
+                                        hd_y,
+                                        hd_magitude,
+                                        NULL};
+
+
 /* prototypes */
 int find_comp_id_from_by_sph_vector(const char *selected);
 void set_component_name_by_sph_vector(int icomp, char *comp_name);

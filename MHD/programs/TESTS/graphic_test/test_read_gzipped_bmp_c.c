@@ -3,7 +3,7 @@
 
 
 #include <stdio.h>
-#include "read_image_2_bmp.h"
+#include "read_gzipped_BMP_image.h"
 #include "write_image_2_png.h"
 #include "write_image_2_bmp.h"
 

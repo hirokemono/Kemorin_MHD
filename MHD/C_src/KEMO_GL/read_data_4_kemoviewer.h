@@ -22,7 +22,6 @@
 #include "skip_comment_c.h"
 #include "icosahedron_c.h"
 #include "read_viewer_mesh_c.h"
-#include "read_viewer_mesh_gz_c.h"
 #include "select_read_psf_viewer_c.h"
 #include "take_normal_psf_c.h"
 #include "check_psf_data_viewer_c.h"
@@ -35,6 +34,8 @@
 #include "set_normal_on_node_4_mesh.h"
 #include "modify_object_4_viewer_c.h"
 #include "cal_viz_field_ranges.h"
+
+#include "read_viewer_mesh_gz_c.h"
 
 /* prototypes */
 

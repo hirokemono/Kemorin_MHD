@@ -106,6 +106,101 @@ const char * const hd_pz = "Phi-Z";
 const char * const hd_zs = "ZS";
 
 
+const char * const xyz_tensor_list[] = {hd_xx,
+                                        hd_xy,
+                                        hd_xz,
+                                        hd_yy,
+                                        hd_yz,
+                                        hd_zz,
+                                        hd_rr,
+                                        hd_rt,
+                                        hd_rp,
+                                        hd_tt,
+                                        hd_tp,
+                                        hd_pp,
+                                        hd_ss,
+                                        hd_sp,
+                                        hd_sz,
+                                        hd_pz,
+                                        hd_magitude,
+                                        NULL};
+
+const char * const sph_tensor_list[] = {hd_rr,
+                                        hd_rt,
+                                        hd_rp,
+                                        hd_tt,
+                                        hd_tp,
+                                        hd_pp,
+                                        hd_ss,
+                                        hd_sp,
+                                        hd_sz,
+                                        hd_pz,
+                                        hd_zz,
+                                        hd_xx,
+                                        hd_xy,
+                                        hd_xz,
+                                        hd_yy,
+                                        hd_yz,
+                                        hd_magitude,
+                                        NULL};
+
+const char * const cyl_tensor_list[] = {hd_ss,
+                                        hd_sp,
+                                        hd_sz,
+                                        hd_pp,
+                                        hd_pz,
+                                        hd_zz,
+                                        hd_rr,
+                                        hd_rt,
+                                        hd_rp,
+                                        hd_tt,
+                                        hd_tp,
+                                        hd_xx,
+                                        hd_xy,
+                                        hd_xz,
+                                        hd_yy,
+                                        hd_yz,
+                                        hd_magitude,
+                                        NULL};
+
+
+const char * const xyz_asym_tsr_list[] = {hd_xy,
+                                          hd_zx,
+                                          hd_yz,
+                                          hd_rt,
+                                          hd_pr,
+                                          hd_tp,
+                                          hd_sp,
+                                          hd_zs,
+                                          hd_pz,
+                                          hd_magitude,
+                                          NULL};
+
+const char * const sph_asym_tsr_list[] = {hd_rt,
+                                          hd_pr,
+                                          hd_tp,
+                                          hd_sp,
+                                          hd_zs,
+                                          hd_pz,
+                                          hd_xy,
+                                          hd_zx,
+                                          hd_yz,
+                                          hd_magitude,
+                                          NULL};
+
+const char * const cyl_asym_tsr_list[] = {hd_sp,
+                                          hd_zs,
+                                          hd_pz,
+                                          hd_rt,
+                                          hd_pr,
+                                          hd_tp,
+                                          hd_xy,
+                                          hd_zx,
+                                          hd_yz,
+                                          hd_magitude,
+                                          NULL};
+
+
 /* prototypes */
 int find_comp_id_from_by_sph_tensor(const char *selected);
 void set_component_name_by_sph_tensor(int icomp, char *comp_name);

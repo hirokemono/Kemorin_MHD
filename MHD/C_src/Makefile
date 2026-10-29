@@ -24,17 +24,24 @@ CONTROLS
 GTK3_DIRS =
 GTK_DIRS =
 
+ifdef ZLIB_LIBS
+  SUBDIRS+= ZLIB_wrapper
+endif
+
+ifdef PNG_LIBS
+  SUBDIRS+= PNG_wrapper
+endif
+
 ifdef OPENGL_LIBS
   SUBDIRS+=   \
     KEMO_GL   \
-    GLSL      \
+    GLSL
     
   GTK3_DIRS+= \
     GTK       \
     KEMO_GLUT
 
-  GTK_DIRS+= \
-    GTK4
+  GTK_DIRS+= GTK4
 endif
 
 #

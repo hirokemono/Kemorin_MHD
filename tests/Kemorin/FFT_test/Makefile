@@ -185,5 +185,6 @@ clean:
 	rm -fr $(TARGET_RTP_ISPACK3_TEST)*
 	rm -fr $(TARGET_PRT_ISPACK3_TEST)*
 	rm -fr $(TARGET_RTP_OMP_FFTW_TEST)*
+	rm -fr $(TARGET_CMPR_FFT_TEST)*
 
 distclean: clean

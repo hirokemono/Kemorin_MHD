@@ -12,12 +12,10 @@ FILE *fp_vtk;
 
 
 static void read_psf_vtk_num_node(struct psf_data *viz_s){
-    int i;
-    long offset;
     char tmpchara[8];
     char buf[LENGTHBUF];    /* array for reading line */
     
-    offset = skip_comment_c(fp_vtk);
+    skip_comment_c(fp_vtk);
     fgets(buf, LENGTHBUF, fp_vtk);     /* (blank line) */
     fgets(buf, LENGTHBUF, fp_vtk);     /* ASCII */
     fgets(buf, LENGTHBUF, fp_vtk);     /* DATASET UNSTRUCTURED_GRID */
@@ -29,8 +27,6 @@ static void read_psf_vtk_num_node(struct psf_data *viz_s){
 
 static void read_psf_vtk_node_data(struct psf_data *viz_s){
 	int i;
-    long offset;
-	char tmpchara[8];
 	char buf[LENGTHBUF];    /* array for reading line */
 	
 	alloc_viz_node_s(viz_s);
@@ -90,7 +86,7 @@ static int read_psf_vtk_connect_data(struct psf_data *viz_s){
 		iflag_datatype = IFLAG_POINTS;
         for (i = 0; i < viz_s->nele_viz; i++) {
             fgets(buf, LENGTHBUF, fp_vtk);
-            sscanf(buf, "%d %ld %ld", &itmp, &viz_s->ie_viz[i][0]);
+            sscanf(buf, "%d %ld", &itmp, &viz_s->ie_viz[i][0]);
         };
     };
 
@@ -195,11 +191,10 @@ static void read_psf_vtk_field_data(struct psf_data *viz_s){
     struct vtk_field vtk_tmp;
     vtk_fields_t *last_fld;
     int iflag_end;
-    long offset;
 	char tmpchara[200];
 	char buf[LENGTHBUF];    /* array for reading line */
 	
-    offset = skip_comment_c(fp_vtk);
+    skip_comment_c(fp_vtk);
     fgets(buf, LENGTHBUF, fp_vtk);     /* POINT_DATA  nnod_viz */
 	sscanf(buf, "%10s %d", tmpchara, &vtk_tmp.nnod_vtk);
     vtk_tmp.vtk_fields = (vtk_fields_t *) malloc(sizeof(vtk_fields_t));
