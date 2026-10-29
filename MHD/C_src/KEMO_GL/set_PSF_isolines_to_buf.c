@@ -277,7 +277,7 @@ long set_PSF_all_isotubes_to_buf(const long ist_patch,
         inum_patch = const_PSF_each_isotube_to_buf(inum_patch, nthreads,
                                                    &istack_smp_psf_iso[psf_m->n_isoline*nthreads],
                                                    isoline_ncorner, (2.0*viz_line_width),
-                                                   ZERO, psf_m->icomp_draw_viz, black,
+                                                   ZERO, psf_m->icomp_draw_viz, &black[0],
                                                    psf_s, psf_n, psf_buf, index_buf);
     };
     

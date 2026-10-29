@@ -27,7 +27,6 @@ void projection_patch_4_map(double *xyz_patch, double *xyz_map){
 
 
 int count_new_patch_at_phi180(double *xyz_tri){
-	int num_map_patch;
 	int i;
 	double y[3];
 	
