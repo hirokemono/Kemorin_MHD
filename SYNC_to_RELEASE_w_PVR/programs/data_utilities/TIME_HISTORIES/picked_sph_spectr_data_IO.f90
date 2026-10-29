@@ -1,1 +1,0 @@
-../../../../MHD/programs/data_utilities/sph_spectr/picked_sph_spectr_data_IO.f90

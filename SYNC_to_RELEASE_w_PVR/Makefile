@@ -85,6 +85,7 @@ CPP_FLAGS =
 
 F_INCLUDE = -I. -I$$(MAKEDIR)
 C_INCLUDE = -I. -I$$(MAKEDIR)
+C_INCLUDE += -I$(MHDDIR)/C_libraries/BASE
 
 
 ifdef SHAREDLIB_FLAG
@@ -92,15 +93,15 @@ ifdef SHAREDLIB_FLAG
   SHAREDLIB_FLAGS+= -fPIC
 endif
 
-ifdef PNG_LIBS
-  CPP_FLAGS += -DPNG_OUTPUT
-  C_INCLUDE+= $$(PNG_CFLAGS) 
-  F90LIBS+= $$(PNG_LIBS)
-endif
 ifdef ZLIB_LIBS
   CPP_FLAGS += -DZLIB_IO
-  C_INCLUDE+= $$(ZLIB_CFLAGS) 
+  C_INCLUDE+= -I$(MHDDIR)/C_libraries/ZLIB_wrapper $$(ZLIB_CFLAGS)
   F90LIBS+= $$(ZLIB_LIBS)
+endif
+ifdef PNG_LIBS
+  CPP_FLAGS += -DPNG_OUTPUT
+  C_INCLUDE+= -I$(MHDDIR)/C_src/PNG_wrapper $$(PNG_CFLAGS)
+  F90LIBS+= $$(PNG_LIBS)
 endif
 
 ifdef FFTW3_OMP_LIBS

@@ -1,1 +1,0 @@
-../../../../MHD/programs/data_utilities/sph_spectr/m_read_sph_spectra_f.f90

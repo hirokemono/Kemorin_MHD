@@ -1,1 +1,0 @@
-../../../../MHD/programs/TESTS/FFT_test/compare_FFT_test.f90

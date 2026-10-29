@@ -1,1 +1,0 @@
-../../../../MHD/programs/data_utilities/sph_spectr/time_ave_sdev_sph_dbench.f90

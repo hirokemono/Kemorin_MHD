@@ -1,1 +1,0 @@
-../../../../MHD/programs/data_utilities/sph_spectr/t_ctl_data_sph_monitor_list.f90

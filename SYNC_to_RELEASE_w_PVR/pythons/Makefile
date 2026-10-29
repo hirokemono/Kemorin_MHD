@@ -97,6 +97,6 @@ mod_list:
 	@echo '#' >> $(MAKENAME)
 	@echo  MOD_SPH_UTIL_DLL=  \\     >> $(MAKENAME)
 	@echo  $(MOD_SPH_UTIL_DLL)       >> $(MAKENAME)
-0	@echo  '#' >> $(MAKENAME)
+	@echo  '#' >> $(MAKENAME)
 
 depends:
