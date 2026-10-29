@@ -8,7 +8,7 @@
 #include "set_tensor_component_name.h"
 
 int find_comp_id_from_by_sph_tensor(const char *selected){
-    if(cmp_no_case_c(selected, hd_rr) != 0){return  SPH_to_RR;}
+    if     (cmp_no_case_c(selected, hd_rr) != 0){return  SPH_to_RR;}
     else if(cmp_no_case_c(selected, hd_rt) != 0){return  SPH_to_RT;}
     else if(cmp_no_case_c(selected, hd_rp) != 0){return  SPH_to_RP;}
     else if(cmp_no_case_c(selected, hd_tt) != 0){return  SPH_to_TT;}

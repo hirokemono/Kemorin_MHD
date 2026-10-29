@@ -48,11 +48,11 @@ void sph_rt_sym_tensor_by_xyz_c(int numnod, const double *theta, const double *p
         t_rt[i] =    txx * cos(phi[i])*cos(phi[i]) * cos(theta[i])*sin(theta[i])
                + 2.0*txy * cos(phi[i])*sin(phi[i]) * cos(theta[i])*sin(theta[i])
                +     txz * cos(phi[i])
-                       *(cos(theta[i])*cos(theta[i]) - sin(theta[i])*sin(theta[i]))
+                       * (cos(theta[i])*cos(theta[i]) - sin(theta[i])*sin(theta[i]))
                +     tyy * sin(phi[i])*sin(phi[i]) * cos(theta[i])*sin(theta[i])
                +     tyz * sin(phi[i])
-                       *(cos(theta[i])*cos(theta[i]) - sin(theta[i])*sin(theta[i]))
-               -     tzz *cos(theta[i])*sin(theta[i]));
+                       * (cos(theta[i])*cos(theta[i]) - sin(theta[i])*sin(theta[i]))
+               -     tzz *cos(theta[i])*sin(theta[i]);
     };
     return;
 };
