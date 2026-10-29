@@ -104,7 +104,6 @@ static void * set_each_isotube_to_buf_1thread(void *args)
 {
     args_pthread_PSF_Isoline * p = (args_pthread_PSF_Isoline *) args;
     int id =       p->id;
-    int nthreads = p->nthreads;
     
     struct gl_strided_buffer *strided_buf = p->strided_buf;
     struct gl_index_buffer   *index_buf =   p->index_buf;
@@ -127,7 +126,6 @@ static void * set_each_isoline_to_buf_1thread(void *args)
 {
     args_pthread_PSF_Isoline * p = (args_pthread_PSF_Isoline *) args;
     int id =       p->id;
-    int nthreads = p->nthreads;
     
     struct gl_strided_buffer *strided_buf = p->strided_buf;
     struct psf_data          *psf_s = p->psf_s;

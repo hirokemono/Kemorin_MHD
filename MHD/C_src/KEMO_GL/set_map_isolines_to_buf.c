@@ -25,9 +25,9 @@ long const_map_each_isoline_to_buf(const long ist_patch,
     wk_iso_line->width =   width;
     wk_iso_line->ncorner = ncorner;
 
-    long num = sel_each_map_isoline_to_list_pthread(nthreads, istack_threads,
-                                                    v_line, icomp, psf_s, psf_n,
-                                                    wk_iso_line);
+    sel_each_map_isoline_to_list_pthread(nthreads, istack_threads,
+                                         v_line, icomp, psf_s, psf_n,
+                                         wk_iso_line);
     
     set_isoline_edge_list(wk_iso_line, wk_iso_mesh);
     

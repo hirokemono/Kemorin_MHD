@@ -320,15 +320,15 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
     
     [psfComponentMenu removeAllItems];
     
-    int n_field = kemoview_get_VIZ_field_param(kemo_sgl, id_model,
+    int n_field = kemoview_get_VIZ_field_param(kemo_sgl, (int) id_model,
                                                NUM_FIELD_FLAG);
-    long num_comp = kemoview_get_VIZ_num_component(kemo_sgl, id_model,
+    long num_comp = kemoview_get_VIZ_num_component(kemo_sgl, (int) id_model,
                                                    (int) isel);
     if(n_field < 1){
         [psfComponentMenu addItemWithTitle:@"No data"];
     } else {
         struct kv_string *colorname = kemoview_alloc_kvstring();
-        kemoview_get_VIZ_field_name(kemo_sgl, id_model,
+        kemoview_get_VIZ_field_name(kemo_sgl, (int) id_model,
                                     colorname, (int) isel);
         NSString *stname = [[NSString alloc] initWithUTF8String:colorname->string];
         
@@ -376,9 +376,9 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
                     kemoview:(struct kemoviewer_type *) kemo_sgl
 {
     int iplotted;
-    int n_field = kemoview_get_VIZ_field_param(kemo_sgl, id_model,
+    int n_field = kemoview_get_VIZ_field_param(kemo_sgl, (int) id_model,
                                                NUM_FIELD_FLAG);
-    long num_comp = kemoview_get_VIZ_num_component(kemo_sgl, id_model,
+    long num_comp = kemoview_get_VIZ_num_component(kemo_sgl, (int) id_model,
                                                    (int) isel);
     if(n_field > 0){
 		if(num_comp == 3){

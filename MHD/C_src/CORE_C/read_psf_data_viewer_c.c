@@ -7,7 +7,6 @@ FILE *fp_psf;
 
 
 static void read_viz_num_node(struct psf_data *viz_s){
-    int i;
     int itmp;
     char buf[LENGTHBUF];    /* array for reading line */
     
@@ -19,7 +18,6 @@ static void read_viz_num_node(struct psf_data *viz_s){
 };
 
 static void read_viz_node_data(struct psf_data *viz_s){
-    int itmp;
     char buf[LENGTHBUF];    /* array for reading line */
     
     alloc_viz_node_s(viz_s);
@@ -86,7 +84,7 @@ static int read_kemoview_ucd_connect(struct psf_data *viz_s){
 		
 		for (i = 1; i < viz_s->nele_viz; i++) {
 			fgets(buf, LENGTHBUF, fp_psf);
-			sscanf(buf, "%d %d  pt  %ld %ld", &itmp, &itmp,
+			sscanf(buf, "%d %d  pt  %ld", &itmp, &itmp,
                 &viz_s->ie_viz[i][0]);
 		}
 	}else if(viz_s->nnod_4_ele_viz == 4){

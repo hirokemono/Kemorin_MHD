@@ -191,7 +191,7 @@ static int cut_each_patch_for_map(int iele, int icou,  long iele_end,
 static void cut_patches_for_map_tri(struct psf_data *viz_tmp, struct psf_data *viz_s,
                                     struct map_interpolate *map_itp){
 	int iflag_add = 0;
-	int iele, icou;
+	int iele;
 	long ie_patch[7];
 	
 	long iele_end = viz_tmp->nele_viz;
