@@ -7,6 +7,9 @@
 */
 
 #include <metal_stdlib>
+
+#include "Calypso_direction_flags.h"
+
 using namespace metal;
 
 /* vector components from cartecian coordinate to spherical coordinate */

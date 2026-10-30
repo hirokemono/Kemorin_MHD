@@ -1,5 +1,5 @@
 /*
-//  convert_tensor_to_sph.metal
+//  convert_tensor_from_xyz.metal
 //
 //
 //  Created by Hiroaki Matsui on 10/30/26.
@@ -7,6 +7,9 @@
 */
 
 #include <metal_stdlib>
+
+#include "Calypso_direction_flags.h"
+
 using namespace metal;
 
 /* symmetric tensor from cartecian coordinate to spherical coordinate */
@@ -41,13 +44,13 @@ float rt_sym_tensor_from_xyz(float theta, float phi,
 
 float rp_sym_tensor_from_xyz(float theta, float phi,
                              float txx, float txy, float txz,
-                             float tyy, float tyz, float tzz){
+                             float tyy, float tyz){
     float t_rp = 0.0;
     t_rp = -txx *  cos(phi)*sin(phi) * sin(theta)
           + txy * sin(theta)
                * (cos(phi)*cos(phi) - sin(phi)*sin(phi))
           - txz *  sin(phi) * cos(theta)
-          + tyy *  cos(phi)*sin(phi) * sin(theta[i])
+          + tyy *  cos(phi)*sin(phi) * sin(theta)
           + tyz *  cos(phi) * cos(theta);
     return t_rp;
 };
@@ -67,7 +70,7 @@ float tt_sym_tensor_from_xyz(float theta, float phi,
 
 float tp_sym_tensor_from_xyz(float theta, float phi,
                              float txx, float txy, float txz,
-                             float tyy, float tyz, float tzz){
+                             float tyy, float tyz){
     float t_tp = 0.0;
     t_tp = -txx * cos(phi)*sin(phi) * cos(theta)
           + txy * cos(theta)
@@ -79,8 +82,8 @@ float tp_sym_tensor_from_xyz(float theta, float phi,
 };
 
 float pp_sym_tensor_from_xyz(float phi,
-                             float txx, float txy, float txz,
-                             float tyy, float tyz, float tzz){
+                             float txx, float txy,
+                             float tyy){
     float t_pp = 0.0;
     t_pp =  txx*sin(phi)*sin(phi)
       - 2.0*txy*cos(phi)*sin(phi)
@@ -91,8 +94,8 @@ float pp_sym_tensor_from_xyz(float phi,
 /* symmetric tensor from cartecian coordinate to cylindrical coordinate */
 
 float ss_sym_tensor_from_xyz(float phi,
-                             float txx, float txy, float txz,
-                             float tyy, float tyz, float tzz){
+                             float txx, float txy,
+                             float tyy){
     float t_ss = 0.0;
     t_ss =    txx * cos(phi)*cos(phi)
         + 2.0*txy * cos(phi)*sin(phi)
@@ -101,8 +104,8 @@ float ss_sym_tensor_from_xyz(float phi,
 };
 
 float sp_sym_tensor_from_xyz(float phi,
-                             float txx, float txy, float txz,
-                             float tyy, float tyz, float tzz){
+                             float txx, float txy,
+                             float tyy){
     float t_sp = 0.0;
     t_sp = -txx * cos(phi)*sin(phi)
           + txy * (cos(phi)*cos(phi) - sin(phi)*sin(phi))
@@ -111,8 +114,8 @@ float sp_sym_tensor_from_xyz(float phi,
 };
 
 float sz_sym_tensor_from_xyz(float phi,
-                             float txx, float txy, float txz,
-                             float tyy, float tyz, float tzz){
+                             float txz,
+                             float tyz){
     float t_sz = 0.0;
     t_sz =  txz *  cos(phi)
           + tyz *  sin(phi);
@@ -120,8 +123,8 @@ float sz_sym_tensor_from_xyz(float phi,
 };
 
 float pz_sym_tensor_from_xyz(float phi,
-                             float txx, float txy, float txz,
-                             float tyy, float tyz, float tzz){
+                             float txz,
+                             float tyz){
     float t_pz = 0.0;
     t_pz = -txz * sin(phi)
           + tyz * cos(phi);
@@ -159,7 +162,7 @@ float tp_asym_tensor_from_xyz(float theta, float phi,
 
 float sp_asym_tensor_from_xyz(float txy){
     float t_sp = txy;
-    return t_tp;
+    return t_sp;
 };
 
 float zs_asym_tensor_from_xyz(float phi, float txy, float tzx, float tyz){
@@ -175,4 +178,100 @@ float pz_asym_tensor_from_xyz(float phi, float txy, float tzx, float tyz){
           + tyz * cos(phi);
     return t_pz;
 };
+
+/* select tensor component from cartesian coordinate */
+
+float pick_from_xyz_sym_tensor(constant int id_pick[1],
+                               float theta, float phi,
+                               float3 sym_t1, float3 sym_t2){
+    float data = 0.0;
+    if      (id_pick[0] == XYZ_to_XX){
+        data = sym_t1.x;
+    }else if(id_pick[0] == XYZ_to_XY){
+        data = sym_t1.y;
+    }else if(id_pick[0] == XYZ_to_XZ){
+        data = sym_t1.z;
+    }else if(id_pick[0] == XYZ_to_YY){
+        data = sym_t2.x;
+    }else if(id_pick[0] == XYZ_to_YZ){
+        data = sym_t2.y;
+    }else if(id_pick[0] == XYZ_to_ZZ){
+        data = sym_t2.z;
+        
+    }else if(id_pick[0] == XYZ_to_RR){
+        data = rr_sym_tensor_from_xyz(theta, phi,
+                                      sym_t1.x, sym_t1.y, sym_t1.z,
+                                      sym_t2.x, sym_t2.y, sym_t2.z);
+    }else if(id_pick[0] == XYZ_to_RT){
+        data = rt_sym_tensor_from_xyz(theta, phi,
+                                      sym_t1.x, sym_t1.y, sym_t1.z,
+                                      sym_t2.x, sym_t2.y, sym_t2.z);
+    }else if(id_pick[0] == XYZ_to_RP){
+        data = rp_sym_tensor_from_xyz(theta, phi,
+                                      sym_t1.x, sym_t1.y, sym_t1.z,
+                                      sym_t2.x, sym_t2.y);
+    }else if(id_pick[0] == XYZ_to_TT){
+        data = tt_sym_tensor_from_xyz(theta, phi,
+                                      sym_t1.x, sym_t1.y, sym_t1.z,
+                                      sym_t2.x, sym_t2.y, sym_t2.z);
+    }else if(id_pick[0] == XYZ_to_TP){
+        data = tp_sym_tensor_from_xyz(theta, phi,
+                                      sym_t1.x, sym_t1.y, sym_t1.z,
+                                      sym_t2.x, sym_t2.y);
+    }else if(id_pick[0] == XYZ_to_PP){
+        data = pp_sym_tensor_from_xyz(phi, sym_t1.x, sym_t1.y, 
+                                      sym_t2.x);
+    }else if(id_pick[0] == XYZ_to_SS){
+        data = ss_sym_tensor_from_xyz(phi,
+                                      sym_t1.x, sym_t1.y,
+                                      sym_t2.x);
+    }else if(id_pick[0] == XYZ_to_SP){
+        data = sp_sym_tensor_from_xyz(phi,
+                                      sym_t1.x, sym_t1.y,
+                                      sym_t2.x);
+    }else if(id_pick[0] == XYZ_to_SZ){
+        data = sz_sym_tensor_from_xyz(phi,
+                                      sym_t1.z,
+                                      sym_t2.y);
+    }else if(id_pick[0] == XYZ_to_PZ){
+        data = pz_sym_tensor_from_xyz(phi,
+                                      sym_t1.z,
+                                      sym_t2.y);
+    }else{
+        data = 0.0;
+    }
+    return data;
+}
+
+float pick_from_xyz_asym_tensor(constant int id_pick[1],
+                                float theta, float phi,
+                                float3 asym_t1){
+    float data = 0.0;
+    if      (id_pick[0] == XYZ_to_XY){
+        data = asym_t1.x;
+    }else if(id_pick[0] == XYZ_to_XZ){
+        data = asym_t1.z;
+    }else if(id_pick[0] == XYZ_to_YZ){
+        data = asym_t1.y;
+        
+    }else if(id_pick[0] == XYZ_to_RT){
+        data = rt_asym_tensor_from_xyz(phi, asym_t1.x, asym_t1.y, asym_t1.z);
+    }else if(id_pick[0] == XYZ_to_RP){
+        data = pr_asym_tensor_from_xyz(theta, phi, asym_t1.x, asym_t1.y, asym_t1.z);
+    }else if(id_pick[0] == XYZ_to_TP){
+        data = tp_asym_tensor_from_xyz(theta, phi, asym_t1.x, asym_t1.y, asym_t1.z);
+
+    }else if(id_pick[0] == XYZ_to_SP){
+        data = asym_t1.x;
+    }else if(id_pick[0] == XYZ_to_SZ){
+        data = zs_asym_tensor_from_xyz(phi, asym_t1.x, asym_t1.y, asym_t1.z);
+    }else if(id_pick[0] == XYZ_to_PZ){
+        data = pz_asym_tensor_from_xyz(phi, asym_t1.x, asym_t1.y, asym_t1.z);
+    }else{
+        data = 0.0;
+    }
+    return data;
+}
+
+
 

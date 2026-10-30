@@ -10,6 +10,8 @@ Header containing types and enum constants shared between Metal shaders and C/Ob
 
 #include <simd/simd.h>
 
+#include "../CORE_C/calypso_param_c.h"
+
 #define RAINBOW_MODE    0
 #define GRAYSCALE_MODE  1
 #define RED_BLUE_MODE   2
