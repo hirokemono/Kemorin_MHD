@@ -51,9 +51,6 @@ void pick_sph_sym_tensor_by_sph(const int icomp, const int numnod,
         sph_yy_sym_tensor_by_sph_c(numnod, theta, phi, tensor, component);
     }else if(icomp == SPH_to_YZ){
         sph_yz_sym_tensor_by_sph_c(numnod, theta, phi, tensor, component);
-        
-    }else if(icomp == SPH_to_MAG){
-        printf("No magnitude evaluation currently");
     };
     return;
 };
@@ -95,9 +92,6 @@ void pick_sph_sym_tensor_by_cyl(const int icomp, const int numnod,
         sph_yy_sym_tensor_by_cyl_c(numnod, phi, tensor, component);
     }else if(icomp == CYL_to_YZ){
         sph_yz_sym_tensor_by_cyl_c(numnod, phi, tensor, component);
-        
-    }else if(icomp == CYL_to_MAG){
-        printf("No magnitude evaluation currently");
     };
     return;
 };
@@ -139,9 +133,6 @@ void pick_sph_sym_tensor_by_xyz(const int icomp, const int numnod,
         sph_sz_sym_tensor_by_xyz_c(numnod, phi, tensor, component);
     }else if(icomp == XYZ_to_PZ){
         sph_pz_sym_tensor_by_xyz_c(numnod, phi, tensor, component);
-        
-    }else if(icomp == XYZ_to_MAG){
-        printf("No magnitude evaluation currently");
     };
     return;
 };

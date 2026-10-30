@@ -30,8 +30,6 @@ int find_comp_id_from_by_sph_tensor(const char *selected){
     else if(cmp_no_case_c(selected, hd_rp) != 0){return SPH_to_PR;}
     else if(cmp_no_case_c(selected, hd_zs) != 0){return SPH_to_ZS;}
     else if(cmp_no_case_c(selected, hd_zx) != 0){return SPH_to_ZX;}
-    
-    else if(cmp_no_case_c(selected, hd_magitude) != 0){return SPH_to_MAG;};
     return -1;
 }
 
@@ -58,8 +56,6 @@ void set_component_name_by_sph_tensor(int icomp, char *comp_name){
     else if(icomp == SPH_to_PR){sprintf(comp_name, hd_rp);}
     else if(icomp == SPH_to_ZS){sprintf(comp_name, hd_zs);}
     else if(icomp == SPH_to_ZX){sprintf(comp_name, hd_zx);}
-    
-    else if(icomp == SPH_to_MAG){sprintf(comp_name, hd_magitude);};
     return;
 };
 
@@ -87,8 +83,6 @@ int find_comp_id_from_by_cyl_tensor(const char *selected){
     else if(cmp_no_case_c(selected, hd_zs) != 0){return CYL_to_ZS;}
     else if(cmp_no_case_c(selected, hd_rp) != 0){return CYL_to_PR;}
     else if(cmp_no_case_c(selected, hd_zx) != 0){return CYL_to_ZX;}
-    
-    else if(cmp_no_case_c(selected, hd_magitude) != 0){return CYL_to_MAG;};
     return -1;
 }
 
@@ -115,8 +109,6 @@ void set_component_name_by_cyl_tensor(int icomp, char *comp_name){
     else if(icomp == CYL_to_ZS){sprintf(comp_name, hd_zs);}
     else if(icomp == CYL_to_PR){sprintf(comp_name, hd_rp);}
     else if(icomp == CYL_to_ZX){sprintf(comp_name, hd_zx);}
-    
-    else if(icomp == CYL_to_MAG){sprintf(comp_name, hd_magitude);};
     return;
 };
 
@@ -144,8 +136,6 @@ int find_comp_id_from_by_xyz_tensor(const char *selected){
     else if(cmp_no_case_c(selected, hd_zx) != 0){return XYZ_to_ZX;}
     else if(cmp_no_case_c(selected, hd_rp) != 0){return XYZ_to_PR;}
     else if(cmp_no_case_c(selected, hd_zs) != 0){return XYZ_to_ZS;}
-    
-    else if(cmp_no_case_c(selected, hd_magitude) != 0){return XYZ_to_MAG;};
     return -1;
 }
 
@@ -172,8 +162,6 @@ void set_component_name_by_xyz_tensor(int icomp, char *comp_name){
     else if(icomp == XYZ_to_ZX){sprintf(comp_name, hd_zx);}
     else if(icomp == XYZ_to_PR){sprintf(comp_name, hd_rp);}
     else if(icomp == XYZ_to_ZS){sprintf(comp_name, hd_zs);}
-    
-    else if(icomp == XYZ_to_MAG){sprintf(comp_name, hd_magitude);};
     return;
 };
 

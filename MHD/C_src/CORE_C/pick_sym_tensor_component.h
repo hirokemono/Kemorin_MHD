@@ -11,6 +11,7 @@
 #include <math.h>
 #include <stdio.h>
 
+#include "Calypso_direction_flags.h"
 #include "set_tensor_component_name.h"
 #include "convert_xyz_tensor_2_sph_c.h"
 #include "convert_xyz_tensor_2_cyl_c.h"

@@ -9,6 +9,7 @@
 #define PICK_VECTOR_COMPONENT_
 
 #include "calypso_param_c.h"
+#include "Calypso_direction_flags.h"
 #include "convert_xyz_vector_2_sph_c.h"
 #include "convert_sph_vector_2_xyz_c.h"
 #include "convert_cyl_vector_2_sph_c.h"

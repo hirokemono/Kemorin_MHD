@@ -12,6 +12,7 @@
 #include <stdio.h>
 
 #include "calypso_param_c.h"
+#include "Calypso_direction_flags.h"
 #include "set_tensor_component_name.h"
 #include "convert_xyz_asym_tsr_2_sph_c.h"
 #include "convert_sph_asym_tsr_2_xyz_c.h"

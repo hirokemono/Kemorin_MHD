@@ -35,9 +35,6 @@ void pick_asym_tensor_comp_by_sph(const int icomp, const int numnod,
         sph_zx_asym_tensor_by_sph_c(numnod, theta, phi, tensor, component);
     }else if(icomp == SPH_to_YZ){
         sph_yz_asym_tensor_by_sph_c(numnod, theta, phi, tensor, component);
-        
-    }else if(icomp == SPH_to_MAG){
-        printf("No magnitude evaluation currently");
     };
     return;
 };
@@ -65,9 +62,6 @@ void pick_asym_tensor_comp_by_cyl(const int icomp, const int numnod,
         sph_zx_asym_tensor_by_cyl_c(numnod, phi, tensor, component);
     }else if(icomp == CYL_to_YZ){
         sph_yz_asym_tensor_by_cyl_c(numnod, phi, tensor, component);
-        
-    }else if(icomp == CYL_to_MAG){
-        printf("No magnitude evaluation currently");
     };
     return;
 };
@@ -95,9 +89,6 @@ void pick_asym_tensor_comp_by_xyz(const int icomp, const int numnod,
         sph_zs_asym_tensor_by_xyz_c(numnod, phi, tensor, component);
     }else if(icomp == XYZ_to_PZ){
         sph_pz_asym_tensor_by_xyz_c(numnod, phi, tensor, component);
-        
-    }else if(icomp == XYZ_to_MAG){
-        printf("No magnitude evaluation currently");
     };
     return;
 };

@@ -12,6 +12,35 @@
 #define SPH_COORDINATE    1
 #define CYL_COORDINATE    2
 
+#define SPH_to_R    0
+#define SPH_to_T    1
+#define SPH_to_P    2
+#define SPH_to_S    3
+#define SPH_to_Z    4
+#define SPH_to_X    5
+#define SPH_to_Y    6
+#define SPH_to_MAG  7
+
+#define CYL_to_S    0
+#define CYL_to_P    1
+#define CYL_to_Z    2
+#define CYL_to_R    3
+#define CYL_to_T    4
+#define CYL_to_X    5
+#define CYL_to_Y    6
+#define CYL_to_MAG  7
+
+#define XYZ_to_X    0
+#define XYZ_to_Y    1
+#define XYZ_to_Z    2
+#define XYZ_to_R    3
+#define XYZ_to_T    4
+#define XYZ_to_P    5
+#define XYZ_to_S    6
+#define XYZ_to_MAG  7
+
+
+
 #define SPH_to_RR    0
 #define SPH_to_RT    1
 #define SPH_to_RP    2
@@ -31,7 +60,6 @@
 #define SPH_to_PR   16
 #define SPH_to_ZS   17
 #define SPH_to_ZX   18
-#define SPH_to_MAG  19
 
 #define CYL_to_SS    0
 #define CYL_to_SP    1
