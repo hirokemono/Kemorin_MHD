@@ -49,9 +49,9 @@ void sph_sz_sym_tensor_by_sph_c(int numnod, const double *theta,
         trr = st_sph[i         ];
         trt = st_sph[i+1*numnod];
         ttt = st_sph[i+3*numnod];
-        t_sz[i] = trr *  cos(theta[i])*sin(theta[i])
-                + trt * (cos(theta[i])*cos(theta[i]) - sin(theta[i])*sin(theta[i]))
-                - ttt *  cos(theta[i])*sin(theta[i]);
+        t_sz[i] =  trr *  cos(theta[i])*sin(theta[i])
+                 + trt * (cos(theta[i])*cos(theta[i]) - sin(theta[i])*sin(theta[i]))
+                 - ttt *  cos(theta[i])*sin(theta[i]);
     };
     return;
 };

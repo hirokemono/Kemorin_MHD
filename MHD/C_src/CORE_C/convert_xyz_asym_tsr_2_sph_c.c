@@ -31,14 +31,14 @@ void sph_rt_asym_tensor_by_xyz_c(int numnod, const double *phi,
 };
 
 void sph_pr_asym_tensor_by_xyz_c(int numnod, const double *theta, const double *phi, 
-                                 const double *at_xyz, double *t_rp){
+                                 const double *at_xyz, double *t_pr){
     int i;
     double txy, tzx, tyz;
     for(i=0;i<numnod;i++){
         txy = at_xyz[i         ];
         tzx = at_xyz[i+1*numnod];
         tyz = at_xyz[i+2*numnod];
-        t_rp[i] = -txy *               sin(theta[i])
+        t_pr[i] = -txy *               sin(theta[i])
                  + tzx * sin(phi[i]) * cos(theta[i])
                  + tyz * cos(phi[i]) * cos(theta[i]);
     };

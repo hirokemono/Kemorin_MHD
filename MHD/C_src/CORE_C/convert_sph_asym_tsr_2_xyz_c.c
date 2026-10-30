@@ -65,7 +65,7 @@ void sph_yz_asym_tensor_by_sph_c(int numnod, const double *theta, const double *
 void sph_xy_asym_tensor_by_cyl_c(int numnod, const double *st_cyl, double *t_xy){
     int i;
     for(i=0;i<numnod;i++){
-        t_xy[i] = st_cyl[i];;
+        t_xy[i] = st_cyl[i];
     };
     return;
 };

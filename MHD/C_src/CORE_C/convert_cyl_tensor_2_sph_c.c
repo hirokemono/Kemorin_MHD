@@ -79,8 +79,8 @@ void sph_tp_sym_tensor_by_cyl_c(int numnod, const double *theta,
     for(i=0;i<numnod;i++){
         tsp = st_cyl[i+1*numnod];
         tpz = st_cyl[i+4*numnod];
-        t_tp[i] = tsp * cos(theta[i])
-                - tpz * sin(theta[i]);
+        t_tp[i] =  tsp * cos(theta[i])
+                 - tpz * sin(theta[i]);
     };
     return;
 };

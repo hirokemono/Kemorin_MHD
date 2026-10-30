@@ -25,7 +25,7 @@
 void sph_rt_asym_tensor_by_xyz_c(int numnod, const double *phi, 
                                  const double *at_xyz, double *t_rt);
 void sph_pr_asym_tensor_by_xyz_c(int numnod, const double *theta, const double *phi, 
-                                 const double *at_xyz, double *t_rp);
+                                 const double *at_xyz, double *t_pr);
 void sph_tp_asym_tensor_by_xyz_c(int numnod, const double *theta, const double *phi, 
                                  const double *at_xyz, double *t_tp);
 
