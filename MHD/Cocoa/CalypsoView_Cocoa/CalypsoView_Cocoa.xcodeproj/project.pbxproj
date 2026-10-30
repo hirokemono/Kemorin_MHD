@@ -427,6 +427,9 @@
 		18CC320E30943B8C0082325C /* convert_tensor_from_sph.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; name = convert_tensor_from_sph.metal; path = Metal/convert_tensor_from_sph.metal; sourceTree = "<group>"; };
 		18CC320F30943B8C0082325C /* convert_vector_to_sph.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; name = convert_vector_to_sph.metal; path = Metal/convert_vector_to_sph.metal; sourceTree = "<group>"; };
 		18CC321430943C1E0082325C /* pick_tensor_component.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; name = pick_tensor_component.metal; path = Metal/pick_tensor_component.metal; sourceTree = "<group>"; };
+		18CC32293094840E0082325C /* convert_one_tensor_from_cyl.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = convert_one_tensor_from_cyl.frag; sourceTree = "<group>"; };
+		18CC32593094844A0082325C /* convert_one_tensor_from_sph.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = convert_one_tensor_from_sph.frag; sourceTree = "<group>"; };
+		18CC325A309484DA0082325C /* convert_one_tensor_from_xyz.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = convert_one_tensor_from_xyz.frag; sourceTree = "<group>"; };
 		18D3CA62249B4C100081B787 /* t_ctl_data_4_view_transfer_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_ctl_data_4_view_transfer_c.c; sourceTree = "<group>"; };
 		18D3CA63249B4C100081B787 /* t_ctl_data_4_view_transfer_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_ctl_data_4_view_transfer_c.h; sourceTree = "<group>"; };
 		18D3CA65249B4C500081B787 /* t_ctl_data_pvr_colormap_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_ctl_data_pvr_colormap_c.c; sourceTree = "<group>"; };
@@ -744,9 +747,20 @@
 			name = ZLIB_wrapper;
 			sourceTree = "<group>";
 		};
+		18CC32583094840E0082325C /* GLSL */ = {
+			isa = PBXGroup;
+			children = (
+				18CC32593094844A0082325C /* convert_one_tensor_from_sph.frag */,
+				18CC32293094840E0082325C /* convert_one_tensor_from_cyl.frag */,
+				18CC325A309484DA0082325C /* convert_one_tensor_from_xyz.frag */,
+			);
+			path = GLSL;
+			sourceTree = "<group>";
+		};
 		18D7E64D1562D359009B05FF /* C_src */ = {
 			isa = PBXGroup;
 			children = (
+				18CC32583094840E0082325C /* GLSL */,
 				18844F953093695C0089FEBA /* ZLIB_wrapper */,
 				18F029692AF5A45C00D37276 /* Metal */,
 				185CB939212F593C00BB3C0B /* CONTROLS */,

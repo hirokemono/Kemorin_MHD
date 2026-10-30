@@ -663,6 +663,555 @@ char * load_colormap_sym_grayscale_frag(void){
     return src;
 };
 
+char * load_convert_one_tensor_from_cyl_frag(void){
+    const char  convert_one_tensor_from_cyl_frag_src[]
+    = {
+        "/***********************************************************************\n"\
+        " !!  convert_one_tensor_from_cyl.frag\n"\
+        " !!\n"\
+        " !!  Created by Hiroaki Matsui on Oct. 30, 2026\n"\
+        " !!  Copyright 2026 Dept. of Earth and Planetary Sciences, Tokyo Tech.\n"\
+        " !!\n"\
+        " ***********************************************************************/\n"\
+        "\n"\
+        "float xx_sym_tensor_from_cyl(float phi,\n"\
+        "                             float tss, float tsp,\n"\
+        "                             float tpp){\n"\
+        "    float t_xx = 0.0;\n"\
+        "    t_xx =    tss * cos(phi)*cos(phi)\n"\
+        "        - 2.0*tsp * cos(phi)*sin(phi)\n"\
+        "        +     tpp * sin(phi)*sin(phi);\n"\
+        "    return t_xx;\n"\
+        "};\n"\
+        "\n"\
+        "float xy_sym_tensor_from_cyl(float phi,\n"\
+        "                             float tss, float tsp,\n"\
+        "                             float tpp){\n"\
+        "    float t_xy = 0.0;\n"\
+        "    t_xy =  tss *  cos(phi)*sin(phi)\n"\
+        "          + tsp * (cos(phi)*cos(phi) - sin(phi)*sin(phi))\n"\
+        "          - tpp *  cos(phi)*sin(phi);\n"\
+        "    return t_xy;\n"\
+        "};\n"\
+        "\n"\
+        "float xz_sym_tensor_from_cyl(float phi,\n"\
+        "                             float tsz,\n"\
+        "                             float tpz){\n"\
+        "    float t_xz = 0.0;\n"\
+        "    t_xz =  tsz * cos(phi)\n"\
+        "          - tpz * sin(phi);\n"\
+        "    return t_xz;\n"\
+        "};\n"\
+        "\n"\
+        "float yy_sym_tensor_from_cyl(float phi,\n"\
+        "                             float tss, float tsp,\n"\
+        "                             float tpp){\n"\
+        "    float t_yy = 0.0;\n"\
+        "    t_yy =    tss * sin(phi)*sin(phi)\n"\
+        "        + 2.0*tsp * cos(phi)*sin(phi)\n"\
+        "        +     tpp * cos(phi)*cos(phi);\n"\
+        "    return t_yy;\n"\
+        "};\n"\
+        "\n"\
+        "float yz_sym_tensor_from_cyl(float phi,\n"\
+        "                             float tsz,\n"\
+        "                             float tpz){\n"\
+        "    float t_yz = 0.0;\n"\
+        "    t_yz =  tsz * sin(phi)\n"\
+        "          + tpz * cos(phi);\n"\
+        "    return t_yz;\n"\
+        "};\n"\
+        "\n"\
+        "float zz_sym_tensor_from_cyl(float tzz){\n"\
+        "    float t_zz = tzz;\n"\
+        "    return t_zz;\n"\
+        "};\n"\
+        "\n"\
+        "/* symmetric tensor from cartecian coordinate to spherical coordinate */\n"\
+        "\n"\
+        "float rr_sym_tensor_from_cyl(float theta,\n"\
+        "                             float tss, float tsz,\n"\
+        "                             float tzz){\n"\
+        "    float t_rr = 0.0;\n"\
+        "    t_rr =    tss * sin(theta)*sin(theta)\n"\
+        "        + 2.0*tsz * cos(theta)*sin(theta)\n"\
+        "        +     tzz * cos(theta)*cos(theta);\n"\
+        "    return t_rr;\n"\
+        "};\n"\
+        "\n"\
+        "float rt_sym_tensor_from_cyl(float theta,\n"\
+        "                             float tss, float tsz,\n"\
+        "                             float tzz){\n"\
+        "    float t_rt = 0.0;\n"\
+        "    t_rt =  tss *  cos(theta)*sin(theta)\n"\
+        "          + tsz * (cos(theta)*cos(theta) - sin(theta)*sin(theta))\n"\
+        "          - tzz *  cos(theta)*sin(theta);\n"\
+        "    return t_rt;\n"\
+        "};\n"\
+        "\n"\
+        "float rp_sym_tensor_from_cyl(float theta,\n"\
+        "                             float tsp,\n"\
+        "                             float tpz){\n"\
+        "    float t_rp = 0.0;\n"\
+        "    t_rp =  tsp * sin(theta)\n"\
+        "          + tpz * cos(theta);\n"\
+        "    return t_rp;\n"\
+        "};\n"\
+        "\n"\
+        "float tt_sym_tensor_from_cyl(float theta,\n"\
+        "                             float tss, float tsz,\n"\
+        "                             float tzz){\n"\
+        "    float t_tt = 0.0;\n"\
+        "    t_tt =    tss * cos(theta)*cos(theta)\n"\
+        "        - 2.0*tsz * cos(theta)*sin(theta)\n"\
+        "        +     tzz * sin(theta)*sin(theta);\n"\
+        "    return t_tt;\n"\
+        "};\n"\
+        "\n"\
+        "float tp_sym_tensor_from_cyl(float theta,\n"\
+        "                             float tsp,\n"\
+        "                             float tpz){\n"\
+        "    float t_tp = 0.0;\n"\
+        "    t_tp =  tsp * cos(theta)\n"\
+        "          - tpz * sin(theta);\n"\
+        "    return t_tp;\n"\
+        "};\n"\
+        "\n"\
+        "float pp_sym_tensor_from_cyl(float tpp){\n"\
+        "    float t_pp = tpp;\n"\
+        "    return t_pp;\n"\
+        "};\n"\
+        "\n"\
+        "/* antisymmetric tensor from cylindrical coordinate to spherical coordinate */\n"\
+        "\n"\
+        "float rt_asym_tensor_from_cyl(float tzs){\n"\
+        "    float t_rt = tzs;\n"\
+        "    return t_rt;\n"\
+        "};\n"\
+        "\n"\
+        "float pr_asym_tensor_from_cyl(float theta, float tsp, float tpz){\n"\
+        "    float t_pr = 0.0;\n"\
+        "    t_pr =  tpz * cos(theta)\n"\
+        "          - tsp * sin(theta);\n"\
+        "    return t_pr;\n"\
+        "};\n"\
+        "\n"\
+        "float tp_asym_tensor_from_cyl(float theta, float tsp, float tpz){\n"\
+        "    float t_tp = 0.0;\n"\
+        "    t_tp =  tpz * sin(theta)\n"\
+        "          + tsp * cos(theta);\n"\
+        "    return t_tp;\n"\
+        "};\n"\
+        "\n"\
+        "/* antisymmetric tensor from cartecian coordinate to cylindrical coordinate */\n"\
+        "\n"\
+        "float xy_asym_tensor_from_cyl(float tsp){\n"\
+        "    float t_xy = tsp;\n"\
+        "    return t_xy;\n"\
+        "};\n"\
+        "\n"\
+        "float zx_asym_tensor_from_cyl(float phi, float tzs, float tpz){\n"\
+        "    float t_zx = 0.0;\n"\
+        "    t_zx =  tzs * cos(phi)\n"\
+        "          + tpz * sin(phi);\n"\
+        "    return t_zx;\n"\
+        "};\n"\
+        "\n"\
+        "float yz_asym_tensor_from_cyl(float phi, float tzs, float tpz){\n"\
+        "    float t_yz = 0.0;\n"\
+        "    t_yz = -tzs * sin(phi)\n"\
+        "          + tpz * cos(phi);\n"\
+        "    return t_yz;\n"\
+        "};\n"\
+        "\n"\
+        "\n"
+    };
+    
+    long n = strlen(convert_one_tensor_from_cyl_frag_src);
+    char * src = alloc_string((long) n+1);
+    
+    strcpy(src, convert_one_tensor_from_cyl_frag_src);
+    return src;
+};
+
+char * load_convert_one_tensor_from_sph_frag(void){
+    const char  convert_one_tensor_from_sph_frag_src[]
+    = {
+        "/***********************************************************************\n"\
+        " !!  convert_one_tensor_from_sph.frag\n"\
+        " !!\n"\
+        " !!  Created by Hiroaki Matsui on Oct. 30, 2026\n"\
+        " !!  Copyright 2026 Dept. of Earth and Planetary Sciences, Tokyo Tech.\n"\
+        " !!\n"\
+        " ***********************************************************************/\n"\
+        "\n"\
+        "\n"\
+        "/* symmetric tensor from cartecian coordinate to spherical coordinate */\n"\
+        "\n"\
+        "float xx_sym_tensor_from_sph(float theta, float phi,\n"\
+        "                             float trr, float trt, float trp,\n"\
+        "                             float ttt, float ttp, float tpp){\n"\
+        "    float t_xx = 0.0;\n"\
+        "    t_xx =    trr * cos(phi)*cos(phi) * sin(theta) * sin(theta)\n"\
+        "        + 2.0*trt * cos(phi)*cos(phi) * cos(theta) * sin(theta)\n"\
+        "        - 2.0*trp * cos(phi)*sin(phi) * sin(theta)\n"\
+        "        +     ttt * cos(phi)*cos(phi) * cos(theta) * cos(theta)\n"\
+        "        - 2.0*ttp * cos(phi)*sin(phi) * cos(theta)\n"\
+        "        +     tpp * sin(phi)*sin(phi);\n"\
+        "    return t_xx;\n"\
+        "};\n"\
+        "\n"\
+        "float xy_sym_tensor_from_sph(float theta, float phi,\n"\
+        "                             float trr, float trt, float trp,\n"\
+        "                             float ttt, float ttp, float tpp){\n"\
+        "    float t_xy = 0.0;\n"\
+        "    t_xy =  trr *  cos(phi)*sin(phi) * sin(theta)*sin(theta)\n"\
+        "      + 2.0*trt *  cos(phi)*sin(phi) * cos(theta)*sin(theta)\n"\
+        "      +     trp * (cos(phi)*cos(phi) - sin(phi)*sin(phi)) * sin(theta)\n"\
+        "      +     ttt *  cos(phi)*sin(phi) * cos(theta)*cos(theta)\n"\
+        "      +     ttp * (cos(phi)*cos(phi) - sin(phi)*sin(phi)) * cos(theta)\n"\
+        "      -     tpp *  cos(phi)*sin(phi);\n"\
+        "    return t_xy;\n"\
+        "};\n"\
+        "\n"\
+        "float xz_sym_tensor_from_sph(float theta, float phi,\n"\
+        "                             float trr, float trt, float trp,\n"\
+        "                             float ttt, float ttp){\n"\
+        "    float t_xz = 0.0;\n"\
+        "    t_xz =  trr * cos(phi) * cos(theta)*sin(theta)\n"\
+        "          + trt * cos(phi) * (cos(theta)*cos(theta) - sin(theta)*sin(theta))\n"\
+        "          - trp * sin(phi) * cos(theta)\n"\
+        "          - ttt * cos(phi) * cos(theta)*sin(theta)\n"\
+        "          + ttp * sin(phi) * sin(theta);\n"\
+        "    return t_xz;\n"\
+        "};\n"\
+        "\n"\
+        "float yy_sym_tensor_from_sph(float theta, float phi,\n"\
+        "                             float trr, float trt, float trp,\n"\
+        "                             float ttt, float ttp, float tpp){\n"\
+        "    float t_yy = 0.0;\n"\
+        "    t_yy =    trr * sin(phi)*sin(phi) * sin(theta)*sin(theta)\n"\
+        "        + 2.0*trt * sin(phi)*sin(phi) * cos(theta)*sin(theta)\n"\
+        "        + 2.0*trp * cos(phi)*sin(phi) * sin(theta)\n"\
+        "        +     ttt * sin(phi)*sin(phi) * cos(theta)*cos(theta)\n"\
+        "        + 2.0*ttp * cos(phi)*sin(phi) * cos(theta)\n"\
+        "        +     tpp * cos(phi)*cos(phi);\n"\
+        "    return t_yy;\n"\
+        "};\n"\
+        "\n"\
+        "float yz_sym_tensor_from_sph(float theta, float phi,\n"\
+        "                             float trr, float trt, float trp,\n"\
+        "                             float ttt, float ttp){\n"\
+        "    float t_yz = 0.0;\n"\
+        "    t_yz = trr * sin(phi) * cos(theta)*sin(theta)\n"\
+        "        +  trt * sin(phi) * (cos(theta)*cos(theta) - sin(theta)*sin(theta))\n"\
+        "        -  ttt * sin(phi) * cos(theta)*sin(theta)\n"\
+        "        +  trp * cos(phi) * cos(theta)\n"\
+        "        -  ttp * cos(phi) * sin(theta);\n"\
+        "    return t_yz;\n"\
+        "};\n"\
+        "\n"\
+        "float zz_sym_tensor_from_sph(float theta,\n"\
+        "                             float trr, float trt,\n"\
+        "                             float ttt){\n"\
+        "    float t_zz = 0.0;\n"\
+        "    t_zz =    trr * cos(theta)*cos(theta)\n"\
+        "        - 2.0*trt * cos(theta)*sin(theta)\n"\
+        "        +     ttt * sin(theta)*sin(theta);\n"\
+        "    return t_zz;\n"\
+        "};\n"\
+        "\n"\
+        "/* symmetric tensor from spherical coordinate to cylindrical coordinate */\n"\
+        "\n"\
+        "float ss_sym_tensor_from_sph(float theta,\n"\
+        "                             float trr, float trt,\n"\
+        "                             float ttt){\n"\
+        "    float t_ss = 0.0;\n"\
+        "    t_ss =    trr * sin(theta) * sin(theta)\n"\
+        "        + 2.0*trt * cos(theta) * sin(theta)\n"\
+        "        +     ttt * cos(theta) * cos(theta);\n"\
+        "    return t_ss;\n"\
+        "};\n"\
+        "\n"\
+        "float sp_sym_tensor_from_sph(float theta,\n"\
+        "                             float trp,\n"\
+        "                             float ttp){\n"\
+        "    float t_sp = 0.0;\n"\
+        "    t_sp =  trp * sin(theta)\n"\
+        "          + ttp * cos(theta);\n"\
+        "    return t_sp;\n"\
+        "};\n"\
+        "\n"\
+        "float sz_sym_tensor_from_sph(float theta,\n"\
+        "                             float trr, float trt,\n"\
+        "                             float ttt){\n"\
+        "    float t_sz = 0.0;\n"\
+        "    t_sz =  trr *  cos(theta)*sin(theta)\n"\
+        "          + trt * (cos(theta)*cos(theta) - sin(theta)*sin(theta))\n"\
+        "          - ttt *  cos(theta)*sin(theta);\n"\
+        "    return t_sz;\n"\
+        "};\n"\
+        "\n"\
+        "float pp_sym_tensor_from_sph(float tpp){\n"\
+        "    float t_pp = tpp;\n"\
+        "    return t_pp;\n"\
+        "};\n"\
+        "\n"\
+        "float pz_sym_tensor_from_sph(float theta,\n"\
+        "                             float tss, float tsp, float trp,\n"\
+        "                             float ttt, float ttp, float tpp){\n"\
+        "    float t_pz = 0.0;\n"\
+        "    t_pz =  trp * cos(theta)\n"\
+        "          - ttp * sin(theta);\n"\
+        "    return t_pz;\n"\
+        "};\n"\
+        "\n"\
+        "/* antisymmetric tensor from cartecian coordinate to spherical coordinate */\n"\
+        "\n"\
+        "float xy_asym_tensor_from_sph(float theta, float tpr, float ttp){\n"\
+        "    float t_xy = 0.0;\n"\
+        "    t_xy = -tpr * sin(theta)\n"\
+        "          + ttp * cos(theta);\n"\
+        "    return t_xy;\n"\
+        "};\n"\
+        "\n"\
+        "float zx_asym_tensor_from_sph(float theta, float phi,\n"\
+        "                              float trt, float tpr, float ttp){\n"\
+        "    float t_zx = 0.0;\n"\
+        "    t_zx =  trt * cos(phi)\n"\
+        "          + tpr * sin(phi) * cos(theta)\n"\
+        "          + ttp * sin(phi) * sin(theta);\n"\
+        "    return t_zx;\n"\
+        "};\n"\
+        "\n"\
+        "float yz_asym_tensor_from_sph(float theta, float phi,\n"\
+        "                              float trt, float tpr, float ttp){\n"\
+        "    float t_yz = 0.0;\n"\
+        "    t_yz = -trt * sin(phi)\n"\
+        "          + tpr * cos(phi) * cos(theta)\n"\
+        "          + ttp * cos(phi) * sin(theta);\n"\
+        "    return t_yz;\n"\
+        "};\n"\
+        "\n"\
+        "/* antisymmetric tensor from spherical coordinate to cylindrical coordinate */\n"\
+        "\n"\
+        "float sp_asym_tensor_from_sph(float theta, float tpr, float ttp){\n"\
+        "    float t_sp = 0.0;\n"\
+        "    t_sp = -tpr * sin(theta)\n"\
+        "          + ttp * cos(theta);\n"\
+        "    return t_sp;\n"\
+        "};\n"\
+        "\n"\
+        "float zs_asym_tensor_from_sph(float trt){\n"\
+        "    float t_zs = trt;\n"\
+        "    return t_zs;\n"\
+        "};\n"\
+        "\n"\
+        "float pz_asym_tensor_from_sph(float theta,\n"\
+        "                              float tpr, float ttp){\n"\
+        "    float t_pz = 0.0;\n"\
+        "    t_pz =  tpr * cos(theta)\n"\
+        "          + ttp * sin(theta);\n"\
+        "    return t_pz;\n"\
+        "};\n"\
+        "\n"\
+        "\n"
+    };
+    
+    long n = strlen(convert_one_tensor_from_sph_frag_src);
+    char * src = alloc_string((long) n+1);
+    
+    strcpy(src, convert_one_tensor_from_sph_frag_src);
+    return src;
+};
+
+char * load_convert_one_tensor_from_xyz_frag(void){
+    const char  convert_one_tensor_from_xyz_frag_src[]
+    = {
+        "/***********************************************************************\n"\
+        " !!  convert_one_tensor_from_xyz.frag\n"\
+        " !!\n"\
+        " !!  Created by Hiroaki Matsui on Oct. 30, 2026\n"\
+        " !!  Copyright 2026 Dept. of Earth and Planetary Sciences, Tokyo Tech.\n"\
+        " !!\n"\
+        " ***********************************************************************/\n"\
+        "\n"\
+        "/* symmetric tensor from cartecian coordinate to spherical coordinate */\n"\
+        "\n"\
+        "float rr_sym_tensor_from_xyz(float theta, float phi,\n"\
+        "                             float txx, float txy, float txz,\n"\
+        "                             float tyy, float tyz, float tzz){\n"\
+        "    float t_rr = 0.0;\n"\
+        "    t_rr =    txx * cos(phi)*cos(phi) * sin(theta)*sin(theta)\n"\
+        "        + 2.0*txy * cos(phi)*sin(phi) * sin(theta)*sin(theta)\n"\
+        "        + 2.0*txz * cos(phi) *          cos(theta)*sin(theta)\n"\
+        "        +     tyy * sin(phi)*sin(phi) * sin(theta)*sin(theta)\n"\
+        "        + 2.0*tyz * sin(phi) *          cos(theta)*sin(theta)\n"\
+        "        +     tzz *                     cos(theta)*cos(theta);\n"\
+        "    return t_rr;\n"\
+        "};\n"\
+        "\n"\
+        "float rt_sym_tensor_from_xyz(float theta, float phi,\n"\
+        "                             float txx, float txy, float txz,\n"\
+        "                             float tyy, float tyz, float tzz){\n"\
+        "    float t_rt = 0.0;\n"\
+        "    t_rt =    txx * cos(phi)*cos(phi) * cos(theta)*sin(theta)\n"\
+        "        + 2.0*txy * cos(phi)*sin(phi) * cos(theta)*sin(theta)\n"\
+        "        +     txz * cos(phi)\n"\
+        "                * (cos(theta)*cos(theta) - sin(theta)*sin(theta))\n"\
+        "        +     tyy * sin(phi)*sin(phi) * cos(theta)*sin(theta)\n"\
+        "        +     tyz * sin(phi)\n"\
+        "                * (cos(theta)*cos(theta) - sin(theta)*sin(theta))\n"\
+        "        -     tzz *cos(theta)*sin(theta);\n"\
+        "    return t_rt;\n"\
+        "};\n"\
+        "\n"\
+        "float rp_sym_tensor_from_xyz(float theta, float phi,\n"\
+        "                             float txx, float txy, float txz,\n"\
+        "                             float tyy, float tyz){\n"\
+        "    float t_rp = 0.0;\n"\
+        "    t_rp = -txx *  cos(phi)*sin(phi) * sin(theta)\n"\
+        "          + txy * sin(theta)\n"\
+        "               * (cos(phi)*cos(phi) - sin(phi)*sin(phi))\n"\
+        "          - txz *  sin(phi) * cos(theta)\n"\
+        "          + tyy *  cos(phi)*sin(phi) * sin(theta)\n"\
+        "          + tyz *  cos(phi) * cos(theta);\n"\
+        "    return t_rp;\n"\
+        "};\n"\
+        "\n"\
+        "float tt_sym_tensor_from_xyz(float theta, float phi,\n"\
+        "                             float txx, float txy, float txz,\n"\
+        "                             float tyy, float tyz, float tzz){\n"\
+        "    float t_tt = 0.0;\n"\
+        "    t_tt =      txx * cos(phi)*cos(phi) * cos(theta)*cos(theta)\n"\
+        "          + 2.0*txy * cos(phi)*sin(phi) * cos(theta)*cos(theta)\n"\
+        "          - 2.0*txz * cos(phi) * cos(theta)*sin(theta)\n"\
+        "          +     tyy * sin(phi)*sin(phi) * cos(theta)*cos(theta)\n"\
+        "          - 2.0*tyz * sin(phi) * cos(theta)*sin(theta)\n"\
+        "          +     tzz * sin(theta)*sin(theta);\n"\
+        "    return t_tt;\n"\
+        "};\n"\
+        "\n"\
+        "float tp_sym_tensor_from_xyz(float theta, float phi,\n"\
+        "                             float txx, float txy, float txz,\n"\
+        "                             float tyy, float tyz){\n"\
+        "    float t_tp = 0.0;\n"\
+        "    t_tp = -txx * cos(phi)*sin(phi) * cos(theta)\n"\
+        "          + txy * cos(theta)\n"\
+        "           * (cos(phi)*cos(phi) - sin(phi)*sin(phi))\n"\
+        "          + txz * sin(phi) * sin(theta)\n"\
+        "          + tyy * cos(phi)*sin(phi) * cos(theta)\n"\
+        "          - tyz * cos(phi) * cos(theta);\n"\
+        "    return t_tp;\n"\
+        "};\n"\
+        "\n"\
+        "float pp_sym_tensor_from_xyz(float phi,\n"\
+        "                             float txx, float txy,\n"\
+        "                             float tyy){\n"\
+        "    float t_pp = 0.0;\n"\
+        "    t_pp =  txx*sin(phi)*sin(phi)\n"\
+        "      - 2.0*txy*cos(phi)*sin(phi)\n"\
+        "          + tyy*cos(phi)*cos(phi);\n"\
+        "    return t_pp;\n"\
+        "};\n"\
+        "\n"\
+        "/* symmetric tensor from cartecian coordinate to cylindrical coordinate */\n"\
+        "\n"\
+        "float ss_sym_tensor_from_xyz(float phi,\n"\
+        "                             float txx, float txy,\n"\
+        "                             float tyy){\n"\
+        "    float t_ss = 0.0;\n"\
+        "    t_ss =    txx * cos(phi)*cos(phi)\n"\
+        "        + 2.0*txy * cos(phi)*sin(phi)\n"\
+        "        +     tyy * sin(phi)*sin(phi);\n"\
+        "    return t_ss;\n"\
+        "};\n"\
+        "\n"\
+        "float sp_sym_tensor_from_xyz(float phi,\n"\
+        "                             float txx, float txy,\n"\
+        "                             float tyy){\n"\
+        "    float t_sp = 0.0;\n"\
+        "    t_sp = -txx * cos(phi)*sin(phi)\n"\
+        "          + txy * (cos(phi)*cos(phi) - sin(phi)*sin(phi))\n"\
+        "          + tyy * sin(phi)*cos(phi);\n"\
+        "    return t_sp;\n"\
+        "};\n"\
+        "\n"\
+        "float sz_sym_tensor_from_xyz(float phi,\n"\
+        "                             float txz,\n"\
+        "                             float tyz){\n"\
+        "    float t_sz = 0.0;\n"\
+        "    t_sz =  txz *  cos(phi)\n"\
+        "          + tyz *  sin(phi);\n"\
+        "    return t_sz;\n"\
+        "};\n"\
+        "\n"\
+        "float pz_sym_tensor_from_xyz(float phi,\n"\
+        "                             float txz,\n"\
+        "                             float tyz){\n"\
+        "    float t_pz = 0.0;\n"\
+        "    t_pz = -txz * sin(phi)\n"\
+        "          + tyz * cos(phi);\n"\
+        "    return t_pz;\n"\
+        "};\n"\
+        "\n"\
+        "/* antisymmetric tensor from cartecian coordinate to spherical coordinate */\n"\
+        "\n"\
+        "float rt_asym_tensor_from_xyz(float phi, float txy, float tzx, float tyz){\n"\
+        "    float t_rt = 0.0;\n"\
+        "    t_rt =  tzx * cos(phi)\n"\
+        "          - tyz * sin(phi);\n"\
+        "    return t_rt;\n"\
+        "};\n"\
+        "\n"\
+        "float pr_asym_tensor_from_xyz(float theta, float phi,\n"\
+        "                              float txy, float tzx, float tyz){\n"\
+        "    float t_pr = 0.0;\n"\
+        "    t_pr = -txy *            sin(theta)\n"\
+        "          + tzx * sin(phi) * cos(theta)\n"\
+        "          + tyz * cos(phi) * cos(theta);\n"\
+        "    return t_pr;\n"\
+        "};\n"\
+        "\n"\
+        "float tp_asym_tensor_from_xyz(float theta, float phi,\n"\
+        "                              float txy, float tzx, float tyz){\n"\
+        "    float t_tp = 0.0;\n"\
+        "    t_tp =  txy *            cos(theta)\n"\
+        "          + tzx * sin(phi) * sin(theta)\n"\
+        "          + tyz * cos(phi) * sin(theta);\n"\
+        "    return t_tp;\n"\
+        "};\n"\
+        "\n"\
+        "/* antisymmetric tensor from cartecian coordinate to cylindrical coordinate */\n"\
+        "\n"\
+        "float sp_asym_tensor_from_xyz(float txy){\n"\
+        "    float t_sp = txy;\n"\
+        "    return t_sp;\n"\
+        "};\n"\
+        "\n"\
+        "float zs_asym_tensor_from_xyz(float phi, float txy, float tzx, float tyz){\n"\
+        "    float t_zs = 0.0;\n"\
+        "    t_zs =  tzx * cos(phi)\n"\
+        "          - tyz * sin(phi);\n"\
+        "    return t_zs;\n"\
+        "};\n"\
+        "\n"\
+        "float pz_asym_tensor_from_xyz(float phi, float txy, float tzx, float tyz){\n"\
+        "    float t_pz = 0.0;\n"\
+        "    t_pz =  tzx * sin(phi)\n"\
+        "          + tyz * cos(phi);\n"\
+        "    return t_pz;\n"\
+        "};\n"\
+        "\n"
+    };
+    
+    long n = strlen(convert_one_tensor_from_xyz_frag_src);
+    char * src = alloc_string((long) n+1);
+    
+    strcpy(src, convert_one_tensor_from_xyz_frag_src);
+    return src;
+};
+
 char * load_dash_lines_3D_frag(void){
     const char  dash_lines_3D_frag_src[]
     = {

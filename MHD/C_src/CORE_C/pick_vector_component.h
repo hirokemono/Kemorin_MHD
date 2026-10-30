@@ -1,8 +1,8 @@
 /***********************************************************************
  !!  pick_vector_component.h
  !!
- !!  Created by Hiroaki Matsui on Dec. 3, 2012
- !!  Copyright 2012 Dept. of Earth and Planetary Science, UC Berkeley.
+ !!  Created by Hiroaki Matsui on Oct. 30, 2026
+ !!  Copyright 2012 Dept. of Earth and Planetary Sciences, Tokyo Tech.
  !!
  ***********************************************************************/
 #ifndef PICK_VECTOR_COMPONENT_
