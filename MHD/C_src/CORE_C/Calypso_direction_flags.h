@@ -80,7 +80,6 @@
 #define CYL_to_ZS   16
 #define CYL_to_PR   17
 #define CYL_to_ZX   18
-#define CYL_to_MAG  19
 
 #define XYZ_to_XX    0
 #define XYZ_to_XY    1
@@ -101,7 +100,6 @@
 #define XYZ_to_ZX   16
 #define XYZ_to_PR   17
 #define XYZ_to_ZS   18
-#define XYZ_to_MAG  19
 
 
 #endif /* CALYPSO_DIRECTION_FLAGS_ */

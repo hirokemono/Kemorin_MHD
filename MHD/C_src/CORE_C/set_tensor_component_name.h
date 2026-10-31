@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include "Calypso_direction_flags.h"
+#include "skip_comment_c.h"
 
 
 const char * const hd_magitude = "magnitude";

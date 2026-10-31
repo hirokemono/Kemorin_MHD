@@ -241,44 +241,42 @@ char * load_colormap_molten_metal_frag(void){
 char * load_colormap_orange_cyan_frag(void){
     const char  colormap_orange_cyan_frag_src[]
     = {
-        "/*\n"\
+        "/**********************************************\n"\
         "//  colormap_orange_cyan.frag\n"\
         "//    vec4 colormap_orange_cyan(float x);\n"\
-        "*/\n"\
+        "***********************************************/\n"\
         "\n"\
-        "float colormap_orangecyan_blue(float x) {\n"\
-        "    float red = 1.0;\n"\
+        "#define RED_POINT 1.0\n"\
         "\n"\
+        "float colormap_orangecyan_blue(float x){\n"\
         "    float c = 0.0;\n"\
         "    if (x < 0.0){\n"\
         "        c = 1.0;\n"\
         "    }else if(x < 0.5){\n"\
         "        c = (1.0 - x * 0.5);\n"\
-        "    }else if(x < red){\n"\
-        "        c = (red - x) * 1.5;\n"\
+        "    }else if(x < RED_POINT){\n"\
+        "        c = (RED_POINT - x) * 1.5;\n"\
         "    }else{\n"\
         "        c = 0.0;\n"\
         "    };\n"\
         "    return c;\n"\
         "}\n"\
         "\n"\
-        "float colormap_orangecyan_green(float x) {\n"\
-        "    float red = 1.0;\n"\
-        "\n"\
+        "float colormap_orangecyan_green(float x){\n"\
         "    float c = 0.0;\n"\
         "    if (x < 0.0){\n"\
         "        c = 1.0;\n"\
         "    }else if(x < 0.5){\n"\
         "        c = 1.0;\n"\
-        "    }else if(x < red){\n"\
-        "        c = (red - x) + 0.5;\n"\
+        "    }else if(x < RED_POINT){\n"\
+        "        c = (RED_POINT - x) + 0.5;\n"\
         "    }else{\n"\
         "        c = 0.5;\n"\
         "    };\n"\
         "    return c;\n"\
         "}\n"\
         "\n"\
-        "float colormap_orangecyan_red(float x) {\n"\
+        "float colormap_orangecyan_red(float x){\n"\
         "    float c = 0.0;\n"\
         "    if (x < 0.0){\n"\
         "        c = 0.0;\n"\
@@ -292,7 +290,7 @@ char * load_colormap_orange_cyan_frag(void){
         "    return c;\n"\
         "}\n"\
         "\n"\
-        "vec4 colormap_orange_cyan(float x, float alpha) {\n"\
+        "vec4 colormap_orange_cyan(float x, float alpha){\n"\
         "    return vec4(colormap_orangecyan_red(x), colormap_orangecyan_green(x), colormap_orangecyan_blue(x), alpha);\n"\
         "}\n"\
         "\n"
