@@ -30,7 +30,3 @@ float colormap_metal_green(float x) {
     }
     return c;
 }
-
-vec4 colormap_molten_metal(float x, float alpha) {
-    return vec4(colormap_metal_red(x), colormap_metal_green(x), colormap_metal_blue(x), alpha);
-}

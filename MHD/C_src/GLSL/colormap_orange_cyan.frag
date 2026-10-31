@@ -19,7 +19,7 @@ float colormap_orangecyan_blue(float x){
     return c;
 }
 
-float colormap_orangecyan_green(float x){    
+float colormap_orangecyan_green(float x){
     float c = 0.0;
     if (x < 0.0){
         c = 1.0;
@@ -45,8 +45,4 @@ float colormap_orangecyan_red(float x){
         c = 1.0;
     };
     return c;
-}
-
-vec4 colormap_orange_cyan(float x, float alpha){
-    return vec4(colormap_orangecyan_red(x), colormap_orangecyan_green(x), colormap_orangecyan_blue(x), alpha);
 }

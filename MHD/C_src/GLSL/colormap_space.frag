@@ -3,7 +3,7 @@
 //      vec4 colormap_space(float x, float alpha);
 //
 
-float colormap_space_red(float x) {
+float colormap_space_red(float x){
     float c = 0.0;
     if (x < 37067.0 / 158860.0) {
         c = 0.0;
@@ -28,7 +28,7 @@ float colormap_space_red(float x) {
     return c;
 }
 
-float colormap_space_green(float x) {
+float colormap_space_green(float x){
     float xx = 0.0;
     float c = 0.0;
     if (x < 0.0) {
@@ -50,7 +50,7 @@ float colormap_space_green(float x) {
     return c;
 }
 
-float colormap_space_blue(float x) {
+float colormap_space_blue(float x){
     float c = 0.0;
     if (x < 0.0) {
         c = 0.0;
@@ -72,8 +72,4 @@ float colormap_space_blue(float x) {
         c = 1.0;
     }
     return c;
-}
-
-vec4 colormap_space(float x, float alpha) {
-    return vec4(colormap_space_red(x), colormap_space_green(x), colormap_space_blue(x), alpha);
 }

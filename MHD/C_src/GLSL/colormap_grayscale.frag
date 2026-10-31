@@ -14,7 +14,3 @@ float colormap_gray_rgb(float x) {
 	}
     return c;
 }
-
-vec4 colormap_grayscale(float x, float alpha) {
-    return vec4(colormap_gray_rgb(x), colormap_gray_rgb(x), colormap_gray_rgb(x), alpha);
-}

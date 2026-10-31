@@ -5,24 +5,13 @@
 
 #include "colormap_sym_gray_c.h"
 
+#include "../GLSL/colormap_sym_grayscale.frag"
+
 
 void colormap_sym_grayscale_c(double rnorm, double *r, double *g, double *b){
-	if (rnorm < ZERO){
-		*r = ZERO;
-		*g = ZERO;
-		*b = ZERO;
-	} else if (rnorm > ONE){
-		*r = ZERO;
-		*g = ZERO;
-		*b = ZERO;
-	} else if (rnorm >= ZERO && rnorm < HALF){
-		*r = ONE*rnorm;
-		*g = ONE*rnorm;
-		*b = ONE*rnorm;
-	} else {
-		*r = ONE*(ONE - rnorm);
-		*g = ONE*(ONE - rnorm);
-		*b = ONE*(ONE - rnorm);
-	}
+    float x = (float) rnorm;
+    *r = (double) colormap_sym_gray_rgb(x);
+    *g = *r;
+    *b = *r;
 	return;
 };

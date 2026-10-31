@@ -24,6 +24,32 @@ struct KemoViewNormalize{
     int id_cmap;
 };
 
+
+vec4 colormap_rainbow(float x, float alpha){
+    return vec4(colormap_rainbow_red(x), colormap_rainbow_green(x), colormap_rainbow_blue(x), alpha);
+}
+vec4 colormap_red_blue(float x, float alpha){
+    return vec4(colormap_redblue_red(x), colormap_redblue_green(x), colormap_redblue_blue(x), alpha);
+}
+vec4 colormap_orange_cyan(float x, float alpha){
+    return vec4(colormap_orangecyan_red(x), colormap_orangecyan_green(x), colormap_orangecyan_blue(x), alpha);
+}
+vec4 colormap_molten_metal(float x, float alpha) {
+    return vec4(colormap_metal_red(x), colormap_metal_green(x), 0.0, alpha);
+}
+vec4 colormap_space(float x, float alpha){
+    return vec4(colormap_space_red(x), colormap_space_green(x), colormap_space_blue(x), alpha);
+}
+
+vec4 colormap_grayscale(float x, float alpha) {
+    float c = colormap_gray_rgb(x);
+    return vec4(c, c, c, alpha);
+}
+vec4 colormap_sym_grayscale(float x, float alpha){
+    float c = colormap_sym_gray_rgb(x);
+    return vec4(c, c, c, alpha);
+}
+
 vec4 colormap_select(int id_cmap, float x, float alpha){
     vec4 c = vec4(0.0, 0.0, 0.0, 0.0);
     if(id_cmap == RAINBOW_MODE){

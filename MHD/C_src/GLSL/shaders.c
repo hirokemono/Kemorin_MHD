@@ -175,10 +175,6 @@ char * load_colormap_grayscale_frag(void){
         "	}\n"\
         "    return c;\n"\
         "}\n"\
-        "\n"\
-        "vec4 colormap_grayscale(float x, float alpha) {\n"\
-        "    return vec4(colormap_gray_rgb(x), colormap_gray_rgb(x), colormap_gray_rgb(x), alpha);\n"\
-        "}\n"\
         "\n"
     };
     
@@ -223,10 +219,6 @@ char * load_colormap_molten_metal_frag(void){
         "        c = 1.0;\n"\
         "    }\n"\
         "    return c;\n"\
-        "}\n"\
-        "\n"\
-        "vec4 colormap_molten_metal(float x, float alpha) {\n"\
-        "    return vec4(colormap_metal_red(x), colormap_metal_green(x), colormap_metal_blue(x), alpha);\n"\
         "}\n"\
         "\n"
     };
@@ -289,10 +281,6 @@ char * load_colormap_orange_cyan_frag(void){
         "    };\n"\
         "    return c;\n"\
         "}\n"\
-        "\n"\
-        "vec4 colormap_orange_cyan(float x, float alpha){\n"\
-        "    return vec4(colormap_orangecyan_red(x), colormap_orangecyan_green(x), colormap_orangecyan_blue(x), alpha);\n"\
-        "}\n"\
         "\n"
     };
     
@@ -311,15 +299,21 @@ char * load_colormap_rainbow_frag(void){
         "//    vec4 colormap_rainbow(float x, float alpha);\n"\
         "*/\n"\
         "\n"\
-        "float colormap_rainbow_blue(float x) {\n"\
-        "	float ocean =  0.325;\n"\
-        "    float green =  0.55;\n"\
+        "#define PURPLE_POINT 0.0\n"\
+        "#define BLUE_POINT   0.1\n"\
+        "#define OCEAN_POINT  0.325\n"\
+        "#define GREEN_POINT  0.55\n"\
+        "#define YELLOW_POINT 0.775\n"\
+        "#define RED_POINT    1.0\n"\
         "\n"\
+        "\n"\
+        "\n"\
+        "float colormap_rainbow_blue(float x) {\n"\
         "    float c = 0.0;\n"\
-        "	if (x < ocean){\n"\
+        "	if (x < OCEAN_POINT){\n"\
         "		c = 1.0;\n"\
-        "	} else if (x >= ocean && x < green){\n"\
-        "        c = 1.0 - 40.0*(x-ocean) / 9.0;\n"\
+        "	} else if (x >= OCEAN_POINT && x < GREEN_POINT){\n"\
+        "        c = 1.0 - 40.0*(x-OCEAN_POINT) / 9.0;\n"\
         "	} else {\n"\
         "        c = 0.0;\n"\
         "	}\n"\
@@ -327,20 +321,15 @@ char * load_colormap_rainbow_frag(void){
         "}\n"\
         "\n"\
         "float colormap_rainbow_green(float x) {\n"\
-        "    float blue =   0.1;\n"\
-        "    float ocean =  0.325;\n"\
-        "    float yellow = 0.775;\n"\
-        "    float red =    1.0;\n"\
-        "			\n"\
         "    float c = 0.0;\n"\
-        "	if (x < blue){\n"\
+        "	if (x < BLUE_POINT){\n"\
         "        c = 0.0;\n"\
-        "	} else if (x >= blue && x < ocean){\n"\
-        "        c = 40.0*(x-blue) / 9.0;\n"\
-        "	} else if (x >= ocean && x < yellow){\n"\
+        "	} else if (x >= BLUE_POINT && x < OCEAN_POINT){\n"\
+        "        c = 40.0*(x - BLUE_POINT) / 9.0;\n"\
+        "	} else if (x >= OCEAN_POINT && x < YELLOW_POINT){\n"\
         "        c = 1.0;\n"\
-        "	} else if (x >= yellow && x < red){\n"\
-        "        c = 1.0 - 40.0*(x-yellow) / 9.0;\n"\
+        "	} else if (x >= YELLOW_POINT && x < RED_POINT){\n"\
+        "        c = 1.0 - 40.0*(x - YELLOW_POINT) / 9.0;\n"\
         "	} else {\n"\
         "        c = 0.0;\n"\
         "	}\n"\
@@ -348,28 +337,19 @@ char * load_colormap_rainbow_frag(void){
         "}\n"\
         "\n"\
         "float colormap_rainbow_red(float x) {\n"\
-        "    float purple = 0.0;\n"\
-        "    float blue =   0.1;\n"\
-        "    float green =  0.55;\n"\
-        "    float yellow = 0.775;\n"\
-        "			\n"\
         "    float c = 0.0;\n"\
-        "	if (x < purple){\n"\
+        "	if (x < PURPLE_POINT){\n"\
         "        c = 0.5;\n"\
-        "	} else if (x >= purple && x < blue){\n"\
+        "	} else if (x >= PURPLE_POINT && x < BLUE_POINT){\n"\
         "        c = 0.5 - 5.0*x;\n"\
-        "	} else if (x >= blue && x < green){\n"\
+        "	} else if (x >= BLUE_POINT && x < GREEN_POINT){\n"\
         "        c = 0.0;\n"\
-        "	} else if (x >= green && x < yellow){\n"\
-        "        c = 40.0*(x-green) / 9.0;\n"\
+        "	} else if (x >= GREEN_POINT && x < YELLOW_POINT){\n"\
+        "        c = 40.0*(x-GREEN_POINT) / 9.0;\n"\
         "	} else {\n"\
         "        c = 1.0;\n"\
         "	}\n"\
         "    return c;\n"\
-        "}\n"\
-        "\n"\
-        "vec4 colormap_rainbow(float x, float alpha) {\n"\
-        "    return vec4(colormap_rainbow_red(x), colormap_rainbow_green(x), colormap_rainbow_blue(x), alpha);\n"\
         "}\n"\
         "\n"
     };
@@ -389,21 +369,22 @@ char * load_colormap_red_blue_frag(void){
         "//    vec4 colormap_red_blue(float x, float alpha);\n"\
         "*/\n"\
         "\n"\
+        "#define ABYSS_POINT  0.0\n"\
+        "#define BLUE_POINT   0.1\n"\
+        "#define WHITE_POINT  0.5\n"\
+        "#define RED_POINT    0.9\n"\
+        "#define BLOOD_POINT  1.0\n"\
+        "\n"\
         "float colormap_redblue_blue(float x) {\n"\
-        "	float abyss =    0.0;\n"\
-        "	float blue =     0.1;\n"\
-        "    float white =    0.5;\n"\
-        "	float red =      0.9;\n"\
-        "	\n"\
         "    float c = 0.0;\n"\
-        "	if (x < abyss){\n"\
+        "	if (x < ABYSS_POINT){\n"\
         "        c = 0.8;\n"\
-        "	} else if (x >= abyss && x < blue){\n"\
+        "	} else if (x >= ABYSS_POINT && x < BLUE_POINT){\n"\
         "        c = 0.8 + 2.0 * x;\n"\
-        "	} else if (x >= blue && x < white){\n"\
-        "        c = 1.0 - (x - blue) * 0.25;\n"\
-        "	} else if (x >= white && x < red){\n"\
-        "        c = (red - x) * 2.0;\n"\
+        "	} else if (x >= BLUE_POINT && x < WHITE_POINT){\n"\
+        "        c = 1.0 - (x - BLUE_POINT) * 0.25;\n"\
+        "	} else if (x >= WHITE_POINT && x < RED_POINT){\n"\
+        "        c = (RED_POINT - x) * 2.0;\n"\
         "	} else {\n"\
         "        c = 0.0;\n"\
         "	}\n"\
@@ -411,20 +392,15 @@ char * load_colormap_red_blue_frag(void){
         "}\n"\
         "\n"\
         "float colormap_redblue_green(float x) {\n"\
-        "	float abyss =    0.0;\n"\
-        "	float blue =     0.1;\n"\
-        "	float white =    0.5;\n"\
-        "	float red =      0.9;\n"\
-        "	\n"\
         "    float c = 0.0;\n"\
-        "	if (x < abyss){\n"\
+        "	if (x < ABYSS_POINT){\n"\
         "        c = 0.2;\n"\
-        "	} else if (x >= abyss && x < blue){\n"\
-        "        c = 2.0 * (blue - x);\n"\
-        "	} else if (x >= blue && x < white){\n"\
-        "        c = (x - blue) * 2.0;\n"\
-        "	} else if (x >= white && x < red){\n"\
-        "        c = (red - x) * 2.0;\n"\
+        "	} else if (x >= ABYSS_POINT && x < BLUE_POINT){\n"\
+        "        c = 2.0 * (BLUE_POINT - x);\n"\
+        "	} else if (x >= BLUE_POINT && x < WHITE_POINT){\n"\
+        "        c = (x - BLUE_POINT) * 2.0;\n"\
+        "	} else if (x >= WHITE_POINT && x < RED_POINT){\n"\
+        "        c = (RED_POINT - x) * 2.0;\n"\
         "	} else {\n"\
         "        c = 0.0;\n"\
         "	}\n"\
@@ -432,28 +408,19 @@ char * load_colormap_red_blue_frag(void){
         "}\n"\
         "\n"\
         "float colormap_redblue_red(float x) {\n"\
-        "	float blue =     0.1;\n"\
-        "	float white =    0.5;\n"\
-        "	float red =      0.9;\n"\
-        "	float blood =    1.0;\n"\
-        "	\n"\
         "    float c = 0.0;\n"\
-        "	if (x < blue){\n"\
+        "	if (x < BLUE_POINT){\n"\
         "        c = 0.0;\n"\
-        "	} else if (x >= blue && x < white){\n"\
-        "        c = (x - blue) * 2.0;\n"\
-        "	} else if (x >= white && x < red){\n"\
-        "        c = 1.0 - (red - x) * 0.25;\n"\
-        "	} else if (x >= red && x < blood){\n"\
-        "        c = 1.0 - (x - red) * 2.0;\n"\
+        "	} else if (x >= BLUE_POINT && x < WHITE_POINT){\n"\
+        "        c = (x - BLUE_POINT) * 2.0;\n"\
+        "	} else if (x >= WHITE_POINT && x < RED_POINT){\n"\
+        "        c = 1.0 - (RED_POINT - x) * 0.25;\n"\
+        "	} else if (x >= RED_POINT && x < BLOOD_POINT){\n"\
+        "        c = 1.0 - (x - RED_POINT) * 2.0;\n"\
         "	} else {\n"\
         "        c = 0.8;\n"\
         "	}\n"\
         "    return c;\n"\
-        "}\n"\
-        "\n"\
-        "vec4 colormap_red_blue(float x, float alpha) {\n"\
-        "    return vec4(colormap_redblue_red(x), colormap_redblue_green(x), colormap_redblue_blue(x), alpha);\n"\
         "}\n"\
         "\n"
     };
@@ -493,6 +460,32 @@ char * load_colormap_select_frag(void){
         "\n"\
         "    int id_cmap;\n"\
         "};\n"\
+        "\n"\
+        "\n"\
+        "vec4 colormap_rainbow(float x, float alpha){\n"\
+        "    return vec4(colormap_rainbow_red(x), colormap_rainbow_green(x), colormap_rainbow_blue(x), alpha);\n"\
+        "}\n"\
+        "vec4 colormap_red_blue(float x, float alpha){\n"\
+        "    return vec4(colormap_redblue_red(x), colormap_redblue_green(x), colormap_redblue_blue(x), alpha);\n"\
+        "}\n"\
+        "vec4 colormap_orange_cyan(float x, float alpha){\n"\
+        "    return vec4(colormap_orangecyan_red(x), colormap_orangecyan_green(x), colormap_orangecyan_blue(x), alpha);\n"\
+        "}\n"\
+        "vec4 colormap_molten_metal(float x, float alpha) {\n"\
+        "    return vec4(colormap_metal_red(x), colormap_metal_green(x), 0.0, alpha);\n"\
+        "}\n"\
+        "vec4 colormap_space(float x, float alpha){\n"\
+        "    return vec4(colormap_space_red(x), colormap_space_green(x), colormap_space_blue(x), alpha);\n"\
+        "}\n"\
+        "\n"\
+        "vec4 colormap_grayscale(float x, float alpha) {\n"\
+        "    float c = colormap_gray_rgb(x);\n"\
+        "    return vec4(c, c, c, alpha);\n"\
+        "}\n"\
+        "vec4 colormap_sym_grayscale(float x, float alpha){\n"\
+        "    float c = colormap_sym_gray_rgb(x);\n"\
+        "    return vec4(c, c, c, alpha);\n"\
+        "}\n"\
         "\n"\
         "vec4 colormap_select(int id_cmap, float x, float alpha){\n"\
         "    vec4 c = vec4(0.0, 0.0, 0.0, 0.0);\n"\
@@ -542,7 +535,7 @@ char * load_colormap_space_frag(void){
         "//      vec4 colormap_space(float x, float alpha);\n"\
         "//\n"\
         "\n"\
-        "float colormap_space_red(float x) {\n"\
+        "float colormap_space_red(float x){\n"\
         "    float c = 0.0;\n"\
         "    if (x < 37067.0 / 158860.0) {\n"\
         "        c = 0.0;\n"\
@@ -567,7 +560,7 @@ char * load_colormap_space_frag(void){
         "    return c;\n"\
         "}\n"\
         "\n"\
-        "float colormap_space_green(float x) {\n"\
+        "float colormap_space_green(float x){\n"\
         "    float xx = 0.0;\n"\
         "    float c = 0.0;\n"\
         "    if (x < 0.0) {\n"\
@@ -589,7 +582,7 @@ char * load_colormap_space_frag(void){
         "    return c;\n"\
         "}\n"\
         "\n"\
-        "float colormap_space_blue(float x) {\n"\
+        "float colormap_space_blue(float x){\n"\
         "    float c = 0.0;\n"\
         "    if (x < 0.0) {\n"\
         "        c = 0.0;\n"\
@@ -611,10 +604,6 @@ char * load_colormap_space_frag(void){
         "        c = 1.0;\n"\
         "    }\n"\
         "    return c;\n"\
-        "}\n"\
-        "\n"\
-        "vec4 colormap_space(float x, float alpha) {\n"\
-        "    return vec4(colormap_space_red(x), colormap_space_green(x), colormap_space_blue(x), alpha);\n"\
         "}\n"\
         "\n"
     };
@@ -646,10 +635,6 @@ char * load_colormap_sym_grayscale_frag(void){
         "        c = 1.0*(1.0 - x);\n"\
         "	}\n"\
         "    return c;\n"\
-        "}\n"\
-        "\n"\
-        "vec4 colormap_sym_grayscale(float x, float alpha) {\n"\
-        "    return vec4(colormap_sym_gray_rgb(x), colormap_sym_gray_rgb(x), colormap_sym_gray_rgb(x), alpha);\n"\
         "}\n"\
         "\n"
     };

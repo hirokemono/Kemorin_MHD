@@ -3,15 +3,21 @@
 //    vec4 colormap_rainbow(float x, float alpha);
 */
 
+#define PURPLE_POINT 0.0
+#define BLUE_POINT   0.1
+#define OCEAN_POINT  0.325
+#define GREEN_POINT  0.55
+#define YELLOW_POINT 0.775
+#define RED_POINT    1.0
+
+
+
 float colormap_rainbow_blue(float x) {
-	float ocean =  0.325;
-    float green =  0.55;
-        
     float c = 0.0;
-	if (x < ocean){
+	if (x < OCEAN_POINT){
 		c = 1.0;
-	} else if (x >= ocean && x < green){
-        c = 1.0 - 40.0*(x-ocean) / 9.0;
+	} else if (x >= OCEAN_POINT && x < GREEN_POINT){
+        c = 1.0 - 40.0*(x-OCEAN_POINT) / 9.0;
 	} else {
         c = 0.0;
 	}
@@ -19,20 +25,15 @@ float colormap_rainbow_blue(float x) {
 }
 
 float colormap_rainbow_green(float x) {
-    float blue =   0.1;
-    float ocean =  0.325;
-    float yellow = 0.775;
-    float red =    1.0;
-			
     float c = 0.0;
-	if (x < blue){
+	if (x < BLUE_POINT){
         c = 0.0;
-	} else if (x >= blue && x < ocean){
-        c = 40.0*(x-blue) / 9.0;
-	} else if (x >= ocean && x < yellow){
+	} else if (x >= BLUE_POINT && x < OCEAN_POINT){
+        c = 40.0*(x - BLUE_POINT) / 9.0;
+	} else if (x >= OCEAN_POINT && x < YELLOW_POINT){
         c = 1.0;
-	} else if (x >= yellow && x < red){
-        c = 1.0 - 40.0*(x-yellow) / 9.0;
+	} else if (x >= YELLOW_POINT && x < RED_POINT){
+        c = 1.0 - 40.0*(x - YELLOW_POINT) / 9.0;
 	} else {
         c = 0.0;
 	}
@@ -40,26 +41,17 @@ float colormap_rainbow_green(float x) {
 }
 
 float colormap_rainbow_red(float x) {
-    float purple = 0.0;
-    float blue =   0.1;
-    float green =  0.55;
-    float yellow = 0.775;
-			
     float c = 0.0;
-	if (x < purple){
+	if (x < PURPLE_POINT){
         c = 0.5;
-	} else if (x >= purple && x < blue){
+	} else if (x >= PURPLE_POINT && x < BLUE_POINT){
         c = 0.5 - 5.0*x;
-	} else if (x >= blue && x < green){
+	} else if (x >= BLUE_POINT && x < GREEN_POINT){
         c = 0.0;
-	} else if (x >= green && x < yellow){
-        c = 40.0*(x-green) / 9.0;
+	} else if (x >= GREEN_POINT && x < YELLOW_POINT){
+        c = 40.0*(x-GREEN_POINT) / 9.0;
 	} else {
         c = 1.0;
 	}
     return c;
-}
-
-vec4 colormap_rainbow(float x, float alpha) {
-    return vec4(colormap_rainbow_red(x), colormap_rainbow_green(x), colormap_rainbow_blue(x), alpha);
 }

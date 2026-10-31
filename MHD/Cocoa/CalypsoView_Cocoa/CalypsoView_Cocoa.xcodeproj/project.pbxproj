@@ -430,6 +430,10 @@
 		18CC32293094840E0082325C /* convert_one_tensor_from_cyl.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = convert_one_tensor_from_cyl.frag; sourceTree = "<group>"; };
 		18CC32593094844A0082325C /* convert_one_tensor_from_sph.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = convert_one_tensor_from_sph.frag; sourceTree = "<group>"; };
 		18CC325A309484DA0082325C /* convert_one_tensor_from_xyz.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = convert_one_tensor_from_xyz.frag; sourceTree = "<group>"; };
+		18CC3F8F309627A8008C60AF /* colormap_space.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = colormap_space.frag; sourceTree = "<group>"; };
+		18CC3F90309627B4008C60AF /* colormap_sym_grayscale.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = colormap_sym_grayscale.frag; sourceTree = "<group>"; };
+		18CC3F91309627BE008C60AF /* colormap_grayscale.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = colormap_grayscale.frag; sourceTree = "<group>"; };
+		18CC3F92309627C8008C60AF /* colormap_molten_metal.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = colormap_molten_metal.frag; sourceTree = "<group>"; };
 		18D3CA62249B4C100081B787 /* t_ctl_data_4_view_transfer_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_ctl_data_4_view_transfer_c.c; sourceTree = "<group>"; };
 		18D3CA63249B4C100081B787 /* t_ctl_data_4_view_transfer_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_ctl_data_4_view_transfer_c.h; sourceTree = "<group>"; };
 		18D3CA65249B4C500081B787 /* t_ctl_data_pvr_colormap_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_ctl_data_pvr_colormap_c.c; sourceTree = "<group>"; };
@@ -602,6 +606,8 @@
 		18DD11382BF04BFA009C0A06 /* pthread_fieldline_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pthread_fieldline_to_buf.c; sourceTree = "<group>"; };
 		18DD113D2BF1066F009C0A06 /* m_fline_data_4_viewer_c.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = m_fline_data_4_viewer_c.h; sourceTree = "<group>"; };
 		18DD113E2BF10681009C0A06 /* m_fline_data_4_viewer_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = m_fline_data_4_viewer_c.c; sourceTree = "<group>"; };
+		18E8FC8F3095885600BC8FF1 /* colormap_orange_cyan.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = colormap_orange_cyan.frag; sourceTree = "<group>"; };
+		18E8FC903095979200BC8FF1 /* colormap_rainbow.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = colormap_rainbow.frag; sourceTree = "<group>"; };
 		18EAA6C72BFBBDE8004BE670 /* pthread_MAP_patches_to_buf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pthread_MAP_patches_to_buf.h; sourceTree = "<group>"; };
 		18EAA6C82BFBBE04004BE670 /* pthread_MAP_patches_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pthread_MAP_patches_to_buf.c; sourceTree = "<group>"; };
 		18EAC19E2BF7F36E002CEB77 /* set_primitives_to_gl_buffer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = set_primitives_to_gl_buffer.c; sourceTree = "<group>"; };
@@ -753,6 +759,12 @@
 				18CC32593094844A0082325C /* convert_one_tensor_from_sph.frag */,
 				18CC32293094840E0082325C /* convert_one_tensor_from_cyl.frag */,
 				18CC325A309484DA0082325C /* convert_one_tensor_from_xyz.frag */,
+				18E8FC8F3095885600BC8FF1 /* colormap_orange_cyan.frag */,
+				18E8FC903095979200BC8FF1 /* colormap_rainbow.frag */,
+				18CC3F8F309627A8008C60AF /* colormap_space.frag */,
+				18CC3F92309627C8008C60AF /* colormap_molten_metal.frag */,
+				18CC3F90309627B4008C60AF /* colormap_sym_grayscale.frag */,
+				18CC3F91309627BE008C60AF /* colormap_grayscale.frag */,
 			);
 			path = GLSL;
 			sourceTree = "<group>";
