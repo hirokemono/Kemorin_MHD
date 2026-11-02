@@ -5,16 +5,11 @@
  !!  Copyright 2012 Dept. of Earth and Planetary Science, UC Berkeley.
  !!
  ***********************************************************************/
-#include "calypso_param_c.h"
-#include "convert_xyz_asym_tsr_2_sph_c.h"
-#include "convert_sph_asym_tsr_2_xyz_c.h"
-#include "convert_cyl_asym_tsr_2_sph_c.h"
-#include "pick_sym_tensor_component.h"
 #include "pick_asym_tensor_component.h"
 
 void pick_asym_tensor_comp_by_sph(const int icomp, const int numnod,
-                                 const double *theta, const double *phi,
-                                 const double *tensor, double *component){
+                                 double *theta, double *phi,
+                                 double *tensor, float *component){
     if      (icomp == SPH_to_RT){
         pick_tensor_comp_c(IZERO, numnod, tensor, component);
     }else if(icomp == SPH_to_RP){
@@ -23,25 +18,25 @@ void pick_asym_tensor_comp_by_sph(const int icomp, const int numnod,
         pick_tensor_comp_c(ITWO, numnod, tensor, component);
         
     }else if(icomp == SPH_to_SP){
-        sph_sp_asym_tensor_by_sph_c(numnod, theta, tensor, component);
+        sp_asym_tensor_field_from_sph(numnod, theta, tensor, component);
     }else if(icomp == SPH_to_SZ){
-        sph_zs_asym_tensor_by_sph_c(numnod, tensor, component);
+        zs_asym_tensor_field_from_sph(numnod, tensor, component);
     }else if(icomp == SPH_to_PZ){
-        sph_pz_asym_tensor_by_sph_c(numnod, theta, tensor, component);
+        pz_asym_tensor_field_from_sph(numnod, theta, tensor, component);
         
     }else if(icomp == SPH_to_XY){
-        sph_xy_asym_tensor_by_sph_c(numnod, theta, phi, tensor, component);
+        xy_asym_tensor_field_from_sph(numnod, theta, tensor, component);
     }else if(icomp == SPH_to_XZ){
-        sph_zx_asym_tensor_by_sph_c(numnod, theta, phi, tensor, component);
+        zx_asym_tensor_field_from_sph(numnod, theta, phi, tensor, component);
     }else if(icomp == SPH_to_YZ){
-        sph_yz_asym_tensor_by_sph_c(numnod, theta, phi, tensor, component);
+        yz_asym_tensor_field_from_sph(numnod, theta, phi, tensor, component);
     };
     return;
 };
 
 void pick_asym_tensor_comp_by_cyl(const int icomp, const int numnod,
-                                  const double *theta, const double *phi,
-                                  const double *tensor, double *component){
+                                  double *theta, double *phi,
+                                  double *tensor, float *component){
     if      (icomp == CYL_to_SP){
         pick_tensor_comp_c(IZERO, numnod, tensor, component);
     }else if(icomp == CYL_to_SZ){
@@ -50,25 +45,25 @@ void pick_asym_tensor_comp_by_cyl(const int icomp, const int numnod,
         pick_tensor_comp_c(ITWO, numnod, tensor, component);
         
     }else if(icomp == CYL_to_RT){
-        sph_rt_asym_tensor_by_cyl_c(numnod, tensor, component);
+        rt_asym_tensor_field_from_cyl(numnod, tensor, component);
     }else if(icomp == CYL_to_RP){
-        sph_pr_asym_tensor_by_cyl_c(numnod, theta, tensor, component);
+        pr_asym_tensor_field_from_cyl(numnod, theta, tensor, component);
     }else if(icomp == CYL_to_TP){
-        sph_tp_asym_tensor_by_cyl_c(numnod, theta, tensor, component);
+        tp_asym_tensor_field_from_cyl(numnod, theta, tensor, component);
         
     }else if(icomp == CYL_to_XY){
-        sph_xy_asym_tensor_by_cyl_c(numnod, tensor, component);
+        xy_asym_tensor_field_from_cyl(numnod, tensor, component);
     }else if(icomp == CYL_to_XZ){
-        sph_zx_asym_tensor_by_cyl_c(numnod, phi, tensor, component);
+        zx_asym_tensor_field_from_cyl(numnod, phi, tensor, component);
     }else if(icomp == CYL_to_YZ){
-        sph_yz_asym_tensor_by_cyl_c(numnod, phi, tensor, component);
+        yz_asym_tensor_field_from_cyl(numnod, phi, tensor, component);
     };
     return;
 };
 
 void pick_asym_tensor_comp_by_xyz(const int icomp, const int numnod,
-                                  const double *theta, const double *phi,
-                                  const double *tensor, double *component){
+                                  double *theta, double *phi,
+                                  double *tensor, float *component){
     if      (icomp == XYZ_to_XY){
         pick_tensor_comp_c(IZERO, numnod, tensor, component);
     }else if(icomp == XYZ_to_XZ){
@@ -77,25 +72,25 @@ void pick_asym_tensor_comp_by_xyz(const int icomp, const int numnod,
         pick_tensor_comp_c(ITWO, numnod, tensor, component);
         
     }else if(icomp == XYZ_to_RT){
-        sph_rt_asym_tensor_by_xyz_c(numnod, phi, tensor, component);
+        rt_asym_tensor_field_from_xyz(numnod, phi, tensor, component);
     }else if(icomp == XYZ_to_RP){
-        sph_pr_asym_tensor_by_xyz_c(numnod, theta, phi, tensor, component);
+        pr_asym_tensor_field_from_xyz(numnod, theta, phi, tensor, component);
     }else if(icomp == XYZ_to_TP){
-        sph_tp_asym_tensor_by_xyz_c(numnod, theta, phi, tensor, component);
+        tp_asym_tensor_field_from_xyz(numnod, theta, phi, tensor, component);
         
     }else if(icomp == XYZ_to_SP){
-        sph_sp_asym_tensor_by_xyz_c(numnod, tensor, component);
+        sp_asym_tensor_field_from_xyz(numnod, tensor, component);
     }else if(icomp == XYZ_to_SZ){
-        sph_zs_asym_tensor_by_xyz_c(numnod, phi, tensor, component);
+        zs_asym_tensor_field_from_xyz(numnod, phi, tensor, component);
     }else if(icomp == XYZ_to_PZ){
-        sph_pz_asym_tensor_by_xyz_c(numnod, phi, tensor, component);
+        pz_asym_tensor_field_from_xyz(numnod, phi, tensor, component);
     };
     return;
 };
 
 void pick_asym_tensor_component(const int id_coord, const int icomp, const int numnod,
-                                const double *theta, const double *phi,
-                                const double *tensor, double *component){
+                                double *theta, double *phi,
+                                double *tensor, float *component){
     if(id_coord == SPH_COORDINATE){
         pick_asym_tensor_comp_by_sph(icomp, numnod, theta, phi,
                                      tensor, component);

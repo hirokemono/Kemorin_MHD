@@ -1,9 +1,10 @@
 /***********************************************************************
- *  convert_sph_tensor_2_xyz_c.h
- *
- *  Created by Hiroaki Matsui on Dec. 3, 2012
- *  Copyright 2012 Dept. of Earth and Planetary Science, UC Berkeley.
- 
+!!  convert_one_tensor_from_sph.h
+!!
+!!  Created by Hiroaki Matsui on Oct. 30, 2026
+!!  Copyright 2026 Dept. of Earth and Planetary Sciences, Tokyo Tech.
+!!
+!!     transform symmetric tensor
 !!  uxux = (ar*as)^2 *(x*x*s*s *urur + x*x*z*s *urut - x*y*s*r * urup
 !!                   + x*x*z*s *utur + x*x*z*z *utut - x*y*z*r * utup
 !!                   - x*y*s*r *upur - x*y*z*r *uput + y*y*r*r * upup)
@@ -22,25 +23,16 @@
 !!  uzuz = (ar*as)^2 *(z*z*s*s *urur - z*s*s*s *urut + 0
 !!                   - z*s*s*s *utur + s*s*s*s *utut + 0
 !!                   + 0 + 0 + 0)
+!!
+!!     transform anti-symmetric tensor
+!!   uxuy = (ar) *   (              -s *upur + z   *utup)
+!!   uzux = (aras) * ( r*x *urut + y*z *upur + s*y *utup)
+!!   uyuz = (aras) * (-r*y *urut + x*z *upur + s*x *utup)
+!!
+!!   uxuy =         usup
+!!   uzux = (as) * (  x* uzus + y* upuz)
+!!   uyuz = (as) * ( -y* uzus + x* upuz)
  ***********************************************************************/
-#ifndef CONVERT_SPH_TENSOR_2_XYZ_C_
-#define CONVERT_SPH_TENSOR_2_XYZ_C_
+#include "convert_one_tensor_from_sph.h"
 
-
-#include <math.h>
-
-/* prototypes */
-void sph_xx_sym_tensor_by_sph_c(int numnod, const double *theta, const double *phi, 
-                                const double *st_sph, double *t_xx);
-void sph_xy_sym_tensor_by_sph_c(int numnod, const double *theta, const double *phi, 
-                                const double *st_sph, double *t_xy);
-void sph_xz_sym_tensor_by_sph_c(int numnod, const double *theta, const double *phi, 
-                                const double *st_sph, double *t_xz);
-void sph_yy_sym_tensor_by_sph_c(int numnod, const double *theta, const double *phi, 
-                                const double *st_sph, double *t_yy);
-void sph_yz_sym_tensor_by_sph_c(int numnod, const double *theta, const double *phi, 
-                                const double *st_sph, double *t_yz);
-void sph_zz_sym_tensor_by_sph_c(int numnod, const double *theta,
-                                const double *st_sph, double *t_zz);
-
-#endif /* CONVERT_SPH_TENSOR_2_XYZ_C_ */
+#include "convert_one_tensor_from_sph.frag"

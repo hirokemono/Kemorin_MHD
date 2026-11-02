@@ -14,24 +14,25 @@
 #include "calypso_param_c.h"
 #include "Calypso_direction_flags.h"
 #include "set_tensor_component_name.h"
-#include "convert_xyz_asym_tsr_2_sph_c.h"
-#include "convert_sph_asym_tsr_2_xyz_c.h"
-#include "convert_cyl_asym_tsr_2_sph_c.h"
+#include "convert_tensor_field_from_xyz_c.h"
+#include "convert_tensor_field_from_sph_c.h"
+#include "convert_tensor_field_from_cyl_c.h"
+#include "pick_sym_tensor_component.h"
 #include "pick_sym_tensor_component.h"
 
 /* prototypes */
 void pick_asym_tensor_comp_by_sph(const int icomp, const int numnod,
-                                  const double *theta, const double *phi,
-                                  const double *tensor, double *component);
+                                  double *theta, double *phi,
+                                  double *tensor, float *component);
 void pick_asym_tensor_comp_by_cyl(const int icomp, const int numnod,
-                                  const double *theta, const double *phi,
-                                  const double *tensor, double *component);
+                                  double *theta, double *phi,
+                                  double *tensor, float *component);
 void pick_asym_tensor_comp_by_xyz(const int icomp, const int numnod,
-                                  const double *theta, const double *phi,
-                                  const double *tensor, double *component);
+                                  double *theta, double *phi,
+                                  double *tensor, float *component);
 
 void pick_asym_tensor_component(const int id_coord, const int icomp, const int numnod,
-                                const double *theta, const double *phi,
-                                const double *tensor, double *component);
+                                double *theta, double *phi,
+                                double *tensor, float *component);
 
 #endif /* PICK_ASYM_TENSOR_COMPONENT_ */

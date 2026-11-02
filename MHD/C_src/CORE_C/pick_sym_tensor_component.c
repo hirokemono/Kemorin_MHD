@@ -8,15 +8,15 @@
 #include "pick_sym_tensor_component.h"
 
 void pick_tensor_comp_c(int icomp, int numnod, 
-                        const double *tensor, double *component){
+                        double *tensor, float *component){
     int i;
     for(i=0;i<numnod;i++){component[i] = tensor[i+icomp*numnod];};
     return;
 };
 
 void pick_sph_sym_tensor_by_sph(const int icomp, const int numnod,
-                                const double *theta, const double *phi,
-                                const double *tensor, double *component){
+                                double *theta, double *phi,
+                                double *tensor, float *component){
     if      (icomp == SPH_to_RR){
         pick_tensor_comp_c(SPH_to_RR, numnod, tensor, component);
     }else if(icomp == SPH_to_RT){
@@ -31,33 +31,33 @@ void pick_sph_sym_tensor_by_sph(const int icomp, const int numnod,
         pick_tensor_comp_c(SPH_to_PP, numnod, tensor, component);
         
     }else if(icomp == SPH_to_SS){
-        sph_ss_sym_tensor_by_sph_c(numnod, theta, tensor, component);
+        ss_sym_tensor_field_from_sph(numnod, theta, tensor, component);
     }else if(icomp == SPH_to_SP){
-        sph_sp_sym_tensor_by_sph_c(numnod, theta, tensor, component);
+        sp_sym_tensor_field_from_sph(numnod, theta, tensor, component);
     }else if(icomp == SPH_to_SZ){
-        sph_sz_sym_tensor_by_sph_c(numnod, theta, tensor, component);
+        sz_sym_tensor_field_from_sph(numnod, theta, tensor, component);
     }else if(icomp == SPH_to_PZ){
-        sph_pz_sym_tensor_by_sph_c(numnod, theta, tensor, component);
+        pz_sym_tensor_field_from_sph(numnod, theta, tensor, component);
     }else if(icomp == SPH_to_ZZ){
-        sph_zz_sym_tensor_by_sph_c(numnod, theta, tensor, component);
+        zz_sym_tensor_field_from_sph(numnod, theta, tensor, component);
         
     }else if(icomp == SPH_to_XX){
-        sph_xx_sym_tensor_by_sph_c(numnod, theta, phi, tensor, component);
+        xx_sym_tensor_field_from_sph(numnod, theta, phi, tensor, component);
     }else if(icomp == SPH_to_XY){
-        sph_xy_sym_tensor_by_sph_c(numnod, theta, phi, tensor, component);
+        xy_sym_tensor_field_from_sph(numnod, theta, phi, tensor, component);
     }else if(icomp == SPH_to_XZ){
-        sph_xz_sym_tensor_by_sph_c(numnod, theta, phi, tensor, component);
+        xz_sym_tensor_field_from_sph(numnod, theta, phi, tensor, component);
     }else if(icomp == SPH_to_YY){
-        sph_yy_sym_tensor_by_sph_c(numnod, theta, phi, tensor, component);
+        yy_sym_tensor_field_from_sph(numnod, theta, phi, tensor, component);
     }else if(icomp == SPH_to_YZ){
-        sph_yz_sym_tensor_by_sph_c(numnod, theta, phi, tensor, component);
+        yz_sym_tensor_field_from_sph(numnod, theta, phi, tensor, component);
     };
     return;
 };
 
-void pick_sph_sym_tensor_by_cyl(const int icomp, const int numnod,
-                                const double *theta, const double *phi,
-                                const double *tensor, double *component){
+void pick_sph_sym_tensor_by_cyl(const int icomp, int numnod,
+                                double *theta, double *phi,
+                                double *tensor, float *component){
     if      (icomp == CYL_to_SS){
         pick_tensor_comp_c(CYL_to_SS, numnod, tensor, component);
     }else if(icomp == CYL_to_SP){
@@ -72,33 +72,33 @@ void pick_sph_sym_tensor_by_cyl(const int icomp, const int numnod,
         pick_tensor_comp_c(CYL_to_ZZ, numnod, tensor, component);
         
     }else if(icomp == CYL_to_RR){
-        sph_rr_sym_tensor_by_cyl_c(numnod, theta, tensor, component);
+        rr_sym_tensor_field_from_cyl(numnod, theta, tensor, component);
     }else if(icomp == CYL_to_RT){
-        sph_rt_sym_tensor_by_cyl_c(numnod, theta, tensor, component);
+        rt_sym_tensor_field_from_cyl(numnod, theta, tensor, component);
     }else if(icomp == CYL_to_RP){
-        sph_rp_sym_tensor_by_cyl_c(numnod, theta, tensor, component);
+        rp_sym_tensor_field_from_cyl(numnod, theta, tensor, component);
     }else if(icomp == CYL_to_TT){
-        sph_tt_sym_tensor_by_cyl_c(numnod, theta, tensor, component);
+        tt_sym_tensor_field_from_cyl(numnod, theta, tensor, component);
     }else if(icomp == CYL_to_TP){
-        sph_tp_sym_tensor_by_cyl_c(numnod, theta, tensor, component);
+        tp_sym_tensor_field_from_cyl(numnod, theta, tensor, component);
         
     }else if(icomp == CYL_to_XX){
-        sph_xx_sym_tensor_by_cyl_c(numnod, phi, tensor, component);
+        xx_sym_tensor_field_from_cyl(numnod, phi, tensor, component);
     }else if(icomp == CYL_to_XY){
-        sph_xy_sym_tensor_by_cyl_c(numnod, phi, tensor, component);
+        xy_sym_tensor_field_from_cyl(numnod, phi, tensor, component);
     }else if(icomp == CYL_to_XZ){
-        sph_yz_sym_tensor_by_cyl_c(numnod, phi, tensor, component);
+        xz_sym_tensor_field_from_cyl(numnod, phi, tensor, component);
     }else if(icomp == CYL_to_YY){
-        sph_yy_sym_tensor_by_cyl_c(numnod, phi, tensor, component);
+        yy_sym_tensor_field_from_cyl(numnod, phi, tensor, component);
     }else if(icomp == CYL_to_YZ){
-        sph_yz_sym_tensor_by_cyl_c(numnod, phi, tensor, component);
+        yz_sym_tensor_field_from_cyl(numnod, phi, tensor, component);
     };
     return;
 };
 
-void pick_sph_sym_tensor_by_xyz(const int icomp, const int numnod,
-                                const double *theta, const double *phi,
-                                const double *tensor, double *component){
+void pick_sph_sym_tensor_by_xyz(const int icomp, int numnod,
+                                double *theta, double *phi,
+                                double *tensor, float *component){
     if      (icomp == XYZ_to_XX){
         pick_tensor_comp_c(XYZ_to_XX, numnod, tensor, component);
     }else if(icomp == XYZ_to_XY){
@@ -113,33 +113,33 @@ void pick_sph_sym_tensor_by_xyz(const int icomp, const int numnod,
         pick_tensor_comp_c(XYZ_to_ZZ, numnod, tensor, component);
         
     }else if(icomp == XYZ_to_RR){
-        sph_rr_sym_tensor_by_xyz_c(numnod, theta, phi, tensor, component);
+        rr_sym_tensor_field_from_xyz(numnod, theta, phi, tensor, component);
     }else if(icomp == XYZ_to_RT){
-        sph_rt_sym_tensor_by_xyz_c(numnod, theta, phi, tensor, component);
+        rt_sym_tensor_field_from_xyz(numnod, theta, phi, tensor, component);
     }else if(icomp == XYZ_to_RP){
-        sph_rp_sym_tensor_by_xyz_c(numnod, theta, phi, tensor, component);
+        rp_sym_tensor_field_from_xyz(numnod, theta, phi, tensor, component);
     }else if(icomp == XYZ_to_TT){
-            sph_tt_sym_tensor_by_xyz_c(numnod, theta, phi, tensor, component);
+        tt_sym_tensor_field_from_xyz(numnod, theta, phi, tensor, component);
     }else if(icomp == XYZ_to_TP){
-        sph_tp_sym_tensor_by_xyz_c(numnod, theta, phi, tensor, component);
+        tp_sym_tensor_field_from_xyz(numnod, theta, phi, tensor, component);
     }else if(icomp == XYZ_to_PP){
-        sph_pp_sym_tensor_by_xyz_c(numnod, phi, tensor, component);
+        pp_sym_tensor_field_from_xyz(numnod, phi, tensor, component);
         
     }else if(icomp == XYZ_to_SS){
-        sph_ss_sym_tensor_by_xyz_c(numnod, phi, tensor, component);
+        ss_sym_tensor_field_from_xyz(numnod, phi, tensor, component);
     }else if(icomp == XYZ_to_SP){
-        sph_sp_sym_tensor_by_xyz_c(numnod, phi, tensor, component);
+        sp_sym_tensor_field_from_xyz(numnod, phi, tensor, component);
     }else if(icomp == XYZ_to_SZ){
-        sph_sz_sym_tensor_by_xyz_c(numnod, phi, tensor, component);
+        sz_sym_tensor_field_from_xyz(numnod, phi, tensor, component);
     }else if(icomp == XYZ_to_PZ){
-        sph_pz_sym_tensor_by_xyz_c(numnod, phi, tensor, component);
+        pz_sym_tensor_field_from_xyz(numnod, phi, tensor, component);
     };
     return;
 };
 
-void pick_sym_tensor_component(const int id_coord, const int icomp, const int numnod,
-                               const double *theta, const double *phi,
-                               const double *tensor, double *component){
+void pick_sym_tensor_component(const int id_coord, const int icomp, int numnod,
+                               double *theta, double *phi,
+                               double *tensor, float *component){
     if(id_coord == SPH_COORDINATE){
         pick_sph_sym_tensor_by_sph(icomp, numnod, theta, phi,
                                    tensor, component);
