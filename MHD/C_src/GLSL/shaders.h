@@ -44,5 +44,10 @@ char * load_simple_frag(void);
 char * load_simple_vert(void);
 char * load_simple_texture_frag(void);
 char * load_simple_texture_vert(void);
+char * load_tensor_select_from_cyl_frag(void);
+char * load_tensor_select_from_sph_frag(void);
+char * load_tensor_select_from_xyz_frag(void);
+char * load_vector_component_select_frag(void);
+char * load_vector_tensor_select_frag(void);
 
 #endif

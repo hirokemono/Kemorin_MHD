@@ -87,9 +87,9 @@ float pick_from_xyz_asym_tensor(constant int id_pick[1],
     if      (id_pick[0] == XYZ_to_XY){
         data = asym_t1.x;
     }else if(id_pick[0] == XYZ_to_XZ){
-        data = asym_t1.z;
-    }else if(id_pick[0] == XYZ_to_YZ){
         data = asym_t1.y;
+    }else if(id_pick[0] == XYZ_to_YZ){
+        data = asym_t1.z;
         
     }else if(id_pick[0] == XYZ_to_RT){
         data = rt_asym_tensor_from_xyz(phi, asym_t1.x, asym_t1.y, asym_t1.z);

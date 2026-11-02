@@ -50,7 +50,7 @@ vec4 colormap_sym_grayscale(float x, float alpha){
     return vec4(c, c, c, alpha);
 }
 
-vec4 colormap_select(int id_cmap, float x, float alpha){
+vec4 colormap_select(uniform int id_cmap, float x, float alpha){
     vec4 c = vec4(0.0, 0.0, 0.0, 0.0);
     if(id_cmap == RAINBOW_MODE){
         c = colormap_rainbow(x, alpha);

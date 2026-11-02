@@ -12,119 +12,22 @@
 
 using namespace metal;
 
-/* vector components from cartecian coordinate to spherical coordinate */
-
-float r_vector_from_xyz(float theta, float phi, float3 v_xyz){
-    float v_r = 0.0;
-    v_r =  v_xyz.x * sin(theta)*cos(phi)
-         + v_xyz.y * sin(theta)*sin(phi)
-         + v_xyz.z * cos(theta);
-    return v_r;
-};
-
-float theta_vector_from_xyz(float theta, float phi,float3 v_xyz){
-    float v_t = 0.0;
-    v_t =  v_xyz.x * cos(theta) * cos(phi)
-         + v_xyz.y * cos(theta) * sin(phi)
-         - v_xyz.z * sin(phi);
-    return v_t;
-};
-
-float phi_vector_from_xyz(float phi, float3 v_xyz){
-    float v_p = 0.0;
-    v_p = -v_xyz.x * sin(phi)
-         + v_xyz.y * cos(phi);
-    return v_p;
-};
-
-
-/*  vector components from cartecian coordinate to cylindrical coordinate */
-
-float s_vector_from_xyz(float phi, float3 v_xyz){
-    float v_s = 0.0;
-    v_s =  v_xyz.x * cos(phi)
-         + v_xyz.y * sin(phi);
-    return v_s;
-};
-
-/* vector components from spherical coordinate to cartecian coordinate */
-
-float x_vector_from_sph(float theta, float phi, float3 v_sph){
-    float v_x = 0.0;
-    v_x =  v_sph.x * sin(theta) * cos(phi)
-         + v_sph.y * cos(theta) * cos(phi)
-         - v_sph.z * sin(phi);
-    return v_x;
-};
-
-float y_vector_from_sph(float theta, float phi, float3 v_sph){
-    float v_y = 0.0;
-    v_y =  v_sph.x * sin(theta) * sin(phi)
-         + v_sph.y * cos(theta) * sin(phi)
-         + v_sph.z * cos(phi);
-    return v_y;
-};
-
-float z_vector_from_sph(float theta, float phi, float3 v_sph){
-    float v_z = 0.0;
-    v_z =  v_sph.x * cos(theta)
-         + v_sph.y * sin(theta);
-    return v_z;
-};
-
-/* vector components from cartecian coordinate to spherical coordinate */
-
-float x_vector_from_cyl(float phi, float3 v_cyl){
-    float v_x = 0.0;
-    v_x =  v_cyl.x * cos(phi)
-         - v_cyl.y * sin(phi);
-    return v_x;
-};
-
-float y_vector_from_cyl(float phi, float3 v_cyl){
-    float v_y = 0.0;
-    v_y =  v_cyl.x * sin(phi)
-         + v_cyl.y * cos(phi);
-    return v_y;
-};
-
-/* vector components from cylindrical coordinate to spherical coordinate */
-
-float r_vector_from_cyl(float theta, float3 v_cyl){
-    float v_r = 0.0;
-    v_r =  v_cyl.x * sin(theta)
-         + v_cyl.z * cos(theta);
-    return v_r;
-};
-
-float theta_vector_from_cyl(float theta, float3 v_cyl){
-    float v_t = 0.0;
-    v_t =  v_cyl.x * cos(theta)
-         - v_cyl.z * sin(theta);
-    return v_t;
-};
-
-float s_vector_from_sph(float theta, float3 v_sph){
-    float v_s = 0.0;
-    v_s =  v_sph.x * sin(theta)
-         + v_sph.y * cos(theta);
-    return v_s;
-};
+#include "../GLSL/convert_one_vector.frag"
 
 /* vector to cartecian coordinate */
 
 float3 xyz_vector_from_sph(float theta, float phi, float3 v_sph){
     float3 v_xyz;
-    v_xyz.x = x_vector_from_sph(theta, phi, v_sph);
-    v_xyz.y = y_vector_from_sph(theta, phi, v_sph);
-    v_xyz.z = z_vector_from_sph(theta, phi, v_sph);
+    v_xyz.x = x_vector_from_sph(theta, phi, v_sph.x, v_sph.y, v_sph.z);
+    v_xyz.y = y_vector_from_sph(theta, phi, v_sph.x, v_sph.y, v_sph.z);
+    v_xyz.z = z_vector_from_sph(theta, v_sph.x, v_sph.y);
     return v_xyz;
 }
 
 float3 xyz_vector_from_cyl(float phi, float3 v_cyl){
     float3 v_xyz;
-    v_xyz.x = x_vector_from_cyl(phi, v_cyl);
-    v_xyz.y = y_vector_from_cyl(phi, v_cyl);
+    v_xyz.x = x_vector_from_cyl(phi, v_cyl.x, v_cyl.y);
+    v_xyz.y = y_vector_from_cyl(phi, v_cyl.x, v_cyl.y);
     v_xyz.z = v_cyl.z;
     return v_xyz;
 }
@@ -144,14 +47,14 @@ float pick_from_sph_vector(constant int id_pick[1],
         data = v_sph.z;
 
     }else if(id_pick[0] == SPH_to_S){
-        data = s_vector_from_sph(theta, v_sph);
+        data = s_vector_from_sph(theta, v_sph.x, v_sph.y);
     }else if(id_pick[0] == SPH_to_Z){
-        data = z_vector_from_sph(theta, phi, v_sph);
+        data = z_vector_from_sph(theta, v_sph.x, v_sph.y);
 
     }else if(id_pick[0] == SPH_to_X){
-        data = x_vector_from_sph(theta, phi, v_sph);
+        data = x_vector_from_sph(theta, phi, v_sph.x, v_sph.y, v_sph.z);
     }else if(id_pick[0] == SPH_to_Y){
-        data = y_vector_from_sph(theta, phi, v_sph);
+        data = y_vector_from_sph(theta, phi, v_sph.x, v_sph.y, v_sph.z);
         
     }else if(id_pick[0] == SPH_to_MAG){
         data = length(v_sph);
@@ -173,14 +76,14 @@ float pick_from_cyl_vector(constant int id_pick[1],
         data = v_cyl.z;
 
     }else if(id_pick[0] == CYL_to_R){
-        data = s_vector_from_sph(theta, v_cyl);
+        data = r_vector_from_cyl(theta, v_cyl.x, v_cyl.z);
     }else if(id_pick[0] == CYL_to_T){
-        data = z_vector_from_sph(theta, phi, v_cyl);
+        data = theta_vector_from_cyl(theta, v_cyl.x, v_cyl.z);
 
     }else if(id_pick[0] == CYL_to_X){
-        data = x_vector_from_cyl(phi, v_cyl);
+        data = x_vector_from_cyl(phi, v_cyl.x, v_cyl.y);
     }else if(id_pick[0] == CYL_to_Y){
-        data = y_vector_from_cyl(phi, v_cyl);
+        data = y_vector_from_cyl(phi, v_cyl.x, v_cyl.y);
         
     }else if(id_pick[0] == CYL_to_MAG){
         data = length(v_cyl);
@@ -202,14 +105,16 @@ float pick_from_xyz_vector(constant int id_pick[1],
         data = v_xyz.z;
 
     }else if(id_pick[0] == XYZ_to_R){
-        data = r_vector_from_xyz(theta, phi, v_xyz);
+        data = r_vector_from_xyz(theta, phi,
+                                 v_xyz.x, v_xyz.y, v_xyz.z);
     }else if(id_pick[0] == XYZ_to_T){
-        data = theta_vector_from_xyz(theta, phi, v_xyz);
-    }else if(id_pick[0] == XYZ_to_P){
-        data = phi_vector_from_xyz(phi, v_xyz);
+        data = theta_vector_from_xyz(theta, phi,
+                                     v_xyz.x, v_xyz.y, v_xyz.z);
+   }else if(id_pick[0] == XYZ_to_P){
+        data = phi_vector_from_xyz(phi, v_xyz.x, v_xyz.y);
 
     }else if(id_pick[0] == XYZ_to_S){
-        data = s_vector_from_xyz(phi, v_xyz);
+        data = s_vector_from_xyz(phi, v_xyz.x, v_xyz.y);
         
     }else if(id_pick[0] == XYZ_to_MAG){
         data = length(v_xyz);

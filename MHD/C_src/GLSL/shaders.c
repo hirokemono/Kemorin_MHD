@@ -487,7 +487,7 @@ char * load_colormap_select_frag(void){
         "    return vec4(c, c, c, alpha);\n"\
         "}\n"\
         "\n"\
-        "vec4 colormap_select(int id_cmap, float x, float alpha){\n"\
+        "vec4 colormap_select(uniform int id_cmap, float x, float alpha){\n"\
         "    vec4 c = vec4(0.0, 0.0, 0.0, 0.0);\n"\
         "    if(id_cmap == RAINBOW_MODE){\n"\
         "        c = colormap_rainbow(x, alpha);\n"\
@@ -2347,6 +2347,665 @@ char * load_simple_texture_vert(void){
     char * src = alloc_string((long) n+1);
     
     strcpy(src, simple_texture_vert_src);
+    return src;
+};
+
+char * load_tensor_select_from_cyl_frag(void){
+    const char  tensor_select_from_cyl_frag_src[]
+    = {
+        "/*\n"\
+        "//  tensor_select_from_cyl.frag\n"\
+        "//\n"\
+        "//\n"\
+        "//  Created by Hiroaki Matsui on 10/30/26.\n"\
+        "//\n"\
+        "*/\n"\
+        "\n"\
+        "#define CYL_to_SS    0\n"\
+        "#define CYL_to_SP    1\n"\
+        "#define CYL_to_SZ    2\n"\
+        "#define CYL_to_PP    3\n"\
+        "#define CYL_to_PZ    4\n"\
+        "#define CYL_to_ZZ    5\n"\
+        "#define CYL_to_RR    6\n"\
+        "#define CYL_to_RT    7\n"\
+        "#define CYL_to_RP    8\n"\
+        "#define CYL_to_TT    9\n"\
+        "#define CYL_to_TP   10\n"\
+        "#define CYL_to_XX   11\n"\
+        "#define CYL_to_XY   12\n"\
+        "#define CYL_to_XZ   13\n"\
+        "#define CYL_to_YY   14\n"\
+        "#define CYL_to_YZ   15\n"\
+        "#define CYL_to_ZS   16\n"\
+        "#define CYL_to_PR   17\n"\
+        "#define CYL_to_ZX   18\n"\
+        "\n"\
+        "/* select tensor component from cylindrical coordinate */\n"\
+        "\n"\
+        "float pick_from_cyl_sym_tensor(uniform int id_pick,\n"\
+        "                               float theta, float phi,\n"\
+        "                               vec3 sym_t1, vec3 sym_t2){\n"\
+        "    float data = 0.0;\n"\
+        "    if      (id_pick == CYL_to_SS){\n"\
+        "        data = sym_t1.x;\n"\
+        "    }else if(id_pick == CYL_to_SP){\n"\
+        "        data = sym_t1.y;\n"\
+        "    }else if(id_pick == CYL_to_SZ){\n"\
+        "        data = sym_t1.z;\n"\
+        "    }else if(id_pick == CYL_to_PP){\n"\
+        "        data = sym_t2.x;\n"\
+        "    }else if(id_pick == CYL_to_PZ){\n"\
+        "        data = sym_t2.y;\n"\
+        "    }else if(id_pick == CYL_to_ZZ){\n"\
+        "        data = sym_t2.z;\n"\
+        "\n"\
+        "    }else if(id_pick == CYL_to_RR){\n"\
+        "        data = rr_sym_tensor_from_cyl(theta,\n"\
+        "                                      sym_t1.x, sym_t1.z,\n"\
+        "                                      sym_t2.z);\n"\
+        "    }else if(id_pick == CYL_to_RT){\n"\
+        "        data = rt_sym_tensor_from_cyl(theta,\n"\
+        "                                      sym_t1.x, sym_t1.z,\n"\
+        "                                      sym_t2.z);\n"\
+        "    }else if(id_pick == CYL_to_RP){\n"\
+        "        data = rp_sym_tensor_from_cyl(theta,\n"\
+        "                                      sym_t1.y,\n"\
+        "                                      sym_t2.y);\n"\
+        "    }else if(id_pick == CYL_to_TT){\n"\
+        "        data = tt_sym_tensor_from_cyl(theta,\n"\
+        "                                      sym_t1.x, sym_t1.z,\n"\
+        "                                      sym_t2.z);\n"\
+        "    }else if(id_pick == CYL_to_TP){\n"\
+        "        data = tp_sym_tensor_from_cyl(theta,\n"\
+        "                                      sym_t1.y,\n"\
+        "                                      sym_t2.y);\n"\
+        "\n"\
+        "    }else if(id_pick == CYL_to_XX){\n"\
+        "        data = xx_sym_tensor_from_cyl(phi,\n"\
+        "                                      sym_t1.x, sym_t1.y,\n"\
+        "                                      sym_t2.x);\n"\
+        "    }else if(id_pick == CYL_to_XY){\n"\
+        "        data = xy_sym_tensor_from_cyl(phi,\n"\
+        "                                      sym_t1.x, sym_t1.y,\n"\
+        "                                      sym_t2.x);\n"\
+        "    }else if(id_pick == CYL_to_XZ){\n"\
+        "        data = xz_sym_tensor_from_cyl(phi,\n"\
+        "                                      sym_t1.z,\n"\
+        "                                      sym_t2.y);\n"\
+        "    }else if(id_pick == CYL_to_YY){\n"\
+        "        data = yy_sym_tensor_from_cyl(phi,\n"\
+        "                                      sym_t1.x, sym_t1.y,\n"\
+        "                                      sym_t2.x);\n"\
+        "    }else if(id_pick == CYL_to_YZ){\n"\
+        "        data = yz_sym_tensor_from_cyl(phi,\n"\
+        "                                      sym_t1.z,\n"\
+        "                                      sym_t2.y);\n"\
+        "    }else{\n"\
+        "        data = 0.0;\n"\
+        "    }\n"\
+        "    return data;\n"\
+        "}\n"\
+        "\n"\
+        "float pick_from_cyl_asym_tensor(uniform int id_pick,\n"\
+        "                               float theta, float phi,\n"\
+        "                               vec3 asym_t1){\n"\
+        "    float data = 0.0;\n"\
+        "    if      (id_pick == CYL_to_SP){\n"\
+        "        data = asym_t1.x;\n"\
+        "    }else if(id_pick == CYL_to_SZ){\n"\
+        "        data = asym_t1.y;\n"\
+        "    }else if(id_pick == CYL_to_PZ){\n"\
+        "        data = asym_t1.z;\n"\
+        "\n"\
+        "    }else if(id_pick == CYL_to_RT){\n"\
+        "        data = asym_t1.y;\n"\
+        "    }else if(id_pick == CYL_to_RP){\n"\
+        "        data = pr_asym_tensor_from_cyl(theta, asym_t1.x, asym_t1.z);\n"\
+        "    }else if(id_pick == CYL_to_TP){\n"\
+        "        data = tp_asym_tensor_from_cyl(theta, asym_t1.x, asym_t1.z);\n"\
+        "\n"\
+        "    }else if(id_pick == CYL_to_XY){\n"\
+        "        data = asym_t1.x;\n"\
+        "    }else if(id_pick == CYL_to_XZ){\n"\
+        "        data = zx_asym_tensor_from_cyl(phi, asym_t1.y, asym_t1.z);\n"\
+        "    }else if(id_pick == CYL_to_YZ){\n"\
+        "        data = yz_asym_tensor_from_cyl(phi, asym_t1.y, asym_t1.z);\n"\
+        "    }else{\n"\
+        "        data = 0.0;\n"\
+        "    }\n"\
+        "    return data;\n"\
+        "}\n"\
+        "\n"\
+        "\n"
+    };
+    
+    long n = strlen(tensor_select_from_cyl_frag_src);
+    char * src = alloc_string((long) n+1);
+    
+    strcpy(src, tensor_select_from_cyl_frag_src);
+    return src;
+};
+
+char * load_tensor_select_from_sph_frag(void){
+    const char  tensor_select_from_sph_frag_src[]
+    = {
+        "/*\n"\
+        "//  tensor_select_from_sph.frag\n"\
+        "//\n"\
+        "//\n"\
+        "//  Created by Hiroaki Matsui on 10/30/26.\n"\
+        "//\n"\
+        "*/\n"\
+        "\n"\
+        "#define SPH_to_RR    0\n"\
+        "#define SPH_to_RT    1\n"\
+        "#define SPH_to_RP    2\n"\
+        "#define SPH_to_TT    3\n"\
+        "#define SPH_to_TP    4\n"\
+        "#define SPH_to_PP    5\n"\
+        "#define SPH_to_SS    6\n"\
+        "#define SPH_to_SP    7\n"\
+        "#define SPH_to_SZ    8\n"\
+        "#define SPH_to_PZ    9\n"\
+        "#define SPH_to_ZZ   10\n"\
+        "#define SPH_to_XX   11\n"\
+        "#define SPH_to_XY   12\n"\
+        "#define SPH_to_XZ   13\n"\
+        "#define SPH_to_YY   14\n"\
+        "#define SPH_to_YZ   15\n"\
+        "#define SPH_to_PR   16\n"\
+        "#define SPH_to_ZS   17\n"\
+        "#define SPH_to_ZX   18\n"\
+        "\n"\
+        "/* select tensor component from cylindrical coordinate */\n"\
+        "\n"\
+        "float pick_from_sph_sym_tensor(uniform int id_pick,\n"\
+        "                               float theta, float phi,\n"\
+        "                               vec3 sym_t1, vec3 sym_t2){\n"\
+        "    float data = 0.0;\n"\
+        "    if      (id_pick == SPH_to_RR){\n"\
+        "        data = sym_t1.x;\n"\
+        "    }else if(id_pick == SPH_to_RT){\n"\
+        "        data = sym_t1.y;\n"\
+        "    }else if(id_pick == SPH_to_RP){\n"\
+        "        data = sym_t1.z;\n"\
+        "    }else if(id_pick == SPH_to_TT){\n"\
+        "        data = sym_t2.x;\n"\
+        "    }else if(id_pick == SPH_to_TP){\n"\
+        "        data = sym_t2.y;\n"\
+        "    }else if(id_pick == SPH_to_PP){\n"\
+        "        data = sym_t2.z;\n"\
+        "\n"\
+        "    }else if(id_pick == SPH_to_SS){\n"\
+        "        data = ss_sym_tensor_from_sph(theta,\n"\
+        "                                      sym_t1.x, sym_t1.y,\n"\
+        "                                      sym_t2.x);\n"\
+        "    }else if(id_pick == SPH_to_SP){\n"\
+        "        data = sp_sym_tensor_from_sph(theta,\n"\
+        "                                      sym_t1.z,\n"\
+        "                                      sym_t2.y);\n"\
+        "    }else if(id_pick == SPH_to_SZ){\n"\
+        "        data = sz_sym_tensor_from_sph(theta,\n"\
+        "                                      sym_t1.x, sym_t1.y,\n"\
+        "                                      sym_t2.x);\n"\
+        "    }else if(id_pick == SPH_to_PZ){\n"\
+        "        data = pz_sym_tensor_from_sph(theta,\n"\
+        "                                      sym_t1.x, sym_t1.y, sym_t1.z,\n"\
+        "                                      sym_t2.x, sym_t2.y, sym_t2.z);\n"\
+        "    }else if(id_pick == SPH_to_ZZ){\n"\
+        "        data = zz_sym_tensor_from_sph(phi,\n"\
+        "                                      sym_t1.x, sym_t1.y,\n"\
+        "                                      sym_t2.x);\n"\
+        "\n"\
+        "    }else if(id_pick == SPH_to_XX){\n"\
+        "        data = xx_sym_tensor_from_sph(theta, phi,\n"\
+        "                                      sym_t1.x, sym_t1.y, sym_t1.z,\n"\
+        "                                      sym_t2.x, sym_t2.y, sym_t2.z);\n"\
+        "    }else if(id_pick == SPH_to_XY){\n"\
+        "        data = xy_sym_tensor_from_sph(theta, phi,\n"\
+        "                                      sym_t1.x, sym_t1.y, sym_t1.z,\n"\
+        "                                      sym_t2.x, sym_t2.y, sym_t2.z);\n"\
+        "    }else if(id_pick == SPH_to_XZ){\n"\
+        "        data = xz_sym_tensor_from_sph(theta, phi,\n"\
+        "                                      sym_t1.x, sym_t1.y, sym_t1.z,\n"\
+        "                                      sym_t2.x, sym_t2.y);\n"\
+        "    }else if(id_pick == SPH_to_YY){\n"\
+        "        data = yy_sym_tensor_from_sph(theta, phi,\n"\
+        "                                      sym_t1.x, sym_t1.y, sym_t1.z,\n"\
+        "                                      sym_t2.x, sym_t2.y, sym_t2.z);\n"\
+        "    }else if(id_pick == SPH_to_YZ){\n"\
+        "        data = yz_sym_tensor_from_sph(theta, phi,\n"\
+        "                                      sym_t1.x, sym_t1.y, sym_t1.z,\n"\
+        "                                      sym_t2.x, sym_t2.y);\n"\
+        "    }else{\n"\
+        "        data = 0.0;\n"\
+        "    }\n"\
+        "    return data;\n"\
+        "}\n"\
+        "\n"\
+        "float pick_from_sph_asym_tensor(uniform int id_pick,\n"\
+        "                                float theta, float phi,\n"\
+        "                                vec3 asym_t1){\n"\
+        "    float data = 0.0;\n"\
+        "    if      (id_pick == SPH_to_RT){\n"\
+        "        data = asym_t1.x;\n"\
+        "    }else if(id_pick == SPH_to_RP){\n"\
+        "        data = asym_t1.y;\n"\
+        "    }else if(id_pick == SPH_to_TP){\n"\
+        "        data = asym_t1.z;\n"\
+        "\n"\
+        "    }else if(id_pick == SPH_to_SP){\n"\
+        "        data = sp_asym_tensor_from_sph(theta, asym_t1.y, asym_t1.z);\n"\
+        "    }else if(id_pick == SPH_to_SZ){\n"\
+        "        data = asym_t1.x;\n"\
+        "    }else if(id_pick == SPH_to_PZ){\n"\
+        "        data = pz_asym_tensor_from_sph(theta, asym_t1.y, asym_t1.z);\n"\
+        "\n"\
+        "    }else if(id_pick == SPH_to_XY){\n"\
+        "        data = xy_asym_tensor_from_sph(theta, asym_t1.y, asym_t1.z);\n"\
+        "    }else if(id_pick == SPH_to_XZ){\n"\
+        "        data = zx_asym_tensor_from_sph(theta, phi,\n"\
+        "                                      asym_t1.x, asym_t1.y, asym_t1.z);\n"\
+        "    }else if(id_pick == SPH_to_YZ){\n"\
+        "        data = yz_asym_tensor_from_sph(theta, phi,\n"\
+        "                                      asym_t1.x, asym_t1.y, asym_t1.z);\n"\
+        "    }else{\n"\
+        "        data = 0.0;\n"\
+        "    }\n"\
+        "    return data;\n"\
+        "}\n"\
+        "\n"\
+        "\n"
+    };
+    
+    long n = strlen(tensor_select_from_sph_frag_src);
+    char * src = alloc_string((long) n+1);
+    
+    strcpy(src, tensor_select_from_sph_frag_src);
+    return src;
+};
+
+char * load_tensor_select_from_xyz_frag(void){
+    const char  tensor_select_from_xyz_frag_src[]
+    = {
+        "/*\n"\
+        "//  tensor_select_from_xyz.frag\n"\
+        "//\n"\
+        "//\n"\
+        "//  Created by Hiroaki Matsui on 10/30/26.\n"\
+        "//\n"\
+        "*/\n"\
+        "\n"\
+        "#define XYZ_to_XX    0\n"\
+        "#define XYZ_to_XY    1\n"\
+        "#define XYZ_to_XZ    2\n"\
+        "#define XYZ_to_YY    3\n"\
+        "#define XYZ_to_YZ    4\n"\
+        "#define XYZ_to_ZZ    5\n"\
+        "#define XYZ_to_RR    6\n"\
+        "#define XYZ_to_RT    7\n"\
+        "#define XYZ_to_RP    8\n"\
+        "#define XYZ_to_TT    9\n"\
+        "#define XYZ_to_TP   10\n"\
+        "#define XYZ_to_PP   11\n"\
+        "#define XYZ_to_SS   12\n"\
+        "#define XYZ_to_SP   13\n"\
+        "#define XYZ_to_SZ   14\n"\
+        "#define XYZ_to_PZ   15\n"\
+        "#define XYZ_to_ZX   16\n"\
+        "#define XYZ_to_PR   17\n"\
+        "#define XYZ_to_ZS   18\n"\
+        "\n"\
+        "/* select tensor component from cartesian coordinate */\n"\
+        "\n"\
+        "float pick_from_xyz_sym_tensor(uniform int id_pick,\n"\
+        "                               float theta, float phi,\n"\
+        "                               vec3 sym_t1, vec3 sym_t2){\n"\
+        "    float data = 0.0;\n"\
+        "    if      (id_pick == XYZ_to_XX){\n"\
+        "        data = sym_t1.x;\n"\
+        "    }else if(id_pick == XYZ_to_XY){\n"\
+        "        data = sym_t1.y;\n"\
+        "    }else if(id_pick == XYZ_to_XZ){\n"\
+        "        data = sym_t1.z;\n"\
+        "    }else if(id_pick == XYZ_to_YY){\n"\
+        "        data = sym_t2.x;\n"\
+        "    }else if(id_pick == XYZ_to_YZ){\n"\
+        "        data = sym_t2.y;\n"\
+        "    }else if(id_pick == XYZ_to_ZZ){\n"\
+        "        data = sym_t2.z;\n"\
+        "\n"\
+        "    }else if(id_pick == XYZ_to_RR){\n"\
+        "        data = rr_sym_tensor_from_xyz(theta, phi,\n"\
+        "                                      sym_t1.x, sym_t1.y, sym_t1.z,\n"\
+        "                                      sym_t2.x, sym_t2.y, sym_t2.z);\n"\
+        "    }else if(id_pick == XYZ_to_RT){\n"\
+        "        data = rt_sym_tensor_from_xyz(theta, phi,\n"\
+        "                                      sym_t1.x, sym_t1.y, sym_t1.z,\n"\
+        "                                      sym_t2.x, sym_t2.y, sym_t2.z);\n"\
+        "    }else if(id_pick == XYZ_to_RP){\n"\
+        "        data = rp_sym_tensor_from_xyz(theta, phi,\n"\
+        "                                      sym_t1.x, sym_t1.y, sym_t1.z,\n"\
+        "                                      sym_t2.x, sym_t2.y);\n"\
+        "    }else if(id_pick == XYZ_to_TT){\n"\
+        "        data = tt_sym_tensor_from_xyz(theta, phi,\n"\
+        "                                      sym_t1.x, sym_t1.y, sym_t1.z,\n"\
+        "                                      sym_t2.x, sym_t2.y, sym_t2.z);\n"\
+        "    }else if(id_pick == XYZ_to_TP){\n"\
+        "        data = tp_sym_tensor_from_xyz(theta, phi,\n"\
+        "                                      sym_t1.x, sym_t1.y, sym_t1.z,\n"\
+        "                                      sym_t2.x, sym_t2.y);\n"\
+        "    }else if(id_pick == XYZ_to_PP){\n"\
+        "        data = pp_sym_tensor_from_xyz(phi, sym_t1.x, sym_t1.y,\n"\
+        "                                      sym_t2.x);\n"\
+        "    }else if(id_pick == XYZ_to_SS){\n"\
+        "        data = ss_sym_tensor_from_xyz(phi,\n"\
+        "                                      sym_t1.x, sym_t1.y,\n"\
+        "                                      sym_t2.x);\n"\
+        "    }else if(id_pick == XYZ_to_SP){\n"\
+        "        data = sp_sym_tensor_from_xyz(phi,\n"\
+        "                                      sym_t1.x, sym_t1.y,\n"\
+        "                                      sym_t2.x);\n"\
+        "    }else if(id_pick == XYZ_to_SZ){\n"\
+        "        data = sz_sym_tensor_from_xyz(phi,\n"\
+        "                                      sym_t1.z,\n"\
+        "                                      sym_t2.y);\n"\
+        "    }else if(id_pick == XYZ_to_PZ){\n"\
+        "        data = pz_sym_tensor_from_xyz(phi,\n"\
+        "                                      sym_t1.z,\n"\
+        "                                      sym_t2.y);\n"\
+        "    }else{\n"\
+        "        data = 0.0;\n"\
+        "    }\n"\
+        "    return data;\n"\
+        "}\n"\
+        "\n"\
+        "float pick_from_xyz_asym_tensor(uniform int id_pick,\n"\
+        "                                float theta, float phi,\n"\
+        "                                vec3 asym_t1){\n"\
+        "    float data = 0.0;\n"\
+        "    if      (id_pick == XYZ_to_XY){\n"\
+        "        data = asym_t1.x;\n"\
+        "    }else if(id_pick == XYZ_to_XZ){\n"\
+        "        data = asym_t1.z;\n"\
+        "    }else if(id_pick == XYZ_to_YZ){\n"\
+        "        data = asym_t1.y;\n"\
+        "\n"\
+        "    }else if(id_pick == XYZ_to_RT){\n"\
+        "        data = rt_asym_tensor_from_xyz(phi, asym_t1.x, asym_t1.y, asym_t1.z);\n"\
+        "    }else if(id_pick == XYZ_to_RP){\n"\
+        "        data = pr_asym_tensor_from_xyz(theta, phi, asym_t1.x, asym_t1.y, asym_t1.z);\n"\
+        "    }else if(id_pick == XYZ_to_TP){\n"\
+        "        data = tp_asym_tensor_from_xyz(theta, phi, asym_t1.x, asym_t1.y, asym_t1.z);\n"\
+        "\n"\
+        "    }else if(id_pick == XYZ_to_SP){\n"\
+        "        data = asym_t1.x;\n"\
+        "    }else if(id_pick == XYZ_to_SZ){\n"\
+        "        data = zs_asym_tensor_from_xyz(phi, asym_t1.x, asym_t1.y, asym_t1.z);\n"\
+        "    }else if(id_pick == XYZ_to_PZ){\n"\
+        "        data = pz_asym_tensor_from_xyz(phi, asym_t1.x, asym_t1.y, asym_t1.z);\n"\
+        "    }else{\n"\
+        "        data = 0.0;\n"\
+        "    }\n"\
+        "    return data;\n"\
+        "}\n"\
+        "\n"\
+        "\n"\
+        "\n"\
+        "\n"
+    };
+    
+    long n = strlen(tensor_select_from_xyz_frag_src);
+    char * src = alloc_string((long) n+1);
+    
+    strcpy(src, tensor_select_from_xyz_frag_src);
+    return src;
+};
+
+char * load_vector_component_select_frag(void){
+    const char  vector_component_select_frag_src[]
+    = {
+        "/*\n"\
+        "//  vector_component_select.frag\n"\
+        "//\n"\
+        "//\n"\
+        "//  Created by Hiroaki Matsui on 10/30/26.\n"\
+        "//\n"\
+        "*/\n"\
+        "\n"\
+        "#define SPH_to_R    0\n"\
+        "#define SPH_to_T    1\n"\
+        "#define SPH_to_P    2\n"\
+        "#define SPH_to_S    3\n"\
+        "#define SPH_to_Z    4\n"\
+        "#define SPH_to_X    5\n"\
+        "#define SPH_to_Y    6\n"\
+        "#define SPH_to_MAG  7\n"\
+        "\n"\
+        "#define CYL_to_S    0\n"\
+        "#define CYL_to_P    1\n"\
+        "#define CYL_to_Z    2\n"\
+        "#define CYL_to_R    3\n"\
+        "#define CYL_to_T    4\n"\
+        "#define CYL_to_X    5\n"\
+        "#define CYL_to_Y    6\n"\
+        "#define CYL_to_MAG  7\n"\
+        "\n"\
+        "#define XYZ_to_X    0\n"\
+        "#define XYZ_to_Y    1\n"\
+        "#define XYZ_to_Z    2\n"\
+        "#define XYZ_to_R    3\n"\
+        "#define XYZ_to_T    4\n"\
+        "#define XYZ_to_P    5\n"\
+        "#define XYZ_to_S    6\n"\
+        "#define XYZ_to_MAG  7\n"\
+        "\n"\
+        "/* vector to cartecian coordinate */\n"\
+        "\n"\
+        "vec3 xyz_vector_from_sph(float theta, float phi, vec3 v_sph){\n"\
+        "    vec3 v_xyz;\n"\
+        "    v_xyz.x = x_vector_from_sph(theta, phi, v_sph.x, v_sph.y, v_sph.z);\n"\
+        "    v_xyz.y = y_vector_from_sph(theta, phi, v_sph.x, v_sph.y, v_sph.z);\n"\
+        "    v_xyz.z = z_vector_from_sph(theta, v_sph.x, v_sph.y);\n"\
+        "    return v_xyz;\n"\
+        "}\n"\
+        "\n"\
+        "vec3 xyz_vector_from_cyl(float phi, vec3 v_cyl){\n"\
+        "    vec3 v_xyz;\n"\
+        "    v_xyz.x = x_vector_from_cyl(phi, v_cyl.x, v_cyl.y);\n"\
+        "    v_xyz.y = y_vector_from_cyl(phi, v_cyl.x, v_cyl.y);\n"\
+        "    v_xyz.z = v_cyl.z;\n"\
+        "    return v_xyz;\n"\
+        "}\n"\
+        "\n"\
+        "\n"\
+        "\n"\
+        "/* select vector component from spherical coordinate */\n"\
+        "\n"\
+        "float pick_from_sph_vector(uniform int id_pick,\n"\
+        "                           float theta, float phi, vec3 v_sph){\n"\
+        "    float data = 0.0;\n"\
+        "    if      (id_pick == SPH_to_R){\n"\
+        "        data = v_sph.x;\n"\
+        "    }else if(id_pick == SPH_to_T){\n"\
+        "        data = v_sph.y;\n"\
+        "    }else if(id_pick == SPH_to_P){\n"\
+        "        data = v_sph.z;\n"\
+        "\n"\
+        "    }else if(id_pick == SPH_to_S){\n"\
+        "        data = s_vector_from_sph(theta, v_sph.x, v_sph.y);\n"\
+        "    }else if(id_pick == SPH_to_Z){\n"\
+        "        data = z_vector_from_sph(theta, v_sph.x, v_sph.y);\n"\
+        "\n"\
+        "    }else if(id_pick == SPH_to_X){\n"\
+        "        data = x_vector_from_sph(theta, phi, v_sph.x, v_sph.y, v_sph.z);\n"\
+        "    }else if(id_pick == SPH_to_Y){\n"\
+        "        data = y_vector_from_sph(theta, phi, v_sph.x, v_sph.y, v_sph.z);\n"\
+        "\n"\
+        "    }else if(id_pick == SPH_to_MAG){\n"\
+        "        data = length(v_sph);\n"\
+        "    }else{\n"\
+        "        data = 0.0;\n"\
+        "    }\n"\
+        "    return data;\n"\
+        "}\n"\
+        "\n"\
+        "\n"\
+        "float pick_from_cyl_vector(uniform int id_pick,\n"\
+        "                           float theta, float phi, vec3 v_cyl){\n"\
+        "    float data = 0.0;\n"\
+        "    if      (id_pick == CYL_to_S){\n"\
+        "        data = v_cyl.x;\n"\
+        "    }else if(id_pick == CYL_to_P){\n"\
+        "        data = v_cyl.y;\n"\
+        "    }else if(id_pick == CYL_to_Z){\n"\
+        "        data = v_cyl.z;\n"\
+        "\n"\
+        "    }else if(id_pick == CYL_to_R){\n"\
+        "        data = r_vector_from_cyl(theta, v_cyl.x, v_cyl.z);\n"\
+        "    }else if(id_pick == CYL_to_T){\n"\
+        "        data = theta_vector_from_cyl(theta, v_cyl.x, v_cyl.z);\n"\
+        "\n"\
+        "    }else if(id_pick == CYL_to_X){\n"\
+        "        data = x_vector_from_cyl(phi, v_cyl.x, v_cyl.y);\n"\
+        "    }else if(id_pick == CYL_to_Y){\n"\
+        "        data = y_vector_from_cyl(phi, v_cyl.x, v_cyl.y);\n"\
+        "\n"\
+        "    }else if(id_pick == CYL_to_MAG){\n"\
+        "        data = length(v_cyl);\n"\
+        "    }else{\n"\
+        "        data = 0.0;\n"\
+        "    }\n"\
+        "    return data;\n"\
+        "}\n"\
+        "\n"\
+        "\n"\
+        "float pick_from_xyz_vector(uniform int id_pick,\n"\
+        "                           float theta, float phi, vec3 v_xyz){\n"\
+        "    float data = 0.0;\n"\
+        "    if      (id_pick == XYZ_to_X){\n"\
+        "        data = v_xyz.x;\n"\
+        "    }else if(id_pick == XYZ_to_Y){\n"\
+        "        data = v_xyz.y;\n"\
+        "    }else if(id_pick == XYZ_to_Z){\n"\
+        "        data = v_xyz.z;\n"\
+        "\n"\
+        "    }else if(id_pick == XYZ_to_R){\n"\
+        "        data = r_vector_from_xyz(theta, phi,\n"\
+        "                                 v_xyz.x, v_xyz.y, v_xyz.z);\n"\
+        "    }else if(id_pick == XYZ_to_T){\n"\
+        "        data = theta_vector_from_xyz(theta, phi,\n"\
+        "                                     v_xyz.x, v_xyz.y, v_xyz.z);\n"\
+        "   }else if(id_pick == XYZ_to_P){\n"\
+        "        data = phi_vector_from_xyz(phi, v_xyz.x, v_xyz.y);\n"\
+        "\n"\
+        "    }else if(id_pick == XYZ_to_S){\n"\
+        "        data = s_vector_from_xyz(phi, v_xyz.x, v_xyz.y);\n"\
+        "\n"\
+        "    }else if(id_pick == XYZ_to_MAG){\n"\
+        "        data = length(v_xyz);\n"\
+        "    }else{\n"\
+        "        data = 0.0;\n"\
+        "    }\n"\
+        "    return data;\n"\
+        "}\n"\
+        "\n"\
+        "\n"\
+        "\n"
+    };
+    
+    long n = strlen(vector_component_select_frag_src);
+    char * src = alloc_string((long) n+1);
+    
+    strcpy(src, vector_component_select_frag_src);
+    return src;
+};
+
+char * load_vector_tensor_select_frag(void){
+    const char  vector_tensor_select_frag_src[]
+    = {
+        "/*\n"\
+        "//  vector_tensor_select.frag\n"\
+        "//\n"\
+        "//\n"\
+        "//  Created by Hiroaki Matsui on 10/30/26.\n"\
+        "//\n"\
+        "*/\n"\
+        "\n"\
+        "#define XYZ_COORDINATE    0\n"\
+        "#define SPH_COORDINATE    1\n"\
+        "#define CYL_COORDINATE    2\n"\
+        "\n"\
+        "/* select conversion by coordinate */\n"\
+        "\n"\
+        "vec3 vector_in_xyz(uniform int id_coordinate,\n"\
+        "                     uniform int id_pick,\n"\
+        "                     float theta, float phi,\n"\
+        "                     vec3 vector){\n"\
+        "    vec3 v_xyz = 0.0;\n"\
+        "    if      (id_coordinate == SPH_COORDINATE){\n"\
+        "        v_xyz = xyz_vector_from_sph(theta, phi, vector);\n"\
+        "    }else if(id_coordinate == CYL_COORDINATE){\n"\
+        "        v_xyz = xyz_vector_from_cyl(phi, vector);\n"\
+        "    }else if(id_coordinate == XYZ_COORDINATE){\n"\
+        "        v_xyz = vector;\n"\
+        "    };\n"\
+        "    return v_xyz;\n"\
+        "}\n"\
+        "\n"\
+        "\n"\
+        "float pick_from_vector(uniform int id_coordinate,\n"\
+        "                       uniform int id_pick,\n"\
+        "                       float theta, float phi,\n"\
+        "                       vec3 vector){\n"\
+        "    float data = 0.0;\n"\
+        "    if      (id_coordinate == SPH_COORDINATE){\n"\
+        "        data = pick_from_sph_vector(id_pick, theta, phi, vector);\n"\
+        "    }else if(id_coordinate == CYL_COORDINATE){\n"\
+        "        data = pick_from_cyl_vector(id_pick, theta, phi, vector);\n"\
+        "    }else if(id_coordinate == XYZ_COORDINATE){\n"\
+        "        data = pick_from_xyz_vector(id_pick, theta, phi, vector);\n"\
+        "    };\n"\
+        "    return data;\n"\
+        "}\n"\
+        "\n"\
+        "float pick_from_sym_tensor(uniform int id_coordinate,\n"\
+        "                           uniform int id_pick,\n"\
+        "                           float theta, float phi,\n"\
+        "                           vec3 sym_t1, vec3 sym_t2){\n"\
+        "    float data = 0.0;\n"\
+        "    if      (id_coordinate == SPH_COORDINATE){\n"\
+        "        data = pick_from_sph_sym_tensor(id_pick, theta, phi, sym_t1, sym_t2);\n"\
+        "    }else if(id_coordinate == CYL_COORDINATE){\n"\
+        "        data = pick_from_cyl_sym_tensor(id_pick, theta, phi, sym_t1, sym_t2);\n"\
+        "    }else if(id_coordinate == XYZ_COORDINATE){\n"\
+        "        data = pick_from_xyz_sym_tensor(id_pick, theta, phi, sym_t1, sym_t2);\n"\
+        "    };\n"\
+        "    return data;\n"\
+        "}\n"\
+        "\n"\
+        "float pick_from_asym_tensor(uniform int id_coordinate,\n"\
+        "                            uniform int id_pick,\n"\
+        "                            float theta, float phi,\n"\
+        "                            vec3 asym_t1){\n"\
+        "    float data = 0.0;\n"\
+        "    if      (id_coordinate == SPH_COORDINATE){\n"\
+        "        data = pick_from_sph_asym_tensor(id_pick, theta, phi, asym_t1);\n"\
+        "    }else if(id_coordinate == CYL_COORDINATE){\n"\
+        "        data = pick_from_cyl_asym_tensor(id_pick, theta, phi, asym_t1);\n"\
+        "    }else if(id_coordinate == XYZ_COORDINATE){\n"\
+        "        data = pick_from_xyz_asym_tensor(id_pick, theta, phi, asym_t1);\n"\
+        "    };\n"\
+        "    return data;\n"\
+        "}\n"\
+        "\n"
+    };
+    
+    long n = strlen(vector_tensor_select_frag_src);
+    char * src = alloc_string((long) n+1);
+    
+    strcpy(src, vector_tensor_select_frag_src);
     return src;
 };
 
