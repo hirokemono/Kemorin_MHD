@@ -19,16 +19,16 @@ void vector_in_xyz(const int id_coordinate,
 
 float pick_from_vector(const int id_coordinate,
                        const int id_pick,
-                       float theta, float phi,
-                       float *vector);
+                       double theta, double phi,
+                       double *vector);
 
 float pick_from_sym_tensor(const int id_coordinate,
                            const int id_pick,
-                           float theta, float phi,
-                           float *sym_t);
+                           double theta, double phi,
+                           double *sym_t);
 float pick_from_asym_tensor(const int id_coordinate,
                             const int id_pick,
-                            float theta, float phi,
-                            float *asym_t);
+                            double theta, double phi,
+                            double *asym_t);
 
 #endif /* PICK_ONE_COMP_BY_COORDINATE_ */

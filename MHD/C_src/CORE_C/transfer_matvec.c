@@ -23,13 +23,12 @@ void transform_frame_xyz(int num, double *xx_org, double coef_matrix[16], double
 void transform_frame_xyzw(int num, double *xx_org, double coef_matrix[16], double *xx_new)
 {
 	int i;
-	double xx, yy, zz, ww;
+	double xx, yy, zz;
 
 	for(i=0;i<num;i++) {
 		xx = xx_org[i*4  ];
 		yy = xx_org[i*4+1];
 		zz = xx_org[i*4+2];
-		ww = xx_org[i*4+3];
 		xx_new[i*4  ] = xx*coef_matrix[0] + yy*coef_matrix[4] + zz*coef_matrix[ 8] + coef_matrix[12];
 		xx_new[i*4+1] = xx*coef_matrix[1] + yy*coef_matrix[5] + zz*coef_matrix[ 9] + coef_matrix[13];
 		xx_new[i*4+2] = xx*coef_matrix[2] + yy*coef_matrix[6] + zz*coef_matrix[10] + coef_matrix[14];

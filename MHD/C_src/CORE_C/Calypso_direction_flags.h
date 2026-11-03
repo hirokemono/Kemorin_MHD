@@ -8,6 +8,12 @@
 #define CALYPSO_DIRECTION_FLAGS_
 
 
+#define SCALAR_FLAG        1
+#define VECTOR_FLAG        3
+#define SYM_TENSOR_FLAG    6
+#define ASYM_TENSOR_FLAG  -3
+
+
 #define XYZ_COORDINATE    0
 #define SPH_COORDINATE    1
 #define CYL_COORDINATE    2

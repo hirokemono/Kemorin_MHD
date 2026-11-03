@@ -5,8 +5,8 @@
 //  Created by Hiroaki Matsui on 10/30/26.
 //
 */
-#ifndef PICK_VECTOR_COMPONENT_
-#define PICK_VECTOR_COMPONENT_
+#ifndef PICK_ONE_VECTOR_COMPONENT_
+#define PICK_ONE_VECTOR_COMPONENT_
 
 
 #include "Calypso_direction_flags.h"
@@ -30,4 +30,4 @@ float pick_from_one_xyz_vector(const int id_pick,
                                float theta, float phi,
                                float v_x, float v_y, float v_z);
 
-#endif /* PICK_VECTOR_COMPONENT_ */
+#endif /* PICK_ONE_VECTOR_COMPONENT_ */

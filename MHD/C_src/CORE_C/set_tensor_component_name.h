@@ -13,8 +13,6 @@
 #include "skip_comment_c.h"
 
 
-const char * const hd_magitude = "magnitude";
-
 const char * const hd_xx = "XX";
 const char * const hd_xy = "XY";
 const char * const hd_xz = "XZ";
@@ -56,7 +54,6 @@ const char * const xyz_tensor_list[] = {hd_xx,
                                         hd_sp,
                                         hd_sz,
                                         hd_pz,
-                                        hd_magitude,
                                         NULL};
 
 const char * const sph_tensor_list[] = {hd_rr,
@@ -75,7 +72,6 @@ const char * const sph_tensor_list[] = {hd_rr,
                                         hd_xz,
                                         hd_yy,
                                         hd_yz,
-                                        hd_magitude,
                                         NULL};
 
 const char * const cyl_tensor_list[] = {hd_ss,
@@ -94,7 +90,6 @@ const char * const cyl_tensor_list[] = {hd_ss,
                                         hd_xz,
                                         hd_yy,
                                         hd_yz,
-                                        hd_magitude,
                                         NULL};
 
 
@@ -107,7 +102,6 @@ const char * const xyz_asym_tsr_list[] = {hd_xy,
                                           hd_sp,
                                           hd_zs,
                                           hd_pz,
-                                          hd_magitude,
                                           NULL};
 
 const char * const sph_asym_tsr_list[] = {hd_rt,
@@ -119,7 +113,6 @@ const char * const sph_asym_tsr_list[] = {hd_rt,
                                           hd_xy,
                                           hd_zx,
                                           hd_yz,
-                                          hd_magitude,
                                           NULL};
 
 const char * const cyl_asym_tsr_list[] = {hd_sp,
@@ -131,7 +124,6 @@ const char * const cyl_asym_tsr_list[] = {hd_sp,
                                           hd_xy,
                                           hd_zx,
                                           hd_yz,
-                                          hd_magitude,
                                           NULL};
 
 

@@ -27,57 +27,90 @@ void vector_in_xyz(const int id_coordinate,
 
 float pick_from_vector(const int id_coordinate,
                        const int id_pick,
-                       float theta, float phi,
-                       float *vector){
+                       double theta, double phi,
+                       double *vector){
     float data = 0.0;
     if      (id_coordinate == SPH_COORDINATE){
-        data = pick_from_one_sph_vector(id_pick, theta, phi, 
-                                        vector[0], vector[1], vector[2]);
+        data = pick_from_one_sph_vector(id_pick,
+                                        (float) theta, (float) phi, 
+                                        (float) vector[0], 
+                                        (float) vector[1], 
+                                        (float) vector[2]);
     }else if(id_coordinate == CYL_COORDINATE){
-        data = pick_from_one_cyl_vector(id_pick, theta, phi,
-                                        vector[0], vector[1], vector[2]);
+        data = pick_from_one_cyl_vector(id_pick,
+                                        (float) theta, (float) phi,
+                                        (float) vector[0], 
+                                        (float) vector[1], 
+                                        (float) vector[2]);
     }else if(id_coordinate == XYZ_COORDINATE){
-        data = pick_from_one_xyz_vector(id_pick, theta, phi,
-                                        vector[0], vector[1], vector[2]);
+        data = pick_from_one_xyz_vector(id_pick,
+                                        (float) theta, (float) phi,
+                                        (float) vector[0], 
+                                        (float) vector[1], 
+                                        (float) vector[2]);
     };
     return data;
 }
 
 float pick_from_sym_tensor(const int id_coordinate,
                            const int id_pick,
-                           float theta, float phi,
-                           float *sym_t){
+                           double theta, double phi,
+                           double *sym_t){
     float data = 0.0;
     if      (id_coordinate == SPH_COORDINATE){
-        data = pick_from_one_sph_sym_tensor(id_pick, theta, phi, 
-                                            sym_t[0], sym_t[1], sym_t[2],
-                                            sym_t[3], sym_t[4], sym_t[5]);
+        data = pick_from_one_sph_sym_tensor(id_pick, 
+                                            (float) theta, (float) phi, 
+                                            (float) sym_t[0], 
+                                            (float) sym_t[1],
+                                            (float) sym_t[2],
+                                            (float) sym_t[3],
+                                            (float) sym_t[4],
+                                            (float) sym_t[5]);
     }else if(id_coordinate == CYL_COORDINATE){
-        data = pick_from_one_cyl_sym_tensor(id_pick, theta, phi,
-                                            sym_t[0], sym_t[1], sym_t[2],
-                                            sym_t[3], sym_t[4], sym_t[5]);
+        data = pick_from_one_cyl_sym_tensor(id_pick, 
+                                            (float) theta, (float) phi,
+                                            (float) sym_t[0], 
+                                            (float) sym_t[1],
+                                            (float) sym_t[2],
+                                            (float) sym_t[3],
+                                            (float) sym_t[4],
+                                            (float) sym_t[5]);
     }else if(id_coordinate == XYZ_COORDINATE){
-        data = pick_from_one_cyl_sym_tensor(id_pick, theta, phi,
-                                            sym_t[0], sym_t[1], sym_t[2],
-                                            sym_t[3], sym_t[4], sym_t[5]);
+        data = pick_from_one_cyl_sym_tensor(id_pick, 
+                                            (float) theta, (float) phi,
+                                            (float) sym_t[0], 
+                                            (float) sym_t[1],
+                                            (float) sym_t[2],
+                                            (float) sym_t[3],
+                                            (float) sym_t[4],
+                                            (float) sym_t[5]);
     };
     return data;
 }
 
 float pick_from_asym_tensor(const int id_coordinate,
                             const int id_pick,
-                            float theta, float phi,
-                            float *asym_t){
+                            double theta, double phi,
+                            double *asym_t){
     float data = 0.0;
     if      (id_coordinate == SPH_COORDINATE){
-        data = pick_from_one_sph_asym_tensor(id_pick, theta, phi, 
-                                             asym_t[0], asym_t[1], asym_t[2]);
+        data = pick_from_one_sph_asym_tensor(id_pick, 
+                                             (float) theta, (float) phi, 
+                                             (float) asym_t[0],
+                                             (float) asym_t[1],
+                                             (float) asym_t[2]);
     }else if(id_coordinate == CYL_COORDINATE){
-        data = pick_from_one_cyl_asym_tensor(id_pick, theta, phi, 
-                                             asym_t[0], asym_t[1], asym_t[2]);
+        data = pick_from_one_cyl_asym_tensor(id_pick, 
+                                             (float) theta, (float) phi, 
+                                             (float) asym_t[0],
+                                             (float) asym_t[1],
+                                             (float) asym_t[2]);
     }else if(id_coordinate == XYZ_COORDINATE){
-        data = pick_from_one_xyz_asym_tensor(id_pick, theta, phi, 
-                                             asym_t[0], asym_t[1], asym_t[2]);
+        data = pick_from_one_xyz_asym_tensor(id_pick, 
+                                             (float) theta, (float) phi, 
+                                             (float) asym_t[0],
+                                             (float) asym_t[1],
+                                             (float) asym_t[2]);
     };
     return data;
 }

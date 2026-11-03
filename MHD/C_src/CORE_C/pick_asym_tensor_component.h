@@ -18,7 +18,6 @@
 #include "convert_tensor_field_from_sph_c.h"
 #include "convert_tensor_field_from_cyl_c.h"
 #include "pick_sym_tensor_component.h"
-#include "pick_sym_tensor_component.h"
 
 /* prototypes */
 void pick_asym_tensor_comp_by_sph(const int icomp, const int numnod,
