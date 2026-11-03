@@ -8,7 +8,7 @@
 #ifndef PICK_ONE_COMP_BY_COORDINATE_
 #define PICK_ONE_COMP_BY_COORDINATE_
 
-#include "Calypso_direction_flags.h"
+#include "calypso_direction_flags.h"
 #include "pick_one_vector_component.h"
 #include "pick_one_sym_tensor_comp.h"
 #include "pick_one_asym_tensor_comp.h"

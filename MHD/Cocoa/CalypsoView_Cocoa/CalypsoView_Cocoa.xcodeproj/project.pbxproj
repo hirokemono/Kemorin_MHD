@@ -430,6 +430,7 @@
 		18CC32293094840E0082325C /* convert_one_tensor_from_cyl.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = convert_one_tensor_from_cyl.frag; sourceTree = "<group>"; };
 		18CC32593094844A0082325C /* convert_one_tensor_from_sph.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = convert_one_tensor_from_sph.frag; sourceTree = "<group>"; };
 		18CC325A309484DA0082325C /* convert_one_tensor_from_xyz.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = convert_one_tensor_from_xyz.frag; sourceTree = "<group>"; };
+		18CC325B309AABF30082325C /* calypso_direction_flags.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = calypso_direction_flags.h; sourceTree = "<group>"; };
 		18CC3F8F309627A8008C60AF /* colormap_space.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = colormap_space.frag; sourceTree = "<group>"; };
 		18CC3F90309627B4008C60AF /* colormap_sym_grayscale.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = colormap_sym_grayscale.frag; sourceTree = "<group>"; };
 		18CC3F91309627BE008C60AF /* colormap_grayscale.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = colormap_grayscale.frag; sourceTree = "<group>"; };
@@ -788,6 +789,7 @@
 		18D7E64E1562D359009B05FF /* CORE_C */ = {
 			isa = PBXGroup;
 			children = (
+				18CC325B309AABF30082325C /* calypso_direction_flags.h */,
 				18B885E724E617BA0077BA16 /* t_psf_edge_connect_c.c */,
 				18B885E824E617BB0077BA16 /* t_psf_edge_connect_c.h */,
 				18B885E924E617BB0077BA16 /* t_surf_edge_hash_c.c */,

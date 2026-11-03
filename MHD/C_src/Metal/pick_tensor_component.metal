@@ -8,7 +8,7 @@
 #include <metal_stdlib>
 // Include header shared between this Metal shader code and C code executing Metal API commands
 #include "KemoViewShaderTypes.h"
-#include "../CORE_C/Calypso_direction_flags.h"
+#include "../CORE_C/calypso_direction_flags.h"
 
 float3 xyz_vector_from_sph(float theta, float phi, float3 v_sph);
 float3 xyz_vector_from_cyl(float phi, float3 v_cyl);

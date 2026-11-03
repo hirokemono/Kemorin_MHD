@@ -26,6 +26,7 @@ char * load_colormap_sym_grayscale_frag(void);
 char * load_convert_one_tensor_from_cyl_frag(void);
 char * load_convert_one_tensor_from_sph_frag(void);
 char * load_convert_one_tensor_from_xyz_frag(void);
+char * load_convert_one_vector_frag(void);
 char * load_dash_lines_3D_frag(void);
 char * load_dash_lines_3D_vert(void);
 char * load_gouraud_frag(void);

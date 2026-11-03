@@ -8,7 +8,7 @@
 
 #include <metal_stdlib>
 
-#include "../CORE_C/Calypso_direction_flags.h"
+#include "../CORE_C/calypso_direction_flags.h"
 
 using namespace metal;
 

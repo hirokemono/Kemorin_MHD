@@ -9,7 +9,7 @@
 #define PICK_VECTOR_COMPONENT_
 
 #include "calypso_param_c.h"
-#include "Calypso_direction_flags.h"
+#include "calypso_direction_flags.h"
 #include "convert_vector_field_c.h"
 #include "set_vector_component_name.h"
 

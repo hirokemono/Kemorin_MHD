@@ -9,7 +9,7 @@
 #define PICK_FIELD_COMPONENT_C_
 
 #include "calypso_param_c.h"
-#include "Calypso_direction_flags.h"
+#include "calypso_direction_flags.h"
 #include "pick_one_comp_by_coordinate.h"
 #include "pick_vector_component.h"
 #include "pick_sym_tensor_component.h"

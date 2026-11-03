@@ -4,6 +4,8 @@
 #ifndef KEMOVIEWER__
 #define KEMOVIEWER__
 
+#include "calypso_direction_flags.h"
+
 
 #define LENGTHBUF 4096     /* length of text buffer */
 

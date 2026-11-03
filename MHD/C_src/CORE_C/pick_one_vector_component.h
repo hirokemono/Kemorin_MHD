@@ -9,7 +9,7 @@
 #define PICK_ONE_VECTOR_COMPONENT_
 
 
-#include "Calypso_direction_flags.h"
+#include "calypso_direction_flags.h"
 #include "convert_one_vector_component.h"
 
 /* vector to cartecian coordinate */

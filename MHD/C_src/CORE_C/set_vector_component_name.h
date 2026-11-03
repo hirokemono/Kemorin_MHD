@@ -9,7 +9,7 @@
 #define SET_VECTOR_COMPONENT_NAME_
 
 #include <stdio.h>
-#include "Calypso_direction_flags.h"
+#include "calypso_direction_flags.h"
 #include "skip_comment_c.h"
 
 

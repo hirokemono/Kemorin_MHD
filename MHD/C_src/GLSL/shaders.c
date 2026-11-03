@@ -1195,6 +1195,153 @@ char * load_convert_one_tensor_from_xyz_frag(void){
     return src;
 };
 
+char * load_convert_one_vector_frag(void){
+    const char  convert_one_vector_frag_src[]
+    = {
+        "/***********************************************************************\n"\
+        "!!  convert_one_vector.frag\n"\
+        "!!\n"\
+        "!!  Created by Hiroaki Matsui on Oct. 30, 2026\n"\
+        "!!  Copyright 2026 Dept. of Earth and Planetary Sciences, Tokyo Tech.\n"\
+        "!!\n"\
+        "!!*\n"\
+        "!!*      vr =  vx*sin(th)*cos(phi) + vy*sin(th)*sin(sin) + vz*cos(th)\n"\
+        "!!*      vt =  vx*cos(th)*cos(phi) + vy*cos(th)*sin(phi) - vz*sin(th)\n"\
+        "!!*      vp = -vx*sin(phi) +         vy*cos(phi)\n"\
+        "!!*\n"\
+        "!!*      vx =  vr*sin(th)*cos(phi) + vt*cos(th)*cos(phi) - vp*sin(phi)\n"\
+        "!!*      vy =  vr*sin(th)*sin(phi) + vt*cos(th)*sin(phi) + vp*cos(phi)\n"\
+        "!!*      vz =  vr*cos(th) -          vt*sin(th)\n"\
+        "!!*\n"\
+        "!!*   convert vector from certecian coordinate to cylindrical coordinate\n"\
+        "!!*      vs =  vx*cos(phi) + vy*sin(phi)\n"\
+        "!!*      vp = -vx*sin(phi) + vy*cos(phi)\n"\
+        "!!*      vz =             vz\n"\
+        "!!\n"\
+        "!!*      vx =  vs*cos(phi) - vp*sin(phi)\n"\
+        "!!*      vy =  vs*sin(phi) + vp*cos(phi)\n"\
+        "!!*      vz =             vz\n"\
+        "!!*\n"\
+        "!!*   convert vector from certecian coordinate to cylindrical coordinate\n"\
+        "!!*      vr =  vs*sin(th) + vz*cos(th)\n"\
+        "!!*      vt =  vs*cos(th) - vz*sin(th)\n"\
+        "!!*      vp =             vp\n"\
+        "!!*\n"\
+        "!!*      vs =  vr*sin(th) + vt*cos(th)\n"\
+        "!!*      vp =                          vp\n"\
+        "!!*      vz =  vr*cos(th) - vt*sin(th)\n"\
+        "!!*\n"\
+        " ***********************************************************************/\n"\
+        "\n"\
+        "/* vector components from cartecian coordinate to spherical coordinate */\n"\
+        "\n"\
+        "float r_vector_from_xyz(float theta, float phi,\n"\
+        "                        float v_x, float v_y, float v_z){\n"\
+        "    float v_r =  v_x * sin(theta)*cos(phi)\n"\
+        "               + v_y * sin(theta)*sin(phi)\n"\
+        "               + v_z * cos(theta);\n"\
+        "    return v_r;\n"\
+        "};\n"\
+        "\n"\
+        "float theta_vector_from_xyz(float theta, float phi,\n"\
+        "                            float v_x, float v_y, float v_z){\n"\
+        "    float v_t =  v_x * cos(theta) * cos(phi)\n"\
+        "               + v_y * cos(theta) * sin(phi)\n"\
+        "               - v_z * sin(phi);\n"\
+        "    return v_t;\n"\
+        "};\n"\
+        "\n"\
+        "float phi_vector_from_xyz(float phi,\n"\
+        "                          float v_x, float v_y){\n"\
+        "    float v_p = -v_x * sin(phi)\n"\
+        "               + v_y * cos(phi);\n"\
+        "    return v_p;\n"\
+        "};\n"\
+        "\n"\
+        "/*  vector components from cartecian coordinate to cylindrical coordinate */\n"\
+        "\n"\
+        "float s_vector_from_xyz(float phi,\n"\
+        "                        float v_x, float v_y){\n"\
+        "    float v_s =  v_x * cos(phi)\n"\
+        "               + v_y * sin(phi);\n"\
+        "    return v_s;\n"\
+        "};\n"\
+        "\n"\
+        "\n"\
+        "/* vector components from spherical coordinate to cartecian coordinate */\n"\
+        "\n"\
+        "float x_vector_from_sph(float theta, float phi,\n"\
+        "                        float v_r, float v_t, float v_p){\n"\
+        "    float v_x =  v_r * sin(theta) * cos(phi)\n"\
+        "               + v_t * cos(theta) * cos(phi)\n"\
+        "               - v_p * sin(phi);\n"\
+        "    return v_x;\n"\
+        "};\n"\
+        "\n"\
+        "float y_vector_from_sph(float theta, float phi,\n"\
+        "                        float v_r, float v_t, float v_p){\n"\
+        "    float v_y =  v_r * sin(theta) * sin(phi)\n"\
+        "               + v_t * cos(theta) * sin(phi)\n"\
+        "               + v_p * cos(phi);\n"\
+        "    return v_y;\n"\
+        "};\n"\
+        "\n"\
+        "float z_vector_from_sph(float theta,\n"\
+        "                        float v_r, float v_t){\n"\
+        "    float v_z =  v_r * cos(theta)\n"\
+        "               - v_t * sin(theta);\n"\
+        "    return v_z;\n"\
+        "};\n"\
+        "\n"\
+        "/* vector components from cylindrical coordinate to cartecian coordinate */\n"\
+        "\n"\
+        "float x_vector_from_cyl(float phi,\n"\
+        "                        float v_s, float v_p){\n"\
+        "    float v_x =  v_s * cos(phi)\n"\
+        "               - v_p * sin(phi);\n"\
+        "    return v_x;\n"\
+        "};\n"\
+        "\n"\
+        "float y_vector_from_cyl(float phi,\n"\
+        "                        float v_s, float v_p){\n"\
+        "    float v_y =  v_s * sin(phi)\n"\
+        "               + v_p * cos(phi);\n"\
+        "    return v_y;\n"\
+        "};\n"\
+        "\n"\
+        "\n"\
+        "/* vector components from spherical coordinate to cylindrical coordinate */\n"\
+        "\n"\
+        "float r_vector_from_cyl(float theta, float v_s, float v_z){\n"\
+        "    float v_r =  v_s * sin(theta)\n"\
+        "               + v_z * cos(theta);\n"\
+        "    return v_r;\n"\
+        "};\n"\
+        "\n"\
+        "float theta_vector_from_cyl(float theta, float v_s, float v_z){\n"\
+        "    float v_t =  v_s * cos(theta)\n"\
+        "               - v_z * sin(theta);\n"\
+        "    return v_t;\n"\
+        "};\n"\
+        "\n"\
+        "/* vector components from cylindrical coordinate to spherical coordinate */\n"\
+        "\n"\
+        "float s_vector_from_sph(float theta, float v_r, float v_t){\n"\
+        "    float v_s =  v_r * sin(theta)\n"\
+        "               + v_t * cos(theta);\n"\
+        "    return v_s;\n"\
+        "};\n"\
+        "\n"\
+        "\n"
+    };
+    
+    long n = strlen(convert_one_vector_frag_src);
+    char * src = alloc_string((long) n+1);
+    
+    strcpy(src, convert_one_vector_frag_src);
+    return src;
+};
+
 char * load_dash_lines_3D_frag(void){
     const char  dash_lines_3D_frag_src[]
     = {
