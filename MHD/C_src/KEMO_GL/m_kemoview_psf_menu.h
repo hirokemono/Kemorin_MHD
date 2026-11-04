@@ -60,6 +60,9 @@ struct psf_menu_val{
     
 	int if_draw_viz;
 	int ic_draw_viz;
+    int ist_draw_viz;
+    int ncomp_draw_viz;
+    int ipick_draw_viz;
 	long icomp_draw_viz;
 	
     int iflag_draw_viz;

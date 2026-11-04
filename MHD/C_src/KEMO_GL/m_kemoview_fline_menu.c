@@ -8,6 +8,9 @@ void init_fline_parameters(struct psf_menu_val *fline_m){
 	fline_m ->iflag_draw_viz =  IZERO;
 	
 	fline_m->if_draw_viz =    INIT_IF_DRAW_FLINE;
+	fline_m->ist_draw_viz =   INIT_IC_DRAW_FLINE;
+	fline_m->ncomp_draw_viz = IONE;
+	fline_m->ipick_draw_viz = INIT_IC_DRAW_FLINE;
 	fline_m->ic_draw_viz =    INIT_IC_DRAW_FLINE;
 	fline_m->icomp_draw_viz = INIT_IC_DRAW_FLINE;
 	
