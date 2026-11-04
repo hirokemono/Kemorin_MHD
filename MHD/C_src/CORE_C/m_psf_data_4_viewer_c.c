@@ -135,12 +135,11 @@ void dealloc_psf_color_data_c(struct psf_data *psf_s){
 
 
 void alloc_psf_data_s(struct psf_data *psf_s){
-    long num;
-	/* allocate memory  d_amp[node #][field]*/
-    num = psf_s->nfield * psf_s->nnod_viz;
-	psf_s->d_amp = (double *)malloc(num*sizeof(double));
-    if(psf_s->d_amp  == NULL){
-        printf("malloc error for psf_s->d_amp \n");
+
+/* allocate memory for picked compoennt f_pick[node #] */
+	psf_s->f_pick = (float *)malloc(psf_s->nnod_viz*sizeof(float));
+    if(psf_s->f_pick  == NULL){
+        printf("malloc error for psf_s->f_pick \n");
         exit(0);
     }
 
@@ -207,7 +206,7 @@ void dealloc_psf_data_s(struct psf_data *psf_s){
 	free(psf_s->amp_max);
 	free(psf_s->amp_min);
 	
-	free(psf_s->d_amp);
+	free(psf_s->f_pick);
 	return;
 };
 

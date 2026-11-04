@@ -4,6 +4,7 @@
 
 #include "m_kemoview_psf_menu.h"
 
+/*
 const char * const hd_Scalar = "Scalar";
 const char * const hd_Mag =    "Magnitude";
 
@@ -140,6 +141,7 @@ const char * const cyl_tensor_comp_list[] = {hd_SS,
                                              hd_Mag,
                                              NULL};
 
+*/
 
 void set_PSF_component_name(int ncomp, int id_coord, int icomp, char *comp_name) {
     if(id_coord == 1){

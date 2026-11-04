@@ -47,41 +47,36 @@ double cal_psf_grid_range(long nnod_viz, double *xyzw_viz,
 	return rmax_psf;
 }
 
-
-void take_minmax_psf_each_component(long nnod_viz, long nfield, long ncomptot,
-                                    long *istack_comp, double *d_nod, double *d_amp,
+void take_minmax_psf_each_component(long nnod_viz, long ncomptot, double *d_nod,
                                     double *d_min, double *d_max){
-    int ifld, n;
+    int inod;
     long icomp;
-    
-    for (ifld = 0; ifld < nfield; ifld++){
-        for(n = 0; n < nnod_viz; n++) d_amp[n*nfield + ifld] = 0.0;
-        for (icomp = istack_comp[ifld]; icomp < istack_comp[ifld+1]; icomp++){
-            for (n = 0; n < nnod_viz; n++){
-                d_amp[n*nfield + ifld] = d_amp[n*nfield + ifld]
-                + d_nod[n*ncomptot + icomp] * d_nod[n*ncomptot + icomp];
+    double data_minmax;
+    for(icomp = 0; icomp < ncomptot; icomp++){
+        data_minmax = d_nod[icomp];
+#pragma omp parallel for reduction(min:data_minmax)
+        for (inod = 0; inod < nnod_viz; inod++){
+            if(d_nod[inod*ncomptot + icomp] < data_minmax){
+                data_minmax = d_nod[inod*ncomptot + icomp];
             };
         };
-        for (n = 0; n < nnod_viz; n++){
-            d_amp[n*nfield + ifld] = sqrt(d_amp[n*nfield + ifld]);
-        };
-    };
-    
-    for (icomp = 0; icomp < ncomptot; icomp++){
-        d_min[icomp] = d_nod[icomp];
-        d_max[icomp] = d_nod[icomp];
-        for (n = 1; n < nnod_viz; n++){
-            if ( d_nod[n*ncomptot + icomp] < d_min[icomp] )
-            {
-                d_min[icomp] = d_nod[n*ncomptot + icomp];
-            };
-            if ( d_nod[n*ncomptot + icomp] > d_max[icomp] )
-            {
-                d_max[icomp] = d_nod[n*ncomptot + icomp];
+        d_min[icomp] = data_minmax;
+    }
+
+    for(icomp = 0; icomp < ncomptot; icomp++){
+        data_minmax = d_nod[icomp];
+#pragma omp parallel for reduction(max:data_minmax)
+        for (inod = 0; inod < nnod_viz; inod++){
+            if(d_nod[inod*ncomptot + icomp] > data_minmax){
+                data_minmax = d_nod[inod*ncomptot + icomp];
             };
         };
-        
-        if (d_min[icomp] >= d_max[icomp]) {
+        d_max[icomp] = data_minmax;
+    }
+
+#pragma omp parallel for
+    for(icomp = 0; icomp < ncomptot; icomp++){
+        if (d_min[icomp] >= d_max[icomp]){
             d_min[icomp] = ZERO;
             d_max[icomp] = ONE;
         }
@@ -150,6 +145,21 @@ void shift_longitude(double add_phi, long nnod_viz, double *xyzw_viz){
         rtpw[2] = fmod(rtpw[2]+add_phi,(TWO*pi));
         sph_vector_to_xyz_vect(rtpw[1], rtpw[2], r, &xyzw_viz[4*i]);
     }
+    return;
+}
+
+
+void pick_component_from_viz_field(int id_field, int id_coord, int i_pick,
+                                    long nnod_viz, double *theta, double *phi,
+                                    long ncomptot, int ist_field, double *d_nod,
+                                    float *f_pick){
+    int inod;
+#pragma omp parallel for
+    for (inod = 0; inod < nnod_viz; inod++){
+        f_pick[inod] = pick_one_component_c(id_field, id_coord, i_pick,
+                                            theta[inod], phi[inod],
+                                            &d_nod[ncomptot*inod + ist_field]);
+    };
     return;
 }
 

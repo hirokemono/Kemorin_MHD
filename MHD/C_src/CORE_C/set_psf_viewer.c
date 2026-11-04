@@ -137,13 +137,11 @@ static int cut_each_patch_for_map(int iele, int icou,  long iele_end,
     long inod, i1, i2;
     long j;
     int k, nd, i;
-    long ie[3];
 	long ie_cut[9], inod_src[4];
 	double xyz_tri[9], coef_cut[4];
     double  y_cut[3];
 	
 	for (k=0; k<3; k++) {
-        ie[k] = ie_patch[k];
 		inod = ie_patch[k] - 1;
 		for (nd=0; nd<3; nd++) {xyz_tri[3*k+nd] = xyzw_org[inod*IFOUR + nd];};
 	};
