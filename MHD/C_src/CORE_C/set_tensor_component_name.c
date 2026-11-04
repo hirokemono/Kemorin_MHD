@@ -7,6 +7,134 @@
  ***********************************************************************/
 #include "set_tensor_component_name.h"
 
+const char * const hd_xx = "XX";
+const char * const hd_xy = "XY";
+const char * const hd_xz = "XZ";
+const char * const hd_yy = "YY";
+const char * const hd_yz = "YZ";
+const char * const hd_zz = "ZZ";
+const char * const hd_zx = "ZX";
+
+const char * const hd_rr = "RR";
+const char * const hd_rt = "Rθ";
+const char * const hd_rp = "Rφ";
+const char * const hd_tt = "θθ";
+const char * const hd_tp = "θφ";
+const char * const hd_pp = "φφ";
+const char * const hd_pr = "φR";
+
+const char * const hd_ss = "SS";
+const char * const hd_sp = "Sφ";
+const char * const hd_sz = "SZ";
+const char * const hd_pz = "φZ";
+const char * const hd_zs = "ZS";
+
+
+/*
+const char * const hd_rr = "RR";
+const char * const hd_rt = "R-Theta";
+const char * const hd_rp = "R-Phi";
+const char * const hd_tt = "Theta-Theta";
+const char * const hd_tp = "Theta-Phi";
+const char * const hd_pp = "Phi-Phi";
+const char * const hd_pr = "Phi-R";
+
+const char * const hd_ss = "SS";
+const char * const hd_sp = "S-Phi";
+const char * const hd_sz = "SZ";
+const char * const hd_pz = "Phi-Z";
+const char * const hd_zs = "ZS";
+*/
+
+const char * const xyz_tensor_list[] = {hd_xx,
+                                        hd_xy,
+                                        hd_xz,
+                                        hd_yy,
+                                        hd_yz,
+                                        hd_zz,
+                                        hd_rr,
+                                        hd_rt,
+                                        hd_rp,
+                                        hd_tt,
+                                        hd_tp,
+                                        hd_pp,
+                                        hd_ss,
+                                        hd_sp,
+                                        hd_sz,
+                                        hd_pz,
+                                        NULL};
+
+const char * const sph_tensor_list[] = {hd_rr,
+                                        hd_rt,
+                                        hd_rp,
+                                        hd_tt,
+                                        hd_tp,
+                                        hd_pp,
+                                        hd_ss,
+                                        hd_sp,
+                                        hd_sz,
+                                        hd_pz,
+                                        hd_zz,
+                                        hd_xx,
+                                        hd_xy,
+                                        hd_xz,
+                                        hd_yy,
+                                        hd_yz,
+                                        NULL};
+
+const char * const cyl_tensor_list[] = {hd_ss,
+                                        hd_sp,
+                                        hd_sz,
+                                        hd_pp,
+                                        hd_pz,
+                                        hd_zz,
+                                        hd_rr,
+                                        hd_rt,
+                                        hd_rp,
+                                        hd_tt,
+                                        hd_tp,
+                                        hd_xx,
+                                        hd_xy,
+                                        hd_xz,
+                                        hd_yy,
+                                        hd_yz,
+                                        NULL};
+
+
+const char * const xyz_asym_tsr_list[] = {hd_xy,
+                                          hd_zx,
+                                          hd_yz,
+                                          hd_rt,
+                                          hd_pr,
+                                          hd_tp,
+                                          hd_sp,
+                                          hd_zs,
+                                          hd_pz,
+                                          NULL};
+
+const char * const sph_asym_tsr_list[] = {hd_rt,
+                                          hd_pr,
+                                          hd_tp,
+                                          hd_sp,
+                                          hd_zs,
+                                          hd_pz,
+                                          hd_xy,
+                                          hd_zx,
+                                          hd_yz,
+                                          NULL};
+
+const char * const cyl_asym_tsr_list[] = {hd_sp,
+                                          hd_zs,
+                                          hd_pz,
+                                          hd_rt,
+                                          hd_pr,
+                                          hd_tp,
+                                          hd_xy,
+                                          hd_zx,
+                                          hd_yz,
+                                          NULL};
+
+
 int find_comp_id_from_by_sph_tensor(const char *selected){
     if     (cmp_no_case_c(selected, hd_rr) != 0){return  SPH_to_RR;}
     else if(cmp_no_case_c(selected, hd_rt) != 0){return  SPH_to_RT;}

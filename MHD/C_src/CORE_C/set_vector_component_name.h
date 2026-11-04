@@ -13,50 +13,24 @@
 #include "skip_comment_c.h"
 
 
-const char * const hd_x = "X";
-const char * const hd_y = "Y";
-const char * const hd_z = "Z";
+extern const char * const hd_x;
+extern const char * const hd_y;
+extern const char * const hd_z;
 
-const char * const hd_r = "R";
-const char * const hd_t = "Theta";
-const char * const hd_p = "Phi";
+extern const char * const hd_r;
+extern const char * const hd_t;
+extern const char * const hd_p;
 
-const char * const hd_s = "S";
+extern const char * const hd_s;
 
-const char * const hd_magitude = "magnitude";
+extern const char * const hd_magitude;
+
+extern const char * const hd_scalar;
 
 
-const char * const hd_scalar =   "scalar";
-const char * const xyz_vector_list[] = {hd_x,
-                                        hd_y,
-                                        hd_z,
-                                        hd_r,
-                                        hd_t,
-                                        hd_p,
-                                        hd_s,
-                                        hd_magitude,
-                                        NULL};
-
-const char * const sph_vector_list[] = {hd_r,
-                                        hd_t,
-                                        hd_p,
-                                        hd_s,
-                                        hd_z,
-                                        hd_x,
-                                        hd_y,
-                                        hd_magitude,
-                                        NULL};
-
-const char * const cyl_vector_list[] = {hd_s,
-                                        hd_p,
-                                        hd_z,
-                                        hd_r,
-                                        hd_t,
-                                        hd_x,
-                                        hd_y,
-                                        hd_magitude,
-                                        NULL};
-
+extern const char * const xyz_vector_list[];
+extern const char * const sph_vector_list[];
+extern const char * const cyl_vector_list[];
 
 /* prototypes */
 int find_comp_id_from_by_sph_vector(const char *selected);

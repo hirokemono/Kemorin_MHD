@@ -13,118 +13,43 @@
 #include "skip_comment_c.h"
 
 
-const char * const hd_xx = "XX";
-const char * const hd_xy = "XY";
-const char * const hd_xz = "XZ";
-const char * const hd_yy = "YY";
-const char * const hd_yz = "YZ";
-const char * const hd_zz = "ZZ";
-const char * const hd_zx = "ZX";
+extern const char * const hd_xx;
+extern const char * const hd_xy;
+extern const char * const hd_xz;
+extern const char * const hd_yy;
+extern const char * const hd_yz;
+extern const char * const hd_zz;
+extern const char * const hd_zx;
 
-const char * const hd_rr = "RR";
-const char * const hd_rt = "R-Theta";
-const char * const hd_rp = "R-Phi";
-const char * const hd_tt = "Theta-Theta";
-const char * const hd_tp = "Theta-Phi";
-const char * const hd_pp = "Phi-Phi";
-const char * const hd_pr = "Phi-R";
+extern const char * const hd_rr;
+extern const char * const hd_rt;
+extern const char * const hd_rp;
+extern const char * const hd_tt;
+extern const char * const hd_tp;
+extern const char * const hd_pp;
+extern const char * const hd_pr;
 
-const char * const hd_ss = "SS";
-const char * const hd_sp = "S-Phi";
-const char * const hd_sz = "SZ";
-/* const char * const hd_pp = "Phi-Phi"; */
-const char * const hd_pz = "Phi-Z";
-/* const char * const hd_zz = "ZZ"; */
-const char * const hd_zs = "ZS";
-
-
-const char * const xyz_tensor_list[] = {hd_xx,
-                                        hd_xy,
-                                        hd_xz,
-                                        hd_yy,
-                                        hd_yz,
-                                        hd_zz,
-                                        hd_rr,
-                                        hd_rt,
-                                        hd_rp,
-                                        hd_tt,
-                                        hd_tp,
-                                        hd_pp,
-                                        hd_ss,
-                                        hd_sp,
-                                        hd_sz,
-                                        hd_pz,
-                                        NULL};
-
-const char * const sph_tensor_list[] = {hd_rr,
-                                        hd_rt,
-                                        hd_rp,
-                                        hd_tt,
-                                        hd_tp,
-                                        hd_pp,
-                                        hd_ss,
-                                        hd_sp,
-                                        hd_sz,
-                                        hd_pz,
-                                        hd_zz,
-                                        hd_xx,
-                                        hd_xy,
-                                        hd_xz,
-                                        hd_yy,
-                                        hd_yz,
-                                        NULL};
-
-const char * const cyl_tensor_list[] = {hd_ss,
-                                        hd_sp,
-                                        hd_sz,
-                                        hd_pp,
-                                        hd_pz,
-                                        hd_zz,
-                                        hd_rr,
-                                        hd_rt,
-                                        hd_rp,
-                                        hd_tt,
-                                        hd_tp,
-                                        hd_xx,
-                                        hd_xy,
-                                        hd_xz,
-                                        hd_yy,
-                                        hd_yz,
-                                        NULL};
+extern const char * const hd_ss;
+extern const char * const hd_sp;
+extern const char * const hd_sz;
+/* extern const char * const hd_pp; */
+extern const char * const hd_pz;
+/* extern const char * const hd_zz; */
+extern const char * const hd_zs;
 
 
-const char * const xyz_asym_tsr_list[] = {hd_xy,
-                                          hd_zx,
-                                          hd_yz,
-                                          hd_rt,
-                                          hd_pr,
-                                          hd_tp,
-                                          hd_sp,
-                                          hd_zs,
-                                          hd_pz,
-                                          NULL};
+extern const char * const xyz_tensor_list[];
 
-const char * const sph_asym_tsr_list[] = {hd_rt,
-                                          hd_pr,
-                                          hd_tp,
-                                          hd_sp,
-                                          hd_zs,
-                                          hd_pz,
-                                          hd_xy,
-                                          hd_zx,
-                                          hd_yz,
-                                          NULL};
+extern const char * const sph_tensor_list[];
 
-const char * const cyl_asym_tsr_list[] = {hd_sp,
-                                          hd_zs,
-                                          hd_pz,
-                                          hd_rt,
-                                          hd_pr,
-                                          hd_tp,
-                                          hd_xy,
-                                          hd_zx,
-                                          hd_yz,
-                                          NULL};
+extern const char * const cyl_tensor_list[];
+
+
+const char * const xyz_asym_tsr_list[];
+
+const char * const sph_asym_tsr_list[];
+
+const char * const cyl_asym_tsr_list[];
 
 
 /* prototypes */

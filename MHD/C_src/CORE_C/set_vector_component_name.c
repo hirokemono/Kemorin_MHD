@@ -7,6 +7,55 @@
  ***********************************************************************/
 #include "set_vector_component_name.h"
 
+const char * const hd_x = "X";
+const char * const hd_y = "Y";
+const char * const hd_z = "Z";
+
+const char * const hd_r = "R";
+const char * const hd_t = "θ";
+const char * const hd_p = "φ";
+/*
+const char * const hd_r = "R";
+const char * const hd_t = "Theta";
+const char * const hd_p = "Phi";
+*/
+const char * const hd_s = "S";
+
+const char * const hd_magitude = "magnitude";
+
+
+const char * const hd_scalar =   "scalar";
+const char * const xyz_vector_list[] = {hd_x,
+                                        hd_y,
+                                        hd_z,
+                                        hd_r,
+                                        hd_t,
+                                        hd_p,
+                                        hd_s,
+                                        hd_magitude,
+                                        NULL};
+
+const char * const sph_vector_list[] = {hd_r,
+                                        hd_t,
+                                        hd_p,
+                                        hd_s,
+                                        hd_z,
+                                        hd_x,
+                                        hd_y,
+                                        hd_magitude,
+                                        NULL};
+
+const char * const cyl_vector_list[] = {hd_s,
+                                        hd_p,
+                                        hd_z,
+                                        hd_r,
+                                        hd_t,
+                                        hd_x,
+                                        hd_y,
+                                        hd_magitude,
+                                        NULL};
+
+
 int find_comp_id_from_by_sph_vector(const char *selected){
     if     (cmp_no_case_c(selected, hd_r) != 0){return  SPH_to_R;}
     else if(cmp_no_case_c(selected, hd_t) != 0){return  SPH_to_T;}
