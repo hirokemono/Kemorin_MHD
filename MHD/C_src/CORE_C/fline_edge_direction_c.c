@@ -169,7 +169,7 @@ void take_minmax_fline(struct fline_directions *fline_dir,
                                    fline_d->d_min, fline_d->d_max);
     take_minmax_viz_fields(fline_d->nfield, fline_d->istack_comp,
                            fline_d->d_min, fline_d->d_max,
-                           fline_d->amp_min, fline_d->amp_max);
+                           fline_d->pick_min, fline_d->pick_max);
 	return;
 }
 
@@ -187,7 +187,7 @@ void take_minmax_points(struct psf_data *point_d){
                                    point_d->d_min, point_d->d_max);
     take_minmax_viz_fields(point_d->nfield, point_d->istack_comp,
                            point_d->d_min, point_d->d_max,
-                           point_d->amp_min, point_d->amp_max);
+                           point_d->pick_min, point_d->pick_max);
 	return;
 }
 

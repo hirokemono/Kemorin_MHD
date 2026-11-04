@@ -43,8 +43,8 @@ struct psf_data{
 	double *d_max;
 	double *d_ave;
 	double *d_rms;
-	double *amp_min;
-	double *amp_max;
+	double *pick_min;
+	double *pick_max;
 	
     double center_psf[3];
     double xmin_psf[3];

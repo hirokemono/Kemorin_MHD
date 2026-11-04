@@ -331,40 +331,208 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
         kemoview_get_VIZ_field_name(kemo_sgl, (int) id_model,
                                     colorname, (int) isel);
         NSString *stname = [[NSString alloc] initWithUTF8String:colorname->string];
+        NSInteger charalen = [stname length];
+        NSString *coordname;
+        if(charalen > 4){
+            coordname = [stname substringFromIndex:charalen-4];
+        }else{
+            coordname = @"None";
+        };
         
         if(num_comp == 1){
             [psfComponentMenu addItemWithTitle:@"Scalar"];
-        } else if(num_comp == 6){
-            [psfComponentMenu addItemWithTitle:@"xx"];
-            [psfComponentMenu addItemWithTitle:@"xy"];
-            [psfComponentMenu addItemWithTitle:@"xz"];
-            [psfComponentMenu addItemWithTitle:@"yy"];
-            [psfComponentMenu addItemWithTitle:@"yz"];
-            [psfComponentMenu addItemWithTitle:@"zz"];
-        }
-        else if(num_comp == 3){
-            NSInteger charalen = [stname length];
-            if(charalen > 4){
-                NSString *partname = [stname substringFromIndex:charalen-4];
-                if([partname compare:@"_sph"] == NSOrderedSame){
-                    [psfComponentMenu addItemWithTitle:@"r"];
-                    [psfComponentMenu addItemWithTitle:@"θ"];
-                    [psfComponentMenu addItemWithTitle:@"φ"];
-                }else if([partname compare:@"_cyl"] == NSOrderedSame){
-                    [psfComponentMenu addItemWithTitle:@"s"];
-                    [psfComponentMenu addItemWithTitle:@"φ"];
-                    [psfComponentMenu addItemWithTitle:@"z"];
-                }else{
-                    [psfComponentMenu addItemWithTitle:@"x"];
-                    [psfComponentMenu addItemWithTitle:@"y"];
-                    [psfComponentMenu addItemWithTitle:@"z"];
-                }
-            } else {
+            [[psfComponentMenu itemAtIndex:0]  setTag:IZERO];
+        }else if(num_comp == 3){
+            if([coordname compare:@"_sph"] == NSOrderedSame){
+                [psfComponentMenu addItemWithTitle:@"r"];
+                [psfComponentMenu addItemWithTitle:@"θ"];
+                [psfComponentMenu addItemWithTitle:@"φ"];
+
+                [psfComponentMenu addItemWithTitle:@"s"];
+                [psfComponentMenu addItemWithTitle:@"z"];
+
+                [psfComponentMenu addItemWithTitle:@"x"];
+                [psfComponentMenu addItemWithTitle:@"y"];
+
+                [psfComponentMenu addItemWithTitle:@"magnitude"];
+
+                [[psfComponentMenu itemAtIndex:0]  setTag:SPH_to_R];
+                [[psfComponentMenu itemAtIndex:1]  setTag:SPH_to_T];
+                [[psfComponentMenu itemAtIndex:2]  setTag:SPH_to_P];
+                
+                [[psfComponentMenu itemAtIndex:3]  setTag:SPH_to_S];
+                [[psfComponentMenu itemAtIndex:4]  setTag:SPH_to_Z];
+                
+                [[psfComponentMenu itemAtIndex:5]  setTag:SPH_to_X];
+                [[psfComponentMenu itemAtIndex:6]  setTag:SPH_to_Y];
+
+                [[psfComponentMenu itemAtIndex:7]  setTag:SPH_to_MAG];
+            }else if([coordname compare:@"_cyl"] == NSOrderedSame){
+                [psfComponentMenu addItemWithTitle:@"s"];
+                [psfComponentMenu addItemWithTitle:@"φ"];
+                [psfComponentMenu addItemWithTitle:@"z"];
+                
+                [psfComponentMenu addItemWithTitle:@"r"];
+                [psfComponentMenu addItemWithTitle:@"θ"];
+                
+                [psfComponentMenu addItemWithTitle:@"x"];
+                [psfComponentMenu addItemWithTitle:@"y"];
+
+
+                [[psfComponentMenu itemAtIndex:0]  setTag:CYL_to_S];
+                [[psfComponentMenu itemAtIndex:1]  setTag:CYL_to_P];
+                [[psfComponentMenu itemAtIndex:2]  setTag:CYL_to_Z];
+                
+                [[psfComponentMenu itemAtIndex:3]  setTag:CYL_to_R];
+                [[psfComponentMenu itemAtIndex:4]  setTag:CYL_to_T];
+
+                [[psfComponentMenu itemAtIndex:5]  setTag:CYL_to_X];
+                [[psfComponentMenu itemAtIndex:6]  setTag:CYL_to_Y];
+
+                [[psfComponentMenu itemAtIndex:7]  setTag:CYL_to_MAG];
+                [psfComponentMenu addItemWithTitle:@"magnitude"];
+            }else{
                 [psfComponentMenu addItemWithTitle:@"x"];
                 [psfComponentMenu addItemWithTitle:@"y"];
                 [psfComponentMenu addItemWithTitle:@"z"];
+                
+                [psfComponentMenu addItemWithTitle:@"r"];
+                [psfComponentMenu addItemWithTitle:@"θ"];
+                [psfComponentMenu addItemWithTitle:@"φ"];
+
+                [psfComponentMenu addItemWithTitle:@"s"];
+
+                [psfComponentMenu addItemWithTitle:@"magnitude"];
+
+                [[psfComponentMenu itemAtIndex:0]  setTag:XYZ_to_X];
+                [[psfComponentMenu itemAtIndex:1]  setTag:XYZ_to_Y];
+                [[psfComponentMenu itemAtIndex:2]  setTag:XYZ_to_Z];
+
+                [[psfComponentMenu itemAtIndex:3]  setTag:XYZ_to_R];
+                [[psfComponentMenu itemAtIndex:4]  setTag:XYZ_to_T];
+                [[psfComponentMenu itemAtIndex:5]  setTag:XYZ_to_P];
+                
+                [[psfComponentMenu itemAtIndex:6]  setTag:XYZ_to_S];
+
+                [[psfComponentMenu itemAtIndex:7]  setTag:XYZ_to_MAG];
             }
-        }
+        }else if(num_comp == 6){
+            if([coordname compare:@"_sph"] == NSOrderedSame){
+                [psfComponentMenu addItemWithTitle:@"rr"];
+                [psfComponentMenu addItemWithTitle:@"rθ"];
+                [psfComponentMenu addItemWithTitle:@"rφ"];
+                [psfComponentMenu addItemWithTitle:@"θθ"];
+                [psfComponentMenu addItemWithTitle:@"θφ"];
+                [psfComponentMenu addItemWithTitle:@"φφ"];
+
+                [psfComponentMenu addItemWithTitle:@"ss"];
+                [psfComponentMenu addItemWithTitle:@"sφ"];
+                [psfComponentMenu addItemWithTitle:@"sz"];
+                [psfComponentMenu addItemWithTitle:@"φz"];
+                [psfComponentMenu addItemWithTitle:@"zz"];
+
+                [psfComponentMenu addItemWithTitle:@"xx"];
+                [psfComponentMenu addItemWithTitle:@"xy"];
+                [psfComponentMenu addItemWithTitle:@"xz"];
+                [psfComponentMenu addItemWithTitle:@"yy"];
+                [psfComponentMenu addItemWithTitle:@"yz"];
+                
+                [[psfComponentMenu itemAtIndex:0]  setTag:SPH_to_RR];
+                [[psfComponentMenu itemAtIndex:1]  setTag:SPH_to_RT];
+                [[psfComponentMenu itemAtIndex:2]  setTag:SPH_to_RP];
+                [[psfComponentMenu itemAtIndex:3]  setTag:SPH_to_TT];
+                [[psfComponentMenu itemAtIndex:4]  setTag:SPH_to_TP];
+                [[psfComponentMenu itemAtIndex:5]  setTag:SPH_to_PP];
+
+                [[psfComponentMenu itemAtIndex:6]  setTag:SPH_to_SS];
+                [[psfComponentMenu itemAtIndex:7]  setTag:SPH_to_SP];
+                [[psfComponentMenu itemAtIndex:8]  setTag:SPH_to_SZ];
+                [[psfComponentMenu itemAtIndex:9]  setTag:SPH_to_PZ];
+                [[psfComponentMenu itemAtIndex:10] setTag:SPH_to_ZZ];
+
+                [[psfComponentMenu itemAtIndex:11] setTag:SPH_to_XX];
+                [[psfComponentMenu itemAtIndex:12] setTag:SPH_to_XY];
+                [[psfComponentMenu itemAtIndex:13] setTag:SPH_to_XZ];
+                [[psfComponentMenu itemAtIndex:14] setTag:SPH_to_YY];
+                [[psfComponentMenu itemAtIndex:15] setTag:SPH_to_YZ];
+            }else if([coordname compare:@"_cyl"] == NSOrderedSame){
+                [psfComponentMenu addItemWithTitle:@"ss"];
+                [psfComponentMenu addItemWithTitle:@"sφ"];
+                [psfComponentMenu addItemWithTitle:@"sz"];
+                [psfComponentMenu addItemWithTitle:@"φφ"];
+                [psfComponentMenu addItemWithTitle:@"φz"];
+                [psfComponentMenu addItemWithTitle:@"zz"];
+
+                [psfComponentMenu addItemWithTitle:@"rr"];
+                [psfComponentMenu addItemWithTitle:@"rθ"];
+                [psfComponentMenu addItemWithTitle:@"rφ"];
+                [psfComponentMenu addItemWithTitle:@"θθ"];
+                [psfComponentMenu addItemWithTitle:@"θφ"];
+
+                [psfComponentMenu addItemWithTitle:@"xx"];
+                [psfComponentMenu addItemWithTitle:@"xy"];
+                [psfComponentMenu addItemWithTitle:@"xz"];
+                [psfComponentMenu addItemWithTitle:@"yy"];
+                [psfComponentMenu addItemWithTitle:@"yz"];
+                 
+                [[psfComponentMenu itemAtIndex:0]  setTag:CYL_to_SS];
+                [[psfComponentMenu itemAtIndex:1]  setTag:CYL_to_SP];
+                [[psfComponentMenu itemAtIndex:2]  setTag:CYL_to_SZ];
+                [[psfComponentMenu itemAtIndex:3]  setTag:CYL_to_PP];
+                [[psfComponentMenu itemAtIndex:4]  setTag:CYL_to_PZ];
+                [[psfComponentMenu itemAtIndex:5]  setTag:CYL_to_ZZ];
+
+                [[psfComponentMenu itemAtIndex:6]  setTag:CYL_to_RR];
+                [[psfComponentMenu itemAtIndex:7]  setTag:CYL_to_RT];
+                [[psfComponentMenu itemAtIndex:8]  setTag:CYL_to_RP];
+                [[psfComponentMenu itemAtIndex:9]  setTag:CYL_to_TT];
+                [[psfComponentMenu itemAtIndex:10] setTag:CYL_to_TP];
+
+                [[psfComponentMenu itemAtIndex:11] setTag:CYL_to_XX];
+                [[psfComponentMenu itemAtIndex:12] setTag:CYL_to_XY];
+                [[psfComponentMenu itemAtIndex:13] setTag:CYL_to_XZ];
+                [[psfComponentMenu itemAtIndex:14] setTag:CYL_to_YY];
+                [[psfComponentMenu itemAtIndex:15] setTag:CYL_to_YZ];
+            }else{
+                [psfComponentMenu addItemWithTitle:@"xx"];
+                [psfComponentMenu addItemWithTitle:@"xy"];
+                [psfComponentMenu addItemWithTitle:@"xz"];
+                [psfComponentMenu addItemWithTitle:@"yy"];
+                [psfComponentMenu addItemWithTitle:@"yz"];
+                [psfComponentMenu addItemWithTitle:@"zz"];
+
+                [psfComponentMenu addItemWithTitle:@"rr"];
+                [psfComponentMenu addItemWithTitle:@"rθ"];
+                [psfComponentMenu addItemWithTitle:@"rφ"];
+                [psfComponentMenu addItemWithTitle:@"θθ"];
+                [psfComponentMenu addItemWithTitle:@"θφ"];
+                [psfComponentMenu addItemWithTitle:@"φφ"];
+
+                [psfComponentMenu addItemWithTitle:@"ss"];
+                [psfComponentMenu addItemWithTitle:@"sφ"];
+                [psfComponentMenu addItemWithTitle:@"sz"];
+                [psfComponentMenu addItemWithTitle:@"φz"];
+                 
+                [[psfComponentMenu itemAtIndex:0]  setTag:XYZ_to_XX];
+                [[psfComponentMenu itemAtIndex:1]  setTag:XYZ_to_XY];
+                [[psfComponentMenu itemAtIndex:2]  setTag:XYZ_to_XZ];
+                [[psfComponentMenu itemAtIndex:3]  setTag:XYZ_to_YY];
+                [[psfComponentMenu itemAtIndex:4]  setTag:XYZ_to_YZ];
+                [[psfComponentMenu itemAtIndex:5]  setTag:XYZ_to_ZZ];
+
+                [[psfComponentMenu itemAtIndex:6]  setTag:XYZ_to_RR];
+                [[psfComponentMenu itemAtIndex:7]  setTag:XYZ_to_RT];
+                [[psfComponentMenu itemAtIndex:8]  setTag:XYZ_to_RP];
+                [[psfComponentMenu itemAtIndex:9]  setTag:XYZ_to_TT];
+                [[psfComponentMenu itemAtIndex:10] setTag:XYZ_to_TP];
+                [[psfComponentMenu itemAtIndex:11] setTag:XYZ_to_PP];
+
+                [[psfComponentMenu itemAtIndex:12] setTag:XYZ_to_SS];
+                [[psfComponentMenu itemAtIndex:13] setTag:XYZ_to_SP];
+                [[psfComponentMenu itemAtIndex:14] setTag:XYZ_to_SZ];
+                [[psfComponentMenu itemAtIndex:15] setTag:XYZ_to_PZ];
+           }
+       }
         [stname release];
         kemoview_free_kvstring(colorname);
     }

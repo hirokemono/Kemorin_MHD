@@ -276,6 +276,6 @@ void take_minmax_psf(struct psf_data *viz_s,
                                    viz_s->d_min, viz_s->d_max);
     take_minmax_viz_fields(viz_s->nfield, viz_s->istack_comp,
                            viz_s->d_min, viz_s->d_max,
-                           viz_s->amp_min, viz_s->amp_max);
+                           viz_s->pick_min, viz_s->pick_max);
 	return;
 }

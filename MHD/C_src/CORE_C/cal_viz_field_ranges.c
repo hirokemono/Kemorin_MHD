@@ -53,6 +53,8 @@ void take_minmax_psf_each_component(long nnod_viz, long nfield, long ncomptot,
                                     double *d_min, double *d_max){
     int ifld, n;
     long icomp;
+    double maxvalue = -10.0e30;
+    double minvalue =  10.0e30;
     
     for (ifld = 0; ifld < nfield; ifld++){
         for(n = 0; n < nnod_viz; n++) d_amp[n*nfield + ifld] = 0.0;
@@ -67,6 +69,7 @@ void take_minmax_psf_each_component(long nnod_viz, long nfield, long ncomptot,
         };
     };
     
+#pragma omp parallel for reduction(min:minvalue)
     for (icomp = 0; icomp < ncomptot; icomp++){
         d_min[icomp] = d_nod[icomp];
         d_max[icomp] = d_nod[icomp];
