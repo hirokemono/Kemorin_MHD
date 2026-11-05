@@ -87,15 +87,22 @@ void alloc_psf_field_name_c(struct psf_data *psf_s){
         printf("malloc error for psf_s->ncomp \n");
         exit(0);
     }
+    
 	psf_s->istack_comp = (long *)calloc(psf_s->nfield+1,sizeof(long));
-    if(psf_s->ncomp  == NULL){
-        printf("malloc error for psf_s->ncomp \n");
+    if(psf_s->istack_comp  == NULL){
+        printf("malloc error for psf_s->istack_comp \n");
+        exit(0);
+    }
+    
+	psf_s->istack_pick = (long *)calloc(psf_s->nfield+1,sizeof(long));
+    if(psf_s->istack_pick  == NULL){
+        printf("malloc error for psf_s->istack_pick \n");
         exit(0);
     }
     
 	psf_s->id_coord =    (int *)calloc(psf_s->nfield,sizeof(int));
-    if(psf_s->ncomp  == NULL){
-        printf("malloc error for psf_s->ncomp \n");
+    if(psf_s->id_coord  == NULL){
+        printf("malloc error for psf_s->id_coord \n");
         exit(0);
     }
 	
@@ -192,14 +199,16 @@ void dealloc_psf_field_data_c(struct psf_data *psf_s){
 	free(psf_s->d_nod);
 	free(psf_s->ncomp);
 	free(psf_s->istack_comp);
+	free(psf_s->istack_pick);
     free(psf_s->id_coord);
 	
     int i;
 	for(i = 0; i < psf_s->nfield; i++) free(psf_s->data_name[i]);
 	free(psf_s->data_name);
     
-    psf_s->nfield = 0;
+    psf_s->nfield =   0;
     psf_s->ncomptot = 0;
+    psf_s->npicktot = 0;
 	return;
 };
 

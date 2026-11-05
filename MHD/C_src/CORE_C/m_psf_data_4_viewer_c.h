@@ -38,6 +38,8 @@ struct psf_data{
 	double *d_nod;
 	double *color_nod;
 	
+	long npicktot;
+	long *istack_pick;
 	double *d_pick;
 	
 	double *d_min;
