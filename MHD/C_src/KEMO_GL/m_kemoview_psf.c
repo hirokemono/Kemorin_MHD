@@ -200,7 +200,7 @@ void set_each_PSF_field_param(int selected, int input,
                           viz_data->istack_comp, viz_menu);
 	};
     
-    pick_component_from_viz_field(viz_menu->ncomp_draw_viz,
+    pick_component_from_viz_field(viz_data->ncomp[viz_menu->if_draw_viz],
                                   viz_data->id_coord[viz_menu->if_draw_viz],
                                   viz_menu->ipick_draw_viz,
                                   (int) viz_data->nnod_viz, viz_data->angle_viz,

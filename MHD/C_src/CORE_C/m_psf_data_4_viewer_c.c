@@ -93,6 +93,12 @@ void alloc_psf_field_name_c(struct psf_data *psf_s){
         exit(0);
     }
     
+	psf_s->istack_pick = (long *)calloc(psf_s->nfield+1,sizeof(long));
+    if(psf_s->ncomp  == NULL){
+        printf("malloc error for psf_s->ncomp \n");
+        exit(0);
+    }
+    
 	psf_s->id_coord =    (int *)calloc(psf_s->nfield,sizeof(int));
     if(psf_s->ncomp  == NULL){
         printf("malloc error for psf_s->ncomp \n");
@@ -172,19 +178,6 @@ void alloc_psf_data_s(struct psf_data *psf_s){
         printf("malloc error for psf_s->d_rms \n");
         exit(0);
     }
-
-
-	psf_s->amp_min = (double *)calloc(psf_s->nfield,sizeof(double));
-    if(psf_s->amp_min  == NULL){
-        printf("malloc error for psf_s->amp_min \n");
-        exit(0);
-    }
-
-	psf_s->amp_max = (double *)calloc(psf_s->nfield,sizeof(double));
-    if(psf_s->amp_max  == NULL){
-        printf("malloc error for psf_s->amp_max \n");
-        exit(0);
-    }
 	return;
 };
 
@@ -192,6 +185,7 @@ void dealloc_psf_field_data_c(struct psf_data *psf_s){
 	free(psf_s->d_nod);
 	free(psf_s->ncomp);
 	free(psf_s->istack_comp);
+	free(psf_s->istack_pick);
     free(psf_s->id_coord);
 	
     int i;
@@ -209,8 +203,6 @@ void dealloc_psf_data_s(struct psf_data *psf_s){
 	free(psf_s->d_ave);
 	free(psf_s->d_max);
 	free(psf_s->d_min);
-	free(psf_s->amp_max);
-	free(psf_s->amp_min);
 	
 	free(psf_s->d_pick);
 	return;
@@ -305,10 +297,9 @@ void copy_viewer_udt_connect(struct psf_data *viz_org, long **ie_copied){
 long copy_viewer_udt_field_name(struct psf_data *viz_org, long nfield,
                                 long *ncomp, long *istack_comp,
                                 int *id_coord, char **data_name){
-	long i, imin_fld;
-	
-    imin_fld = viz_org->nfield;
-    if (nfield < imin_fld) imin_fld = nfield;
+	long i;
+    long imin_fld = viz_org->nfield;
+    if(nfield < imin_fld) imin_fld = nfield;
     
 	istack_comp[0] = viz_org->istack_comp[0];
 	for (i = 0; i < imin_fld; i++) {
@@ -373,6 +364,22 @@ void copy_vtk_list_2_udt_data(struct psf_data *viz_copied, struct vtk_field *vtk
     };
 	return;
 }
+
+long count_total_picked_udt_field(long nfield, long *ncomp, long *istack_pick){
+	long i;
+    int npick;
+	istack_pick[0] = 0;
+	for (i = 0; i < nfield; i++){
+        if     (ncomp[i] == 1){npick = NPICK_SCALAR;}
+        else if(ncomp[i] == 3){npick = NPICK_VECTOR;}
+        else if(ncomp[i] == 4){npick = NPICK_ASYM_TENSOR;}
+        else if(ncomp[i] == 6){npick = NPICK_SYM_TENSOR;};
+        
+		istack_pick[i+1] = npick + istack_pick[i];
+    };
+    return istack_pick[nfield];
+};
+
 
 void check_psf_read(struct psf_data *psf_s){
 	int i;

@@ -16,6 +16,7 @@
 #include "calypso_param_c.h"
 #include "skip_comment_c.h"
 #include "t_psf_edge_connect_c.h"
+#include "calypso_direction_flags.h"
 
 struct psf_data{
 	long nele_viz;
@@ -38,14 +39,14 @@ struct psf_data{
 	double *d_nod;
 	double *color_nod;
 	
+	long npicktot;
+	long *istack_pick;
 	double *d_pick;
 	
 	double *d_min;
 	double *d_max;
 	double *d_ave;
 	double *d_rms;
-	double *amp_min;
-	double *amp_max;
 	
     double center_psf[3];
     double xmin_psf[3];
@@ -117,6 +118,8 @@ long copy_viewer_udt_field_name(struct psf_data *viz_org, long nfield,
 void copy_viewer_udt_data(struct psf_data *viz_org,
                           long nnod_copied, long ncomptot_copied,
                           double *d_copied);
+
+long count_total_picked_udt_field(long nfield, long *ncomp, long *istack_pick);
 
 void copy_vtk_list_2_udt_name(struct psf_data *viz_copied, struct vtk_field *vtk_list);
 void copy_vtk_list_2_udt_data(struct psf_data *viz_copied, struct vtk_field *vtk_list);

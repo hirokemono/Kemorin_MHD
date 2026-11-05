@@ -268,6 +268,8 @@ void set_viewer_points_data(struct psf_data *points_d,
     points_d->ncomptot = copy_viewer_udt_field_name(viz_tmp, points_d->nfield,
                                                     points_d->ncomp,  points_d->istack_comp,
                                                     points_d->id_coord, points_d->data_name);
+    points_d->npicktot = count_total_picked_udt_field(points_d->nfield, points_d->ncomp,
+                                                      points_d->istack_pick);
 
     points_d->nnod_viz = viz_tmp->nnod_viz;
     alloc_viz_node_s(points_d);
@@ -288,6 +290,8 @@ void set_viewer_fieldline_data(struct psf_data *fline_d,
     fline_d->ncomptot = copy_viewer_udt_field_name(viz_tmp, fline_d->nfield,
                                                    fline_d->ncomp,  fline_d->istack_comp,
                                                    fline_d->id_coord, fline_d->data_name);
+    fline_d->npicktot = count_total_picked_udt_field(fline_d->nfield, fline_d->ncomp,
+                                                     fline_d->istack_pick);
 
     fline_d->nnod_viz =       viz_tmp->nnod_viz;
     fline_d->nele_viz =       viz_tmp->nele_viz;
@@ -317,6 +321,8 @@ long set_viewer_mesh_with_mapping(struct map_interpolate *map_itp,
     viz_s->ncomptot = copy_viewer_udt_field_name(viz_tmp, viz_s->nfield,
                                                  viz_s->ncomp,  viz_s->istack_comp,
                                                  viz_s->id_coord, viz_s->data_name);
+    viz_s->npicktot = count_total_picked_udt_field(viz_s->nfield, viz_s->ncomp,
+                                                   viz_s->istack_pick);
 
     map_itp->nnod_org = viz_tmp->nnod_viz;
 	if (viz_tmp->nnod_4_ele_viz == 4) {

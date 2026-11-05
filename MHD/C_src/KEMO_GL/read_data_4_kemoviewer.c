@@ -202,18 +202,35 @@ void set_kemoview_mesh_data(struct viewer_mesh *mesh_s,
 void set_kemoview_viz_color_data(int id_color_mode,
                                  struct psf_data *viz_d,
                                  struct psf_menu_val *viz_menu){
-	int i;
+	int i, nd;
     alloc_draw_psf_flags(id_color_mode,
-                         viz_d->nfield,
+                         viz_d->npicktot,
                          viz_d->ncomptot,
                          viz_menu);
 	
 	viz_menu->iflag_draw_viz = IONE;	
-	for (i=0;i<viz_d->ncomptot;i++){
+	for(i=0;i<viz_d->ncomptot;i++){
 		set_linear_colormap(viz_menu->cmap_viz_comp[i], viz_d->d_min[i], viz_d->d_max[i]);
 		set_full_opacitymap(viz_menu->cmap_viz_comp[i], viz_d->d_min[i], viz_d->d_max[i]);
 	};
 	
+    double d_min;
+    double d_max;
+    long num_pick;
+	for(i=0;i<viz_d->nfield;i++){
+        num_pick = viz_d->istack_pick[i+1] - viz_d->istack_pick[i];
+        for(nd=0;nd<num_pick;nd++){
+            pick_component_from_viz_field(viz_d->ncomp[i], viz_d->id_coord[i], nd,
+                                          (int) viz_d->nnod_viz, viz_d->angle_viz,
+                                          (int) viz_d->ncomptot, (int) viz_d->istack_pick[i],
+                                          viz_d->d_nod, viz_d->d_pick);
+            take_maximum_psf_each_component(viz_d->nnod_viz, (long) IONE, viz_d->d_pick,
+                                            &d_min, &d_max);
+            set_linear_colormap(viz_menu->cmap_viz_pick[i], d_min, d_max);
+            set_full_opacitymap(viz_menu->cmap_viz_pick[i], d_min, d_max);
+       };
+   
+    };
 	return;
 }
 
