@@ -85,7 +85,7 @@ long set_psf_nodes_to_buf(long ipatch_in, long ist_nod, long num,
                                          &psf_s->xyzw_viz[IFOUR*ist_nod],
                                          &psf_n->norm_nod[IFOUR*ist_nod],
                                          &psf_s->color_nod[IFOUR*ist_nod],
-                                         &psf_n->rt_viz[ITWO*ist_nod],
+                                         &psf_s->angle_viz[ITWO*ist_nod],
                                          strided_buf);
     return inum_nod;
 }
@@ -155,14 +155,14 @@ long set_map_nodes_to_buf(long ipatch_in, long ist_nod, long num,
     long inum_nod = ipatch_in;
     long inod;
     for(inod=ist_nod;inod<ist_nod+num ;inod++){
-        rtpw[1] = psf_n->rt_viz[ITWO*inod  ];
-        rtpw[2] = psf_n->rt_viz[ITWO*inod+1];
+        rtpw[1] = psf_s->angle_viz[ITWO*inod  ];
+        rtpw[2] = psf_s->angle_viz[ITWO*inod+1];
         aitoff_c(IONE, &rtpw[0], &map_xy[0]);
 
         inum_nod =  set_nodes_strided_buffer(inum_nod, IONE,
                                              map_xy, normal,
                                              &psf_s->color_nod[IFOUR*inod],
-                                             &psf_n->rt_viz[ITWO*inod],
+                                             &psf_s->angle_viz[ITWO*inod],
                                              strided_buf);
     }
     return inum_nod;

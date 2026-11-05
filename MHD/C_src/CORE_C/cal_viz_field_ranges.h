@@ -27,13 +27,13 @@ void take_minmax_viz_fields(long nfield, long *istack_comp,
 
 void cal_colat_and_longitude(long nadded_for_phi0,
                              long nnod_viz, double *xyzw_viz, 
-                             double *rt_viz);
+                             double *angle_viz);
 void shift_longitude(double add_phi, long nnod_viz, double *xyzw_viz);
 
 void pick_component_from_viz_field(int id_field, int id_coord, int i_pick,
-                                    long nnod_viz, double *theta, double *phi,
+                                    long nnod_viz, double *angle_viz,
                                     long ncomptot, int ist_field, double *d_nod,
-                                    double *f_pick);
+                                    double *d_pick);
 
 
 #endif /*  CAL_VIZ_FIELD_RANGES_  */

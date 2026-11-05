@@ -252,15 +252,11 @@ static void take_rms_ave_psf(struct psf_data *viz_s,
 	return;
 }
 
-void take_normal_psf(long nadded_for_phi0,
-                     struct psf_data *viz_s,
+void take_normal_psf(struct psf_data *viz_s,
                      struct psf_normals *psf_n){
     viz_s->rmax_psf = cal_psf_grid_range(viz_s->nnod_viz, viz_s->xyzw_viz,
                                          viz_s->xmin_psf, viz_s->xmax_psf,
                                          viz_s->center_psf);
-    cal_colat_and_longitude(nadded_for_phi0, 
-                            viz_s->nnod_viz, viz_s->xyzw_viz,
-                            psf_n->rt_viz);
     take_normal_ele_psf(viz_s, psf_n);
 	take_normal_nod_psf(viz_s, psf_n);
 	return;

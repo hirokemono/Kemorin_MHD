@@ -37,19 +37,13 @@ extern const char * const hd_pz;
 /* extern const char * const hd_zz; */
 extern const char * const hd_zs;
 
-
 extern const char * const xyz_tensor_list[];
-
 extern const char * const sph_tensor_list[];
-
 extern const char * const cyl_tensor_list[];
 
-
-const char * const xyz_asym_tsr_list[];
-
-const char * const sph_asym_tsr_list[];
-
-const char * const cyl_asym_tsr_list[];
+extern const char * const xyz_asym_tsr_list[];
+extern const char * const sph_asym_tsr_list[];
+extern const char * const cyl_asym_tsr_list[];
 
 
 /* prototypes */

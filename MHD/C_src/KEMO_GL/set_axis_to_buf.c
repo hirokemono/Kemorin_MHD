@@ -451,7 +451,7 @@ void set_lower_flex_axis_to_buf(struct view_element *view_s,
     double x_charax[16], x_charay[24], x_charaz[24];
     double axis_org[3], label_ratio[3];
     double min_l_ratio;
-    double radius;
+    double radius = 0.0;
 	long icou_patch = 0;
     
     int i;

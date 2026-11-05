@@ -302,6 +302,7 @@ void set_viewer_fieldline_data(struct psf_data *fline_d,
 
     copy_viewer_udt_connect(viz_tmp, fline_d->ie_viz);
 
+    dealloc_psf_field_data_c(viz_tmp);
 	dealloc_psf_mesh_c(viz_tmp);
     return;
 }

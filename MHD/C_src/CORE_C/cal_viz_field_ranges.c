@@ -106,7 +106,7 @@ void take_minmax_viz_fields(long nfield, long *istack_comp,
 
 void cal_colat_and_longitude(long nadded_for_phi0,
                              long nnod_viz, double *xyzw_viz, 
-                             double *rt_viz){
+                             double *angle_viz){
     long i;
     double pi = FOUR * atan(ONE);
     double rtpw[4];
@@ -114,20 +114,20 @@ void cal_colat_and_longitude(long nadded_for_phi0,
     for(i=0;i<nnod_viz;i++){
         xyzw_to_rtpw_c(IONE, &xyzw_viz[4*i], rtpw);
         
-        rt_viz[2*i  ] = rtpw[1];
-        rt_viz[2*i+1] = rtpw[2];
-        rt_viz[2*i+1] = fmod(rtpw[2]+pi,(TWO*pi));
-        if(rt_viz[2*i+1]*rt_viz[2*i+1] < 1.0e-25){
-            rt_viz[2*i+1] = TWO * pi;
+        angle_viz[2*i  ] = rtpw[1];
+        angle_viz[2*i+1] = rtpw[2];
+        angle_viz[2*i+1] = fmod(rtpw[2]+pi,(TWO*pi));
+        if(angle_viz[2*i+1]*angle_viz[2*i+1] < 1.0e-25){
+            angle_viz[2*i+1] = TWO * pi;
         }
 
     }
 
     for(i=nnod_viz-2.0*nadded_for_phi0;i<nnod_viz-nadded_for_phi0;i++){
-//        rt_viz[2*i+1] = 0.;
+//        angle_viz[2*i+1] = 0.;
     }
     for(i=nnod_viz-nadded_for_phi0;i<nnod_viz;i++){
-        rt_viz[2*i+1] = 0.0;
+        angle_viz[2*i+1] = 0.0;
     }
     return;
 }
@@ -150,14 +150,14 @@ void shift_longitude(double add_phi, long nnod_viz, double *xyzw_viz){
 
 
 void pick_component_from_viz_field(int id_field, int id_coord, int i_pick,
-                                    long nnod_viz, double *theta, double *phi,
+                                    long nnod_viz, double *angle_viz,
                                     long ncomptot, int ist_field, double *d_nod,
-                                    double *f_pick){
+                                    double *d_pick){
     int inod;
 #pragma omp parallel for
-    for (inod = 0; inod < nnod_viz; inod++){
-        f_pick[inod] = (double) pick_one_component_c(id_field, id_coord, i_pick,
-                                                     theta[inod], phi[inod],
+    for(inod = 0; inod < nnod_viz; inod++){
+        d_pick[inod] = (double) pick_one_component_c(id_field, id_coord, i_pick,
+                                                     angle_viz[2*inod], angle_viz[2*inod+1],
                                                      &d_nod[ncomptot*inod + ist_field]);
     };
     return;

@@ -26,6 +26,7 @@ struct psf_data{
 	long nnod_viz;
 	long *inod_viz;
 	double *xyzw_viz;
+    double *angle_viz;
 	
 	long nfield;
 	long *ncomp;
@@ -37,7 +38,7 @@ struct psf_data{
 	double *d_nod;
 	double *color_nod;
 	
-	double *f_pick;
+	double *d_pick;
 	
 	double *d_min;
 	double *d_max;
@@ -53,8 +54,6 @@ struct psf_data{
 };
 
 struct psf_normals{
-    double *rt_viz;
-    
 	double *norm_ele;
     double *norm_nod;
 	double *area_ele;

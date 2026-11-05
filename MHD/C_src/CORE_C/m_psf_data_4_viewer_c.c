@@ -38,6 +38,12 @@ void alloc_viz_node_s(struct psf_data *psf_s){
         exit(0);
     }
     
+    psf_s->angle_viz = (double *)malloc(ITWO*psf_s->nnod_viz*sizeof(double));
+    if(psf_s->angle_viz  == NULL){
+        printf("malloc error for psf_s->angle_viz \n");
+        exit(0);
+    }
+
 	psf_s->inod_viz = (long *)calloc(psf_s->nnod_viz,sizeof(long));
     if(psf_s->inod_viz  == NULL){
         printf("malloc error for psf_s->inod_viz \n");
@@ -136,10 +142,10 @@ void dealloc_psf_color_data_c(struct psf_data *psf_s){
 
 void alloc_psf_data_s(struct psf_data *psf_s){
 
-/* allocate memory for picked compoennt f_pick[node #] */
-	psf_s->f_pick = (double *)malloc(psf_s->nnod_viz*sizeof(double));
-    if(psf_s->f_pick  == NULL){
-        printf("malloc error for psf_s->f_pick \n");
+/* allocate memory for picked compoennt d_pick[node #] */
+	psf_s->d_pick = (double *)malloc(psf_s->nnod_viz*sizeof(double));
+    if(psf_s->d_pick  == NULL){
+        printf("malloc error for psf_s->d_pick \n");
         exit(0);
     }
 
@@ -206,13 +212,14 @@ void dealloc_psf_data_s(struct psf_data *psf_s){
 	free(psf_s->amp_max);
 	free(psf_s->amp_min);
 	
-	free(psf_s->f_pick);
+	free(psf_s->d_pick);
 	return;
 };
 
 void dealloc_viz_node_s(struct psf_data *psf_s){
     free(psf_s->inod_viz);
     free(psf_s->xyzw_viz);
+    free(psf_s->angle_viz);
 }
 void dealloc_viz_ele_s(struct psf_data *psf_s){
     int i;
@@ -458,12 +465,6 @@ void compare_psf_data_c(struct psf_data *psf_s, struct psf_data *psf_z){
 
 void alloc_psf_norm_s(struct psf_data *psf_s,
                       struct psf_normals *psf_n){
-    psf_n->rt_viz = (double *)malloc(ITWO*psf_s->nnod_viz*sizeof(double));
-    if(psf_n->rt_viz  == NULL){
-        printf("malloc error for psf_n->rt_viz \n");
-        exit(0);
-    }
-
     psf_n->area_ele = (double *)calloc(psf_s->nele_viz,sizeof(double));
     if(psf_n->area_ele  == NULL){
         printf("malloc error for psf_n->area_ele \n");
@@ -490,7 +491,6 @@ void dealloc_psf_norm_s(struct psf_normals *psf_n){
     free(psf_n->norm_nod);
 	free(psf_n->norm_ele);
 	free(psf_n->area_ele);
-    free(psf_n->rt_viz);
 	return;
 };
 

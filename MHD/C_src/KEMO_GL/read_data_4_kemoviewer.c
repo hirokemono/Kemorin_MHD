@@ -74,16 +74,14 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
 long set_psf_data_by_UCD(struct map_interpolate *map_itp,
                          struct psf_data *psf_s, struct psf_normals *psf_n,
                          struct psf_data *ucd_tmp) {
-    alloc_psf_norm_s(ucd_tmp, psf_n);
-    cal_colat_and_longitude(0, ucd_tmp->nnod_viz, ucd_tmp->xyzw_viz, 
-                            psf_n->rt_viz);
-    dealloc_psf_norm_s(psf_n);
-
     long nadded_for_phi0 = set_viewer_mesh_with_mapping(map_itp, psf_s, ucd_tmp);
     set_viewer_data_with_mapping(map_itp, ucd_tmp, psf_s);
+    cal_colat_and_longitude(nadded_for_phi0, 
+                            psf_s->nnod_viz, psf_s->xyzw_viz,
+                            psf_s->angle_viz);
 
     alloc_psf_norm_s(psf_s, psf_n);
-	take_normal_psf(nadded_for_phi0, psf_s, psf_n);
+	take_normal_psf(psf_s, psf_n);
     take_minmax_psf(psf_s, psf_n);
     psf_n->psf_edge = init_all_edge_4_psf(psf_s->nnod_viz, psf_s->nele_viz,
                                           psf_s->nnod_4_ele_viz, psf_s->ie_viz,
@@ -100,7 +98,9 @@ void set_fline_data_by_UCD(struct psf_data *fline_d,
                            struct fline_directions *fline_dir,
                            struct psf_data *ucd_tmp){
     set_viewer_fieldline_data(fline_d, ucd_tmp);
-    
+    cal_colat_and_longitude(0, fline_d->nnod_viz, fline_d->xyzw_viz, 
+                            fline_d->angle_viz);
+
     alloc_fline_work_data(fline_d, fline_dir);
     take_length_fline(fline_d, fline_dir);
     
@@ -115,6 +115,8 @@ void set_fline_data_by_UCD(struct psf_data *fline_d,
 void set_points_data_by_UCD(struct psf_data *points_d,
                             struct psf_data *ucd_tmp){
     set_viewer_points_data(points_d, ucd_tmp);
+    cal_colat_and_longitude(0, points_d->nnod_viz, points_d->xyzw_viz, 
+                            points_d->angle_viz);
     
     alloc_psf_data_s(points_d);
 	take_minmax_points(points_d);
