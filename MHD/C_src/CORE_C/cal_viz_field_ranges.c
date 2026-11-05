@@ -152,13 +152,13 @@ void shift_longitude(double add_phi, long nnod_viz, double *xyzw_viz){
 void pick_component_from_viz_field(int id_field, int id_coord, int i_pick,
                                     long nnod_viz, double *theta, double *phi,
                                     long ncomptot, int ist_field, double *d_nod,
-                                    float *f_pick){
+                                    double *f_pick){
     int inod;
 #pragma omp parallel for
     for (inod = 0; inod < nnod_viz; inod++){
-        f_pick[inod] = pick_one_component_c(id_field, id_coord, i_pick,
-                                            theta[inod], phi[inod],
-                                            &d_nod[ncomptot*inod + ist_field]);
+        f_pick[inod] = (double) pick_one_component_c(id_field, id_coord, i_pick,
+                                                     theta[inod], phi[inod],
+                                                     &d_nod[ncomptot*inod + ist_field]);
     };
     return;
 }

@@ -137,7 +137,7 @@ void dealloc_psf_color_data_c(struct psf_data *psf_s){
 void alloc_psf_data_s(struct psf_data *psf_s){
 
 /* allocate memory for picked compoennt f_pick[node #] */
-	psf_s->f_pick = (float *)malloc(psf_s->nnod_viz*sizeof(float));
+	psf_s->f_pick = (double *)malloc(psf_s->nnod_viz*sizeof(double));
     if(psf_s->f_pick  == NULL){
         printf("malloc error for psf_s->f_pick \n");
         exit(0);

@@ -37,7 +37,7 @@ struct psf_data{
 	double *d_nod;
 	double *color_nod;
 	
-	float *f_pick;
+	double *f_pick;
 	
 	double *d_min;
 	double *d_max;

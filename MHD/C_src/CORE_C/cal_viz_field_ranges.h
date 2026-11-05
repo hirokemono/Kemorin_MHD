@@ -33,7 +33,7 @@ void shift_longitude(double add_phi, long nnod_viz, double *xyzw_viz);
 void pick_component_from_viz_field(int id_field, int id_coord, int i_pick,
                                     long nnod_viz, double *theta, double *phi,
                                     long ncomptot, int ist_field, double *d_nod,
-                                    float *f_pick);
+                                    double *f_pick);
 
 
 #endif /*  CAL_VIZ_FIELD_RANGES_  */
