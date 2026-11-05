@@ -207,21 +207,14 @@ void alloc_draw_psf_flags(int id_color_mode, long nfield, long ncomptot,
         }
         alloc_color_index_list_s(psf_m->cmap_viz_comp[i], id_color_mode);
     };
-    
-    psf_m->cmap_viz_fld =  (struct colormap_params **) malloc(nfield*sizeof(struct colormap_params *));
-    if( psf_m->cmap_viz_fld == NULL ) {
-        printf( "cmap_viz_fld cannot alloc!\n" );
+        
+    psf_m->cmap_viz = (struct colormap_params *) malloc( sizeof(struct colormap_params));
+    if(psf_m->cmap_viz == NULL) {
+        printf( "psf_m->cmap_viz cannot alloc!\n" );
         exit( 1 );
     }
-    for (i=0;i<nfield;i++) {
-        psf_m->cmap_viz_fld[i] = (struct colormap_params *) malloc( sizeof(struct colormap_params));
-        if(psf_m->cmap_viz_fld[i] == NULL) {
-            printf( "psf_m->cmap_viz_fld[i] cannot alloc!\n" );
-            exit( 1 );
-        }
-        alloc_color_index_list_s(psf_m->cmap_viz_fld[i], id_color_mode);
-    }
-    
+    alloc_color_index_list_s(psf_m->cmap_viz, id_color_mode);
+
     psf_m->icomp_draw_viz = 0;
     return;
 }
@@ -229,11 +222,9 @@ void alloc_draw_psf_flags(int id_color_mode, long nfield, long ncomptot,
 void dealloc_draw_psf_flags(long nfield, long ncomptot, 
                             struct psf_menu_val *psf_m){
     int i;
-    for (i=0;i<nfield;i++){dealloc_color_index_list_s(psf_m->cmap_viz_fld[i]);};
-    free(psf_m->cmap_viz_fld);
-    
-    for (i=0;i<ncomptot;i++){dealloc_color_index_list_s(psf_m->cmap_viz_comp[i]);};
+    for(i=0;i<ncomptot;i++){dealloc_color_index_list_s(psf_m->cmap_viz_comp[i]);};
     free(psf_m->cmap_viz_comp);
+    dealloc_color_index_list_s(psf_m->cmap_viz);
     dealloc_kvstring(psf_m->viz_prefix_c);
     return;
 }

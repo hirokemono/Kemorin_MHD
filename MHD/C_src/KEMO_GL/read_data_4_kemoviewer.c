@@ -209,11 +209,6 @@ void set_kemoview_viz_color_data(int id_color_mode,
                          viz_menu);
 	
 	viz_menu->iflag_draw_viz = IONE;	
-	for (i=0;i<viz_d->nfield;i++){
-		set_linear_colormap(viz_menu->cmap_viz_fld[i], viz_d->amp_min[i], viz_d->amp_max[i]);
-		set_full_opacitymap(viz_menu->cmap_viz_fld[i], viz_d->amp_min[i], viz_d->amp_max[i]);
-	};
-	
 	for (i=0;i<viz_d->ncomptot;i++){
 		set_linear_colormap(viz_menu->cmap_viz_comp[i], viz_d->d_min[i], viz_d->d_max[i]);
 		set_full_opacitymap(viz_menu->cmap_viz_comp[i], viz_d->d_min[i], viz_d->d_max[i]);

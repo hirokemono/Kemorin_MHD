@@ -84,26 +84,6 @@ void take_minmax_psf_each_component(long nnod_viz, long ncomptot, double *d_nod,
     return;
 }
 
-void take_minmax_viz_fields(long nfield, long *istack_comp,
-                            double *d_min, double *d_max,
-                            double *amp_min, double *amp_max){
-    int ifld;
-    long icomp, ist, ied;
-	for (ifld = 0; ifld < nfield; ifld++){
-        ist = istack_comp[ifld];
-        ied = istack_comp[ifld+1];
-		amp_min[ifld] = d_min[ist];
-		amp_max[ifld] = d_max[ist];
-        
-		for(icomp=ist+1; icomp<ied; icomp++){
-			if (d_min[icomp] < amp_min[ifld]){amp_min[ifld] = d_min[icomp];};
-			if (d_max[icomp] > amp_max[ifld]){amp_max[ifld] = d_max[icomp];};
-		};
-	};
-	
-	return;
-}
-
 void cal_colat_and_longitude(long nadded_for_phi0,
                              long nnod_viz, double *xyzw_viz, 
                              double *angle_viz){

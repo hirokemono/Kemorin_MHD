@@ -73,7 +73,7 @@ struct psf_menu_val{
 	int iflag_draw_cbar;
     
 	struct colormap_params **cmap_viz_comp;
-	struct colormap_params **cmap_viz_fld;
+	struct colormap_params *cmap_viz;
 	
 ///*    Color mode  ID      **///
 	int viz_color_mode;
