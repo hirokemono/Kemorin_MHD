@@ -19,6 +19,7 @@
 #include "set_rgba_table_c.h"
 #include "set_psf_viewer.h"
 #include "set_tensor_component_name.h"
+#include "set_vector_component_name.h"
 
 struct kemo_array_control{
 	int nlimit_loaded;

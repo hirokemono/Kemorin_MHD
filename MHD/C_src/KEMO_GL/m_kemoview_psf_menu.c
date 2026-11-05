@@ -4,194 +4,56 @@
 
 #include "m_kemoview_psf_menu.h"
 
-/*
-const char * const hd_Scalar = "Scalar";
-const char * const hd_Mag =    "Magnitude";
-
-const char * const hd_X =      "X";
-const char * const hd_Y =      "Y";
-const char * const hd_Z =      "Z";
-const char * const hd_R =      "R";
-const char * const hd_S =      "S";
-const char * const hd_Theta =  "Theta";
-const char * const hd_Phi =    "Phi";
-
-const char * const hd_XX =      "XX";
-const char * const hd_XY =      "XY";
-const char * const hd_XZ =      "XZ";
-const char * const hd_YY =      "YY";
-const char * const hd_YZ =      "YZ";
-const char * const hd_ZZ =      "ZZ";
-const char * const hd_RR =      "RR";
-const char * const hd_RT =      "R-Theta";
-const char * const hd_RP =      "R-Phi";
-const char * const hd_TT =      "Theta-Theta";
-const char * const hd_TP =      "Theta-Phi";
-const char * const hd_PP =      "Phi-Phi";
-const char * const hd_SS =      "SS";
-const char * const hd_SP =      "S-Phi";
-const char * const hd_SZ =      "SZ";
-const char * const hd_PZ =      "Phi-Z";
-
-const char * const scalar_comp_list[] = {hd_Scalar,
-                                         hd_Mag,
-                                         NULL};
-
-const char * const xyz_vector_comp_list[] = {hd_X,
-                                             hd_Y,
-                                             hd_Z,
-                                             
-                                             hd_R,
-                                             hd_Theta,
-                                             hd_Phi,
-                                             hd_S,
-                                             
-                                             hd_Mag,
-                                             NULL};
-
-const char * const sph_vector_comp_list[] = {hd_R,
-                                             hd_Theta,
-                                             hd_Phi,
-                                             hd_S,
-                                             
-                                             hd_X,
-                                             hd_Y,
-                                             hd_Z,
-                                             
-                                             hd_Mag,
-                                             NULL};
-
-const char * const cyl_vector_comp_list[] = {hd_S,
-                                             hd_Phi,
-                                             hd_Z,
-                                             
-                                             hd_R,
-                                             hd_Theta,
-                                             
-                                             hd_X,
-                                             hd_Y,
-                                             
-                                             hd_Mag,
-                                             NULL};
-
-
-const char * const xyz_tensor_comp_list[] = {hd_XX,
-                                             hd_XY,
-                                             hd_XZ,
-                                             hd_YY,
-                                             hd_YZ,
-                                             hd_ZZ,
-                                             
-                                             hd_RR,
-                                             hd_RT,
-                                             hd_RP,
-                                             hd_TT,
-                                             hd_TP,
-                                             hd_PP,
-                                             
-                                             hd_SS,
-                                             hd_SP,
-                                             hd_SZ,
-                                             hd_PZ,
-                                             
-                                             hd_Mag,
-                                             NULL};
-
-const char * const sph_tensor_comp_list[] = {hd_RR,
-                                             hd_RT,
-                                             hd_RP,
-                                             hd_TT,
-                                             hd_TP,
-                                             hd_PP,
-                                             
-                                             hd_SS,
-                                             hd_SP,
-                                             hd_SZ,
-                                             hd_PZ,
-                                             
-                                             hd_XX,
-                                             hd_XY,
-                                             hd_XZ,
-                                             hd_YY,
-                                             hd_YZ,
-                                             hd_ZZ,
-                                             
-                                             hd_Mag,
-                                             NULL};
-
-const char * const cyl_tensor_comp_list[] = {hd_SS,
-                                             hd_SP,
-                                             hd_SZ,
-                                             hd_PP,
-                                             hd_PZ,
-                                             hd_ZZ,
-                                             
-                                             hd_RR,
-                                             hd_RT,
-                                             hd_RP,
-                                             hd_TT,
-                                             hd_TP,
-                                             
-                                             hd_XX,
-                                             hd_XY,
-                                             hd_XZ,
-                                             hd_YY,
-                                             hd_YZ,
-                                             
-                                             hd_Mag,
-                                             NULL};
-
-*/
 
 void set_PSF_component_name(int ncomp, int id_coord, int icomp, char *comp_name) {
     if(id_coord == 1){
         if(ncomp == 1){
-            if(icomp == 0) sprintf(comp_name, "Scalar");
+            if(icomp == 0) sprintf(comp_name, hd_scalar);
         }else if(ncomp == 3){
-            if(icomp == 0) sprintf(comp_name, "R");
-            if(icomp == 1) sprintf(comp_name, "Theta");
-            if(icomp == 2) sprintf(comp_name, "Phi");
+            if(icomp == 0) sprintf(comp_name, hd_r);
+            if(icomp == 1) sprintf(comp_name, hd_t);
+            if(icomp == 2) sprintf(comp_name, hd_p);
         }else if(ncomp == 6){
-            if(icomp == 0) sprintf(comp_name, "RR");
-            if(icomp == 1) sprintf(comp_name, "R-Theta");
-            if(icomp == 2) sprintf(comp_name, "R-Phi");
-            if(icomp == 3) sprintf(comp_name, "Theta-Theta");
-            if(icomp == 4) sprintf(comp_name, "Theta-Phi");
-            if(icomp == 5) sprintf(comp_name, "Phi-Phi");
+            if(icomp == 0) sprintf(comp_name, hd_rr);
+            if(icomp == 1) sprintf(comp_name, hd_rt);
+            if(icomp == 2) sprintf(comp_name, hd_rp);
+            if(icomp == 3) sprintf(comp_name, hd_tt);
+            if(icomp == 4) sprintf(comp_name, hd_tp);
+            if(icomp == 5) sprintf(comp_name, hd_pp);
         };
     } else if(id_coord == 2){
         if(ncomp == 1){
-            if(icomp == 0) sprintf(comp_name, "Scalar");
+            if(icomp == 0) sprintf(comp_name, hd_scalar);
         }else if(ncomp == 3){
-            if(icomp == 0) sprintf(comp_name, "S");
-            if(icomp == 1) sprintf(comp_name, "Phi");
-            if(icomp == 2) sprintf(comp_name, "Z");
+            if(icomp == 0) sprintf(comp_name, hd_s);
+            if(icomp == 1) sprintf(comp_name, hd_p);
+            if(icomp == 2) sprintf(comp_name, hd_z);
         }else if(ncomp == 6){
-            if(icomp == 0) sprintf(comp_name, "SS");
-            if(icomp == 1) sprintf(comp_name, "S-Phi");
-            if(icomp == 2) sprintf(comp_name, "SZ");
-            if(icomp == 3) sprintf(comp_name, "Phi-Phi");
-            if(icomp == 4) sprintf(comp_name, "Phi-Z");
-            if(icomp == 5) sprintf(comp_name, "ZZ");
+            if(icomp == 0) sprintf(comp_name, hd_ss);
+            if(icomp == 1) sprintf(comp_name, hd_sp);
+            if(icomp == 2) sprintf(comp_name, hd_sz);
+            if(icomp == 3) sprintf(comp_name, hd_pp);
+            if(icomp == 4) sprintf(comp_name, hd_pz);
+            if(icomp == 5) sprintf(comp_name, hd_zz);
         };
     } else {
         if(ncomp == 1){
-            if(icomp == 0) sprintf(comp_name, "Scalar");
+            if(icomp == 0) sprintf(comp_name, hd_scalar);
         }else if(ncomp == 3){
-            if(icomp == 0) sprintf(comp_name, "X");
-            if(icomp == 1) sprintf(comp_name, "Y");
-            if(icomp == 2) sprintf(comp_name, "Z");
+            if(icomp == 0) sprintf(comp_name, hd_x);
+            if(icomp == 1) sprintf(comp_name, hd_y);
+            if(icomp == 2) sprintf(comp_name, hd_z);
         }else if(ncomp == 6){
-            if(icomp == 0) sprintf(comp_name, "XX");
-            if(icomp == 1) sprintf(comp_name, "XY");
-            if(icomp == 2) sprintf(comp_name, "XZ");
-            if(icomp == 3) sprintf(comp_name, "YY");
-            if(icomp == 4) sprintf(comp_name, "YZ");
-            if(icomp == 5) sprintf(comp_name, "ZZ");
+            if(icomp == 0) sprintf(comp_name, hd_xx);
+            if(icomp == 1) sprintf(comp_name, hd_xy);
+            if(icomp == 2) sprintf(comp_name, hd_xz);
+            if(icomp == 3) sprintf(comp_name, hd_yy);
+            if(icomp == 4) sprintf(comp_name, hd_yz);
+            if(icomp == 5) sprintf(comp_name, hd_zz);
         };
     };
     
-    if(icomp == ncomp) sprintf(comp_name,"magnitude");
+    if(icomp == ncomp) sprintf(comp_name, hd_magitude);
     
     return;
 };
@@ -199,103 +61,103 @@ void set_PSF_component_name(int ncomp, int id_coord, int icomp, char *comp_name)
 void set_PSF_full_component_name(int ncomp, int id_coord, int icomp, char *comp_name) {
     if(id_coord == 1){
         if(ncomp == 1){
-            if(icomp == 0) sprintf(comp_name, "Scalar");
+            if(icomp == 0) sprintf(comp_name, hd_scalar);
         }else if(ncomp == 3){
-            if(icomp ==  0) sprintf(comp_name, "R");
-            if(icomp ==  1) sprintf(comp_name, "Theta");
-            if(icomp ==  2) sprintf(comp_name, "Phi");
-            if(icomp ==  3) sprintf(comp_name, "S");
+            if(icomp ==  0) sprintf(comp_name, hd_r);
+            if(icomp ==  1) sprintf(comp_name, hd_t);
+            if(icomp ==  2) sprintf(comp_name, hd_p);
+            if(icomp ==  3) sprintf(comp_name, hd_s);
             
-            if(icomp ==  4) sprintf(comp_name, "X");
-            if(icomp ==  5) sprintf(comp_name, "Y");
-            if(icomp ==  6) sprintf(comp_name, "Z");
+            if(icomp ==  4) sprintf(comp_name, hd_x);
+            if(icomp ==  5) sprintf(comp_name, hd_y);
+            if(icomp ==  6) sprintf(comp_name, hd_z);
         }else if(ncomp == 6){
-            if(icomp ==  0) sprintf(comp_name, "RR");
-            if(icomp ==  1) sprintf(comp_name, "R-Theta");
-            if(icomp ==  2) sprintf(comp_name, "R-Phi");
-            if(icomp ==  3) sprintf(comp_name, "Theta-Theta");
-            if(icomp ==  4) sprintf(comp_name, "Theta-Phi");
-            if(icomp ==  5) sprintf(comp_name, "Phi-Phi");
+            if(icomp ==  0) sprintf(comp_name, hd_rr);
+            if(icomp ==  1) sprintf(comp_name, hd_rt);
+            if(icomp ==  2) sprintf(comp_name, hd_rp);
+            if(icomp ==  3) sprintf(comp_name, hd_tt);
+            if(icomp ==  4) sprintf(comp_name, hd_tp);
+            if(icomp ==  5) sprintf(comp_name, hd_pp);
             
-            if(icomp ==  6) sprintf(comp_name, "SS");
-            if(icomp ==  7) sprintf(comp_name, "S-Phi");
-            if(icomp ==  8) sprintf(comp_name, "SZ");
-            if(icomp ==  9) sprintf(comp_name, "Phi-Z");
-            if(icomp == 10) sprintf(comp_name, "ZZ");
+            if(icomp ==  6) sprintf(comp_name, hd_ss);
+            if(icomp ==  7) sprintf(comp_name, hd_sp);
+            if(icomp ==  8) sprintf(comp_name, hd_sz);
+            if(icomp ==  9) sprintf(comp_name, hd_pz);
+            if(icomp == 10) sprintf(comp_name, hd_zz);
             
-            if(icomp == 11) sprintf(comp_name, "XX");
-            if(icomp == 12) sprintf(comp_name, "XY");
-            if(icomp == 13) sprintf(comp_name, "XZ");
-            if(icomp == 14) sprintf(comp_name, "YY");
-            if(icomp == 15) sprintf(comp_name, "YZ");
+            if(icomp == 11) sprintf(comp_name, hd_xx);
+            if(icomp == 12) sprintf(comp_name, hd_xy);
+            if(icomp == 13) sprintf(comp_name, hd_xz);
+            if(icomp == 14) sprintf(comp_name, hd_yy);
+            if(icomp == 15) sprintf(comp_name, hd_yz);
         };
     } else if(id_coord == 2){
         if(ncomp == 1){
-            if(icomp == 0) sprintf(comp_name, "Scalar");
+            if(icomp == 0) sprintf(comp_name, hd_scalar);
         }else if(ncomp == 3){
-            if(icomp ==  0) sprintf(comp_name, "S");
-            if(icomp ==  1) sprintf(comp_name, "Phi");
-            if(icomp ==  2) sprintf(comp_name, "Z");
-            if(icomp ==  3) sprintf(comp_name, "R");
-            if(icomp ==  4) sprintf(comp_name, "Theta");
+            if(icomp ==  0) sprintf(comp_name, hd_s);
+            if(icomp ==  1) sprintf(comp_name, hd_p);
+            if(icomp ==  2) sprintf(comp_name, hd_z);
+            if(icomp ==  3) sprintf(comp_name, hd_r);
+            if(icomp ==  4) sprintf(comp_name, hd_t);
             
-            if(icomp ==  5) sprintf(comp_name, "X");
-            if(icomp ==  6) sprintf(comp_name, "Y");
+            if(icomp ==  5) sprintf(comp_name, hd_x);
+            if(icomp ==  6) sprintf(comp_name, hd_y);
         }else if(ncomp == 6){
-            if(icomp ==  0) sprintf(comp_name, "SS");
-            if(icomp ==  1) sprintf(comp_name, "S-Phi");
-            if(icomp ==  2) sprintf(comp_name, "SZ");
-            if(icomp ==  3) sprintf(comp_name, "Phi-Phi");
-            if(icomp ==  4) sprintf(comp_name, "Phi-Z");
-            if(icomp ==  5) sprintf(comp_name, "ZZ");
+            if(icomp ==  0) sprintf(comp_name, hd_ss);
+            if(icomp ==  1) sprintf(comp_name, hd_sp);
+            if(icomp ==  2) sprintf(comp_name, hd_sz);
+            if(icomp ==  3) sprintf(comp_name, hd_pp);
+            if(icomp ==  4) sprintf(comp_name, hd_pz);
+            if(icomp ==  5) sprintf(comp_name, hd_zz);
             
-            if(icomp ==  6) sprintf(comp_name, "RR");
-            if(icomp ==  7) sprintf(comp_name, "R-Theta");
-            if(icomp ==  8) sprintf(comp_name, "R-Phi");
-            if(icomp ==  9) sprintf(comp_name, "Theta-Theta");
-            if(icomp == 10) sprintf(comp_name, "Theta-Phi");
+            if(icomp ==  6) sprintf(comp_name, hd_rr);
+            if(icomp ==  7) sprintf(comp_name, hd_rt);
+            if(icomp ==  8) sprintf(comp_name, hd_rp);
+            if(icomp ==  9) sprintf(comp_name, hd_tt);
+            if(icomp == 10) sprintf(comp_name, hd_tp);
             
-            if(icomp == 11) sprintf(comp_name, "XX");
-            if(icomp == 12) sprintf(comp_name, "XY");
-            if(icomp == 13) sprintf(comp_name, "XZ");
-            if(icomp == 14) sprintf(comp_name, "YY");
-            if(icomp == 15) sprintf(comp_name, "YZ");
+            if(icomp == 11) sprintf(comp_name, hd_xx);
+            if(icomp == 12) sprintf(comp_name, hd_xy);
+            if(icomp == 13) sprintf(comp_name, hd_xz);
+            if(icomp == 14) sprintf(comp_name, hd_yy);
+            if(icomp == 15) sprintf(comp_name, hd_yz);
         };
     } else {
         if(ncomp == 1){
-            if(icomp == 0) sprintf(comp_name, "Scalar");
+            if(icomp == 0) sprintf(comp_name, hd_scalar);
         }else if(ncomp == 3){
-            if(icomp ==  0) sprintf(comp_name, "X");
-            if(icomp ==  1) sprintf(comp_name, "Y");
-            if(icomp ==  2) sprintf(comp_name, "Z");
+            if(icomp ==  0) sprintf(comp_name, hd_x);
+            if(icomp ==  1) sprintf(comp_name, hd_y);
+            if(icomp ==  2) sprintf(comp_name, hd_z);
             
-            if(icomp ==  3) sprintf(comp_name, "R");
-            if(icomp ==  4) sprintf(comp_name, "Theta");
-            if(icomp ==  5) sprintf(comp_name, "Phi");
-            if(icomp ==  6) sprintf(comp_name, "S");
+            if(icomp ==  3) sprintf(comp_name, hd_r);
+            if(icomp ==  4) sprintf(comp_name, hd_t);
+            if(icomp ==  5) sprintf(comp_name, hd_p);
+            if(icomp ==  6) sprintf(comp_name, hd_s);
         }else if(ncomp == 6){
-            if(icomp ==  0) sprintf(comp_name, "XX");
-            if(icomp ==  1) sprintf(comp_name, "XY");
-            if(icomp ==  2) sprintf(comp_name, "XZ");
-            if(icomp ==  3) sprintf(comp_name, "YY");
-            if(icomp ==  4) sprintf(comp_name, "YZ");
-            if(icomp ==  5) sprintf(comp_name, "ZZ");
+            if(icomp ==  0) sprintf(comp_name, hd_xx);
+            if(icomp ==  1) sprintf(comp_name, hd_xy);
+            if(icomp ==  2) sprintf(comp_name, hd_xz);
+            if(icomp ==  3) sprintf(comp_name, hd_yy);
+            if(icomp ==  4) sprintf(comp_name, hd_yz);
+            if(icomp ==  5) sprintf(comp_name, hd_zz);
             
-            if(icomp ==  6) sprintf(comp_name, "RR");
-            if(icomp ==  7) sprintf(comp_name, "R-Theta");
-            if(icomp ==  8) sprintf(comp_name, "R-Phi");
-            if(icomp ==  9) sprintf(comp_name, "Theta-Theta");
-            if(icomp == 10) sprintf(comp_name, "Theta-Phi");
-            if(icomp == 11) sprintf(comp_name, "Phi-Phi");
+            if(icomp ==  6) sprintf(comp_name, hd_rr);
+            if(icomp ==  7) sprintf(comp_name, hd_rt);
+            if(icomp ==  8) sprintf(comp_name, hd_rp);
+            if(icomp ==  9) sprintf(comp_name, hd_tt);
+            if(icomp == 10) sprintf(comp_name, hd_tp);
+            if(icomp == 11) sprintf(comp_name, hd_pp);
             
-            if(icomp == 12) sprintf(comp_name, "SS");
-            if(icomp == 13) sprintf(comp_name, "S-Phi");
-            if(icomp == 14) sprintf(comp_name, "SZ");
-            if(icomp == 15) sprintf(comp_name, "Phi-Z");
+            if(icomp == 12) sprintf(comp_name, hd_ss);
+            if(icomp == 13) sprintf(comp_name, hd_sp);
+            if(icomp == 14) sprintf(comp_name, hd_sz);
+            if(icomp == 15) sprintf(comp_name, hd_pz);
         };
     };
     
-    if(icomp == ncomp) sprintf(comp_name,"magnitude");
+    if(icomp == ncomp) sprintf(comp_name, hd_magitude);
     
     return;
 };
