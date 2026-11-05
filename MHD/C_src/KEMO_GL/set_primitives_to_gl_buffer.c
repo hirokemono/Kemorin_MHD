@@ -21,9 +21,9 @@ long set_nodes_strided_buffer(long inod_in, long numnod, double *xyzw_nod,
     for(inod = 0; inod < numnod; inod++) {
         set_node_stride_buffer((inod_in+inod), strided_buf, &point_buf);
         for(nd=0;nd<4;nd++){
-            strided_buf->v_buf[nd+point_buf.igl_xyzw] =  xyzw_nod[4*inod+nd];
-            strided_buf->v_buf[nd+point_buf.igl_color] = color_nod[4*inod+nd];
-            strided_buf->v_buf[nd+point_buf.igl_norm] =  norm_nod[4*inod+nd];
+            strided_buf->v_buf[nd+point_buf.igl_xyzw] =  (float) xyzw_nod[4*inod+nd];
+            strided_buf->v_buf[nd+point_buf.igl_color] = (float) color_nod[4*inod+nd];
+            strided_buf->v_buf[nd+point_buf.igl_norm] =  (float) norm_nod[4*inod+nd];
         };
         strided_buf->v_buf[  point_buf.igl_txur] = xy_txur[2*inod+1] * ARCPI * HALF;
         strided_buf->v_buf[1+point_buf.igl_txur] = ONE - xy_txur[2*inod  ] * ARCPI;
@@ -42,9 +42,9 @@ long set_patch_strided_buffer(long ipatch_in, double xyzw_tri[12],
     for (k = 0; k < ITHREE; k++) {
         set_node_stride_buffer((ipatch+k), strided_buf, &point_buf);
         for(nd=0;nd<4;nd++){
-            strided_buf->v_buf[nd+point_buf.igl_xyzw] =  xyzw_tri[4*k+nd];
-            strided_buf->v_buf[nd+point_buf.igl_color] = color_tri[4*k+nd];
-            strided_buf->v_buf[nd+point_buf.igl_norm] =  norm_tri[4*k+nd];
+            strided_buf->v_buf[nd+point_buf.igl_xyzw] =  (float) xyzw_tri[4*k+nd];
+            strided_buf->v_buf[nd+point_buf.igl_color] = (float) color_tri[4*k+nd];
+            strided_buf->v_buf[nd+point_buf.igl_norm] =  (float) norm_tri[4*k+nd];
         };
     };
     return (ipatch_in + 1);
@@ -62,9 +62,9 @@ long set_line_strided_buffer(const long ist_line,
 	for (k=0; k<nvertex_line; k++) {
         set_node_stride_buffer((ist_vertex+k), strided_buf, &point_buf);
         for(nd=0;nd<4;nd++){
-            strided_buf->v_buf[nd+point_buf.igl_xyzw] =  xyzw_line[4*k+nd];
-            strided_buf->v_buf[nd+point_buf.igl_norm] =  norm_line[nd];
-            strided_buf->v_buf[nd+point_buf.igl_color] = color_line[4*k+nd];
+            strided_buf->v_buf[nd+point_buf.igl_xyzw] =  (float) xyzw_line[4*k+nd];
+            strided_buf->v_buf[nd+point_buf.igl_norm] =  (float) norm_line[nd];
+            strided_buf->v_buf[nd+point_buf.igl_color] = (float) color_line[4*k+nd];
         };
 	};
     return (ist_line + 1);
@@ -77,7 +77,6 @@ long set_cone_node_index_buffer(const long ist_cone, int ncorner, double radius,
     struct gl_local_buffer_address point_buf;
     double xyzw[4*6*ncorner], norm[4*6*ncorner], col[4*6*ncorner];
     double norm_line[8];
-    long npatch_wall;
     long k, nd;
     
     long n_patch = ITHREE * num_cone_patch(ncorner);
@@ -85,11 +84,11 @@ long set_cone_node_index_buffer(const long ist_cone, int ncorner, double radius,
     long ist_index = n_patch * ist_cone;
     find_normal_on_line(&norm_line[0], &dir_line[0]);
     find_normal_on_line(&norm_line[4], &dir_line[4]);
-    npatch_wall = set_cone_node_index(ncorner, radius,
-                                      xyzw_line, dir_line,
-                                      norm_line, color_line,
-                                      xyzw, norm, col,
-                                      &index_buf->ie_buf[ist_index]);
+    long npatch_wall = set_cone_node_index(ncorner, radius,
+                                           xyzw_line, dir_line,
+                                           norm_line, color_line,
+                                           xyzw, norm, col,
+                                           &index_buf->ie_buf[ist_index]);
     
     for(k=0; k<n_patch; k++){
         index_buf->ie_buf[ist_index+k]
@@ -99,9 +98,9 @@ long set_cone_node_index_buffer(const long ist_cone, int ncorner, double radius,
     for (k=0; k<num_cone_node(ncorner); k++) {
         set_node_stride_buffer((ist_nod+k), strided_buf, &point_buf);
         for(nd=0;nd<4;nd++){
-            strided_buf->v_buf[nd+point_buf.igl_xyzw] = xyzw[4*k+nd];
-            strided_buf->v_buf[nd+point_buf.igl_norm] = norm[4*k+nd];
-            strided_buf->v_buf[nd+point_buf.igl_color] = col[4*k+nd];
+            strided_buf->v_buf[nd+point_buf.igl_xyzw] =  (float) xyzw[4*k+nd];
+            strided_buf->v_buf[nd+point_buf.igl_norm] =  (float) norm[4*k+nd];
+            strided_buf->v_buf[nd+point_buf.igl_color] = (float) col[4*k+nd];
         };
     };
     return (ist_cone+1);
@@ -116,7 +115,6 @@ long set_tube_node_index_buffer(const long ist_tube, int ncorner, double radius,
     double norm[8*(ncorner+1)];
     double col[8*(ncorner+1)];
     double norm_line[8];
-    long npatch_wall;
     long k, nd;
     
 //    color_line[3] = 1.0;
@@ -127,11 +125,11 @@ long set_tube_node_index_buffer(const long ist_tube, int ncorner, double radius,
     long n_patch = ITHREE * num_tube_patch(ncorner);
     long ist_node =  num_tube_node(ncorner) * ist_tube;
     long ist_index = n_patch * ist_tube;
-    npatch_wall = set_tube_node_index(ncorner, radius,
-                                      xyzw_line, dir_line,
-                                      norm_line, color_line,
-                                      xyzw, norm, col,
-                                      &index_buf->ie_buf[ist_index]);
+    long npatch_wall = set_tube_node_index(ncorner, radius,
+                                           xyzw_line, dir_line,
+                                           norm_line, color_line,
+                                           xyzw, norm, col,
+                                           &index_buf->ie_buf[ist_index]);
 
     for(k=0; k<n_patch; k++){
         index_buf->ie_buf[ist_index+k]
@@ -140,9 +138,9 @@ long set_tube_node_index_buffer(const long ist_tube, int ncorner, double radius,
     for(k=0; k<num_tube_node(ncorner); k++) {
         set_node_stride_buffer((ist_node+k), strided_buf, &point_buf);
         for(nd=0;nd<4;nd++){
-            strided_buf->v_buf[nd+point_buf.igl_xyzw] = xyzw[4*k+nd];
-            strided_buf->v_buf[nd+point_buf.igl_norm] = norm[4*k+nd];
-            strided_buf->v_buf[nd+point_buf.igl_color] = col[4*k+nd];
+            strided_buf->v_buf[nd+point_buf.igl_xyzw] =  (float) xyzw[4*k+nd];
+            strided_buf->v_buf[nd+point_buf.igl_norm] =  (float) norm[4*k+nd];
+            strided_buf->v_buf[nd+point_buf.igl_color] = (float) col[4*k+nd];
         };
     };
     return (ist_tube + 1);
@@ -174,9 +172,9 @@ long set_icosahedron_node_index_buffer(long ist_ico, double node_diam,
     for(icou=0; icou<num_icosahedron_node(); icou++){
         set_node_stride_buffer((icou+ist_node), strided_buf, &point_buf);
         for(nd=0;nd<4;nd++){
-            strided_buf->v_buf[nd+point_buf.igl_xyzw] =  xyzw_patch[4*icou+nd];
-            strided_buf->v_buf[nd+point_buf.igl_norm] =  norm_patch[4*icou+nd];
-            strided_buf->v_buf[nd+point_buf.igl_color] = f_color[nd];
+            strided_buf->v_buf[nd+point_buf.igl_xyzw] =  (float) xyzw_patch[4*icou+nd];
+            strided_buf->v_buf[nd+point_buf.igl_norm] =  (float) norm_patch[4*icou+nd];
+            strided_buf->v_buf[nd+point_buf.igl_color] = (float) f_color[nd];
         };
     };
     return (ist_ico+1);
@@ -206,9 +204,9 @@ long set_icosahedron_single_color_buffer(long ist_ico, double node_diam,
     for(icou=0; icou<num_icosahedron_node(); icou++){
         set_node_stride_buffer((ist_node+icou), strided_buf, &point_buf);
         for(nd=0;nd<4;nd++){
-            strided_buf->v_buf[nd+point_buf.igl_xyzw] = xyzw_patch[4*icou+nd];
-            strided_buf->v_buf[nd+point_buf.igl_norm] = norm_patch[4*icou+nd];
-            strided_buf->v_buf[nd+point_buf.igl_color] = f_color[nd];
+            strided_buf->v_buf[nd+point_buf.igl_xyzw] =  (float) xyzw_patch[4*icou+nd];
+            strided_buf->v_buf[nd+point_buf.igl_norm] =  (float) norm_patch[4*icou+nd];
+            strided_buf->v_buf[nd+point_buf.igl_color] = (float) f_color[nd];
         };
     };
     return (ist_ico+1);
@@ -222,8 +220,8 @@ long set_patch_textur_to_buf(long ist_texture, double xy_txur[6],
     long ipatch = ITHREE*ist_texture;
     for (int k=0; k<ITHREE; k++) {
         set_node_stride_buffer((ipatch+k), strided_buf, &point_buf);
-        strided_buf->v_buf[point_buf.igl_txur  ] = xy_txur[2*k  ];
-        strided_buf->v_buf[point_buf.igl_txur+1] = xy_txur[2*k+1];
+        strided_buf->v_buf[point_buf.igl_txur  ] = (float) xy_txur[2*k  ];
+        strided_buf->v_buf[point_buf.igl_txur+1] = (float) xy_txur[2*k+1];
     };
     return (ist_texture + 1);
 }
