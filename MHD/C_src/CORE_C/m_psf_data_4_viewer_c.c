@@ -383,6 +383,23 @@ void copy_vtk_list_2_udt_data(struct psf_data *viz_copied, struct vtk_field *vtk
 	return;
 }
 
+long count_total_picked_udt_field(long nfield, long *ncomp, long *istack_pick){
+    long i;
+    int npick;
+    istack_pick[0] = 0;
+    for (i = 0; i < nfield; i++){
+        if     (ncomp[i] == 1){npick = NPICK_SCALAR;}
+        else if(ncomp[i] == 3){npick = NPICK_VECTOR;}
+        else if(ncomp[i] == 4){npick = NPICK_ASYM_TENSOR;}
+        else if(ncomp[i] == 6){npick = NPICK_SYM_TENSOR;};
+
+        istack_pick[i+1] = npick + istack_pick[i];
+    };
+    return istack_pick[nfield];
+};
+
+ 
+ 
 void check_psf_read(struct psf_data *psf_s){
 	int i;
 	

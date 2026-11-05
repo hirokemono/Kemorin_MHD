@@ -15,6 +15,7 @@
 
 #include "calypso_param_c.h"
 #include "skip_comment_c.h"
+#include "calypso_direction_flags.h"
 #include "t_psf_edge_connect_c.h"
 
 struct psf_data{
@@ -122,6 +123,8 @@ void copy_viewer_udt_data(struct psf_data *viz_org,
 
 void copy_vtk_list_2_udt_name(struct psf_data *viz_copied, struct vtk_field *vtk_list);
 void copy_vtk_list_2_udt_data(struct psf_data *viz_copied, struct vtk_field *vtk_list);
+
+long count_total_picked_udt_field(long nfield, long *ncomp, long *istack_pick);
 
 void check_psf_read(struct psf_data *psf_s);
 void compare_psf_data_c(struct psf_data *psf_s, struct psf_data *psf_z);
