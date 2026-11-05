@@ -7,4 +7,4 @@
  ***********************************************************************/
 #include "convert_one_tensor_from_xyz.h"
 
-#include "convert_one_tensor_from_xyz.frag"
+#include "../GLSL/convert_one_tensor_from_xyz.frag"

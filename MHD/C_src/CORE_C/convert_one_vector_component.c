@@ -7,4 +7,4 @@
  ***********************************************************************/
 #include "convert_one_vector_component.h"
 
-#include "convert_one_vector.frag"
+#include "../GLSL/convert_one_vector.frag"

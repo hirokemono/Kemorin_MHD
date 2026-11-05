@@ -115,6 +115,24 @@
 		18B885EC24E617BB0077BA16 /* t_surf_edge_hash_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18B885E924E617BB0077BA16 /* t_surf_edge_hash_c.c */; };
 		18B885EF24E618050077BA16 /* set_each_isoline_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 18B885ED24E618040077BA16 /* set_each_isoline_to_buf.c */; };
 		18B885F224E618290077BA16 /* set_hex_tube_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 18B885F124E618290077BA16 /* set_hex_tube_to_buf.c */; };
+		18CA35BE309CA449005359EA /* set_vector_component_name.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CA35BC309CA449005359EA /* set_vector_component_name.c */; };
+		18CA35BF309CA449005359EA /* set_tensor_component_name.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CA35BD309CA449005359EA /* set_tensor_component_name.c */; };
+		18CA35D0309CA4BC005359EA /* pick_asym_tensor_component.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CA35C0309CA4BB005359EA /* pick_asym_tensor_component.c */; };
+		18CA35D1309CA4BC005359EA /* pick_one_vector_component.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CA35C1309CA4BB005359EA /* pick_one_vector_component.c */; };
+		18CA35D2309CA4BC005359EA /* pick_one_sym_tensor_comp.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CA35C3309CA4BB005359EA /* pick_one_sym_tensor_comp.c */; };
+		18CA35D3309CA4BC005359EA /* pick_one_asym_tensor_comp.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CA35C4309CA4BB005359EA /* pick_one_asym_tensor_comp.c */; };
+		18CA35D4309CA4BC005359EA /* pick_field_component_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CA35C6309CA4BB005359EA /* pick_field_component_c.c */; };
+		18CA35D5309CA4BC005359EA /* pick_vector_component.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CA35C7309CA4BB005359EA /* pick_vector_component.c */; };
+		18CA35D6309CA4BC005359EA /* pick_one_comp_by_coordinate.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CA35C8309CA4BB005359EA /* pick_one_comp_by_coordinate.c */; };
+		18CA35D7309CA4BC005359EA /* pick_sym_tensor_component.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CA35CC309CA4BB005359EA /* pick_sym_tensor_component.c */; };
+		18CA35E8309CA54D005359EA /* convert_vector_field_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CA35DA309CA54B005359EA /* convert_vector_field_c.c */; };
+		18CA35E9309CA54D005359EA /* convert_one_tensor_from_xyz.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CA35DB309CA54C005359EA /* convert_one_tensor_from_xyz.c */; };
+		18CA35EA309CA54D005359EA /* convert_tensor_field_from_sph_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CA35DC309CA54C005359EA /* convert_tensor_field_from_sph_c.c */; };
+		18CA35EB309CA54D005359EA /* convert_tensor_field_from_cyl_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CA35DE309CA54C005359EA /* convert_tensor_field_from_cyl_c.c */; };
+		18CA35EC309CA54D005359EA /* convert_one_vector_component.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CA35DF309CA54C005359EA /* convert_one_vector_component.c */; };
+		18CA35ED309CA54D005359EA /* convert_one_tensor_from_sph.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CA35E1309CA54C005359EA /* convert_one_tensor_from_sph.c */; };
+		18CA35EE309CA54D005359EA /* convert_one_tensor_from_cyl.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CA35E3309CA54C005359EA /* convert_one_tensor_from_cyl.c */; };
+		18CA35EF309CA54D005359EA /* convert_tensor_field_from_xyz_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CA35E5309CA54D005359EA /* convert_tensor_field_from_xyz_c.c */; };
 		18CC321030943B8C0082325C /* convert_tensor_from_sph.metal in Sources */ = {isa = PBXBuildFile; fileRef = 18CC320E30943B8C0082325C /* convert_tensor_from_sph.metal */; };
 		18CC321130943B8C0082325C /* convert_tensor_from_xyz.metal in Sources */ = {isa = PBXBuildFile; fileRef = 18CC320D30943B8C0082325C /* convert_tensor_from_xyz.metal */; };
 		18CC321230943B8C0082325C /* convert_tensor_from_cyl.metal in Sources */ = {isa = PBXBuildFile; fileRef = 18CC320C30943B8C0082325C /* convert_tensor_from_cyl.metal */; };
@@ -422,6 +440,42 @@
 		18B885F024E618290077BA16 /* set_hex_tube_to_buf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_hex_tube_to_buf.h; sourceTree = "<group>"; };
 		18B885F124E618290077BA16 /* set_hex_tube_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_hex_tube_to_buf.c; sourceTree = "<group>"; };
 		18BB23782834569700F48A60 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		18CA35BA309CA449005359EA /* set_vector_component_name.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_vector_component_name.h; sourceTree = "<group>"; };
+		18CA35BB309CA449005359EA /* set_tensor_component_name.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_tensor_component_name.h; sourceTree = "<group>"; };
+		18CA35BC309CA449005359EA /* set_vector_component_name.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_vector_component_name.c; sourceTree = "<group>"; };
+		18CA35BD309CA449005359EA /* set_tensor_component_name.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_tensor_component_name.c; sourceTree = "<group>"; };
+		18CA35C0309CA4BB005359EA /* pick_asym_tensor_component.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pick_asym_tensor_component.c; sourceTree = "<group>"; };
+		18CA35C1309CA4BB005359EA /* pick_one_vector_component.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pick_one_vector_component.c; sourceTree = "<group>"; };
+		18CA35C2309CA4BB005359EA /* pick_vector_component.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pick_vector_component.h; sourceTree = "<group>"; };
+		18CA35C3309CA4BB005359EA /* pick_one_sym_tensor_comp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pick_one_sym_tensor_comp.c; sourceTree = "<group>"; };
+		18CA35C4309CA4BB005359EA /* pick_one_asym_tensor_comp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pick_one_asym_tensor_comp.c; sourceTree = "<group>"; };
+		18CA35C5309CA4BB005359EA /* pick_asym_tensor_component.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pick_asym_tensor_component.h; sourceTree = "<group>"; };
+		18CA35C6309CA4BB005359EA /* pick_field_component_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pick_field_component_c.c; sourceTree = "<group>"; };
+		18CA35C7309CA4BB005359EA /* pick_vector_component.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pick_vector_component.c; sourceTree = "<group>"; };
+		18CA35C8309CA4BB005359EA /* pick_one_comp_by_coordinate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pick_one_comp_by_coordinate.c; sourceTree = "<group>"; };
+		18CA35C9309CA4BB005359EA /* pick_one_vector_component.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pick_one_vector_component.h; sourceTree = "<group>"; };
+		18CA35CA309CA4BB005359EA /* pick_field_component_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pick_field_component_c.h; sourceTree = "<group>"; };
+		18CA35CB309CA4BB005359EA /* pick_one_sym_tensor_comp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pick_one_sym_tensor_comp.h; sourceTree = "<group>"; };
+		18CA35CC309CA4BB005359EA /* pick_sym_tensor_component.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pick_sym_tensor_component.c; sourceTree = "<group>"; };
+		18CA35CD309CA4BB005359EA /* pick_one_asym_tensor_comp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pick_one_asym_tensor_comp.h; sourceTree = "<group>"; };
+		18CA35CE309CA4BB005359EA /* pick_sym_tensor_component.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pick_sym_tensor_component.h; sourceTree = "<group>"; };
+		18CA35CF309CA4BC005359EA /* pick_one_comp_by_coordinate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pick_one_comp_by_coordinate.h; sourceTree = "<group>"; };
+		18CA35D8309CA54B005359EA /* convert_tensor_field_from_sph_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = convert_tensor_field_from_sph_c.h; sourceTree = "<group>"; };
+		18CA35D9309CA54B005359EA /* convert_tensor_field_from_xyz_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = convert_tensor_field_from_xyz_c.h; sourceTree = "<group>"; };
+		18CA35DA309CA54B005359EA /* convert_vector_field_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = convert_vector_field_c.c; sourceTree = "<group>"; };
+		18CA35DB309CA54C005359EA /* convert_one_tensor_from_xyz.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = convert_one_tensor_from_xyz.c; sourceTree = "<group>"; };
+		18CA35DC309CA54C005359EA /* convert_tensor_field_from_sph_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = convert_tensor_field_from_sph_c.c; sourceTree = "<group>"; };
+		18CA35DD309CA54C005359EA /* convert_one_tensor_from_sph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = convert_one_tensor_from_sph.h; sourceTree = "<group>"; };
+		18CA35DE309CA54C005359EA /* convert_tensor_field_from_cyl_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = convert_tensor_field_from_cyl_c.c; sourceTree = "<group>"; };
+		18CA35DF309CA54C005359EA /* convert_one_vector_component.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = convert_one_vector_component.c; sourceTree = "<group>"; };
+		18CA35E0309CA54C005359EA /* convert_one_vector_component.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = convert_one_vector_component.h; sourceTree = "<group>"; };
+		18CA35E1309CA54C005359EA /* convert_one_tensor_from_sph.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = convert_one_tensor_from_sph.c; sourceTree = "<group>"; };
+		18CA35E2309CA54C005359EA /* convert_vector_field_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = convert_vector_field_c.h; sourceTree = "<group>"; };
+		18CA35E3309CA54C005359EA /* convert_one_tensor_from_cyl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = convert_one_tensor_from_cyl.c; sourceTree = "<group>"; };
+		18CA35E4309CA54C005359EA /* convert_tensor_field_from_cyl_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = convert_tensor_field_from_cyl_c.h; sourceTree = "<group>"; };
+		18CA35E5309CA54D005359EA /* convert_tensor_field_from_xyz_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = convert_tensor_field_from_xyz_c.c; sourceTree = "<group>"; };
+		18CA35E6309CA54D005359EA /* convert_one_tensor_from_xyz.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = convert_one_tensor_from_xyz.h; sourceTree = "<group>"; };
+		18CA35E7309CA54D005359EA /* convert_one_tensor_from_cyl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = convert_one_tensor_from_cyl.h; sourceTree = "<group>"; };
 		18CC320C30943B8C0082325C /* convert_tensor_from_cyl.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; name = convert_tensor_from_cyl.metal; path = Metal/convert_tensor_from_cyl.metal; sourceTree = "<group>"; };
 		18CC320D30943B8C0082325C /* convert_tensor_from_xyz.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; name = convert_tensor_from_xyz.metal; path = Metal/convert_tensor_from_xyz.metal; sourceTree = "<group>"; };
 		18CC320E30943B8C0082325C /* convert_tensor_from_sph.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; name = convert_tensor_from_sph.metal; path = Metal/convert_tensor_from_sph.metal; sourceTree = "<group>"; };
@@ -806,6 +860,22 @@
 				18D7E6521562D359009B05FF /* check_psf_data_viewer_c.h */,
 				18D7E6531562D359009B05FF /* check_viewer_mesh_c.c */,
 				18D7E6541562D359009B05FF /* check_viewer_mesh_c.h */,
+				18CA35E3309CA54C005359EA /* convert_one_tensor_from_cyl.c */,
+				18CA35E7309CA54D005359EA /* convert_one_tensor_from_cyl.h */,
+				18CA35E1309CA54C005359EA /* convert_one_tensor_from_sph.c */,
+				18CA35DD309CA54C005359EA /* convert_one_tensor_from_sph.h */,
+				18CA35DB309CA54C005359EA /* convert_one_tensor_from_xyz.c */,
+				18CA35E6309CA54D005359EA /* convert_one_tensor_from_xyz.h */,
+				18CA35DF309CA54C005359EA /* convert_one_vector_component.c */,
+				18CA35E0309CA54C005359EA /* convert_one_vector_component.h */,
+				18CA35DE309CA54C005359EA /* convert_tensor_field_from_cyl_c.c */,
+				18CA35E4309CA54C005359EA /* convert_tensor_field_from_cyl_c.h */,
+				18CA35DC309CA54C005359EA /* convert_tensor_field_from_sph_c.c */,
+				18CA35D8309CA54B005359EA /* convert_tensor_field_from_sph_c.h */,
+				18CA35E5309CA54D005359EA /* convert_tensor_field_from_xyz_c.c */,
+				18CA35D9309CA54B005359EA /* convert_tensor_field_from_xyz_c.h */,
+				18CA35DA309CA54B005359EA /* convert_vector_field_c.c */,
+				18CA35E2309CA54C005359EA /* convert_vector_field_c.h */,
 				18D7E6551562D359009B05FF /* coordinate_converter_c.c */,
 				18D7E6561562D359009B05FF /* coordinate_converter_c.h */,
 				183870862BCF4A7E00933367 /* colormap_grayscale_c.c */,
@@ -851,6 +921,22 @@
 				1849CD8D2BEACAD0003865EF /* bitonic_sort_float_pthread.h */,
 				1895A3432BE28BF700701DEB /* bitonic_sort_pthread.c */,
 				1895A3422BE28BF700701DEB /* bitonic_sort_pthread.h */,
+				18CA35C0309CA4BB005359EA /* pick_asym_tensor_component.c */,
+				18CA35C5309CA4BB005359EA /* pick_asym_tensor_component.h */,
+				18CA35C6309CA4BB005359EA /* pick_field_component_c.c */,
+				18CA35CA309CA4BB005359EA /* pick_field_component_c.h */,
+				18CA35C4309CA4BB005359EA /* pick_one_asym_tensor_comp.c */,
+				18CA35CD309CA4BB005359EA /* pick_one_asym_tensor_comp.h */,
+				18CA35C8309CA4BB005359EA /* pick_one_comp_by_coordinate.c */,
+				18CA35CF309CA4BC005359EA /* pick_one_comp_by_coordinate.h */,
+				18CA35C3309CA4BB005359EA /* pick_one_sym_tensor_comp.c */,
+				18CA35CB309CA4BB005359EA /* pick_one_sym_tensor_comp.h */,
+				18CA35C1309CA4BB005359EA /* pick_one_vector_component.c */,
+				18CA35C9309CA4BB005359EA /* pick_one_vector_component.h */,
+				18CA35CC309CA4BB005359EA /* pick_sym_tensor_component.c */,
+				18CA35CE309CA4BB005359EA /* pick_sym_tensor_component.h */,
+				18CA35C7309CA4BB005359EA /* pick_vector_component.c */,
+				18CA35C2309CA4BB005359EA /* pick_vector_component.h */,
 				18D7E6721562D359009B05FF /* read_grouping_mesh_c.c */,
 				18D7E6731562D359009B05FF /* read_grouping_mesh_c.h */,
 				18D7E6741562D359009B05FF /* read_image_2_bmp.c */,
@@ -875,6 +961,10 @@
 				18D7E6891562D359009B05FF /* set_rgb_colors_c.h */,
 				18D7E68C1562D359009B05FF /* set_surface_mesh_data.c */,
 				18D7E68D1562D359009B05FF /* set_surface_mesh_data.h */,
+				18CA35BD309CA449005359EA /* set_tensor_component_name.c */,
+				18CA35BB309CA449005359EA /* set_tensor_component_name.h */,
+				18CA35BC309CA449005359EA /* set_vector_component_name.c */,
+				18CA35BA309CA449005359EA /* set_vector_component_name.h */,
 				18D7E68E1562D359009B05FF /* skip_comment_c.c */,
 				18D7E68F1562D359009B05FF /* skip_comment_c.h */,
 				18D7E6901562D359009B05FF /* take_normal_psf_c.c */,
@@ -1305,6 +1395,7 @@
 				18DD113F2BF10681009C0A06 /* m_fline_data_4_viewer_c.c in Sources */,
 				188FFDA22309B3A100F5A0DE /* set_coastline_to_buf.c in Sources */,
 				188BA75D23075E5200348842 /* ysglmaketextbitmap.c in Sources */,
+				18CA35E9309CA54D005359EA /* convert_one_tensor_from_xyz.c in Sources */,
 				1824FD34230FD47300990F41 /* KemoviewerLightingControl.m in Sources */,
 				18D3CA67249B4C500081B787 /* t_ctl_data_pvr_colormap_c.c in Sources */,
 				18AA13E32494183C004A444D /* read_psf_bin_data_c.c in Sources */,
@@ -1325,6 +1416,7 @@
 				18F029862AF6F76C00D37276 /* KemoViewerObject.m in Sources */,
 				18D7E73D1562D359009B05FF /* read_grouping_mesh_c.c in Sources */,
 				180999B52B16B9F900F83574 /* KemoViewMetalBuffers.m in Sources */,
+				18CA35D7309CA4BC005359EA /* pick_sym_tensor_component.c in Sources */,
 				188BA7512305E13100348842 /* invert_small_matrix_c.c in Sources */,
 				185CB9B3212F593D00BB3C0B /* t_control_chara_real_IO.c in Sources */,
 				189F8CCC27037268006FB38F /* write_image_2_bmp.c in Sources */,
@@ -1352,16 +1444,20 @@
 				185CB9AA212F593D00BB3C0B /* control_elements_IO_c.c in Sources */,
 				18F0297F2AF5A65C00D37276 /* Texture2dShader.metal in Sources */,
 				185CB9AF212F593D00BB3C0B /* t_control_chara3_IO.c in Sources */,
+				18CA35D1309CA4BC005359EA /* pick_one_vector_component.c in Sources */,
 				18D7E7471562D359009B05FF /* set_psf_viewer.c in Sources */,
 				188C9422230DBE9F00A4DB14 /* m_kemoview_fline.c in Sources */,
 				18D7E7481562D359009B05FF /* set_rgb_colors_c.c in Sources */,
+				18CA35EE309CA54D005359EA /* convert_one_tensor_from_cyl.c in Sources */,
 				180999B82B16C7C900F83574 /* KemoView3DRenderer.m in Sources */,
 				18F56FC823720B270029D20D /* m_kemoview_fline_menu.c in Sources */,
 				185CB9B1212F593D00BB3C0B /* t_control_chara_int_IO.c in Sources */,
+				18CA35D6309CA4BC005359EA /* pick_one_comp_by_coordinate.c in Sources */,
 				1895A33B2BDC625000701DEB /* colormap_molten_metal.metal in Sources */,
 				185CB9C6212F593D00BB3C0B /* t_control_int2_IO.c in Sources */,
 				18DD11252BF0100C009C0A06 /* pthread_each_isoline_to_buf.c in Sources */,
 				1838708C2BCF4A7E00933367 /* colormap_molten_metal_c.c in Sources */,
+				18CA35D3309CA4BC005359EA /* pick_one_asym_tensor_comp.c in Sources */,
 				1895A3472BE28C5800701DEB /* bitonic_sort_c.c in Sources */,
 				18B8535128C1C1AF00E570CD /* calypso_rawfile_io_c.c in Sources */,
 				18D7E74A1562D359009B05FF /* set_surface_mesh_data.c in Sources */,
@@ -1386,10 +1482,14 @@
 				188FFD9923092C8C00F5A0DE /* set_map_isolines_to_buf.c in Sources */,
 				18DA6FF62BFE845C00D0E417 /* m_kemoview_PSF_buffers.c in Sources */,
 				18D7E7551562D359009B05FF /* draw_colorbar_gl.c in Sources */,
+				18CA35D0309CA4BC005359EA /* pick_asym_tensor_component.c in Sources */,
 				18D7E7561562D359009B05FF /* m_kemoview_fieldline_buffers.c in Sources */,
 				185CB9B0212F593D00BB3C0B /* t_control_chara_int2_IO.c in Sources */,
+				18CA35EF309CA54D005359EA /* convert_tensor_field_from_xyz_c.c in Sources */,
 				18D7E75E1562D359009B05FF /* draw_patch_4_mesh_c.c in Sources */,
 				18D7E75F1562D359009B05FF /* draw_patches_4_PSF.c in Sources */,
+				18CA35BF309CA449005359EA /* set_tensor_component_name.c in Sources */,
+				18CA35ED309CA54D005359EA /* convert_one_tensor_from_sph.c in Sources */,
 				18DA70332C0231AA00D0E417 /* KemoViewMessageRenderer.m in Sources */,
 				188C941C230CF90A00A4DB14 /* m_kemoview_psf_menu.c in Sources */,
 				18D7E7651562D359009B05FF /* icosahedron_c.c in Sources */,
@@ -1413,6 +1513,7 @@
 				18D95C482B0BB745001A801B /* TexureShader.metal in Sources */,
 				18EAC1A02BF7F430002CEB77 /* set_primitives_to_gl_buffer.c in Sources */,
 				18D7E7741562D359009B05FF /* set_color_code_on_nodes.c in Sources */,
+				18CA35E8309CA54D005359EA /* convert_vector_field_c.c in Sources */,
 				18844FA4309369B80089FEBA /* read_psf_vtk_data_gz_c.c in Sources */,
 				185CB9B2212F593D00BB3C0B /* t_control_chara_IO.c in Sources */,
 				1895A3442BE28BF700701DEB /* bitonic_sort_pthread.c in Sources */,
@@ -1433,6 +1534,7 @@
 				18D7E7781562D359009B05FF /* trackball.c in Sources */,
 				18DA6FE32BFE6BC100D0E417 /* m_kemoview_map_buffers.c in Sources */,
 				18263FED2AFCB2E900AA8E72 /* PhongShader.metal in Sources */,
+				18CA35EA309CA54D005359EA /* convert_tensor_field_from_sph_c.c in Sources */,
 				18D7E77A1562D359009B05FF /* write_modelview_matrix.c in Sources */,
 				18D7E7831562D359009B05FF /* ColorMapController.m in Sources */,
 				18D7E7841562D359009B05FF /* DomainTableController.m in Sources */,
@@ -1441,6 +1543,7 @@
 				18D7E7871562D359009B05FF /* FlineController.m in Sources */,
 				180999A02B13C14100F83574 /* m_transfer_matrices.c in Sources */,
 				18CC321030943B8C0082325C /* convert_tensor_from_sph.metal in Sources */,
+				18CA35D5309CA4BC005359EA /* pick_vector_component.c in Sources */,
 				18CC321130943B8C0082325C /* convert_tensor_from_xyz.metal in Sources */,
 				18CC321230943B8C0082325C /* convert_tensor_from_cyl.metal in Sources */,
 				18CC321330943B8C0082325C /* convert_vector_to_sph.metal in Sources */,
@@ -1451,16 +1554,19 @@
 				1860DE302B067A6500358654 /* SmpleShader.metal in Sources */,
 				18263FEB2AFA9DC300AA8E72 /* Base2dShader.metal in Sources */,
 				1895A33C2BDC625000701DEB /* colormap_sym_grayscale.metal in Sources */,
+				18CA35EC309CA54D005359EA /* convert_one_vector_component.c in Sources */,
 				1802DFEA2C17A65D00B0DB3D /* fline_edge_direction_c.c in Sources */,
 				18D7E78A1562D359009B05FF /* KemoviewDragDropWindow.m in Sources */,
 				18B885EF24E618050077BA16 /* set_each_isoline_to_buf.c in Sources */,
 				18D7E78B1562D359009B05FF /* KemoviewerController.m in Sources */,
+				18CA35BE309CA449005359EA /* set_vector_component_name.c in Sources */,
 				18D7E78C1562D359009B05FF /* KemoviewerMovieMaker.m in Sources */,
 				18D7E7911562D359009B05FF /* NodeGroupTableController.m in Sources */,
 				1852CFB2236B7B790043C983 /* m_color_table_c.c in Sources */,
 				18D7E7921562D359009B05FF /* OpacityMapController.m in Sources */,
 				18D7E7941562D359009B05FF /* PsfController.m in Sources */,
 				1828C8852B1928B600CEBE79 /* Anaglyph2dShader.metal in Sources */,
+				18CA35D4309CA4BC005359EA /* pick_field_component_c.c in Sources */,
 				18F029832AF6C23000D37276 /* AAPLImage.m in Sources */,
 				18B885EC24E617BB0077BA16 /* t_surf_edge_hash_c.c in Sources */,
 				18844FA1309369B80089FEBA /* read_psf_data_gz_c.c in Sources */,
@@ -1470,10 +1576,12 @@
 				18D7E7961562D359009B05FF /* RGBAMapController.m in Sources */,
 				18B885F224E618290077BA16 /* set_hex_tube_to_buf.c in Sources */,
 				185CB9C7212F593D00BB3C0B /* t_control_int_IO.c in Sources */,
+				18CA35EB309CA54D005359EA /* convert_tensor_field_from_cyl_c.c in Sources */,
 				18D7E7981562D359009B05FF /* SurfaceGroupTableController.m in Sources */,
 				18F6DAF615D993F7006F4600 /* set_each_psf_parameters.c in Sources */,
 				1825197616A11A24006D5158 /* delete_file_c.c in Sources */,
 				1825198116A28AF9006D5158 /* read_psf_vtk_data_c.c in Sources */,
+				18CA35D2309CA4BC005359EA /* pick_one_sym_tensor_comp.c in Sources */,
 				188FFD8D2308B39500F5A0DE /* set_mesh_node_2_gl_buf.c in Sources */,
 				18844F98309369970089FEBA /* calypso_zlib_io_c.c in Sources */,
 				188C9416230CAB2500A4DB14 /* m_kemoview_psf.c in Sources */,

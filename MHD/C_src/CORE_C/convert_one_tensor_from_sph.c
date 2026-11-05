@@ -35,4 +35,4 @@
  ***********************************************************************/
 #include "convert_one_tensor_from_sph.h"
 
-#include "convert_one_tensor_from_sph.frag"
+#include "../GLSL/convert_one_tensor_from_sph.frag"

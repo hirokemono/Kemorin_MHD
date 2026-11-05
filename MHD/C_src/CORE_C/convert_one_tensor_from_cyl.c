@@ -16,4 +16,4 @@
  ***********************************************************************/
 #include "convert_one_tensor_from_cyl.h"
 
-#include "convert_one_tensor_from_cyl.frag"
+#include "../GLSL/convert_one_tensor_from_cyl.frag"
