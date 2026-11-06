@@ -32,8 +32,8 @@ void dealloc_kemoview_fline(struct kemoview_fline *kemo_fline){
 
 void close_fieldline_view(struct kemoview_fline *kemo_fline){
 	kemo_fline->fline_m->iflag_draw_viz = IZERO;
-    dealloc_draw_psf_flags(kemo_fline->fline_d->nfield,
-                           kemo_fline->fline_d->ncomptot,
+    dealloc_draw_psf_flags(kemo_fline->fline_d->ncomptot,
+                           kemo_fline->fline_d->npicktot,
                            kemo_fline->fline_m);
 
     dealloc_fline_direction_data(kemo_fline->fline_dir);

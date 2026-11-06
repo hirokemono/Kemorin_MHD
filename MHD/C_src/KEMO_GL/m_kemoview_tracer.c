@@ -30,8 +30,8 @@ void dealloc_kemoview_tracer(struct kemoview_tracer *kemo_tracer){
 
 void close_tracer_view(struct kemoview_tracer *kemo_tracer){
 	kemo_tracer->tracer_m->iflag_draw_viz = IZERO;
-    dealloc_draw_psf_flags(kemo_tracer->tracer_d->nfield,
-                           kemo_tracer->tracer_d->ncomptot,
+    dealloc_draw_psf_flags(kemo_tracer->tracer_d->ncomptot,
+                           kemo_tracer->tracer_d->npicktot,
                            kemo_tracer->tracer_m);
     
 	dealloc_psf_data_s(kemo_tracer->tracer_d);

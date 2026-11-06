@@ -100,8 +100,8 @@ void init_draw_mul_psf(struct kemoview_mul_psf *kemo_mul_psf, struct psf_data *u
     
 	if(kemo_mul_psf->psf_a->num_loaded == kemo_mul_psf->psf_a->nlimit_loaded){
         dealloc_psf_cutting_4_map(kemo_mul_psf->psf_m[id_load]->map_itp);
-		dealloc_draw_psf_flags(kemo_mul_psf->psf_d[id_load]->nfield,
-                               kemo_mul_psf->psf_d[id_load]->ncomptot,
+		dealloc_draw_psf_flags(kemo_mul_psf->psf_d[id_load]->ncomptot,
+                               kemo_mul_psf->psf_d[id_load]->npicktot,
                                kemo_mul_psf->psf_m[id_load]);
         dealloc_edge_data_4_psf(kemo_mul_psf->psf_d[id_load]->nele_viz,
                                 kemo_mul_psf->psf_n[id_load]->psf_edge);
@@ -125,8 +125,8 @@ void init_draw_mul_psf(struct kemoview_mul_psf *kemo_mul_psf, struct psf_data *u
 void close_PSF_view(struct kemoview_mul_psf *kemo_mul_psf){
     int i_current = kemo_mul_psf->psf_a->id_current;
     dealloc_psf_cutting_4_map(kemo_mul_psf->psf_m[i_current]->map_itp);
-	dealloc_draw_psf_flags(kemo_mul_psf->psf_d[i_current]->nfield,
-                           kemo_mul_psf->psf_d[i_current]->ncomptot,
+	dealloc_draw_psf_flags(kemo_mul_psf->psf_d[i_current]->ncomptot,
+                           kemo_mul_psf->psf_d[i_current]->npicktot,
                            kemo_mul_psf->psf_m[i_current]);
     dealloc_edge_data_4_psf(kemo_mul_psf->psf_d[i_current]->nele_viz,
                             kemo_mul_psf->psf_n[i_current]->psf_edge);
