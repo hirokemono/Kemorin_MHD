@@ -19,7 +19,7 @@
 double cal_psf_grid_range(long nnod_viz, double *xyzw_viz,
                           double *xmin_psf, double *xmax_psf,
                           double *center_psf);
-void take_minmax_psf_each_component(long nnod_viz, long ncomptot, double *d_nod,
+void take_minmax_psf_all_components(long nnod_viz, long ncomptot, double *d_nod,
                                     double *d_min, double *d_max);
 
 void cal_colat_and_longitude(long nadded_for_phi0,

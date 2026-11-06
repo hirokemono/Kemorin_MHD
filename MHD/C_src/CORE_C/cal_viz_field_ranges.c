@@ -47,7 +47,7 @@ double cal_psf_grid_range(long nnod_viz, double *xyzw_viz,
 	return rmax_psf;
 }
 
-void take_minmax_psf_each_component(long nnod_viz, long ncomptot, double *d_nod,
+void take_minmax_psf_all_components(long nnod_viz, long ncomptot, double *d_nod,
                                     double *d_min, double *d_max){
     int inod;
     long icomp;
