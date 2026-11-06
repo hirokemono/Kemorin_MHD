@@ -47,39 +47,42 @@ double cal_psf_grid_range(long nnod_viz, double *xyzw_viz,
 	return rmax_psf;
 }
 
+static double take_minimum_psf_component(long nnod_viz, long nstride, double *d_nod){
+    int inod;
+    double d_min = d_nod[0];
+#pragma omp parallel for reduction(min:d_min)
+    for(inod = 0; inod < nnod_viz; inod++){
+        if(d_nod[inod*nstride] < d_min){d_min = d_nod[inod*nstride];};
+    };
+    return d_min;
+}
+
+static double take_maximum_psf_component(long nnod_viz, long nstride, double *d_nod){
+    int inod;
+    double d_max = d_nod[0];
+#pragma omp parallel for reduction(max:d_max)
+    for(inod = 0; inod < nnod_viz; inod++){
+        if(d_nod[inod*nstride] > d_max){d_max = d_nod[inod*nstride];};
+    };
+    return d_max;
+}
+
+void take_minmax_psf_each_component(long nnod_viz, long nstride, double *d_nod,
+                                    double *d_min, double *d_max){
+    *d_min = take_minimum_psf_component(nnod_viz, nstride, d_nod);
+    *d_max = take_maximum_psf_component(nnod_viz, nstride, d_nod);
+    if (*d_min >= *d_max){
+        *d_min = ZERO;
+        *d_max = ONE;
+    }
+}
+
 void take_minmax_psf_all_components(long nnod_viz, long ncomptot, double *d_nod,
                                     double *d_min, double *d_max){
-    int inod;
     long icomp;
-    double data_minmax;
     for(icomp = 0; icomp < ncomptot; icomp++){
-        data_minmax = d_nod[icomp];
-#pragma omp parallel for reduction(min:data_minmax)
-        for (inod = 0; inod < nnod_viz; inod++){
-            if(d_nod[inod*ncomptot + icomp] < data_minmax){
-                data_minmax = d_nod[inod*ncomptot + icomp];
-            };
-        };
-        d_min[icomp] = data_minmax;
-    }
-
-    for(icomp = 0; icomp < ncomptot; icomp++){
-        data_minmax = d_nod[icomp];
-#pragma omp parallel for reduction(max:data_minmax)
-        for (inod = 0; inod < nnod_viz; inod++){
-            if(d_nod[inod*ncomptot + icomp] > data_minmax){
-                data_minmax = d_nod[inod*ncomptot + icomp];
-            };
-        };
-        d_max[icomp] = data_minmax;
-    }
-
-#pragma omp parallel for
-    for(icomp = 0; icomp < ncomptot; icomp++){
-        if (d_min[icomp] >= d_max[icomp]){
-            d_min[icomp] = ZERO;
-            d_max[icomp] = ONE;
-        }
+        take_minmax_psf_each_component(nnod_viz, ncomptot, &d_nod[icomp],
+                                       &d_min[icomp], &d_max[icomp]);
     }
     return;
 }
