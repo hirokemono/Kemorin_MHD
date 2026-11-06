@@ -8,52 +8,52 @@
 void set_PSF_component_name(int ncomp, int id_coord, int icomp, char *comp_name) {
     if(id_coord == 1){
         if(ncomp == 1){
-            if(icomp == 0) sprintf(comp_name, hd_scalar);
+            if(icomp == 0) sprintf(comp_name, "%s", hd_scalar);
         }else if(ncomp == 3){
-            if(icomp == 0) sprintf(comp_name, hd_r);
-            if(icomp == 1) sprintf(comp_name, hd_t);
-            if(icomp == 2) sprintf(comp_name, hd_p);
+            if(icomp == 0) sprintf(comp_name, "%s", hd_r);
+            if(icomp == 1) sprintf(comp_name, "%s", hd_t);
+            if(icomp == 2) sprintf(comp_name, "%s", hd_p);
         }else if(ncomp == 6){
-            if(icomp == 0) sprintf(comp_name, hd_rr);
-            if(icomp == 1) sprintf(comp_name, hd_rt);
-            if(icomp == 2) sprintf(comp_name, hd_rp);
-            if(icomp == 3) sprintf(comp_name, hd_tt);
-            if(icomp == 4) sprintf(comp_name, hd_tp);
-            if(icomp == 5) sprintf(comp_name, hd_pp);
+            if(icomp == 0) sprintf(comp_name, "%s", hd_rr);
+            if(icomp == 1) sprintf(comp_name, "%s", hd_rt);
+            if(icomp == 2) sprintf(comp_name, "%s", hd_rp);
+            if(icomp == 3) sprintf(comp_name, "%s", hd_tt);
+            if(icomp == 4) sprintf(comp_name, "%s", hd_tp);
+            if(icomp == 5) sprintf(comp_name, "%s", hd_pp);
         };
     } else if(id_coord == 2){
         if(ncomp == 1){
-            if(icomp == 0) sprintf(comp_name, hd_scalar);
+            if(icomp == 0) sprintf(comp_name, "%s", hd_scalar);
         }else if(ncomp == 3){
-            if(icomp == 0) sprintf(comp_name, hd_s);
-            if(icomp == 1) sprintf(comp_name, hd_p);
-            if(icomp == 2) sprintf(comp_name, hd_z);
+            if(icomp == 0) sprintf(comp_name, "%s", hd_s);
+            if(icomp == 1) sprintf(comp_name, "%s", hd_p);
+            if(icomp == 2) sprintf(comp_name, "%s", hd_z);
         }else if(ncomp == 6){
-            if(icomp == 0) sprintf(comp_name, hd_ss);
-            if(icomp == 1) sprintf(comp_name, hd_sp);
-            if(icomp == 2) sprintf(comp_name, hd_sz);
-            if(icomp == 3) sprintf(comp_name, hd_pp);
-            if(icomp == 4) sprintf(comp_name, hd_pz);
-            if(icomp == 5) sprintf(comp_name, hd_zz);
+            if(icomp == 0) sprintf(comp_name, "%s", hd_ss);
+            if(icomp == 1) sprintf(comp_name, "%s", hd_sp);
+            if(icomp == 2) sprintf(comp_name, "%s", hd_sz);
+            if(icomp == 3) sprintf(comp_name, "%s", hd_pp);
+            if(icomp == 4) sprintf(comp_name, "%s", hd_pz);
+            if(icomp == 5) sprintf(comp_name, "%s", hd_zz);
         };
     } else {
         if(ncomp == 1){
-            if(icomp == 0) sprintf(comp_name, hd_scalar);
+            if(icomp == 0) sprintf(comp_name, "%s", hd_scalar);
         }else if(ncomp == 3){
-            if(icomp == 0) sprintf(comp_name, hd_x);
-            if(icomp == 1) sprintf(comp_name, hd_y);
-            if(icomp == 2) sprintf(comp_name, hd_z);
+            if(icomp == 0) sprintf(comp_name, "%s", hd_x);
+            if(icomp == 1) sprintf(comp_name, "%s", hd_y);
+            if(icomp == 2) sprintf(comp_name, "%s", hd_z);
         }else if(ncomp == 6){
-            if(icomp == 0) sprintf(comp_name, hd_xx);
-            if(icomp == 1) sprintf(comp_name, hd_xy);
-            if(icomp == 2) sprintf(comp_name, hd_xz);
-            if(icomp == 3) sprintf(comp_name, hd_yy);
-            if(icomp == 4) sprintf(comp_name, hd_yz);
-            if(icomp == 5) sprintf(comp_name, hd_zz);
+            if(icomp == 0) sprintf(comp_name, "%s", hd_xx);
+            if(icomp == 1) sprintf(comp_name, "%s", hd_xy);
+            if(icomp == 2) sprintf(comp_name, "%s", hd_xz);
+            if(icomp == 3) sprintf(comp_name, "%s", hd_yy);
+            if(icomp == 4) sprintf(comp_name, "%s", hd_yz);
+            if(icomp == 5) sprintf(comp_name, "%s", hd_zz);
         };
     };
     
-    if(icomp == ncomp) sprintf(comp_name, hd_magitude);
+    if(icomp == ncomp) sprintf(comp_name, "%s", hd_magitude);
     
     return;
 };
@@ -61,103 +61,103 @@ void set_PSF_component_name(int ncomp, int id_coord, int icomp, char *comp_name)
 void set_PSF_full_component_name(int ncomp, int id_coord, int icomp, char *comp_name) {
     if(id_coord == 1){
         if(ncomp == 1){
-            if(icomp == 0) sprintf(comp_name, hd_scalar);
+            if(icomp == 0) sprintf(comp_name, "%s", hd_scalar);
         }else if(ncomp == 3){
-            if(icomp ==  0) sprintf(comp_name, hd_r);
-            if(icomp ==  1) sprintf(comp_name, hd_t);
-            if(icomp ==  2) sprintf(comp_name, hd_p);
-            if(icomp ==  3) sprintf(comp_name, hd_s);
+            if(icomp ==  0) sprintf(comp_name, "%s", hd_r);
+            if(icomp ==  1) sprintf(comp_name, "%s", hd_t);
+            if(icomp ==  2) sprintf(comp_name, "%s", hd_p);
+            if(icomp ==  3) sprintf(comp_name, "%s", hd_s);
             
-            if(icomp ==  4) sprintf(comp_name, hd_x);
-            if(icomp ==  5) sprintf(comp_name, hd_y);
-            if(icomp ==  6) sprintf(comp_name, hd_z);
+            if(icomp ==  4) sprintf(comp_name, "%s", hd_x);
+            if(icomp ==  5) sprintf(comp_name, "%s", hd_y);
+            if(icomp ==  6) sprintf(comp_name, "%s", hd_z);
         }else if(ncomp == 6){
-            if(icomp ==  0) sprintf(comp_name, hd_rr);
-            if(icomp ==  1) sprintf(comp_name, hd_rt);
-            if(icomp ==  2) sprintf(comp_name, hd_rp);
-            if(icomp ==  3) sprintf(comp_name, hd_tt);
-            if(icomp ==  4) sprintf(comp_name, hd_tp);
-            if(icomp ==  5) sprintf(comp_name, hd_pp);
+            if(icomp ==  0) sprintf(comp_name, "%s", hd_rr);
+            if(icomp ==  1) sprintf(comp_name, "%s", hd_rt);
+            if(icomp ==  2) sprintf(comp_name, "%s", hd_rp);
+            if(icomp ==  3) sprintf(comp_name, "%s", hd_tt);
+            if(icomp ==  4) sprintf(comp_name, "%s", hd_tp);
+            if(icomp ==  5) sprintf(comp_name, "%s", hd_pp);
             
-            if(icomp ==  6) sprintf(comp_name, hd_ss);
-            if(icomp ==  7) sprintf(comp_name, hd_sp);
-            if(icomp ==  8) sprintf(comp_name, hd_sz);
-            if(icomp ==  9) sprintf(comp_name, hd_pz);
-            if(icomp == 10) sprintf(comp_name, hd_zz);
+            if(icomp ==  6) sprintf(comp_name, "%s", hd_ss);
+            if(icomp ==  7) sprintf(comp_name, "%s", hd_sp);
+            if(icomp ==  8) sprintf(comp_name, "%s", hd_sz);
+            if(icomp ==  9) sprintf(comp_name, "%s", hd_pz);
+            if(icomp == 10) sprintf(comp_name, "%s", hd_zz);
             
-            if(icomp == 11) sprintf(comp_name, hd_xx);
-            if(icomp == 12) sprintf(comp_name, hd_xy);
-            if(icomp == 13) sprintf(comp_name, hd_xz);
-            if(icomp == 14) sprintf(comp_name, hd_yy);
-            if(icomp == 15) sprintf(comp_name, hd_yz);
+            if(icomp == 11) sprintf(comp_name, "%s", hd_xx);
+            if(icomp == 12) sprintf(comp_name, "%s", hd_xy);
+            if(icomp == 13) sprintf(comp_name, "%s", hd_xz);
+            if(icomp == 14) sprintf(comp_name, "%s", hd_yy);
+            if(icomp == 15) sprintf(comp_name, "%s", hd_yz);
         };
     } else if(id_coord == 2){
         if(ncomp == 1){
-            if(icomp == 0) sprintf(comp_name, hd_scalar);
+            if(icomp == 0) sprintf(comp_name, "%s", hd_scalar);
         }else if(ncomp == 3){
-            if(icomp ==  0) sprintf(comp_name, hd_s);
-            if(icomp ==  1) sprintf(comp_name, hd_p);
-            if(icomp ==  2) sprintf(comp_name, hd_z);
-            if(icomp ==  3) sprintf(comp_name, hd_r);
-            if(icomp ==  4) sprintf(comp_name, hd_t);
+            if(icomp ==  0) sprintf(comp_name, "%s", hd_s);
+            if(icomp ==  1) sprintf(comp_name, "%s", hd_p);
+            if(icomp ==  2) sprintf(comp_name, "%s", hd_z);
+            if(icomp ==  3) sprintf(comp_name, "%s", hd_r);
+            if(icomp ==  4) sprintf(comp_name, "%s", hd_t);
             
-            if(icomp ==  5) sprintf(comp_name, hd_x);
-            if(icomp ==  6) sprintf(comp_name, hd_y);
+            if(icomp ==  5) sprintf(comp_name, "%s", hd_x);
+            if(icomp ==  6) sprintf(comp_name, "%s", hd_y);
         }else if(ncomp == 6){
-            if(icomp ==  0) sprintf(comp_name, hd_ss);
-            if(icomp ==  1) sprintf(comp_name, hd_sp);
-            if(icomp ==  2) sprintf(comp_name, hd_sz);
-            if(icomp ==  3) sprintf(comp_name, hd_pp);
-            if(icomp ==  4) sprintf(comp_name, hd_pz);
-            if(icomp ==  5) sprintf(comp_name, hd_zz);
+            if(icomp ==  0) sprintf(comp_name, "%s", hd_ss);
+            if(icomp ==  1) sprintf(comp_name, "%s", hd_sp);
+            if(icomp ==  2) sprintf(comp_name, "%s", hd_sz);
+            if(icomp ==  3) sprintf(comp_name, "%s", hd_pp);
+            if(icomp ==  4) sprintf(comp_name, "%s", hd_pz);
+            if(icomp ==  5) sprintf(comp_name, "%s", hd_zz);
             
-            if(icomp ==  6) sprintf(comp_name, hd_rr);
-            if(icomp ==  7) sprintf(comp_name, hd_rt);
-            if(icomp ==  8) sprintf(comp_name, hd_rp);
-            if(icomp ==  9) sprintf(comp_name, hd_tt);
-            if(icomp == 10) sprintf(comp_name, hd_tp);
+            if(icomp ==  6) sprintf(comp_name, "%s", hd_rr);
+            if(icomp ==  7) sprintf(comp_name, "%s", hd_rt);
+            if(icomp ==  8) sprintf(comp_name, "%s", hd_rp);
+            if(icomp ==  9) sprintf(comp_name, "%s", hd_tt);
+            if(icomp == 10) sprintf(comp_name, "%s", hd_tp);
             
-            if(icomp == 11) sprintf(comp_name, hd_xx);
-            if(icomp == 12) sprintf(comp_name, hd_xy);
-            if(icomp == 13) sprintf(comp_name, hd_xz);
-            if(icomp == 14) sprintf(comp_name, hd_yy);
-            if(icomp == 15) sprintf(comp_name, hd_yz);
+            if(icomp == 11) sprintf(comp_name, "%s", hd_xx);
+            if(icomp == 12) sprintf(comp_name, "%s", hd_xy);
+            if(icomp == 13) sprintf(comp_name, "%s", hd_xz);
+            if(icomp == 14) sprintf(comp_name, "%s", hd_yy);
+            if(icomp == 15) sprintf(comp_name, "%s", hd_yz);
         };
     } else {
         if(ncomp == 1){
-            if(icomp == 0) sprintf(comp_name, hd_scalar);
+            if(icomp == 0) sprintf(comp_name, "%s", hd_scalar);
         }else if(ncomp == 3){
-            if(icomp ==  0) sprintf(comp_name, hd_x);
-            if(icomp ==  1) sprintf(comp_name, hd_y);
-            if(icomp ==  2) sprintf(comp_name, hd_z);
+            if(icomp ==  0) sprintf(comp_name, "%s", hd_x);
+            if(icomp ==  1) sprintf(comp_name, "%s", hd_y);
+            if(icomp ==  2) sprintf(comp_name, "%s", hd_z);
             
-            if(icomp ==  3) sprintf(comp_name, hd_r);
-            if(icomp ==  4) sprintf(comp_name, hd_t);
-            if(icomp ==  5) sprintf(comp_name, hd_p);
-            if(icomp ==  6) sprintf(comp_name, hd_s);
+            if(icomp ==  3) sprintf(comp_name, "%s", hd_r);
+            if(icomp ==  4) sprintf(comp_name, "%s", hd_t);
+            if(icomp ==  5) sprintf(comp_name, "%s", hd_p);
+            if(icomp ==  6) sprintf(comp_name, "%s", hd_s);
         }else if(ncomp == 6){
-            if(icomp ==  0) sprintf(comp_name, hd_xx);
-            if(icomp ==  1) sprintf(comp_name, hd_xy);
-            if(icomp ==  2) sprintf(comp_name, hd_xz);
-            if(icomp ==  3) sprintf(comp_name, hd_yy);
-            if(icomp ==  4) sprintf(comp_name, hd_yz);
-            if(icomp ==  5) sprintf(comp_name, hd_zz);
+            if(icomp ==  0) sprintf(comp_name, "%s", hd_xx);
+            if(icomp ==  1) sprintf(comp_name, "%s", hd_xy);
+            if(icomp ==  2) sprintf(comp_name, "%s", hd_xz);
+            if(icomp ==  3) sprintf(comp_name, "%s", hd_yy);
+            if(icomp ==  4) sprintf(comp_name, "%s", hd_yz);
+            if(icomp ==  5) sprintf(comp_name, "%s", hd_zz);
             
-            if(icomp ==  6) sprintf(comp_name, hd_rr);
-            if(icomp ==  7) sprintf(comp_name, hd_rt);
-            if(icomp ==  8) sprintf(comp_name, hd_rp);
-            if(icomp ==  9) sprintf(comp_name, hd_tt);
-            if(icomp == 10) sprintf(comp_name, hd_tp);
-            if(icomp == 11) sprintf(comp_name, hd_pp);
+            if(icomp ==  6) sprintf(comp_name, "%s", hd_rr);
+            if(icomp ==  7) sprintf(comp_name, "%s", hd_rt);
+            if(icomp ==  8) sprintf(comp_name, "%s", hd_rp);
+            if(icomp ==  9) sprintf(comp_name, "%s", hd_tt);
+            if(icomp == 10) sprintf(comp_name, "%s", hd_tp);
+            if(icomp == 11) sprintf(comp_name, "%s", hd_pp);
             
-            if(icomp == 12) sprintf(comp_name, hd_ss);
-            if(icomp == 13) sprintf(comp_name, hd_sp);
-            if(icomp == 14) sprintf(comp_name, hd_sz);
-            if(icomp == 15) sprintf(comp_name, hd_pz);
+            if(icomp == 12) sprintf(comp_name, "%s", hd_ss);
+            if(icomp == 13) sprintf(comp_name, "%s", hd_sp);
+            if(icomp == 14) sprintf(comp_name, "%s", hd_sz);
+            if(icomp == 15) sprintf(comp_name, "%s", hd_pz);
         };
     };
     
-    if(icomp == ncomp) sprintf(comp_name, hd_magitude);
+    if(icomp == ncomp) sprintf(comp_name, "%s", hd_magitude);
     
     return;
 };
@@ -222,13 +222,6 @@ void alloc_draw_psf_flags(int id_color_mode, long ncomptot, long npicktot,
         alloc_color_index_list_s(psf_m->cmap_viz_pick[i], id_color_mode);
     };
         
-    psf_m->cmap_viz = (struct colormap_params *) malloc( sizeof(struct colormap_params));
-    if(psf_m->cmap_viz == NULL) {
-        printf( "psf_m->cmap_viz cannot alloc!\n" );
-        exit( 1 );
-    }
-    alloc_color_index_list_s(psf_m->cmap_viz, id_color_mode);
-
     psf_m->icomp_draw_viz = 0;
     return;
 }
@@ -240,7 +233,6 @@ void dealloc_draw_psf_flags(long ncomptot, long npicktot,
     free(psf_m->cmap_viz_pick);
     for(i=0;i<ncomptot;i++){dealloc_color_index_list_s(psf_m->cmap_viz_comp[i]);};
     free(psf_m->cmap_viz_comp);
-    dealloc_color_index_list_s(psf_m->cmap_viz);
     dealloc_kvstring(psf_m->viz_prefix_c);
     return;
 }
@@ -321,9 +313,9 @@ void init_psf_parameters(struct psf_menu_val *psf_m){
 void set_VIZ_field(int selected,
                    char *data_name, long *istack_comp,
                    struct psf_menu_val *psf_m){
-    psf_m->if_draw_viz =  (long) selected;
-    psf_m->ist_draw_viz = istack_comp[psf_m->if_draw_viz];
-    psf_m->ncomp_draw_viz = istack_comp[psf_m->if_draw_viz+1] - psf_m->ist_draw_viz;
+    psf_m->if_draw_viz =  selected;
+    psf_m->ist_draw_viz =   (int) istack_comp[psf_m->if_draw_viz];
+    psf_m->ncomp_draw_viz = (int) istack_comp[psf_m->if_draw_viz+1] - psf_m->ist_draw_viz;
     if(psf_m->ncomp_draw_viz != 3) psf_m->draw_psf_vect = IZERO;
  
     psf_m->ipick_draw_viz = IZERO;
