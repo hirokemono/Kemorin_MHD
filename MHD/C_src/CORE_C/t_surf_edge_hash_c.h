@@ -29,14 +29,14 @@ struct sum_hash_tbl_c{
 /*  prototypes */
 
 struct sum_hash_tbl_c * init_sum_hash(const long numnod, const long nele, 
-									  const int num_4_ele, const int nnod_4_edge);
+									  const long num_4_ele, const int nnod_4_edge);
 void dealloc_sum_hash(struct sum_hash_tbl_c *h_tbl);
 
 void clear_sum_hash(struct sum_hash_tbl_c *h_tbl);
 void set_edge_hash_4_triangle(const int nedge_4_surf, const long numsurf, 
-							  const int nnod_4_surf, long **ie_viz, 
-							  struct sum_hash_tbl_c *h_tbl);
-void mark_all_edges_on_triangle(const int nnod_4_surf, long **ie_viz, 
+                              const long nnod_4_surf, long **ie_viz,
+                              struct sum_hash_tbl_c *h_tbl);
+void mark_all_edges_on_triangle(const long nnod_4_surf, long **ie_viz, 
 								struct sum_hash_tbl_c *h_tbl);
 
 

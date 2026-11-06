@@ -121,7 +121,7 @@ static long count_num_edges_by_sf_c(struct sum_hash_tbl_c *ed_sf_tbl){
 	return numedge;
 };
 
-static void set_edges_connect_by_sf_c(const int nnod_4_surf, long **ie_viz,
+static void set_edges_connect_by_sf_c(const long nnod_4_surf, long **ie_viz,
 							   struct sum_hash_tbl_c *ed_sf_tbl,
 							   struct psf_edge_data_c *psf_edge){
 	int i, j;
@@ -255,7 +255,7 @@ struct psf_edge_data_c * init_psf_edge_data_c(void){
 FILE *fp;
 
 struct psf_edge_data_c * init_all_edge_4_psf(const long nnod_viz, const long nele_viz,
-											 const int nnod_4_ele_viz, long **ie_viz,
+											 const long nnod_4_ele_viz, long **ie_viz,
 											 double *xyzw_viz, double *norm_nod){
 	struct psf_edge_data_c *psf_edge;
 	
