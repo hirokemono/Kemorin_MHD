@@ -164,6 +164,10 @@ void take_minmax_fline(struct fline_directions *fline_dir,
 	take_rms_ave_fline(fline_dir, fline_d);
     take_minmax_psf_all_components(fline_d->nnod_viz, fline_d->ncomptot, fline_d->d_nod,
                                    fline_d->d_min, fline_d->d_max);
+    take_minmax_psf_picked_components(fline_d->nnod_viz, fline_d->angle_viz,
+                                      fline_d->nfield, fline_d->istack_comp, fline_d->istack_pick,
+                                      fline_d->id_coord, fline_d->ncomptot, fline_d->d_nod,
+                                      fline_d->d_pick, fline_d->pick_min, fline_d->pick_max);
 	return;
 }
 
@@ -176,6 +180,10 @@ void take_minmax_points(struct psf_data *point_d){
 	take_rms_ave_points(point_d);
     take_minmax_psf_all_components(point_d->nnod_viz, point_d->ncomptot, point_d->d_nod,
                                    point_d->d_min, point_d->d_max);
+    take_minmax_psf_picked_components(point_d->nnod_viz, point_d->angle_viz,
+                                      point_d->nfield, point_d->istack_comp, point_d->istack_pick,
+                                      point_d->id_coord, point_d->ncomptot, point_d->d_nod,
+                                      point_d->d_pick, point_d->pick_min, point_d->pick_max);
     
     
 	return;

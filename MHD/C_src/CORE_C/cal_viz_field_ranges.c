@@ -47,46 +47,6 @@ double cal_psf_grid_range(long nnod_viz, double *xyzw_viz,
 	return rmax_psf;
 }
 
-static double take_minimum_psf_component(long nnod_viz, long nstride, double *d_nod){
-    int inod;
-    double d_min = d_nod[0];
-#pragma omp parallel for reduction(min:d_min)
-    for(inod = 0; inod < nnod_viz; inod++){
-        if(d_nod[inod*nstride] < d_min){d_min = d_nod[inod*nstride];};
-    };
-    return d_min;
-}
-
-static double take_maximum_psf_component(long nnod_viz, long nstride, double *d_nod){
-    int inod;
-    double d_max = d_nod[0];
-#pragma omp parallel for reduction(max:d_max)
-    for(inod = 0; inod < nnod_viz; inod++){
-        if(d_nod[inod*nstride] > d_max){d_max = d_nod[inod*nstride];};
-    };
-    return d_max;
-}
-
-void take_minmax_psf_each_component(long nnod_viz, long nstride, double *d_nod,
-                                    double *d_min, double *d_max){
-    *d_min = take_minimum_psf_component(nnod_viz, nstride, d_nod);
-    *d_max = take_maximum_psf_component(nnod_viz, nstride, d_nod);
-    if (*d_min >= *d_max){
-        *d_min = ZERO;
-        *d_max = ONE;
-    }
-}
-
-void take_minmax_psf_all_components(long nnod_viz, long ncomptot, double *d_nod,
-                                    double *d_min, double *d_max){
-    long icomp;
-    for(icomp = 0; icomp < ncomptot; icomp++){
-        take_minmax_psf_each_component(nnod_viz, ncomptot, &d_nod[icomp],
-                                       &d_min[icomp], &d_max[icomp]);
-    }
-    return;
-}
-
 void cal_colat_and_longitude(long nadded_for_phi0,
                              long nnod_viz, double *xyzw_viz, 
                              double *angle_viz){
@@ -146,3 +106,64 @@ void pick_component_from_viz_field(int id_field, int id_coord, int i_pick,
     return;
 }
 
+static double take_minimum_psf_component(long nnod_viz, long nstride, double *d_nod){
+    int inod;
+    double d_min = d_nod[0];
+#pragma omp parallel for reduction(min:d_min)
+    for(inod = 0; inod < nnod_viz; inod++){
+        if(d_nod[inod*nstride] < d_min){d_min = d_nod[inod*nstride];};
+    };
+    return d_min;
+}
+
+static double take_maximum_psf_component(long nnod_viz, long nstride, double *d_nod){
+    int inod;
+    double d_max = d_nod[0];
+#pragma omp parallel for reduction(max:d_max)
+    for(inod = 0; inod < nnod_viz; inod++){
+        if(d_nod[inod*nstride] > d_max){d_max = d_nod[inod*nstride];};
+    };
+    return d_max;
+}
+
+void take_minmax_psf_each_component(long nnod_viz, long nstride, double *d_nod,
+                                    double *d_min, double *d_max){
+    *d_min = take_minimum_psf_component(nnod_viz, nstride, d_nod);
+    *d_max = take_maximum_psf_component(nnod_viz, nstride, d_nod);
+    if (*d_min >= *d_max){
+        *d_min = ZERO;
+        *d_max = ONE;
+    }
+}
+
+void take_minmax_psf_all_components(long nnod_viz, long ncomptot, double *d_nod,
+                                    double *d_min, double *d_max){
+    long icomp;
+    for(icomp = 0; icomp < ncomptot; icomp++){
+        take_minmax_psf_each_component(nnod_viz, ncomptot, &d_nod[icomp],
+                                       &d_min[icomp], &d_max[icomp]);
+    }
+    return;
+}
+
+void take_minmax_psf_picked_components(long nnod_viz, double *angle_viz,
+                                       long nfield, long *istack_comp, long *istack_pick, 
+                                       int *id_coord, long ncomptot, double *d_nod,
+                                       double *d_pick, double *pick_min, double *pick_max){
+    long ifld, ncomp;
+    long ist, ipick, npick;
+    for(ifld = 0; ifld < nfield; ifld++){
+        ncomp = istack_comp[ifld+1] - istack_comp[ifld];
+        npick = istack_pick[ifld+1] - istack_pick[ifld];
+        ist =   istack_pick[ifld];
+        for(ipick = 0; ipick < npick; ipick++){
+            pick_component_from_viz_field((int) ncomp, id_coord[ifld], ipick,
+                                          nnod_viz, angle_viz,
+                                          ncomptot, (int) istack_comp[ifld], d_nod,
+                                          d_pick);
+            take_minmax_psf_each_component(nnod_viz, (long) IONE, d_pick,
+                                           &pick_min[ipick+ist], &pick_max[ipick+ist]);
+        };
+    };
+    return;
+}
