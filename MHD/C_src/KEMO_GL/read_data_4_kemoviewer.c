@@ -71,8 +71,10 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
 	return;
 }
 
-long set_psf_data_by_UCD(struct map_interpolate *map_itp,
-                         struct psf_data *psf_s, struct psf_normals *psf_n,
+long set_psf_data_by_UCD(int ipick_draw_viz,
+                         struct map_interpolate *map_itp,
+                         struct psf_data *psf_s,
+                         struct psf_normals *psf_n,
                          struct psf_data *ucd_tmp) {
     long nadded_for_phi0 = set_viewer_mesh_with_mapping(map_itp, psf_s, ucd_tmp);
     set_viewer_data_with_mapping(map_itp, ucd_tmp, psf_s);
@@ -82,7 +84,7 @@ long set_psf_data_by_UCD(struct map_interpolate *map_itp,
 
     alloc_psf_norm_s(psf_s, psf_n);
 	take_normal_psf(psf_s, psf_n);
-    take_minmax_psf(psf_s, psf_n);
+    take_minmax_psf(ipick_draw_viz, psf_s, psf_n);
     psf_n->psf_edge = init_all_edge_4_psf(psf_s->nnod_viz, psf_s->nele_viz,
                                           psf_s->nnod_4_ele_viz, psf_s->ie_viz,
                                           psf_s->xyzw_viz, psf_n->norm_nod);
@@ -94,7 +96,8 @@ long set_psf_data_by_UCD(struct map_interpolate *map_itp,
 	return nadded_for_phi0;
 }
 
-void set_fline_data_by_UCD(struct psf_data *fline_d,
+void set_fline_data_by_UCD(int ipick_draw_viz,
+                           struct psf_data *fline_d,
                            struct fline_directions *fline_dir,
                            struct psf_data *ucd_tmp){
     set_viewer_fieldline_data(fline_d, ucd_tmp);
@@ -105,21 +108,22 @@ void set_fline_data_by_UCD(struct psf_data *fline_d,
     take_length_fline(fline_d, fline_dir);
     
     alloc_psf_data_s(fline_d);
-	take_minmax_fline(fline_dir, fline_d);
+	take_minmax_fline(ipick_draw_viz, fline_dir, fline_d);
     dealloc_fline_work_data(fline_dir);
     
     alloc_psf_color_data_c(fline_d);
 	return;
 };
 
-void set_points_data_by_UCD(struct psf_data *points_d,
+void set_points_data_by_UCD(int ipick_draw_viz,
+                            struct psf_data *points_d,
                             struct psf_data *ucd_tmp){
     set_viewer_points_data(points_d, ucd_tmp);
     cal_colat_and_longitude(0, points_d->nnod_viz, points_d->xyzw_viz, 
                             points_d->angle_viz);
     
     alloc_psf_data_s(points_d);
-	take_minmax_points(points_d);
+	take_minmax_points(ipick_draw_viz, points_d);
 
     alloc_psf_color_data_c(points_d);
 	return;
@@ -143,7 +147,7 @@ void evolution_PSF_data(struct psf_data *psf_s,
                                  psf_m->viz_prefix_c->string, ucd_tmp);
         set_iflag_draw_time(time, psf_m);
         set_viewer_data_with_mapping(psf_m->map_itp, ucd_tmp, psf_s);
-        take_minmax_psf(psf_s, psf_n);
+        take_minmax_psf(psf_m->ipick_draw_viz, psf_s, psf_n);
 	} else if(psf_m->iformat_viz_file == IFLAG_SURF_UCD
 			  || psf_m->iformat_viz_file == IFLAG_SURF_UCD_GZ
 			  || psf_m->iformat_viz_file == IFLAG_SURF_VTK
@@ -158,8 +162,10 @@ void evolution_PSF_data(struct psf_data *psf_s,
         dealloc_psf_norm_s(psf_n);
         deallc_all_psf_data(psf_s);
         psf_m->map_itp = alloc_psf_cutting_4_map();
-        psf_m->nadded_for_phi0 = set_psf_data_by_UCD(psf_m->map_itp,
-                                                     psf_s, psf_n, ucd_tmp);
+        psf_m->nadded_for_phi0 = set_psf_data_by_UCD(psf_m->ipick_draw_viz,
+                                                     psf_m->map_itp,
+                                                     psf_s, psf_n,
+                                                     ucd_tmp);
 	}
     
     return;
@@ -183,7 +189,8 @@ int refresh_FLINE_data(struct psf_data *ucd_tmp,
     
     dealloc_fline_direction_data(fline_dir);
     deallc_all_psf_data(fline_d);
-	set_fline_data_by_UCD(fline_d, fline_dir, ucd_tmp);
+	set_fline_data_by_UCD(fline_m->ipick_draw_viz,
+                          fline_d, fline_dir, ucd_tmp);
 	return 0;
 }
 

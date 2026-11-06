@@ -262,12 +262,13 @@ void take_normal_psf(struct psf_data *viz_s,
 	return;
 }
 
-void take_minmax_psf(struct psf_data *viz_s,
+void take_minmax_psf(int ipick_draw_viz,
+                     struct psf_data *viz_s,
                      struct psf_normals *psf_n){
 	take_rms_ave_psf(viz_s, psf_n);
     take_minmax_psf_all_components(viz_s->nnod_viz, viz_s->ncomptot, viz_s->d_nod,
                                    viz_s->d_min, viz_s->d_max);
-    take_minmax_psf_picked_components(viz_s->nnod_viz, viz_s->angle_viz,
+    take_minmax_psf_picked_components(ipick_draw_viz, viz_s->nnod_viz, viz_s->angle_viz,
                                       viz_s->nfield, viz_s->istack_comp, viz_s->istack_pick,
                                       viz_s->id_coord, viz_s->ncomptot, viz_s->d_nod,
                                       viz_s->d_pick, viz_s->pick_min, viz_s->pick_max);

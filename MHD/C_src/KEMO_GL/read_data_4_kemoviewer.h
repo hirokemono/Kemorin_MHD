@@ -42,13 +42,17 @@
 void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
                      struct mesh_menu_val *mesh_m, struct view_element *view);
 
-long set_psf_data_by_UCD(struct map_interpolate *map_itp,
-                         struct psf_data *psf_s, struct psf_normals *psf_n,
+long set_psf_data_by_UCD(int ipick_draw_viz,
+                         struct map_interpolate *map_itp,
+                         struct psf_data *psf_s,
+                         struct psf_normals *psf_n,
                          struct psf_data *ucd_tmp);
-void set_fline_data_by_UCD(struct psf_data *fline_d,
+void set_fline_data_by_UCD(int ipick_draw_viz,
+                           struct psf_data *fline_d,
                            struct fline_directions *fline_dir,
                            struct psf_data *ucd_tmp);
-void set_points_data_by_UCD(struct psf_data *points_d,
+void set_points_data_by_UCD(int ipick_draw_viz,
+                            struct psf_data *points_d,
                             struct psf_data *ucd_tmp);
 
 void evolution_PSF_data(struct psf_data *psf_s,

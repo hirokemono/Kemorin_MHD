@@ -50,7 +50,9 @@ void init_draw_fline(struct kemoview_fline *kemo_fline, struct psf_data *ucd_tmp
     
 	if(kemo_fline->fline_m->iflag_draw_viz > 0) close_fieldline_view(kemo_fline);
 
-	set_fline_data_by_UCD(kemo_fline->fline_d, kemo_fline->fline_dir, ucd_tmp);
+	set_fline_data_by_UCD(kemo_fline->fline_m->ipick_draw_viz,
+                          kemo_fline->fline_d, kemo_fline->fline_dir,
+                          ucd_tmp);
 	set_kemoview_viz_color_data(ORANGE_CYAN_MODE,
                                 kemo_fline->fline_d,
                                 kemo_fline->fline_m);

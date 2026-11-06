@@ -20,8 +20,9 @@
 
 void take_length_fline(struct psf_data *fline_d,
                        struct fline_directions *fline_dir);
-void take_minmax_fline(struct fline_directions *fline_dir,
+void take_minmax_fline(int ipick_draw_viz,
+                       struct fline_directions *fline_dir,
                        struct psf_data *fline_d);
-void take_minmax_points(struct psf_data *point_d);
+void take_minmax_points(int ipick_draw_viz, struct psf_data *point_d);
 
 #endif /* FLINE_EDGE_DIRECTION_C_ */

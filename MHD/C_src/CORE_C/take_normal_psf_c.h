@@ -17,6 +17,7 @@ void easy_normal_nod_psf(struct psf_data *viz_s,
 
 void take_normal_psf(struct psf_data *viz_s,
                      struct psf_normals *psf_n);
-void take_minmax_psf(struct psf_data *viz_s,
+void take_minmax_psf(int ipick_draw_viz,
+                     struct psf_data *viz_s,
                      struct psf_normals *psf_n);
 #endif
