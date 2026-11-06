@@ -18,7 +18,7 @@
 
 /*  prototypes */
 
-void set_color_code_for_psfs(struct psf_data **psf_s, struct psf_menu_val **psf_m, 
+void set_color_code_for_psfs(struct psf_data **psf_d, struct psf_menu_val **psf_m,
                              struct kemo_array_control *psf_a);
 void set_color_code_for_fieldlines(struct psf_data *fline_d,
 								   struct psf_menu_val *fline_m);
