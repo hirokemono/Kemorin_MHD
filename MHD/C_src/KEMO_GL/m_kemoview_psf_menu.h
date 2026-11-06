@@ -126,11 +126,11 @@ void dealloc_kemoview_array(struct kemo_array_control *psf_a);
 
 void init_psf_parameters(struct psf_menu_val *psf_m);
 
-void set_VIZ_field(int selected,
-                   char *data_name, long *istack_comp,
+void set_VIZ_field(int selected, char *data_name,
+                   long *istack_comp, long *istack_pick,
                    struct psf_menu_val *psf_m);
-void set_VIZ_component(int selected,
-                       char *data_name, long *istack_comp,
+void set_VIZ_component(int selected, char *data_name, 
+                       long *istack_pick,
                        struct psf_menu_val *psf_m);
 
 int get_PSF_maximum_load(struct kemo_array_control *psf_a);

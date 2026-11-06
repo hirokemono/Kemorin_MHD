@@ -283,10 +283,10 @@ void dealloc_kemoview_array(struct kemo_array_control *psf_a){
 void init_psf_parameters(struct psf_menu_val *psf_m){
     psf_m->if_draw_viz =    INIT_IF_DRAW_PSF;
     psf_m->ic_draw_viz =    INIT_IC_DRAW_PSF;
-    psf_m->icomp_draw_viz = INIT_IC_DRAW_PSF;
-    
+
 	psf_m->ncomp_draw_viz = IONE;
 	psf_m->ist_draw_viz =   INIT_IF_DRAW_PSF;
+    psf_m->icomp_draw_viz = INIT_IC_DRAW_PSF;
 	psf_m->ipick_draw_viz = INIT_IC_DRAW_PSF;
 
     psf_m->polygon_mode_psf = INIT_POLYGON_MODE;
@@ -310,16 +310,16 @@ void init_psf_parameters(struct psf_menu_val *psf_m){
     return;
 };
 
-void set_VIZ_field(int selected,
-                   char *data_name, long *istack_comp,
+void set_VIZ_field(int selected, char *data_name,
+                   long *istack_comp, long *istack_pick,
                    struct psf_menu_val *psf_m){
     psf_m->if_draw_viz =  selected;
     psf_m->ist_draw_viz =   (int) istack_comp[psf_m->if_draw_viz];
     psf_m->ncomp_draw_viz = (int) istack_comp[psf_m->if_draw_viz+1] - psf_m->ist_draw_viz;
     if(psf_m->ncomp_draw_viz != 3) psf_m->draw_psf_vect = IZERO;
  
-    psf_m->ipick_draw_viz = IZERO;
-    psf_m->ic_draw_viz = psf_m->ipick_draw_viz;
+    psf_m->ic_draw_viz = IZERO;
+    psf_m->ipick_draw_viz = psf_m->ic_draw_viz + istack_pick[psf_m->if_draw_viz];
     psf_m->icomp_draw_viz = psf_m->ist_draw_viz;
     
     printf("selected 1st component of %s, %d \n",
@@ -327,14 +327,14 @@ void set_VIZ_field(int selected,
     return;
 }
 
-void set_VIZ_component(int selected, 
-                       char *data_name, long *istack_comp,
+void set_VIZ_component(int selected, char *data_name, 
+                       long *istack_pick,
                        struct psf_menu_val *psf_m){
-    psf_m->ipick_draw_viz = selected;
+    psf_m->ic_draw_viz = selected;
+    psf_m->ipick_draw_viz = psf_m->ic_draw_viz + istack_pick[psf_m->if_draw_viz];
 
-    if(psf_m->ipick_draw_viz < psf_m->ncomp_draw_viz){
-        psf_m->ic_draw_viz = psf_m->ipick_draw_viz;
-        psf_m->icomp_draw_viz = psf_m->ist_draw_viz + psf_m->ic_draw_viz;
+    if(psf_m->ic_draw_viz < psf_m->ncomp_draw_viz){
+        psf_m->icomp_draw_viz = psf_m->ic_draw_viz + psf_m->ist_draw_viz;
     }
 
     printf("component %d  of %s, %ld \n", (psf_m->ic_draw_viz+1),

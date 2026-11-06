@@ -92,14 +92,14 @@ void shift_longitude(double add_phi, long nnod_viz, double *xyzw_viz){
 }
 
 
-void pick_component_from_viz_field(int id_field, int id_coord, int i_pick,
+void pick_component_from_viz_field(int id_field, int id_coord, int nd,
                                     long nnod_viz, double *angle_viz,
                                     long ncomptot, int ist_field, double *d_nod,
                                     double *d_pick){
     int inod;
 #pragma omp parallel for
     for(inod = 0; inod < nnod_viz; inod++){
-        d_pick[inod] = (double) pick_one_component_c(id_field, id_coord, i_pick,
+        d_pick[inod] = (double) pick_one_component_c(id_field, id_coord, nd,
                                                      angle_viz[2*inod], angle_viz[2*inod+1],
                                                      &d_nod[ncomptot*inod + ist_field]);
     };
@@ -151,18 +151,18 @@ void take_minmax_psf_picked_components(long nnod_viz, double *angle_viz,
                                        int *id_coord, long ncomptot, double *d_nod,
                                        double *d_pick, double *pick_min, double *pick_max){
     long ifld, ncomp;
-    long ist, ipick, npick;
+    long ist, nd, npick;
     for(ifld = 0; ifld < nfield; ifld++){
         ncomp = istack_comp[ifld+1] - istack_comp[ifld];
         npick = istack_pick[ifld+1] - istack_pick[ifld];
         ist =   istack_pick[ifld];
-        for(ipick = 0; ipick < npick; ipick++){
-            pick_component_from_viz_field((int) ncomp, id_coord[ifld], ipick,
+        for(nd = 0; nd < npick; nd++){
+            pick_component_from_viz_field((int) ncomp, id_coord[ifld], (int) nd,
                                           nnod_viz, angle_viz,
                                           ncomptot, (int) istack_comp[ifld], d_nod,
                                           d_pick);
             take_minmax_psf_each_component(nnod_viz, (long) IONE, d_pick,
-                                           &pick_min[ipick+ist], &pick_max[ipick+ist]);
+                                           &pick_min[nd+ist], &pick_max[nd+ist]);
         };
     };
     return;

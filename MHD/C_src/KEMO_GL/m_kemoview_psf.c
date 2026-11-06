@@ -193,16 +193,17 @@ void set_each_PSF_field_param(int selected, int input,
                               struct psf_menu_val *viz_menu){
 	if(selected == FIELD_SEL_FLAG){
         set_VIZ_field(input, viz_data->data_name[selected],
-                      viz_data->istack_comp, viz_menu);
+                      viz_data->istack_comp, viz_data->istack_pick,
+                       viz_menu);
 	}else if(selected == COMPONENT_SEL_FLAG){
         int i_field = viz_menu->if_draw_viz;
         set_VIZ_component(input, viz_data->data_name[i_field],
-                          viz_data->istack_comp, viz_menu);
+                          viz_data->istack_pick, viz_menu);
 	};
     
     pick_component_from_viz_field(viz_menu->ncomp_draw_viz,
                                   viz_data->id_coord[viz_menu->if_draw_viz],
-                                  viz_menu->ipick_draw_viz,
+                                  viz_menu->ic_draw_viz,
                                   (int) viz_data->nnod_viz, viz_data->angle_viz,
                                   (int) viz_data->ncomptot, viz_menu->ist_draw_viz,
                                   viz_data->d_nod, viz_data->d_pick);

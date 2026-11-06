@@ -18,11 +18,11 @@
 /* prototypes */
 
 float pick_one_component_c(const int id_field,
-                           const int id_coord, const int i_pick,
+                           const int id_coord, const int i_comp,
                            double theta, double phi,
                            double *vector);
 
-void pick_field_component_c(const int id_field,  const int id_coord, const int i_pick, 
+void pick_field_component_c(const int id_field,  const int id_coord, const int i_comp, 
                             const int nnod, double *theta, double *phi, 
                             double *vector, float *component);
 

@@ -12,10 +12,10 @@ void init_fline_parameters(struct psf_menu_val *fline_m){
 
 	fline_m->ncomp_draw_viz = IONE;
 	fline_m->ist_draw_viz =   INIT_IF_DRAW_FLINE;
-	fline_m->ipick_draw_viz = INIT_IC_DRAW_FLINE;
 
 	fline_m->icomp_draw_viz = INIT_IC_DRAW_FLINE;
-	
+    fline_m->ipick_draw_viz = INIT_IC_DRAW_FLINE;
+
 	fline_m->viz_color_mode =  INIT_FLDLINE_COLOR;
 	fline_m->viz_line_type =   INIT_FLDLINE_TYPE;
 	fline_m->viz_line_width = INIT_FLDLINE_THICK;
