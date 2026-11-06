@@ -20,11 +20,6 @@ double cal_psf_grid_range(long nnod_viz, double *xyzw_viz,
                           double *xmin_psf, double *xmax_psf,
                           double *center_psf);
 
-void take_minmax_psf_each_component(long nnod_viz, long nstride, double *d_nod,
-                                    double *d_min, double *d_max);
-void take_minmax_psf_all_components(long nnod_viz, long ncomptot, double *d_nod,
-                                    double *d_min, double *d_max);
-
 void cal_colat_and_longitude(long nadded_for_phi0,
                              long nnod_viz, double *xyzw_viz, 
                              double *angle_viz);
@@ -35,10 +30,14 @@ void pick_component_from_viz_field(int id_field, int id_coord, int i_pick,
                                     long ncomptot, int ist_field, double *d_nod,
                                     double *d_pick);
 
+void take_minmax_psf_each_component(long nnod_viz, long nstride, double *d_nod,
+                                    double *d_min, double *d_max);
+void take_minmax_psf_all_components(long nnod_viz, long ncomptot, double *d_nod,
+                                    double *d_min, double *d_max);
+
 void take_minmax_psf_picked_components(long nnod_viz, double *angle_viz,
                                        long nfield, long *istack_comp, long *istack_pick, 
                                        int *id_coord, long ncomptot, double *d_nod,
                                        double *d_pick, double *pick_min, double *pick_max);
-
 
 #endif /*  CAL_VIZ_FIELD_RANGES_  */

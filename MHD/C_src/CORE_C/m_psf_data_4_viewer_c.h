@@ -128,6 +128,7 @@ long count_total_picked_udt_field(long nfield, long *ncomp, long *istack_pick);
 
 void check_psf_read(struct psf_data *psf_s);
 void compare_psf_data_c(struct psf_data *psf_s, struct psf_data *psf_z);
+void check_psf_all_picked_range(struct psf_data *psf_s);
 
 void alloc_psf_norm_s(struct psf_data *psf_s,
                       struct psf_normals *psf_n);
