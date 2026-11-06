@@ -21,7 +21,7 @@ long const_PSF_each_isotube_to_buf(const long ist_patch,
     wk_iso_line->ncorner = ncorner;
 
     sel_each_isoline_to_list_pthread(nthreads, istack_threads,
-                                     v_line, icomp, psf_s, psf_n,
+                                     v_line, psf_s, psf_n,
                                      wk_iso_line);
     
     set_isoline_edge_list(wk_iso_line, wk_iso_mesh);
@@ -55,7 +55,7 @@ long const_PSF_each_isoline_to_buf(const long ist_patch,
                                                                    istack_threads);
     
     sel_each_isoline_to_list_pthread(nthreads, istack_threads,
-                                     v_line, icomp, psf_s, psf_n,
+                                     v_line, psf_s, psf_n,
                                      wk_iso_line);
     
     set_isoline_edge_list(wk_iso_line, wk_iso_mesh);
@@ -127,8 +127,7 @@ static long add_num_PSF_isolines(long ist_patch, const int nthreads, int ist, in
 	for (j = ist; j < ied; j++){
 		v_line = cal_isoline_value(j, psf_m->n_isoline,
 								   psf_m->cmap_viz_comp[psf_m->icomp_draw_viz]);
-        num_patch = sel_add_each_isoline_npatch_pthread(num_patch, nthreads, v_line,
-                                                        psf_m->icomp_draw_viz, psf_s,
+        num_patch = sel_add_each_isoline_npatch_pthread(num_patch, nthreads, v_line, psf_s,
                                                         &istack_smp_psf_iso[j*nthreads]);
 	};
 	return num_patch;
@@ -237,8 +236,7 @@ long add_PSF_all_isolines_num(const long ist_patch, const int nthreads,
         };
     };
 	if(psf_m->draw_psf_zero != 0){
-        num_patch = sel_add_each_isoline_npatch_pthread(num_patch, nthreads, ZERO,
-                                                        psf_m->icomp_draw_viz, psf_s,
+        num_patch = sel_add_each_isoline_npatch_pthread(num_patch, nthreads, ZERO, psf_s,
                                                         &istack_smp_psf_iso[psf_m->n_isoline*nthreads]);
     };
 	return num_patch;

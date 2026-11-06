@@ -9,20 +9,21 @@
 
 #include "set_each_isoline_to_buf.h"
 
-static void copy_each_triangle_postion(long ntot_comp, long ie_viz[3],
-                                       double *d_nod, long icomp,
+static void copy_each_triangle_postion(long ntot_comp,
+                                       long ie_viz[3],
+                                       double *d_pick,
                                        double d_tri[3]){
 	int k;
 	long inod;
 	for(k = 0; k < 3; k++) {
 		inod = ie_viz[k] - 1;
-		d_tri[k] =       d_nod[inod*ntot_comp + icomp];
+		d_tri[k] = d_pick[inod];
 	};
 	return;
 };
 
 static void copy_each_triangle_map_postion(long ntot_comp, long ie_viz[3], 
-                                           double *xyzw_viz, double *d_nod, long icomp,
+                                           double *xyzw_viz, double *d_pick,
                                            double xyzw_map[12], double d_tri[3]){
     double xyz_tri[9];
     double xyz_map[9];
@@ -31,7 +32,7 @@ static void copy_each_triangle_map_postion(long ntot_comp, long ie_viz[3],
 	for (k = 0; k < 3; k++) {
 		inod = ie_viz[k] - 1;
 		
-		d_tri[k] =       d_nod[inod*ntot_comp + icomp];
+		d_tri[k] =       d_pick[inod];
 		xyz_tri[3*k  ] = xyzw_viz[inod*IFOUR + 0];
 		xyz_tri[3*k+1] = xyzw_viz[inod*IFOUR + 1];
 		xyz_tri[3*k+2] = xyzw_viz[inod*IFOUR + 2];
@@ -49,15 +50,15 @@ static void copy_each_triangle_map_postion(long ntot_comp, long ie_viz[3],
 };
 
 long count_each_isoline_npatch(const long ist, const long ied,
-                               const double v_line, long icomp,
-                               struct psf_data *psf_s){
+                               const double v_line,
+                               struct psf_data *psf_d){
     double d_tri[3];
     long iele;
     
     long num_line = 0;
     for(iele=ist;iele<ied;iele++){
-        copy_each_triangle_postion(psf_s->ncomptot, &psf_s->ie_viz[iele][0],
-                                   psf_s->d_nod, icomp, d_tri);
+        copy_each_triangle_postion(psf_d->ncomptot, &psf_d->ie_viz[iele][0],
+                                   psf_d->d_pick, d_tri);
         /*  find isoline */
         num_line = num_line + find_isoline_on_triangle(d_tri, v_line);
     };
@@ -66,8 +67,8 @@ long count_each_isoline_npatch(const long ist, const long ied,
 
 long set_each_map_isoline_to_list(const long ist_line,
                                   const long ist, const long ied,
-                                  double v_line, long icomp,
-                                  struct psf_data *psf_s,
+                                  double v_line,
+                                  struct psf_data *psf_d,
                                   struct psf_normals *psf_n,
                                   struct isoline_line_work *wk_iso_line){
     long iedge_out[2];
@@ -80,8 +81,8 @@ long set_each_map_isoline_to_list(const long ist_line,
     
     long num_line = ist_line;
     for (iele = ist; iele < ied; iele++) {
-        copy_each_triangle_map_postion(psf_s->ncomptot, &psf_s->ie_viz[iele][0],
-                                       psf_s->xyzw_viz, psf_s->d_nod, icomp,
+        copy_each_triangle_map_postion(psf_d->ncomptot, &psf_d->ie_viz[iele][0],
+                                       psf_d->xyzw_viz, psf_d->d_pick,
                                        xyzw_map, d_tri);
         
         /*  find isoline */
@@ -100,16 +101,18 @@ long set_each_map_isoline_to_list(const long ist_line,
 };
 
 
-static void copy_each_triangle_postion_norm(long ntot_comp, long ie_viz[3], 
-                                            double *xyzw_viz, double *norm_nod,
-											double *d_nod, long icomp,
+static void copy_each_triangle_postion_norm(long ntot_comp, 
+                                            long ie_viz[3], 
+                                            double *xyzw_viz, 
+                                            double *norm_nod,
+											double *d_pick,
                                             double xyzw_tri[12], double d_tri[3]){
 	int k;
 	long inod;
 	for (k = 0; k < 3; k++) {
 		inod = ie_viz[k] - 1;
         
-		d_tri[k] =       d_nod[inod*ntot_comp + icomp];
+		d_tri[k] =       d_pick[inod];
         xyzw_tri[4*k  ] = xyzw_viz[inod*IFOUR + 0];
         xyzw_tri[4*k+1] = xyzw_viz[inod*IFOUR + 1];
         xyzw_tri[4*k+2] = xyzw_viz[inod*IFOUR + 2];
@@ -121,8 +124,8 @@ static void copy_each_triangle_postion_norm(long ntot_comp, long ie_viz[3],
 
 long set_each_isoline_to_list(const long ist_line,
                               const long ist, const long ied,
-                              double v_line, long icomp,
-                              struct psf_data *psf_s,
+                              double v_line,
+                              struct psf_data *psf_d,
                               struct psf_normals *psf_n,
                               struct isoline_line_work *wk_iso_line){
     long iedge_out[2];
@@ -134,9 +137,9 @@ long set_each_isoline_to_list(const long ist_line,
     
 	long num_line = ist_line;
 	for (iele = ist; iele < ied; iele++) {
-		copy_each_triangle_postion_norm(psf_s->ncomptot, &psf_s->ie_viz[iele][0],
-                                        psf_s->xyzw_viz, psf_n->norm_nod,
-										psf_s->d_nod, icomp, xyzw_tri, d_tri);
+		copy_each_triangle_postion_norm(psf_d->ncomptot, &psf_d->ie_viz[iele][0],
+                                        psf_d->xyzw_viz, psf_n->norm_nod,
+										psf_d->d_pick, xyzw_tri, d_tri);
 		/*  find isoline */
         idraw = set_isoline_on_triangle(iedge_out, xyzw_out, 
                                         iele, xyzw_tri, d_tri,
@@ -156,7 +159,7 @@ long set_each_isoline_to_list(const long ist_line,
 
 long set_each_isotube_to_buf(const long ist_tube,
                              const long ist, const long ied,
-                             struct psf_data *psf_s,
+                             struct psf_data *psf_d,
                              struct isoline_line_work *wk_iso_line,
                              struct gl_strided_buffer *strided_buf,
                              struct gl_index_buffer *index_buf){
@@ -175,7 +178,7 @@ long set_each_isotube_to_buf(const long ist_tube,
 
 long set_each_isoline_to_buf(const long ist_tube,
                              const long ist, const long ied,
-                             struct psf_data *psf_s,
+                             struct psf_data *psf_d,
                              struct isoline_line_work *wk_iso_line,
                              struct gl_strided_buffer *strided_buf){
     long icou;

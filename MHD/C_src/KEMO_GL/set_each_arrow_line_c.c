@@ -16,7 +16,7 @@ static void set_certecian_viz_vector(int icomp, long inod,
     int nd;
     double v_tmp[3], x_rtp[3];
     
-    for(nd=0; nd<3; nd++) v_tmp[nd] = psf_s->d_nod[inod*psf_s->ncomptot + icomp+nd];
+    for(nd=0; nd<3; nd++){v_tmp[nd] = psf_s->d_nod[inod*psf_s->ncomptot + icomp+nd];};
     if(psf_s->id_coord[if_draw_viz]==1){
         position_2_sph_c(IONE, &psf_s->xyzw_viz[inod*IFOUR], x_rtp);
         sph_vector_to_xyz_vect(x_rtp[1], x_rtp[2], v_tmp, v_xyz);

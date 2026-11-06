@@ -21,32 +21,32 @@
 /* prototypes */
 
 long count_each_isoline_npatch(const long ist, const long ied,
-                               const double v_line, long icomp,
-                               struct psf_data *psf_s);
+                               const double v_line,
+                               struct psf_data *psf_d);
 
 long set_each_isoline_to_list(const long ist_line,
                               const long ist, const long ied,
-                              double v_line, long icomp,
-                              struct psf_data *psf_s,
+                              double v_line,
+                              struct psf_data *psf_d,
                               struct psf_normals *psf_n,
                               struct isoline_line_work *wk_iso_line);
 long set_each_map_isoline_to_list(const long ist_line,
                                   const long ist, const long ied,
-                                  double v_line, long icomp,
-                                  struct psf_data *psf_s,
+                                  double v_line,
+                                  struct psf_data *psf_d,
                                   struct psf_normals *psf_n,
                                   struct isoline_line_work *wk_iso_line);
 
 
 long set_each_isotube_to_buf(const long ist_tube, const long ist, const long ied,
-                             struct psf_data *psf_s,
+                             struct psf_data *psf_d,
                              struct isoline_line_work *wk_iso_line,
                              struct gl_strided_buffer *strided_buf,
                              struct gl_index_buffer *index_buf);
 
 long set_each_isoline_to_buf(const long ist_tube,
                              const long ist, const long ied,
-                             struct psf_data *psf_s,
+                             struct psf_data *psf_d,
                              struct isoline_line_work *wk_iso_line,
                              struct gl_strided_buffer *strided_buf);
 /* SET_EACH_ISOLINE_TO_BUF_ */

@@ -18,11 +18,10 @@ typedef struct{
     struct gl_strided_buffer *strided_buf;
     struct gl_index_buffer   *index_buf;
 
-    struct psf_data          *psf_s;
+    struct psf_data          *psf_d;
     struct psf_normals       *psf_n;
     struct isoline_line_work *wk_iso_line;
     
-    long icomp;
     double width;
     double v_line;
     double *f_color;
@@ -40,15 +39,14 @@ static void * count_isoline_npatch_1thread(void *args)
     int id =       p->id;
     int nthreads = p->nthreads;
     
-    struct psf_data *psf_s = p->psf_s;
-    long icomp = p->icomp;
+    struct psf_data *psf_d = p->psf_d;
     double v_line = p->v_line;
     long *num_line = p->num_line;
     
-    long lo = psf_s->nele_viz * id /     nthreads;
-    long hi = psf_s->nele_viz * (id+1) / nthreads;
+    long lo = psf_d->nele_viz * id /     nthreads;
+    long hi = psf_d->nele_viz * (id+1) / nthreads;
     
-    num_line[id] = count_each_isoline_npatch(lo, hi, v_line, icomp, psf_s);
+    num_line[id] = count_each_isoline_npatch(lo, hi, v_line, psf_d);
     return 0;
 }
 
@@ -59,20 +57,19 @@ static void * set_each_isoline_to_list_1thread(void *args)
     int nthreads = p->nthreads;
     
     struct isoline_line_work *wk_iso_line = p->wk_iso_line;
-    struct psf_data    *psf_s = p->psf_s;
+    struct psf_data    *psf_d = p->psf_d;
     struct psf_normals *psf_n = p->psf_n;
 
-    long icomp =      p->icomp;
     double v_line =   p->v_line;
     
     long ist_patch =  p->ist_patch;
     long *num_line =  p->num_line;
     
-    long lo = psf_s->nele_viz * id /     nthreads;
-    long hi = psf_s->nele_viz * (id+1) / nthreads;
+    long lo = psf_d->nele_viz * id /     nthreads;
+    long hi = psf_d->nele_viz * (id+1) / nthreads;
     
-    num_line[id] = set_each_isoline_to_list(ist_patch, lo, hi, v_line, icomp,
-                                            psf_s, psf_n, wk_iso_line);
+    num_line[id] = set_each_isoline_to_list(ist_patch, lo, hi, v_line,
+                                            psf_d, psf_n, wk_iso_line);
     return 0;
 }
 
@@ -83,20 +80,19 @@ static void * set_each_map_isoline_to_list_1thread(void *args)
     int nthreads = p->nthreads;
     
     struct isoline_line_work *wk_iso_line = p->wk_iso_line;
-    struct psf_data *psf_s = p->psf_s;
+    struct psf_data *psf_d = p->psf_d;
     struct psf_normals *psf_n = p->psf_n;
 
-    long icomp =      p->icomp;
     double v_line =   p->v_line;
     
     long ist_patch =  p->ist_patch;
     long *num_line =  p->num_line;
     
-    long lo = psf_s->nele_viz * id /     nthreads;
-    long hi = psf_s->nele_viz * (id+1) / nthreads;
+    long lo = psf_d->nele_viz * id /     nthreads;
+    long hi = psf_d->nele_viz * (id+1) / nthreads;
     
-    num_line[id] = set_each_map_isoline_to_list(ist_patch, lo, hi, v_line, icomp,
-                                                psf_s, psf_n, wk_iso_line);
+    num_line[id] = set_each_map_isoline_to_list(ist_patch, lo, hi, v_line,
+                                                psf_d, psf_n, wk_iso_line);
     return 0;
 }
 
@@ -107,7 +103,7 @@ static void * set_each_isotube_to_buf_1thread(void *args)
     
     struct gl_strided_buffer *strided_buf = p->strided_buf;
     struct gl_index_buffer   *index_buf =   p->index_buf;
-    struct psf_data          *psf_s = p->psf_s;
+    struct psf_data          *psf_d = p->psf_d;
     struct isoline_line_work *wk_iso_line = p->wk_iso_line;
     
     long ist = p->ist_patch;
@@ -115,7 +111,7 @@ static void * set_each_isotube_to_buf_1thread(void *args)
     long hi = p->ied;
     long *num_line =  p->num_line;
     
-    num_line[id] = set_each_isotube_to_buf(ist, lo, hi, psf_s,
+    num_line[id] = set_each_isotube_to_buf(ist, lo, hi, psf_d,
                                            wk_iso_line,
                                            strided_buf,
                                            index_buf);
@@ -128,7 +124,7 @@ static void * set_each_isoline_to_buf_1thread(void *args)
     int id =       p->id;
     
     struct gl_strided_buffer *strided_buf = p->strided_buf;
-    struct psf_data          *psf_s = p->psf_s;
+    struct psf_data          *psf_d = p->psf_d;
     struct isoline_line_work *wk_iso_line = p->wk_iso_line;
     
     long ist = p->ist_patch;
@@ -136,14 +132,14 @@ static void * set_each_isoline_to_buf_1thread(void *args)
     long hi = p->ied;
     long *num_line =  p->num_line;
     
-    num_line[id] = set_each_isoline_to_buf(ist, lo, hi, psf_s,
+    num_line[id] = set_each_isoline_to_buf(ist, lo, hi, psf_d,
                                            wk_iso_line, strided_buf);
     return 0;
 }
 
 
 static long add_each_isoline_npatch_pthread(const long ist_patch, const int nthreads,
-                                            double v_line, long icomp, struct psf_data *psf_s,
+                                            double v_line, struct psf_data *psf_d,
                                             long *istack_threads){
 /* Allocate thread arguments. */
     args_pthread_PSF_Isoline *args
@@ -159,9 +155,8 @@ static long add_each_isoline_npatch_pthread(const long ist_patch, const int nthr
         args[ip].id = ip;
         args[ip].nthreads = nthreads;
         
-        args[ip].icomp = icomp;
         args[ip].v_line = v_line;
-        args[ip].psf_s = psf_s;
+        args[ip].psf_d = psf_d;
         args[ip].num_line = num_line;
         
         pthread_create(&thread_handles[ip], NULL, count_isoline_npatch_1thread, &args[ip]);
@@ -178,9 +173,8 @@ static long add_each_isoline_npatch_pthread(const long ist_patch, const int nthr
     return istack_threads[nthreads];
 };
 
-static long set_each_isoline_to_list_pthread(const int nthreads, long *istack_threads,
-                                             double v_line, long icomp,
-                                             struct psf_data *psf_s, struct psf_normals *psf_n,
+static long set_each_isoline_to_list_pthread(const int nthreads, long *istack_threads, double v_line,
+                                             struct psf_data *psf_d, struct psf_normals *psf_n,
                                              struct isoline_line_work *wk_iso_line){
 /* Allocate thread arguments. */
     args_pthread_PSF_Isoline *args
@@ -197,10 +191,9 @@ static long set_each_isoline_to_list_pthread(const int nthreads, long *istack_th
         args[ip].nthreads = nthreads;
         
         args[ip].wk_iso_line = wk_iso_line;
-        args[ip].psf_s = psf_s;
+        args[ip].psf_d = psf_d;
         args[ip].psf_n = psf_n;
-
-        args[ip].icomp = icomp;
+        
         args[ip].v_line = v_line;
         
         args[ip].ist_patch = (istack_threads[ip] - istack_threads[0]);
@@ -216,9 +209,11 @@ static long set_each_isoline_to_list_pthread(const int nthreads, long *istack_th
     return num_patch;
 };
 
-static long set_each_map_isoline_to_list_pthread(const int nthreads, long *istack_threads,
-                                                 double v_line, long icomp,
-                                                 struct psf_data *psf_s, struct psf_normals *psf_n,
+static long set_each_map_isoline_to_list_pthread(const int nthreads, 
+                                                 long *istack_threads,
+                                                 double v_line,
+                                                 struct psf_data *psf_d,
+                                                 struct psf_normals *psf_n,
                                                  struct isoline_line_work *wk_iso_line){
 /* Allocate thread arguments. */
     args_pthread_PSF_Isoline *args
@@ -235,10 +230,9 @@ static long set_each_map_isoline_to_list_pthread(const int nthreads, long *istac
         args[ip].nthreads = nthreads;
         
         args[ip].wk_iso_line = wk_iso_line;
-        args[ip].psf_s = psf_s;
+        args[ip].psf_d = psf_d;
         args[ip].psf_n = psf_n;
 
-        args[ip].icomp = icomp;
         args[ip].v_line = v_line;
         
         args[ip].ist_patch = (istack_threads[ip] - istack_threads[0]);
@@ -256,7 +250,7 @@ static long set_each_map_isoline_to_list_pthread(const int nthreads, long *istac
 
 static long set_each_isotube_to_buf_pthread(const long ist_patch, long ntot_line,
                                             const int nthreads, long *istack_threads,
-                                            struct psf_data *psf_s,
+                                            struct psf_data *psf_d,
                                             struct isoline_line_work *wk_iso_line,
                                             struct gl_strided_buffer *strided_buf,
                                             struct gl_index_buffer *index_buf){
@@ -277,7 +271,7 @@ static long set_each_isotube_to_buf_pthread(const long ist_patch, long ntot_line
         args[ip].strided_buf = strided_buf;
         args[ip].index_buf =   index_buf;
 
-        args[ip].psf_s = psf_s;
+        args[ip].psf_d = psf_d;
         args[ip].wk_iso_line = wk_iso_line;
 
         args[ip].ist_patch = istack_threads[ip];
@@ -298,7 +292,7 @@ static long set_each_isotube_to_buf_pthread(const long ist_patch, long ntot_line
 
 static long set_each_isoline_to_buf_pthread(const long ist_patch, long ntot_line,
                                             const int nthreads, long *istack_threads,
-                                            struct psf_data *psf_s,
+                                            struct psf_data *psf_d,
                                             struct isoline_line_work *wk_iso_line,
                                             struct gl_strided_buffer *strided_buf){
 /* Allocate thread arguments. */
@@ -316,7 +310,7 @@ static long set_each_isoline_to_buf_pthread(const long ist_patch, long ntot_line
         args[ip].nthreads = nthreads;
         
         args[ip].strided_buf = strided_buf;
-        args[ip].psf_s = psf_s;
+        args[ip].psf_d = psf_d;
         args[ip].wk_iso_line = wk_iso_line;
 
         args[ip].ist_patch = istack_threads[ip];
@@ -338,68 +332,68 @@ static long set_each_isoline_to_buf_pthread(const long ist_patch, long ntot_line
 
 
 long sel_add_each_isoline_npatch_pthread(const long ist_patch, const int nthreads,
-                                         double v_line, long icomp, struct psf_data *psf_s,
+                                         double v_line, struct psf_data *psf_d,
                                          long *istack_threads){
     long num_patch;
     if(nthreads >1){
         num_patch = add_each_isoline_npatch_pthread(ist_patch, nthreads,
-                                                    v_line, icomp, psf_s, istack_threads);
+                                                    v_line, psf_d, istack_threads);
     }else{
-        num_patch = ist_patch + count_each_isoline_npatch(IZERO, psf_s->nele_viz,
-                                                          v_line, icomp, psf_s);
+        num_patch = ist_patch + count_each_isoline_npatch(IZERO, psf_d->nele_viz,
+                                                          v_line, psf_d);
         istack_threads[1] = num_patch;
     }
     return num_patch;
 };
 
-long sel_each_isoline_to_list_pthread(const int nthreads, long *istack_threads,
-                                      double v_line, long icomp,
-                                      struct psf_data *psf_s, struct psf_normals *psf_n,
+long sel_each_isoline_to_list_pthread(const int nthreads, long *istack_threads, double v_line,
+                                      struct psf_data *psf_d, struct psf_normals *psf_n,
                                       struct isoline_line_work *wk_iso_line){
     long num_patch = 0;
     if(nthreads > 1){
         num_patch = set_each_isoline_to_list_pthread(nthreads, istack_threads,
-                                                     v_line, icomp, psf_s, psf_n,
+                                                     v_line, psf_d, psf_n,
                                                      wk_iso_line);
     }else{
-        num_patch = set_each_isoline_to_list(IZERO, IZERO, psf_s->nele_viz,
-                                             v_line, icomp, psf_s, psf_n,
+        num_patch = set_each_isoline_to_list(IZERO, IZERO, psf_d->nele_viz,
+                                             v_line, psf_d, psf_n,
                                              wk_iso_line);
     }
     return num_patch;
 };
 
 
-long sel_each_map_isoline_to_list_pthread(const int nthreads, long *istack_threads,
-                                          double v_line, long icomp,
-                                          struct psf_data *psf_s,
+long sel_each_map_isoline_to_list_pthread(const int nthreads,
+                                          long *istack_threads,
+                                          double v_line,
+                                          struct psf_data *psf_d,
                                           struct psf_normals *psf_n,
                                           struct isoline_line_work *wk_iso_line){
     long num_patch = 0;
     if(nthreads > 1){
         num_patch = set_each_map_isoline_to_list_pthread(nthreads, istack_threads,
-                                                     v_line, icomp, psf_s, psf_n, wk_iso_line);
+                                                     v_line, psf_d, psf_n, wk_iso_line);
     }else{
-        num_patch = set_each_map_isoline_to_list(IZERO, IZERO, psf_s->nele_viz,
-                                                 v_line, icomp, psf_s, psf_n, wk_iso_line);
+        num_patch = set_each_map_isoline_to_list(IZERO, IZERO, psf_d->nele_viz,
+                                                 v_line, psf_d, psf_n, wk_iso_line);
     }
     return num_patch;
 };
 
 long sel_each_isotube_to_buf_pthread(const long ist_patch, long ntot_line,
                                      const int nthreads, long *istack_threads,
-                                     struct psf_data *psf_s,
+                                     struct psf_data *psf_d,
                                      struct isoline_line_work *wk_iso_line,
                                      struct gl_strided_buffer *strided_buf,
                                      struct gl_index_buffer *index_buf){
     long num_patch = ist_patch;
     if(nthreads > 1){
         num_patch = set_each_isotube_to_buf_pthread(num_patch, ntot_line,nthreads, istack_threads,
-                                                    psf_s, wk_iso_line,
+                                                    psf_d, wk_iso_line,
                                                     strided_buf, index_buf);
     }else{
         num_patch = set_each_isotube_to_buf(num_patch, IZERO, ntot_line,
-                                            psf_s, wk_iso_line,
+                                            psf_d, wk_iso_line,
                                             strided_buf, index_buf);
     }
     return num_patch;
@@ -407,17 +401,17 @@ long sel_each_isotube_to_buf_pthread(const long ist_patch, long ntot_line,
 
 long sel_each_isoline_to_buf_pthread(const long ist_patch, long ntot_line,
                                      const int nthreads, long *istack_threads,
-                                     struct psf_data *psf_s,
+                                     struct psf_data *psf_d,
                                      struct isoline_line_work *wk_iso_line,
                                      struct gl_strided_buffer *strided_buf){
     long num_patch = ist_patch;
     if(nthreads > 1){
         num_patch = set_each_isoline_to_buf_pthread(num_patch, ntot_line,
                                                     nthreads, istack_threads,
-                                                    psf_s, wk_iso_line, strided_buf);
+                                                    psf_d, wk_iso_line, strided_buf);
     }else{
         num_patch = set_each_isoline_to_buf(num_patch, IZERO, ntot_line,
-                                            psf_s, wk_iso_line, strided_buf);
+                                            psf_d, wk_iso_line, strided_buf);
     }
     return num_patch;
 };
