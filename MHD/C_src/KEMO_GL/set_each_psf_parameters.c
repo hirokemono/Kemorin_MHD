@@ -118,8 +118,8 @@ int get_PSF_colormap_id(struct psf_menu_val *psf_menu){
 	return get_color_mode_id_s(psf_menu->cmap_viz);
 };
 
-double send_VIZ_data_min(struct psf_data *psf_d, int icomp){return psf_d->d_min[icomp];};
-double send_VIZ_data_max(struct psf_data *psf_d, int icomp){return psf_d->d_max[icomp];};
+double send_VIZ_data_min(struct psf_data *psf_d, int ipick){return psf_d->pick_min[ipick];};
+double send_VIZ_data_max(struct psf_data *psf_d, int ipick){return psf_d->pick_max[ipick];};
 
 void delete_VIZ_color_index_list(struct psf_menu_val *psf_menu, int i_delete){
     delete_color_index_list_s(psf_menu->cmap_viz, i_delete);

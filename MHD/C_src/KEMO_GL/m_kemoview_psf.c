@@ -362,13 +362,14 @@ void get_VIZ_color_w_exp(int selected, struct psf_menu_val *viz_menu,
     return;
 };
 
-double get_VIZ_data_range(int selected, int icomp,
+double get_VIZ_data_range(int selected,
+                          struct psf_menu_val *viz_menu,
                           struct psf_data *viz_d){
 	double value = 0.0;
 	if(selected == ISET_COLOR_MIN){
-		value = send_VIZ_data_min(viz_d, icomp);
+		value = send_VIZ_data_min(viz_d, viz_menu->ipick_draw_viz);
 	}else if(selected == ISET_COLOR_MAX){
-		value = send_VIZ_data_max(viz_d, icomp);
+		value = send_VIZ_data_max(viz_d, viz_menu->ipick_draw_viz);
 	};
 	return value;
 }

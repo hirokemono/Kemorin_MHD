@@ -56,7 +56,6 @@ void init_colormap_params_4_viewer(int id_model,
 
 void load_color_opacity_map_from_list(struct psf_menu_val *psf_current_menu,
 			struct colormap_view *color_vws){
-	long icomp = psf_current_menu->icomp_draw_viz;
 	dup_real2_clist(color_vws->cmap_vws->r2_clist_gtk,
 					psf_current_menu->cmap_viz->colormap);
 	dup_real2_clist(color_vws->opacity_vws->r2_clist_gtk,

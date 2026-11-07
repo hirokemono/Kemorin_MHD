@@ -547,7 +547,7 @@ extern "C" {
                                              int id_model, double value);
 
 	double kemoview_get_VIZ_data_range(struct kemoviewer_type *kemoviewer,
-                                       int id_model, int selected, int icomp);
+                                       int id_model, int selected);
     double kemoview_get_VIZ_opacity_range(struct kemoviewer_type *kemoviewer,
                                           int id_model, int selected);
 

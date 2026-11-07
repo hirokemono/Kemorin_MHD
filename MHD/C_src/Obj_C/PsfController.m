@@ -60,12 +60,10 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
                    double *cmapMinValue, int *cmapMinDigit,
                    double *cmapMaxValue, int *cmapMaxDigit)
 {
-	int iplotted = kemoview_get_VIZ_field_param(kemo_sgl, id_model,
-                                                DRAW_ADDRESS_FLAG);
  	*dataMin = kemoview_get_VIZ_data_range(kemo_sgl, id_model,
-                                           ISET_COLOR_MIN, iplotted);
+                                           ISET_COLOR_MIN);
 	*dataMax = kemoview_get_VIZ_data_range(kemo_sgl, id_model,
-                                           ISET_COLOR_MAX, iplotted);
+                                           ISET_COLOR_MAX);
     
     kemoview_get_VIZ_color_w_exp(kemo_sgl, id_model, ISET_COLOR_MIN,
                                  cmapMinValue, cmapMinDigit);
@@ -375,7 +373,6 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
                  activeModel:(NSInteger) id_model
                     kemoview:(struct kemoviewer_type *) kemo_sgl
 {
-    int iplotted;
     int n_field = kemoview_get_VIZ_field_param(kemo_sgl, (int) id_model,
                                                NUM_FIELD_FLAG);
     long num_comp = kemoview_get_VIZ_num_component(kemo_sgl, (int) id_model,
@@ -387,18 +384,12 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
 			self.PSFVectorMenuAcrive = 0;
 		};
 		
-        
-		iplotted = kemoview_get_VIZ_field_param(kemo_sgl,
-                                                SURFACE_RENDERING,
-                                                DRAW_ADDRESS_FLAG);
 		self.PsfMinimumValue = kemoview_get_VIZ_data_range(kemo_sgl,
                                                            SURFACE_RENDERING,
-                                                           ISET_COLOR_MIN,
-                                                           iplotted);
+                                                           ISET_COLOR_MIN);
 		self.PsfMaximumValue = kemoview_get_VIZ_data_range(kemo_sgl,
                                                            SURFACE_RENDERING,
-                                                           ISET_COLOR_MAX,
-                                                           iplotted);
+                                                           ISET_COLOR_MAX);
 	}
 	return;
 }

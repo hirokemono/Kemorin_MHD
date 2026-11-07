@@ -287,15 +287,12 @@ void set_gtk_fieldline_menu(struct kemoviewer_gl_type *kemo_gl,
     int icolor_mode = kemoview_get_VIZ_patch_color_mode(kemo_gl->kemoview_data,
                                                         fline_gmenu->iflag_flinemode);
 	
-	int icomp =   kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
-                                               fline_gmenu->iflag_flinemode,
-                                               DRAW_ADDRESS_FLAG);
 	double value_min = kemoview_get_VIZ_data_range(kemo_gl->kemoview_data,
                                                    fline_gmenu->iflag_flinemode,
-                                                   ISET_COLOR_MIN, icomp);
+                                                   ISET_COLOR_MIN);
 	double value_max = kemoview_get_VIZ_data_range(kemo_gl->kemoview_data,
                                                    fline_gmenu->iflag_flinemode,
-                                                   ISET_COLOR_MAX, icomp);
+                                                   ISET_COLOR_MAX);
 	sprintf(min_text, "Min(%1.2e): ", value_min);
 	sprintf(max_text, "Max(%1.2e): ", value_max);
 	

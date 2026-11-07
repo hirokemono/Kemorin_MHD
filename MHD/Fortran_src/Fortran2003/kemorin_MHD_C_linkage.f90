@@ -198,7 +198,7 @@
 !                                           int id_model, int selected);
 !
 !    double kemoview_get_VIZ_data_range(struct kemoviewer_type *kemoviewer,
-!                                       int id_model, int selected, int icomp);
+!                                       int id_model, int selected, int ipick);
 !
 !    void kemoview_delete_VIZ_opacity_list(int i_delete, int id_model,
 !                                          struct kemoviewer_type *kemoviewer);

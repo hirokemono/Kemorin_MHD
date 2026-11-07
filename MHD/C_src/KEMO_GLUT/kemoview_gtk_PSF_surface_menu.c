@@ -223,7 +223,7 @@ static void MaxRangeDigitChange_CB(GtkWidget *entry, gpointer data)
 void set_gtk_surface_menu_values(struct kemoviewer_gl_type *kemo_gl,
                                  struct psf_surface_gtk_menu *psf_surface_menu){
 	int iflag_sfcolor;
-	int icomp, i_digit;
+	int i_digit;
 	double current_value;
 	double value_min, value_max;
 	char min_text[30], max_text[30];
@@ -252,15 +252,12 @@ void set_gtk_surface_menu_values(struct kemoviewer_gl_type *kemo_gl,
 		gtk_combo_box_set_active(GTK_COMBO_BOX(psf_surface_menu->combobox_sfcolor), 0);
 	};
 
-	icomp = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
-                                         SURFACE_RENDERING,
-                                         DRAW_ADDRESS_FLAG);
 	value_min = kemoview_get_VIZ_data_range(kemo_gl->kemoview_data,
                                             SURFACE_RENDERING,
-                                            ISET_COLOR_MIN, icomp);
+                                            ISET_COLOR_MIN);
 	value_max = kemoview_get_VIZ_data_range(kemo_gl->kemoview_data,
                                             SURFACE_RENDERING,
-                                            ISET_COLOR_MAX, icomp);
+                                            ISET_COLOR_MAX);
 	sprintf(min_text, "Min(%1.2e): ", value_min);
 	sprintf(max_text, "Max(%1.2e): ", value_max);
 	gtk_label_set_text(GTK_LABEL(psf_surface_menu->label_range_min), min_text);

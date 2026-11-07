@@ -91,8 +91,8 @@ int send_each_increment_vect(struct psf_menu_val *psf_menu);
 double send_scale_vector(struct psf_menu_val *psf_menu);
 double send_vector_thick(struct psf_menu_val *psf_menu);
 
-double send_VIZ_data_min(struct psf_data *psf_d, int icomp);
-double send_VIZ_data_max(struct psf_data *psf_d, int icomp);
+double send_VIZ_data_min(struct psf_data *psf_d, int ipick);
+double send_VIZ_data_max(struct psf_data *psf_d, int ipick);
 
 void delete_VIZ_color_index_list(struct psf_menu_val *psf_menu, int i_delete);
 void delete_VIZ_opacity_index_list(struct psf_menu_val *psf_menu, int i_delete);

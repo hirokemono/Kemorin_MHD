@@ -7,13 +7,13 @@
 static const double black[4] =   {BLACK_R,BLACK_G,BLACK_B,BLACK_A};
 static const double white[4] =   {WHITE_R,WHITE_G,WHITE_B,WHITE_A};
 
-long const_PSF_each_isotube_to_buf(const long ist_patch,
-                                   const int nthreads, long *istack_threads,
-                                   int ncorner, double width,
-                                   double v_line, long icomp, double *f_color,
-                                   struct psf_data *psf_s, struct psf_normals *psf_n,
-                                   struct gl_strided_buffer *strided_buf,
-                                   struct gl_index_buffer *index_buf){
+static long const_PSF_each_isotube_to_buf(const long ist_patch,
+                                          const int nthreads, long *istack_threads,
+                                          int ncorner, double width,
+                                          double v_line, double *f_color,
+                                          struct psf_data *psf_s, struct psf_normals *psf_n,
+                                          struct gl_strided_buffer *strided_buf,
+                                          struct gl_index_buffer *index_buf){
     struct isoline_mesh_work *wk_iso_mesh = init_isoline_mesh_work(psf_n->psf_edge);
     struct isoline_line_work *wk_iso_line = init_isoline_line_work(nthreads,
                                                                    istack_threads);
@@ -45,11 +45,11 @@ long const_PSF_each_isotube_to_buf(const long ist_patch,
     return inum_patch;
 }
 
-long const_PSF_each_isoline_to_buf(const long ist_patch,
-                                   const int nthreads, long *istack_threads,
-                                   double v_line, long icomp, double *f_color,
-                                   struct psf_data *psf_s, struct psf_normals *psf_n,
-                                   struct gl_strided_buffer *strided_buf){
+static long const_PSF_each_isoline_to_buf(const long ist_patch,
+                                          const int nthreads, long *istack_threads,
+                                          double v_line, double *f_color,
+                                          struct psf_data *psf_s, struct psf_normals *psf_n,
+                                          struct gl_strided_buffer *strided_buf){
     struct isoline_mesh_work *wk_iso_mesh = init_isoline_mesh_work(psf_n->psf_edge);
     struct isoline_line_work *wk_iso_line = init_isoline_line_work(nthreads,
                                                                    istack_threads);
@@ -165,7 +165,6 @@ static long set_PSF_isotubes_to_buf(const long ist_patch, int ist, int ied,
         inum_patch = const_PSF_each_isotube_to_buf(inum_patch, nthreads,
                                                    &istack_smp_psf_iso[j*nthreads],
                                                    ncorner, width, v_line,
-                                                   psf_m->icomp_draw_viz,
                                                    f_color, psf_s, psf_n,
                                                    psf_buf, index_buf);
         
@@ -203,8 +202,7 @@ static long set_PSF_isolines_to_buf(const long ist_patch, int ist, int ied,
         
         inum_patch = const_PSF_each_isoline_to_buf(inum_patch, nthreads,
                                                    &istack_smp_psf_iso[j*nthreads],
-                                                   v_line, psf_m->icomp_draw_viz, f_color,
-                                                   psf_s, psf_n, psf_buf);
+                                                   v_line, f_color, psf_s, psf_n, psf_buf);
         
     };
     dealloc_colormap_array(omap_array);
@@ -269,8 +267,7 @@ long set_PSF_all_isotubes_to_buf(const long ist_patch,
         inum_patch = const_PSF_each_isotube_to_buf(inum_patch, nthreads,
                                                    &istack_smp_psf_iso[psf_m->n_isoline*nthreads],
                                                    isoline_ncorner, (2.0*viz_line_width),
-                                                   ZERO, psf_m->icomp_draw_viz, &black[0],
-                                                   psf_s, psf_n, psf_buf, index_buf);
+                                                   ZERO, &black[0], psf_s, psf_n, psf_buf, index_buf);
     };
     
 	return inum_patch;
@@ -301,8 +298,7 @@ long set_PSF_all_isolines_to_buf(const long ist_patch,
     if(psf_m->draw_psf_zero  != 0){
         inum_patch = const_PSF_each_isoline_to_buf(inum_patch, nthreads,
                                                    &istack_smp_psf_iso[psf_m->n_isoline*nthreads],
-                                                   ZERO, psf_m->icomp_draw_viz, black,
-                                                   psf_s, psf_n, psf_buf);
+                                                   ZERO, black, psf_s, psf_n, psf_buf);
     };
     
     return inum_patch;

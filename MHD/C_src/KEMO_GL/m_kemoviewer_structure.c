@@ -1134,16 +1134,19 @@ void kemoview_write_colormap_file(struct kv_string *filename, int id_model,
 }
 
 double kemoview_get_VIZ_data_range(struct kemoviewer_type *kemoviewer,
-                                   int id_model, int selected, int icomp){
+                                   int id_model, int selected){
     if(id_model == FIELDLINE_RENDERING){
-        return get_VIZ_data_range(selected, icomp,
+        return get_VIZ_data_range(selected,
+                                  kemoviewer->kemo_fline->fline_m,
                                   kemoviewer->kemo_fline->fline_d);
     }else if(id_model == TRACER_RENDERING){
-        return get_VIZ_data_range(selected, icomp,
+        return get_VIZ_data_range(selected,
+                                  kemoviewer->kemo_tracer->tracer_m,
                                   kemoviewer->kemo_tracer->tracer_d);
     }else{
         int i_current = kemoviewer->kemo_mul_psf->psf_a->id_current;
-        return get_VIZ_data_range(selected, icomp,
+        return get_VIZ_data_range(selected,
+                                  kemoviewer->kemo_mul_psf->psf_m[i_current]);
                                   kemoviewer->kemo_mul_psf->psf_d[i_current]);
     }
 };
