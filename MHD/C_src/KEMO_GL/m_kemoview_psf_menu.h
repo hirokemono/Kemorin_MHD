@@ -74,7 +74,8 @@ struct psf_menu_val{
     
 	struct colormap_params **cmap_viz_comp;
 	struct colormap_params **cmap_viz_pick;
-	
+    struct colormap_params *cmap_viz;
+
 ///*    Color mode  ID      **///
 	int viz_color_mode;
     int polygon_mode_psf;

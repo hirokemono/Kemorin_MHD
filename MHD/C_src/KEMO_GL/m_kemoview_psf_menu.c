@@ -208,7 +208,7 @@ void alloc_draw_psf_flags(int id_color_mode, long ncomptot, long npicktot,
         alloc_color_index_list_s(psf_m->cmap_viz_comp[i], id_color_mode);
     };
         
-    psf_m->cmap_viz_pick =  (struct colormap_params **) malloc(ncomptot*sizeof(struct colormap_params *));
+    psf_m->cmap_viz_pick =  (struct colormap_params **) malloc(npicktot*sizeof(struct colormap_params *));
     if(psf_m->cmap_viz_pick == NULL ) {
         printf( "cmap_viz_pick cannot alloc!\n" );
         exit( 1 );

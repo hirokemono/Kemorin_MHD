@@ -180,7 +180,6 @@ void alloc_psf_data_s(struct psf_data *psf_s){
         exit(0);
     }
 
-
 	psf_s->pick_min = (double *)calloc(psf_s->npicktot,sizeof(double));
     if(psf_s->pick_min  == NULL){
         printf("malloc error for psf_s->pick_min \n");
