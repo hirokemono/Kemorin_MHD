@@ -66,17 +66,17 @@ void const_colorbar_box_buffer(int iflag_retina, int nx_win, int ny_win,
                                struct gl_textbox_buffer *cbar_min_buf,
                                struct gl_textbox_buffer *cbar_max_buf,
                                struct gl_textbox_buffer *cbar_zero_buf){
-    long icomp = psf_m->icomp_draw_viz;
-    set_colorbar_position(iflag_retina, (int) nx_win, (int) ny_win,
-                          psf_m->cmap_viz_comp[icomp], cbar_wk);
+    set_colorbar_position(iflag_retina,
+                          (int) nx_win, (int) ny_win,
+                          psf_m->cmap_viz, cbar_wk);
     
     cbar_buf->num_nod_buf = count_colorbar_box_buffer(cbar_wk->iflag_zero,
                                                       cbar_wk->num_quad);
     
     long inum_quad = 0;
-    inum_quad = solid_colorbar_box_to_buf(inum_quad, psf_m->cmap_viz_comp[icomp],
+    inum_quad = solid_colorbar_box_to_buf(inum_quad, psf_m->cmap_viz,
                                           cbar_wk, cbar_buf);
-    inum_quad = fade_colorbar_box_to_buf(inum_quad, psf_m->cmap_viz_comp[icomp],
+    inum_quad = fade_colorbar_box_to_buf(inum_quad, psf_m->cmap_viz,
                                          bg_color, cbar_wk, cbar_buf);
     inum_quad = colorbar_frame_to_buf(inum_quad, iflag_retina, text_color,
                                       cbar_wk, cbar_buf);

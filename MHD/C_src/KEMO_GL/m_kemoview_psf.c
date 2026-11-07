@@ -208,6 +208,7 @@ void set_each_PSF_field_param(int selected, int input,
                                   (int) viz_data->nnod_viz, viz_data->angle_viz,
                                   (int) viz_data->ncomptot, viz_menu->ist_draw_viz,
                                   viz_data->d_nod, viz_data->d_pick);
+    viz_menu->cmap_viz = viz_menu->cmap_viz_pick[viz_menu->ipick_draw_viz];
 	return;
 };
 
@@ -459,9 +460,4 @@ int send_psf_file_dir_prefix(struct kemoview_mul_psf *kemo_mul_psf,
     return send_each_psf_file_dir_prefix(kemo_mul_psf->psf_m[i_current],
                                          stripped_dir, stripped_filehead);
 };
-
-struct colormap_params * link_active_colormap_param(struct psf_menu_val *viz_menu){
-    long icomp =    send_draw_component_VIZ(viz_menu);
-    return viz_menu->cmap_viz_comp[icomp];
-}
 

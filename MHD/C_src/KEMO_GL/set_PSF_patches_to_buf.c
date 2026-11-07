@@ -219,9 +219,8 @@ long set_psf_arrows_to_buf(long ist_cone, long ist, long ied,
                            struct gl_index_buffer *index_buf){
 	double xyzw_line[8], dir_line[8], color_line[8];
         
-    struct colormap_params *cmap_s = psf_m->cmap_viz_comp[psf_m->icomp_draw_viz];
-    struct colormap_array *cmap_array = init_colormap_from_list(cmap_s->colormap);
-    struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);
+    struct colormap_array *cmap_array = init_colormap_from_list(psf_m->cmap_viz->colormap);
+    struct colormap_array *omap_array = init_colormap_from_list(psf_m->cmap_viz->opacitymap);
     
     long inod, nd;
     double d_mag;
@@ -238,7 +237,8 @@ long set_psf_arrows_to_buf(long ist_cone, long ist, long ied,
                         
                 if(psf_m->vector_patch_color == COLORED_BY_DATA){
                     d_mag = sqrt(dir_line[0]*dir_line[0] + dir_line[1]*dir_line[1] + dir_line[2]*dir_line[2]);
-                    set_rainbow_color_code(cmap_array, omap_array, cmap_s->id_color_mode,
+                    set_rainbow_color_code(cmap_array, omap_array, 
+                                           psf_m->cmap_viz->id_color_mode,
                                            d_mag, color_line);
                 } else {
                     for(nd=0;nd<4;nd++){color_line[nd] = arrow_c[nd];};

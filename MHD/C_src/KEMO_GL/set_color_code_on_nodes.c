@@ -16,9 +16,8 @@ static const double gray[4] =    {0.2,0.2,0.2,0.5};
 static void set_color_code_for_psf(struct psf_data *psf_d, struct psf_menu_val *psf_m){
 	int inod, nd;
 	
-	struct colormap_params *cmap_s = psf_m->cmap_viz_comp[psf_m->icomp_draw_viz];
-    struct colormap_array *cmap_array = init_colormap_from_list(cmap_s->colormap);
-    struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);
+    struct colormap_array *cmap_array = init_colormap_from_list(psf_m->cmap_viz->colormap);
+    struct colormap_array *omap_array = init_colormap_from_list(psf_m->cmap_viz->opacitymap);
 	if(psf_m->viz_color_mode == WHITE_SURFACE) {
 		for(inod=0; inod< psf_d->nnod_viz; inod++){
 			for(nd=0;nd<3;nd++){psf_d->color_nod[4*inod+nd] = white[nd];};
@@ -26,7 +25,7 @@ static void set_color_code_for_psf(struct psf_data *psf_d, struct psf_menu_val *
 		};
 	}else if(psf_m->viz_color_mode == TEXTURED_SURFACE) {
         for(inod=0; inod< psf_d->nnod_viz; inod++){
-            set_rainbow_color_code(cmap_array, omap_array, cmap_s->id_color_mode,
+            set_rainbow_color_code(cmap_array, omap_array, psf_m->cmap_viz->id_color_mode,
                                    psf_d->d_pick[inod], &psf_d->color_nod[4*inod]);
 
             for(nd=0;nd<2;nd++){
@@ -42,7 +41,7 @@ static void set_color_code_for_psf(struct psf_data *psf_d, struct psf_menu_val *
     }else if(psf_m->viz_color_mode == SINGLE_COLOR) {
         for (inod=0; inod< psf_d->nnod_viz; inod++){
             for(nd=0;nd<3;nd++){
-				psf_d->color_nod[4*inod+nd] = cmap_s->single_color[nd];
+				psf_d->color_nod[4*inod+nd] = psf_m->cmap_viz->single_color[nd];
 			};
             psf_d->color_nod[4*inod+3] = set_opacity_from_value_s(omap_array, 
                                                                   (double) ZERO);
@@ -55,13 +54,13 @@ static void set_color_code_for_psf(struct psf_data *psf_d, struct psf_menu_val *
 */
 	}else if(psf_m->viz_color_mode == COLORED_BY_DATA) {
 		for (inod=0; inod< psf_d->nnod_viz; inod++){
-			set_rainbow_color_code(cmap_array, omap_array, cmap_s->id_color_mode,
+			set_rainbow_color_code(cmap_array, omap_array, psf_m->cmap_viz->id_color_mode,
                                    psf_d->d_pick[inod], &psf_d->color_nod[4*inod]);
 		};
 /*
     }else if(psf_m->viz_color_mode == TWO_COLOR_LINE) {
 		for (inod=0; inod< psf_d->nnod_viz; inod++){
-            set_two_color_scale_c(cmap_s->id_color_mode, d_edge,
+            set_two_color_scale_c(psf_m->cmap_viz->id_color_mode, d_edge,
                                   &psf_d->color_nod[4*inod]);
 
             psf_d->color_nod[4*inod+3] = set_opacity_from_value_s(omap_array, 
@@ -98,9 +97,8 @@ void set_color_code_for_fieldlines(struct psf_data *fline_d,
 	int inod, nd;
 	double d_edge = 0.0;
 	
-	struct colormap_params *cmap_s = fline_m->cmap_viz_comp[fline_m->icomp_draw_viz];
-    struct colormap_array *cmap_array = init_colormap_from_list(cmap_s->colormap);
-	struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);
+    struct colormap_array *cmap_array = init_colormap_from_list(fline_m->cmap_viz->colormap);
+	struct colormap_array *omap_array = init_colormap_from_list(fline_m->cmap_viz->opacitymap);
 	if (fline_m->viz_color_mode == WHITE_LINE) {
 		for (inod=0; inod< fline_d->nnod_viz; inod++){
 			for(nd=0;nd<4;nd++){fline_d->color_nod[4*inod+nd] = white[nd];};
@@ -113,20 +111,20 @@ void set_color_code_for_fieldlines(struct psf_data *fline_d,
     }else if(fline_m->viz_color_mode == SINGLE_COLOR) {
         for (inod=0; inod< fline_d->nnod_viz; inod++){
             for(nd=0;nd<3;nd++){
-                fline_d->color_nod[4*inod+nd] = cmap_s->single_color[nd];
+                fline_d->color_nod[4*inod+nd] = fline_m->cmap_viz->single_color[nd];
             };
             fline_d->color_nod[4*inod+3] = set_opacity_from_value_s(omap_array, d_edge);
         };
     }else if(fline_m->viz_color_mode == RAINBOW_LINE) {
 		for (inod=0; inod< fline_d->nnod_viz; inod++){
 			d_edge =  fline_d->d_pick[inod];
-			set_rainbow_color_code(cmap_array, omap_array, cmap_s->id_color_mode,
+			set_rainbow_color_code(cmap_array, omap_array, fline_m->cmap_viz->id_color_mode,
                                    d_edge, &fline_d->color_nod[4*inod]);
 		};
 	}else if(fline_m->viz_color_mode == TWO_COLOR_LINE) {
 		for (inod=0; inod< fline_d->nnod_viz; inod++){
 			d_edge =  fline_d->d_pick[inod];
-			set_two_color_scale_c(cmap_s->id_color_mode, d_edge,
+			set_two_color_scale_c(fline_m->cmap_viz->id_color_mode, d_edge,
                                   &fline_d->color_nod[4*inod]);
             
             fline_d->color_nod[4*inod+3] = set_opacity_from_value_s(omap_array, d_edge);

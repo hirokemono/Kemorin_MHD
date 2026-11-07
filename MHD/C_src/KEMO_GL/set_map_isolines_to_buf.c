@@ -58,8 +58,7 @@ static long add_map_isoline_num(long num_patch, const int nthreads,
 	double v_line;
 	
 	for (j = ist; j < ied; j++){
-		v_line = cal_isoline_value(j, psf_m->n_isoline, 
-								   psf_m->cmap_viz_comp[psf_m->icomp_draw_viz]);
+		v_line = cal_isoline_value(j, psf_m->n_isoline,  psf_m->cmap_viz);
         num_patch = sel_add_each_isoline_npatch_pthread(num_patch, nthreads, v_line, psf_s,
                                                         &istack_smp_map_iso[j*nthreads]);
 	};
@@ -78,9 +77,8 @@ static long set_map_isolines_to_buf(const long ist_patch, int ist, int ied,
 	double v_line;
 	double f_color[4];
 	
-    struct colormap_params *cmap_s = psf_m->cmap_viz_comp[psf_m->icomp_draw_viz];
-    struct colormap_array *cmap_array = init_colormap_from_list(cmap_s->colormap);
-    struct colormap_array *omap_array = init_colormap_from_list(cmap_s->opacitymap);
+    struct colormap_array *cmap_array = init_colormap_from_list(psf_m->cmap_viz->colormap);
+    struct colormap_array *omap_array = init_colormap_from_list(psf_m->cmap_viz->opacitymap);
 	if (psf_m->isoline_color == BLACK_LINE){
 		for(nd=0;nd<4;nd++) {f_color[nd] = black[nd];}
 	} else if(psf_m->isoline_color == WHITE_LINE){
@@ -88,10 +86,9 @@ static long set_map_isolines_to_buf(const long ist_patch, int ist, int ied,
 	};
 	
 	for (j = ist; j < ied; j++){
-		v_line = cal_isoline_value(j, psf_m->n_isoline, 
-								   psf_m->cmap_viz_comp[psf_m->icomp_draw_viz]);
+		v_line = cal_isoline_value(j, psf_m->n_isoline, psf_m->cmap_viz);
 		if (psf_m->isoline_color == RAINBOW_LINE){	
-			set_rainbow_color_code(cmap_array, omap_array, cmap_s->id_color_mode,
+			set_rainbow_color_code(cmap_array, omap_array, psf_m->cmap_viz->id_color_mode,
                                    v_line, f_color);
 		};
         inum_patch = const_map_each_isoline_to_buf(inum_patch, nthreads,
@@ -112,8 +109,7 @@ long add_map_PSF_isoline(const long ist_patch, const int nthreads,
                          long *istack_smp_map_iso){
 	long num_patch = ist_patch;
 	if(psf_m->draw_psf_grid  != 0){
-		psf_m->ist_positive_line = find_start_positive_lines(psf_m->n_isoline,
-								psf_m->cmap_viz_comp[psf_m->icomp_draw_viz]);
+		psf_m->ist_positive_line = find_start_positive_lines(psf_m->n_isoline, psf_m->cmap_viz);
 		if(psf_m->ist_positive_line > 1){
 			num_patch = add_map_isoline_num(num_patch, nthreads,
                                             IZERO, psf_m->ist_positive_line,
@@ -143,8 +139,7 @@ long set_map_PSF_isoline_to_buf(const long ist_patch,
 	long inum_patch = ist_patch;
 	if(psf_m->draw_psf_grid  != 0){
 		psf_m->ist_positive_line
-            = find_start_positive_lines(psf_m->n_isoline,
-                                        psf_m->cmap_viz_comp[psf_m->icomp_draw_viz]);
+            = find_start_positive_lines(psf_m->n_isoline, psf_m->cmap_viz);
 		if(psf_m->ist_positive_line > 1){
 			inum_patch = set_map_isolines_to_buf(inum_patch,
                                                  IZERO, psf_m->ist_positive_line,

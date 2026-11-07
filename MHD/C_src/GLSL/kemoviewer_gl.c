@@ -179,12 +179,12 @@ void * kemoview_link_active_colormap_param(int id_model,
                                            struct kemoviewer_gl_type *kemo_gl){
     struct colormap_params * cmap_params;
     if(id_model == FIELDLINE_RENDERING){
-        cmap_params = link_active_colormap_param(kemo_gl->kemoview_data->kemo_fline->fline_m);
+        cmap_params = kemo_gl->kemoview_data->kemo_fline->fline_m->cmap_viz;
     }else if(id_model == TRACER_RENDERING){
-        cmap_params =  link_active_colormap_param(kemo_gl->kemoview_data->kemo_tracer->tracer_m);
+        cmap_params = kemo_gl->kemoview_data->kemo_tracer->tracer_m>cmap_viz;
     }else{
         int i_current = get_curent_PSF_ID(kemo_gl->kemoview_data->kemo_mul_psf->psf_a);
-        cmap_params = link_active_colormap_param(kemo_gl->kemoview_data->kemo_mul_psf->psf_m[i_current]);
+        cmap_params = kemo_gl->kemoview_data->kemo_mul_psf->psf_m[i_current]->cmap_viz;
     }
     return (void *) cmap_params;
 }

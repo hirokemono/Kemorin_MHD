@@ -72,7 +72,6 @@ struct psf_menu_val{
     int iflag_draw_viz;
 	int iflag_draw_cbar;
     
-	struct colormap_params **cmap_viz_comp;
 	struct colormap_params **cmap_viz_pick;
     struct colormap_params *cmap_viz;
 
