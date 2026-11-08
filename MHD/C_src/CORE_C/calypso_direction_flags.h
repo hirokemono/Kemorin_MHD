@@ -15,7 +15,7 @@
 
 #define NPICK_SCALAR         1
 #define NPICK_VECTOR         8
-#define NPICK_SYM_TENSOR    18
+#define NPICK_SYM_TENSOR    16
 #define NPICK_ASYM_TENSOR    9
 
 #define XYZ_COORDINATE    0

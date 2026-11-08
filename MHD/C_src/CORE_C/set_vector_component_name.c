@@ -21,7 +21,7 @@ const char * const hd_p = "Phi";
 */
 const char * const hd_s = "S";
 
-const char * const hd_magitude = "magnitude";
+const char * const hd_magnitude = "magnitude";
 
 
 const char * const hd_scalar =   "scalar";
@@ -32,7 +32,7 @@ const char * const xyz_vector_list[] = {hd_x,
                                         hd_t,
                                         hd_p,
                                         hd_s,
-                                        hd_magitude,
+                                        hd_magnitude,
                                         NULL};
 
 const char * const sph_vector_list[] = {hd_r,
@@ -42,7 +42,7 @@ const char * const sph_vector_list[] = {hd_r,
                                         hd_z,
                                         hd_x,
                                         hd_y,
-                                        hd_magitude,
+                                        hd_magnitude,
                                         NULL};
 
 const char * const cyl_vector_list[] = {hd_s,
@@ -52,7 +52,7 @@ const char * const cyl_vector_list[] = {hd_s,
                                         hd_t,
                                         hd_x,
                                         hd_y,
-                                        hd_magitude,
+                                        hd_magnitude,
                                         NULL};
 
 
@@ -67,7 +67,7 @@ int find_comp_id_from_by_sph_vector(const char *selected){
     else if(cmp_no_case_c(selected, hd_x) != 0){return  SPH_to_X;}
     else if(cmp_no_case_c(selected, hd_y) != 0){return  SPH_to_Y;}
     
-    else if(cmp_no_case_c(selected, hd_magitude) != 0){return SPH_to_MAG;};
+    else if(cmp_no_case_c(selected, hd_magnitude) != 0){return SPH_to_MAG;};
     return -1;
 }
 
@@ -82,7 +82,7 @@ void set_component_name_by_sph_vector(int icomp, char *comp_name){
     else if(icomp == SPH_to_X){sprintf(comp_name, hd_x);}
     else if(icomp == SPH_to_Y){sprintf(comp_name, hd_x);}
     
-    else if(icomp == SPH_to_MAG){sprintf(comp_name, hd_magitude);};
+    else if(icomp == SPH_to_MAG){sprintf(comp_name, hd_magnitude);};
     return;
 };
 
@@ -98,7 +98,7 @@ int find_comp_id_from_by_cyl_vector(const char *selected){
     else if(cmp_no_case_c(selected, hd_x) != 0){return CYL_to_X;}
     else if(cmp_no_case_c(selected, hd_y) != 0){return CYL_to_Y;}
     
-    else if(cmp_no_case_c(selected, hd_magitude) != 0){return CYL_to_MAG;};
+    else if(cmp_no_case_c(selected, hd_magnitude) != 0){return CYL_to_MAG;};
     return -1;
 }
 
@@ -114,7 +114,7 @@ void set_component_name_by_cyl_vector(int icomp, char *comp_name){
     else if(icomp == CYL_to_Y){sprintf(comp_name, hd_y);}
     else if(icomp == CYL_to_Z){sprintf(comp_name, hd_z);}
     
-    else if(icomp == CYL_to_MAG){sprintf(comp_name, hd_magitude);};
+    else if(icomp == CYL_to_MAG){sprintf(comp_name, hd_magnitude);};
     return;
 };
 
@@ -130,7 +130,7 @@ int find_comp_id_from_by_xyz_vector(const char *selected){
     
     else if(cmp_no_case_c(selected, hd_s) != 0){return XYZ_to_S;}
     
-    else if(cmp_no_case_c(selected, hd_magitude) != 0){return XYZ_to_MAG;};
+    else if(cmp_no_case_c(selected, hd_magnitude) != 0){return XYZ_to_MAG;};
     return -1;
 }
 
@@ -145,7 +145,7 @@ void set_component_name_by_xyz_vector(int icomp, char *comp_name){
             
     else if(icomp == XYZ_to_S){sprintf(comp_name, hd_s);}
     
-    else if(icomp == XYZ_to_MAG){sprintf(comp_name, hd_magitude);};
+    else if(icomp == XYZ_to_MAG){sprintf(comp_name, hd_magnitude);};
     return;
 };
 

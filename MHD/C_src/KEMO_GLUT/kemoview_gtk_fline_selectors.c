@@ -141,28 +141,28 @@ GtkWidget * draw_viz_field_gtk_box(struct kemoviewer_gl_type *kemo_gl, int id_mo
 GtkWidget * draw_viz_component_gtk_box(struct kemoviewer_gl_type *kemo_gl, int id_model){
 	char comp_name[128];
     
-    int if_fline = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
-                                                id_model, FIELD_SEL_FLAG);
-	int ic_fline = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
-                                                id_model, COMPONENT_SEL_FLAG);
-	int ncomp = (int) kemoview_get_VIZ_num_component(kemo_gl->kemoview_data,
-                                                     id_model, if_fline);
+    int ifield = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                              id_model, FIELD_SEL_FLAG);
+	int ic_viz = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                              id_model, COMPONENT_SEL_FLAG);
+	int npick = (int) kemoview_get_VIZ_num_pick_comps(kemo_gl->kemoview_data,
+                                                      id_model, ifield);
 	
-    GtkWidget *label_tree_comp = create_fixed_label_w_index_tree();
+    GtkWidget *label_tree_comp =     create_fixed_label_w_index_tree();
     GtkTreeModel *model_comp =       gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_comp));
     GtkTreeModel *child_model_comp = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_comp));
     int id_coord = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
                                                 id_model, COORDINATE_FLAG);
-    int icomp;
+    int ipick;
     int index = 0;
-    for(icomp=0;icomp<ncomp;icomp++){
-        set_PSF_component_name(ncomp, id_coord, icomp, comp_name);
-        index = append_ci_item_to_tree(index, comp_name, icomp, child_model_comp);
+    for(ipick=0;ipick<npick;ipick++){
+        set_PSF_full_component_name(npick, id_coord, ipick, comp_name);
+        index = append_ci_item_to_tree(index, comp_name, ipick, child_model_comp);
     };
     
     GtkWidget *combobox_comp = gtk_combo_box_new_with_model(child_model_comp);
     GtkCellRenderer *renderer_comp = gtk_cell_renderer_text_new();
-    gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_comp), ic_fline);
+    gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_comp), ic_viz);
     gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_comp), renderer_comp, TRUE);
     gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_comp), renderer_comp,
                                    "text", COLUMN_FIELD_NAME, NULL);

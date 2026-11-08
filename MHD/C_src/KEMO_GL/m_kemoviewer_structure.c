@@ -717,6 +717,21 @@ long kemoview_get_VIZ_num_component(struct kemoviewer_type *kemoviewer,
     }
     return ncomp;
 };
+
+long kemoview_get_VIZ_num_pick_comps(struct kemoviewer_type *kemoviewer,
+                                     int id_model, int i){
+    long ncomp;
+    if(id_model == FIELDLINE_RENDERING){
+        ncomp =  send_VIZ_num_pick_items(kemoviewer->kemo_fline->fline_d, i);
+    }else if(id_model == TRACER_RENDERING){
+        ncomp =  send_VIZ_num_pick_items(kemoviewer->kemo_tracer->tracer_d, i);
+    }else{
+        int i_current = kemoviewer->kemo_mul_psf->psf_a->id_current;
+        ncomp =  send_VIZ_num_pick_items(kemoviewer->kemo_mul_psf->psf_d[i_current], i);
+    }
+    return ncomp;
+};
+
 void kemoview_get_VIZ_field_name(struct kemoviewer_type *kemoviewer, int id_model,
                                  struct kv_string *colorname, int i){
     if(id_model == FIELDLINE_RENDERING){

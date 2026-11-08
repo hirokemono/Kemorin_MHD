@@ -453,6 +453,8 @@ extern "C" {
 
     long kemoview_get_VIZ_num_component(struct kemoviewer_type *kemoviewer,
                                         int id_model, int i);
+    long kemoview_get_VIZ_num_pick_comps(struct kemoviewer_type *kemoviewer,
+                                         int id_model, int i);
     void kemoview_get_VIZ_field_name(struct kemoviewer_type *kemoviewer, int id_model,
                                      struct kv_string *colorname, int i);
     

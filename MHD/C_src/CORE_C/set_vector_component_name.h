@@ -23,7 +23,7 @@ extern const char * const hd_p;
 
 extern const char * const hd_s;
 
-extern const char * const hd_magitude;
+extern const char * const hd_magnitude;
 
 extern const char * const hd_scalar;
 

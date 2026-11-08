@@ -364,7 +364,7 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
                 menuItem = [psfComponentMenu lastItem];
                 [menuItem setTag:SPH_to_Y];
                     
-                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_magitude]];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_magnitude]];
                 menuItem = [psfComponentMenu lastItem];
                 [menuItem setTag:SPH_to_MAG];
                     
@@ -397,7 +397,7 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
                 menuItem = [psfComponentMenu lastItem];
                 [menuItem setTag:CYL_to_Y];
 
-                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_magitude]];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_magnitude]];
                 menuItem = [psfComponentMenu lastItem];
                 [menuItem setTag:CYL_to_MAG];
                     
@@ -430,7 +430,7 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
                 menuItem = [psfComponentMenu lastItem];
                 [menuItem setTag:XYZ_to_S];
 
-                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_magitude]];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_magnitude]];
                 menuItem = [psfComponentMenu lastItem];
                 [menuItem setTag:XYZ_to_MAG];
             }

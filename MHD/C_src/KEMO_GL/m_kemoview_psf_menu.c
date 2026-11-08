@@ -53,112 +53,117 @@ void set_PSF_component_name(int ncomp, int id_coord, int icomp, char *comp_name)
         };
     };
     
-    if(icomp == ncomp) sprintf(comp_name, "%s", hd_magitude);
+    if(icomp == ncomp) sprintf(comp_name, "%s", hd_magnitude);
     
     return;
 };
 
-void set_PSF_full_component_name(int ncomp, int id_coord, int icomp, char *comp_name) {
+void set_PSF_full_component_name(int npick, int id_coord, int ipick, char *comp_name){
     if(id_coord == 1){
-        if(ncomp == 1){
-            if(icomp == 0) sprintf(comp_name, "%s", hd_scalar);
-        }else if(ncomp == 3){
-            if(icomp ==  0) sprintf(comp_name, "%s", hd_r);
-            if(icomp ==  1) sprintf(comp_name, "%s", hd_t);
-            if(icomp ==  2) sprintf(comp_name, "%s", hd_p);
-            if(icomp ==  3) sprintf(comp_name, "%s", hd_s);
+        if(npick == NPICK_VECTOR){
+            if(ipick ==  SPH_to_R) sprintf(comp_name, "%s", hd_r);
+            if(ipick ==  SPH_to_T) sprintf(comp_name, "%s", hd_t);
+            if(ipick ==  SPH_to_P) sprintf(comp_name, "%s", hd_p);
             
-            if(icomp ==  4) sprintf(comp_name, "%s", hd_x);
-            if(icomp ==  5) sprintf(comp_name, "%s", hd_y);
-            if(icomp ==  6) sprintf(comp_name, "%s", hd_z);
-        }else if(ncomp == 6){
-            if(icomp ==  0) sprintf(comp_name, "%s", hd_rr);
-            if(icomp ==  1) sprintf(comp_name, "%s", hd_rt);
-            if(icomp ==  2) sprintf(comp_name, "%s", hd_rp);
-            if(icomp ==  3) sprintf(comp_name, "%s", hd_tt);
-            if(icomp ==  4) sprintf(comp_name, "%s", hd_tp);
-            if(icomp ==  5) sprintf(comp_name, "%s", hd_pp);
+            if(ipick ==  SPH_to_S) sprintf(comp_name, "%s", hd_s);
+            if(ipick ==  SPH_to_Z) sprintf(comp_name, "%s", hd_z);
             
-            if(icomp ==  6) sprintf(comp_name, "%s", hd_ss);
-            if(icomp ==  7) sprintf(comp_name, "%s", hd_sp);
-            if(icomp ==  8) sprintf(comp_name, "%s", hd_sz);
-            if(icomp ==  9) sprintf(comp_name, "%s", hd_pz);
-            if(icomp == 10) sprintf(comp_name, "%s", hd_zz);
+            if(ipick ==  SPH_to_X) sprintf(comp_name, "%s", hd_x);
+            if(ipick ==  SPH_to_Y) sprintf(comp_name, "%s", hd_y);
             
-            if(icomp == 11) sprintf(comp_name, "%s", hd_xx);
-            if(icomp == 12) sprintf(comp_name, "%s", hd_xy);
-            if(icomp == 13) sprintf(comp_name, "%s", hd_xz);
-            if(icomp == 14) sprintf(comp_name, "%s", hd_yy);
-            if(icomp == 15) sprintf(comp_name, "%s", hd_yz);
+            if(ipick ==  SPH_to_MAG) sprintf(comp_name, "%s", hd_magnitude);
+        }else if(npick == NPICK_SYM_TENSOR){
+            if(ipick ==  SPH_to_RR) sprintf(comp_name, "%s", hd_rr);
+            if(ipick ==  SPH_to_RT) sprintf(comp_name, "%s", hd_rt);
+            if(ipick ==  SPH_to_RP) sprintf(comp_name, "%s", hd_rp);
+            if(ipick ==  SPH_to_TT) sprintf(comp_name, "%s", hd_tt);
+            if(ipick ==  SPH_to_TP) sprintf(comp_name, "%s", hd_tp);
+            if(ipick ==  SPH_to_PP) sprintf(comp_name, "%s", hd_pp);
+            
+            if(ipick ==  SPH_to_SS) sprintf(comp_name, "%s", hd_ss);
+            if(ipick ==  SPH_to_SP) sprintf(comp_name, "%s", hd_sp);
+            if(ipick ==  SPH_to_SZ) sprintf(comp_name, "%s", hd_sz);
+            if(ipick ==  SPH_to_PZ) sprintf(comp_name, "%s", hd_pz);
+            if(ipick ==  SPH_to_ZZ) sprintf(comp_name, "%s", hd_zz);
+            
+            if(ipick == SPH_to_XX) sprintf(comp_name, "%s", hd_xx);
+            if(ipick == SPH_to_XY) sprintf(comp_name, "%s", hd_xy);
+            if(ipick == SPH_to_XZ) sprintf(comp_name, "%s", hd_xz);
+            if(ipick == SPH_to_YY) sprintf(comp_name, "%s", hd_yy);
+            if(ipick == SPH_to_YZ) sprintf(comp_name, "%s", hd_yz);
+        }else{
+            if(ipick == IZERO) sprintf(comp_name, "%s", hd_scalar);
         };
     } else if(id_coord == 2){
-        if(ncomp == 1){
-            if(icomp == 0) sprintf(comp_name, "%s", hd_scalar);
-        }else if(ncomp == 3){
-            if(icomp ==  0) sprintf(comp_name, "%s", hd_s);
-            if(icomp ==  1) sprintf(comp_name, "%s", hd_p);
-            if(icomp ==  2) sprintf(comp_name, "%s", hd_z);
-            if(icomp ==  3) sprintf(comp_name, "%s", hd_r);
-            if(icomp ==  4) sprintf(comp_name, "%s", hd_t);
+        if(npick == NPICK_VECTOR){
+            if(ipick ==  CYL_to_S) sprintf(comp_name, "%s", hd_s);
+            if(ipick ==  CYL_to_P) sprintf(comp_name, "%s", hd_p);
+            if(ipick ==  CYL_to_Z) sprintf(comp_name, "%s", hd_z);
             
-            if(icomp ==  5) sprintf(comp_name, "%s", hd_x);
-            if(icomp ==  6) sprintf(comp_name, "%s", hd_y);
-        }else if(ncomp == 6){
-            if(icomp ==  0) sprintf(comp_name, "%s", hd_ss);
-            if(icomp ==  1) sprintf(comp_name, "%s", hd_sp);
-            if(icomp ==  2) sprintf(comp_name, "%s", hd_sz);
-            if(icomp ==  3) sprintf(comp_name, "%s", hd_pp);
-            if(icomp ==  4) sprintf(comp_name, "%s", hd_pz);
-            if(icomp ==  5) sprintf(comp_name, "%s", hd_zz);
+            if(ipick ==  CYL_to_R) sprintf(comp_name, "%s", hd_r);
+            if(ipick ==  CYL_to_T) sprintf(comp_name, "%s", hd_t);
             
-            if(icomp ==  6) sprintf(comp_name, "%s", hd_rr);
-            if(icomp ==  7) sprintf(comp_name, "%s", hd_rt);
-            if(icomp ==  8) sprintf(comp_name, "%s", hd_rp);
-            if(icomp ==  9) sprintf(comp_name, "%s", hd_tt);
-            if(icomp == 10) sprintf(comp_name, "%s", hd_tp);
+            if(ipick ==  CYL_to_X) sprintf(comp_name, "%s", hd_x);
+            if(ipick ==  CYL_to_Y) sprintf(comp_name, "%s", hd_y);
             
-            if(icomp == 11) sprintf(comp_name, "%s", hd_xx);
-            if(icomp == 12) sprintf(comp_name, "%s", hd_xy);
-            if(icomp == 13) sprintf(comp_name, "%s", hd_xz);
-            if(icomp == 14) sprintf(comp_name, "%s", hd_yy);
-            if(icomp == 15) sprintf(comp_name, "%s", hd_yz);
+            if(ipick ==  CYL_to_MAG) sprintf(comp_name, "%s", hd_magnitude);
+        }else if(npick == NPICK_SYM_TENSOR){
+            if(ipick ==  CYL_to_SS) sprintf(comp_name, "%s", hd_ss);
+            if(ipick ==  CYL_to_SP) sprintf(comp_name, "%s", hd_sp);
+            if(ipick ==  CYL_to_SZ) sprintf(comp_name, "%s", hd_sz);
+            if(ipick ==  CYL_to_PP) sprintf(comp_name, "%s", hd_pp);
+            if(ipick ==  CYL_to_PZ) sprintf(comp_name, "%s", hd_pz);
+            if(ipick ==  CYL_to_ZZ) sprintf(comp_name, "%s", hd_zz);
+            
+            if(ipick ==  CYL_to_RR) sprintf(comp_name, "%s", hd_rr);
+            if(ipick ==  CYL_to_RT) sprintf(comp_name, "%s", hd_rt);
+            if(ipick ==  CYL_to_RP) sprintf(comp_name, "%s", hd_rp);
+            if(ipick ==  CYL_to_TT) sprintf(comp_name, "%s", hd_tt);
+            if(ipick ==  CYL_to_TP) sprintf(comp_name, "%s", hd_tp);
+            
+            if(ipick == CYL_to_XX) sprintf(comp_name, "%s", hd_xx);
+            if(ipick == CYL_to_XY) sprintf(comp_name, "%s", hd_xy);
+            if(ipick == CYL_to_XZ) sprintf(comp_name, "%s", hd_xz);
+            if(ipick == CYL_to_YY) sprintf(comp_name, "%s", hd_yy);
+            if(ipick == CYL_to_YZ) sprintf(comp_name, "%s", hd_yz);
+        }else{
+            if(ipick == IZERO) sprintf(comp_name, "%s", hd_scalar);
         };
     } else {
-        if(ncomp == 1){
-            if(icomp == 0) sprintf(comp_name, "%s", hd_scalar);
-        }else if(ncomp == 3){
-            if(icomp ==  0) sprintf(comp_name, "%s", hd_x);
-            if(icomp ==  1) sprintf(comp_name, "%s", hd_y);
-            if(icomp ==  2) sprintf(comp_name, "%s", hd_z);
+        if(npick == NPICK_VECTOR){
+            if(ipick ==  XYZ_to_X) sprintf(comp_name, "%s", hd_x);
+            if(ipick ==  XYZ_to_Y) sprintf(comp_name, "%s", hd_y);
+            if(ipick ==  XYZ_to_Z) sprintf(comp_name, "%s", hd_z);
             
-            if(icomp ==  3) sprintf(comp_name, "%s", hd_r);
-            if(icomp ==  4) sprintf(comp_name, "%s", hd_t);
-            if(icomp ==  5) sprintf(comp_name, "%s", hd_p);
-            if(icomp ==  6) sprintf(comp_name, "%s", hd_s);
-        }else if(ncomp == 6){
-            if(icomp ==  0) sprintf(comp_name, "%s", hd_xx);
-            if(icomp ==  1) sprintf(comp_name, "%s", hd_xy);
-            if(icomp ==  2) sprintf(comp_name, "%s", hd_xz);
-            if(icomp ==  3) sprintf(comp_name, "%s", hd_yy);
-            if(icomp ==  4) sprintf(comp_name, "%s", hd_yz);
-            if(icomp ==  5) sprintf(comp_name, "%s", hd_zz);
+            if(ipick ==  XYZ_to_R) sprintf(comp_name, "%s", hd_r);
+            if(ipick ==  XYZ_to_T) sprintf(comp_name, "%s", hd_t);
+            if(ipick ==  XYZ_to_P) sprintf(comp_name, "%s", hd_p);
+            if(ipick ==  XYZ_to_S) sprintf(comp_name, "%s", hd_s);
             
-            if(icomp ==  6) sprintf(comp_name, "%s", hd_rr);
-            if(icomp ==  7) sprintf(comp_name, "%s", hd_rt);
-            if(icomp ==  8) sprintf(comp_name, "%s", hd_rp);
-            if(icomp ==  9) sprintf(comp_name, "%s", hd_tt);
-            if(icomp == 10) sprintf(comp_name, "%s", hd_tp);
-            if(icomp == 11) sprintf(comp_name, "%s", hd_pp);
+            if(ipick ==  XYZ_to_MAG) sprintf(comp_name, "%s", hd_magnitude);
+        }else if(npick == NPICK_SYM_TENSOR){
+            if(ipick ==  XYZ_to_XX) sprintf(comp_name, "%s", hd_xx);
+            if(ipick ==  XYZ_to_XY) sprintf(comp_name, "%s", hd_xy);
+            if(ipick ==  XYZ_to_XZ) sprintf(comp_name, "%s", hd_xz);
+            if(ipick ==  XYZ_to_YY) sprintf(comp_name, "%s", hd_yy);
+            if(ipick ==  XYZ_to_YZ) sprintf(comp_name, "%s", hd_yz);
+            if(ipick ==  XYZ_to_ZZ) sprintf(comp_name, "%s", hd_zz);
             
-            if(icomp == 12) sprintf(comp_name, "%s", hd_ss);
-            if(icomp == 13) sprintf(comp_name, "%s", hd_sp);
-            if(icomp == 14) sprintf(comp_name, "%s", hd_sz);
-            if(icomp == 15) sprintf(comp_name, "%s", hd_pz);
+            if(ipick ==  XYZ_to_RR) sprintf(comp_name, "%s", hd_rr);
+            if(ipick ==  XYZ_to_RT) sprintf(comp_name, "%s", hd_rt);
+            if(ipick ==  XYZ_to_RP) sprintf(comp_name, "%s", hd_rp);
+            if(ipick ==  XYZ_to_TT) sprintf(comp_name, "%s", hd_tt);
+            if(ipick ==  XYZ_to_TP) sprintf(comp_name, "%s", hd_tp);
+            if(ipick ==  XYZ_to_PP) sprintf(comp_name, "%s", hd_pp);
+            
+            if(ipick ==  XYZ_to_SS) sprintf(comp_name, "%s", hd_ss);
+            if(ipick ==  XYZ_to_SP) sprintf(comp_name, "%s", hd_sp);
+            if(ipick ==  XYZ_to_SZ) sprintf(comp_name, "%s", hd_sz);
+            if(ipick ==  XYZ_to_PZ) sprintf(comp_name, "%s", hd_pz);
+        }else{
+            if(ipick == IZERO) sprintf(comp_name, "%s", hd_scalar);
         };
     };
-    
-    if(icomp == ncomp) sprintf(comp_name, "%s", hd_magitude);
-    
     return;
 };
 
