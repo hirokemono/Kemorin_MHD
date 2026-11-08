@@ -53,9 +53,9 @@ void kemoview_component_select_CB(GtkComboBox *combobox_comp, int id_model,
     int if_psf = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
                                               id_model,
                                               FIELD_SEL_FLAG);
-    int ncomp = (int) kemoview_get_VIZ_num_component(kemo_gl->kemoview_data,
-                                                     id_model, if_psf);
-    if(index_mode >= ncomp || index_mode < 0){
+    int npick = (int) kemoview_get_VIZ_num_pick_comps(kemo_gl->kemoview_data,
+                                                      id_model, if_psf);
+    if(index_mode >= npick || index_mode < 0){
         index_mode = 0;
     }
 	
