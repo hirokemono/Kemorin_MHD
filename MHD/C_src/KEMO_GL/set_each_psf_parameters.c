@@ -39,7 +39,6 @@ void send_VIZ_field_name(struct psf_data *psf_d, struct kv_string *colorname, in
 
 int send_field_draw_each_VIZ(struct psf_menu_val *psf_menu){return psf_menu->if_draw_viz;};
 int send_draw_comp_id_VIZ(struct psf_menu_val *psf_menu){return psf_menu->ic_draw_viz;};
-long send_draw_component_VIZ(struct psf_menu_val *psf_menu){return psf_menu->icomp_draw_viz;};
 int send_coordinate_id_VIZ(struct psf_data *psf_d, struct psf_menu_val *psf_menu){
 	int id_current = psf_menu->if_draw_viz;
 	return psf_d->id_coord[id_current];

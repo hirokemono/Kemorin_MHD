@@ -225,8 +225,6 @@ long get_VIZ_field_param(int selected,
         output = send_field_draw_each_VIZ(viz_menu);
     }else if(selected == COMPONENT_SEL_FLAG){
         output = send_draw_comp_id_VIZ(viz_menu);
-    }else if(selected == DRAW_ADDRESS_FLAG){
-        output = send_draw_component_VIZ(viz_menu);
     }else if(selected == COORDINATE_FLAG){
         output = send_coordinate_id_VIZ(viz_data, viz_menu);
     };

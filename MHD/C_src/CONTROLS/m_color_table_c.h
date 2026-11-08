@@ -25,7 +25,8 @@ struct colormap_params{
 	struct real2_clist *colormap;
 	struct real2_clist *opacitymap;
 	
-	double min_opacity, max_opacity;
+    double opacity_min;
+    double opacity_max;
 	
 	double *single_color;
 };

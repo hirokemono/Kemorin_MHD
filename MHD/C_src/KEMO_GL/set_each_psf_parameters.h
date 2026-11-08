@@ -39,7 +39,6 @@ void send_VIZ_field_name(struct psf_data *psf_d, struct kv_string *colorname, in
 
 int send_field_draw_each_VIZ(struct psf_menu_val *psf_menu);
 int send_draw_comp_id_VIZ(struct psf_menu_val *psf_menu);
-long send_draw_component_VIZ(struct psf_menu_val *psf_menu);
 int send_coordinate_id_VIZ(struct psf_data *psf_d, struct psf_menu_val *psf_menu);
 
 void set_texture_psf_from_bgra(struct kemo_array_control *psf_a,

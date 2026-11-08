@@ -245,7 +245,6 @@
 #define COMPONENT_SEL_FLAG   1
 #define NUM_FIELD_FLAG       2
 #define NTOT_COMPONENT_FLAG  3
-#define DRAW_ADDRESS_FLAG    4
 #define COORDINATE_FLAG      5
 #define LIGHTING_CHECK      31
 #define LINETYPE_FLAG          46

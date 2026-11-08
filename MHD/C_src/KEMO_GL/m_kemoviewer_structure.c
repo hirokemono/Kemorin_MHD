@@ -1146,7 +1146,7 @@ double kemoview_get_VIZ_data_range(struct kemoviewer_type *kemoviewer,
     }else{
         int i_current = kemoviewer->kemo_mul_psf->psf_a->id_current;
         return get_VIZ_data_range(selected,
-                                  kemoviewer->kemo_mul_psf->psf_m[i_current]);
+                                  kemoviewer->kemo_mul_psf->psf_m[i_current],
                                   kemoviewer->kemo_mul_psf->psf_d[i_current]);
     }
 };

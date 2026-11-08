@@ -67,8 +67,6 @@ struct psf_menu_val{
 	int ist_draw_viz;
 	int ipick_draw_viz;
 
-	long icomp_draw_viz;
-	
     int iflag_draw_viz;
 	int iflag_draw_cbar;
     

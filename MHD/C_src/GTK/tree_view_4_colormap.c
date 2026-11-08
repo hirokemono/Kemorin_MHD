@@ -33,8 +33,8 @@ struct colormap_view * init_colormap_views_4_ctl(struct colormap_ctl_c *cmap_c){
 	
     color_vws->cmap_param->colormap = cmap_c->f_colortbl_ctl;
     color_vws->cmap_param->opacitymap = cmap_c->f_linear_opacity_ctl;
-    color_vws->cmap_param->min_opacity = 0.0;
-    color_vws->cmap_param->max_opacity = 1.0;
+    color_vws->cmap_param->opacity_min = 0.0;
+    color_vws->cmap_param->opacity_max = 1.0;
     color_vws->cmap_param->id_color_mode = 0;
     return color_vws;
 }
@@ -299,7 +299,7 @@ static void draw_colormap(struct colormap_params *cmap_param, cairo_t *cr, GdkWi
             cal_rgb_from_value_s(cmap_param->id_color_mode, rnorm,
                                  &red1, &green1, &blue1);
             
-            o_point = set_opacity_from_value_s(omap_array, d_point[i]) / cmap_param->max_opacity;
+            o_point = set_opacity_from_value_s(omap_array, d_point[i]) / cmap_param->opacity_max;
 			
             height_s = 1.0 - (d_point[i] - d_bottom) / range;
             cairo_pattern_add_color_stop_rgb(pattern1, height_s, red1, green1, blue1);
@@ -314,7 +314,7 @@ static void draw_colormap(struct colormap_params *cmap_param, cairo_t *cr, GdkWi
             cal_rgb_from_value_s(cmap_param->id_color_mode, rnorm,
                                  &red1, &green1, &blue1);
             
-            o_point = set_opacity_from_value_s(omap_array, d_current) / cmap_param->max_opacity;
+            o_point = set_opacity_from_value_s(omap_array, d_current) / cmap_param->opacity_max;
             
             height_s = 1.0 - (d_current - d_bottom) / range;
             cairo_pattern_add_color_stop_rgb(pattern1, height_s, red1, green1, blue1);
