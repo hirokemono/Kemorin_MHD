@@ -220,7 +220,7 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
                   activeModel:SURFACE_RENDERING
                      kemoview:kemo_sgl];
 	[_psfFieldMenu selectItemAtIndex:self.PSFSelectedField];
-	[_psfComponentMenu selectItemAtIndex:self.PSFSelectedComponent];
+	[_psfComponentMenu selectItemWithTag:self.PSFSelectedComponent];
 	
 	[_psfPatchDirMatrix selectCellWithTag:self.psfPatchDirectionTag];
 	
@@ -315,7 +315,7 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
                       kemoview:(struct kemoviewer_type *) kemo_sgl
                  componentMenu:(NSPopUpButton *) psfComponentMenu
 {
-    
+    NSMenuItem *menuItem;
     [psfComponentMenu removeAllItems];
     
     int n_field = kemoview_get_VIZ_field_param(kemo_sgl, (int) id_model,
@@ -329,38 +329,278 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
         kemoview_get_VIZ_field_name(kemo_sgl, (int) id_model,
                                     colorname, (int) isel);
         NSString *stname = [[NSString alloc] initWithUTF8String:colorname->string];
-        
+        NSInteger charalen = [stname length];
+        NSString *partname = [stname substringFromIndex:charalen-4];
+
         if(num_comp == 1){
             [psfComponentMenu addItemWithTitle:@"Scalar"];
+        }else if(num_comp == 3){
+            if(charalen > 4 && [partname compare:@"_sph"] == NSOrderedSame){
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_r]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_R];
+                
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_t]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_T];
+                
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_p]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_P];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_s]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_S];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_z]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_Z];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_x]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_X];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_y]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_Y];
+                    
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_magitude]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_MAG];
+                    
+            }else if(charalen > 4 && [partname compare:@"_cyl"] == NSOrderedSame){
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_s]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_S];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_p]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_P];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_z]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_Z];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_r]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_R];
+                    
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_t]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_T];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_x]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_X];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_y]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_Y];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_magitude]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_MAG];
+                    
+            }else{
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_x]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_X];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_y]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_Y];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_z]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_Z];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_r]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_R];
+                    
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_t]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_T];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_p]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_P];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_s]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_S];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_magitude]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_MAG];
+            }
         } else if(num_comp == 6){
-            [psfComponentMenu addItemWithTitle:@"xx"];
-            [psfComponentMenu addItemWithTitle:@"xy"];
-            [psfComponentMenu addItemWithTitle:@"xz"];
-            [psfComponentMenu addItemWithTitle:@"yy"];
-            [psfComponentMenu addItemWithTitle:@"yz"];
-            [psfComponentMenu addItemWithTitle:@"zz"];
-        }
-        else if(num_comp == 3){
-            NSInteger charalen = [stname length];
-            if(charalen > 4){
-                NSString *partname = [stname substringFromIndex:charalen-4];
-                if([partname compare:@"_sph"] == NSOrderedSame){
-                    [psfComponentMenu addItemWithTitle:@"r"];
-                    [psfComponentMenu addItemWithTitle:@"θ"];
-                    [psfComponentMenu addItemWithTitle:@"φ"];
-                }else if([partname compare:@"_cyl"] == NSOrderedSame){
-                    [psfComponentMenu addItemWithTitle:@"s"];
-                    [psfComponentMenu addItemWithTitle:@"φ"];
-                    [psfComponentMenu addItemWithTitle:@"z"];
-                }else{
-                    [psfComponentMenu addItemWithTitle:@"x"];
-                    [psfComponentMenu addItemWithTitle:@"y"];
-                    [psfComponentMenu addItemWithTitle:@"z"];
-                }
-            } else {
-                [psfComponentMenu addItemWithTitle:@"x"];
-                [psfComponentMenu addItemWithTitle:@"y"];
-                [psfComponentMenu addItemWithTitle:@"z"];
+            if(charalen > 4 && [partname compare:@"_sph"] == NSOrderedSame){
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_rr]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_RR];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_rt]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_RT];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_rp]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_RP];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_tt]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_TT];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_tp]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_TP];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_pp]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_PP];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_ss]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_SS];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_sp]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_SP];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_sz]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_SZ];
+                
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_pz]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_PZ];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_zz]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_ZZ];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_xx]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_XX];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_xy]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_XY];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_xz]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_XZ];
+                
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_yy]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_YY];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_yz]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:SPH_to_YZ];
+            }else if(charalen > 4 && [partname compare:@"_cyl"] == NSOrderedSame){
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_ss]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_SS];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_sp]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_SP];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_sz]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_SZ];
+                
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_pp]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_PP];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_pz]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_PZ];
+                
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_zz]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_ZZ];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_rr]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_RR];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_rt]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_RT];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_rp]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_RP];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_tt]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_TT];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_tp]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_TP];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_xx]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_XX];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_xy]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_XY];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_xz]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_XZ];
+                
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_yy]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_YY];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_yz]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:CYL_to_YZ];
+            }else{
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_xx]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_XX];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_xy]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_XY];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_xz]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_XZ];
+                
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_yy]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_YY];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_yz]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_YZ];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_zz]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_ZZ];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_rr]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_RR];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_rt]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_RT];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_rp]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_RP];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_tt]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_TT];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_tp]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_TP];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_pp]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_PP];
+
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_ss]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_SS];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_sp]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_SP];
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_sz]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_SZ];
+                
+                [psfComponentMenu addItemWithTitle:[NSString stringWithUTF8String:hd_pz]];
+                menuItem = [psfComponentMenu lastItem];
+                [menuItem setTag:XYZ_to_PZ];
             }
         }
         [stname release];
