@@ -146,8 +146,9 @@ void take_minmax_psf_all_components(long nnod_viz, long ncomptot, double *d_nod,
     return;
 }
 
-void take_minmax_psf_picked_components(int ipick_draw_viz, long nnod_viz, double *angle_viz,
-                                       long nfield, long *istack_comp, long *istack_pick, 
+void take_minmax_psf_picked_components(int if_draw_viz, int ipick_draw_viz,
+                                       long nnod_viz, double *angle_viz,
+                                       long nfield, long *istack_comp, long *istack_pick,
                                        int *id_coord, long ncomptot, double *d_nod,
                                        double *d_pick, double *pick_min, double *pick_max){
     long ifld, ncomp;
@@ -165,6 +166,9 @@ void take_minmax_psf_picked_components(int ipick_draw_viz, long nnod_viz, double
                                            &pick_min[nd+ist], &pick_max[nd+ist]);
         };
     };
+    
+    ifld = if_draw_viz;
+    ncomp = istack_comp[ifld+1] - istack_comp[ifld];
     pick_component_from_viz_field((int) ncomp, id_coord[ifld], ipick_draw_viz,
                                   nnod_viz, angle_viz,
                                   ncomptot, (int) istack_comp[ifld], d_nod,

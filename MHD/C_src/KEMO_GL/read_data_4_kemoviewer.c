@@ -71,7 +71,7 @@ void init_kemoviewer(int iflag_dmesh, struct viewer_mesh *mesh_s,
 	return;
 }
 
-long set_psf_data_by_UCD(int ipick_draw_viz,
+long set_psf_data_by_UCD(int if_draw_viz, int ipick_draw_viz,
                          struct map_interpolate *map_itp,
                          struct psf_data *psf_s,
                          struct psf_normals *psf_n,
@@ -84,7 +84,7 @@ long set_psf_data_by_UCD(int ipick_draw_viz,
 
     alloc_psf_norm_s(psf_s, psf_n);
 	take_normal_psf(psf_s, psf_n);
-    take_minmax_psf(ipick_draw_viz, psf_s, psf_n);
+    take_minmax_psf(if_draw_viz, ipick_draw_viz, psf_s, psf_n);
     psf_n->psf_edge = init_all_edge_4_psf(psf_s->nnod_viz, psf_s->nele_viz,
                                           psf_s->nnod_4_ele_viz, psf_s->ie_viz,
                                           psf_s->xyzw_viz, psf_n->norm_nod);
@@ -162,7 +162,8 @@ void evolution_PSF_data(struct psf_data *psf_s,
         dealloc_psf_norm_s(psf_n);
         deallc_all_psf_data(psf_s);
         psf_m->map_itp = alloc_psf_cutting_4_map();
-        psf_m->nadded_for_phi0 = set_psf_data_by_UCD(psf_m->ipick_draw_viz,
+        psf_m->nadded_for_phi0 = set_psf_data_by_UCD(psf_m->if_draw_viz,
+                                                     psf_m->ipick_draw_viz,
                                                      psf_m->map_itp,
                                                      psf_s, psf_n,
                                                      ucd_tmp);

@@ -111,7 +111,8 @@ void init_draw_mul_psf(struct kemoview_mul_psf *kemo_mul_psf, struct psf_data *u
 	
     kemo_mul_psf->psf_m[id_load]->map_itp = alloc_psf_cutting_4_map();
     kemo_mul_psf->psf_m[id_load]->nadded_for_phi0 
-        = set_psf_data_by_UCD(kemo_mul_psf->psf_m[id_load]->ipick_draw_viz,
+        = set_psf_data_by_UCD(kemo_mul_psf->psf_m[id_load]->if_draw_viz,
+                              kemo_mul_psf->psf_m[id_load]->ipick_draw_viz,
                               kemo_mul_psf->psf_m[id_load]->map_itp,
                               kemo_mul_psf->psf_d[id_load],
                               kemo_mul_psf->psf_n[id_load], ucd_tmp);

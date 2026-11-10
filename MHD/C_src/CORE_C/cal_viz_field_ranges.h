@@ -35,7 +35,8 @@ void take_minmax_psf_each_component(long nnod_viz, long nstride, double *d_nod,
 void take_minmax_psf_all_components(long nnod_viz, long ncomptot, double *d_nod,
                                     double *d_min, double *d_max);
 
-void take_minmax_psf_picked_components(int ipick_draw_viz, long nnod_viz, double *angle_viz,
+void take_minmax_psf_picked_components(int if_draw_viz, int ipick_draw_viz,
+                                       long nnod_viz, double *angle_viz,
                                        long nfield, long *istack_comp, long *istack_pick, 
                                        int *id_coord, long ncomptot, double *d_nod,
                                        double *d_pick, double *pick_min, double *pick_max);
