@@ -206,14 +206,14 @@
 - (IBAction)AxisSwitchAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_object_property_flags(AXIS_TOGGLE, self.axisDrawFlag, kemo_sgl);
+    kemoview_set_object_property_flags(AXIS_TOGGLE, (int) self.axisDrawFlag, kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
 
 - (IBAction)AxisPositionAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    kemoview_set_object_property_flags(AXIS_POSITION, self.axisPositionFlag, kemo_sgl);
+    kemoview_set_object_property_flags(AXIS_POSITION, (int) self.axisPositionFlag, kemo_sgl);
     [_metalView UpdateImage:kemo_sgl];
 }
 
@@ -222,14 +222,16 @@
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     kemoview_set_object_property_flags(COASTLINE_SWITCH,
-                                       self.coastLineDrawFlag, kemo_sgl);
+                                       (int) self.coastLineDrawFlag,
+                                       kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
 - (IBAction)SphGridSwitchAction:(id)sender;
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     kemoview_set_object_property_flags(SPHEREGRID_SWITCH,
-                                       self.globeGridDrawFlag, kemo_sgl);
+                                       (int) self.globeGridDrawFlag,
+                                       kemo_sgl);
 	[_metalView UpdateImage:kemo_sgl];
 }
 - (IBAction)SphRadiusAction:(id)sender;
@@ -243,7 +245,8 @@
 {
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     kemoview_set_object_property_flags(TANGENT_CYLINDER_SWITCH,
-                                       self.tangentCylinderDrawFlag, kemo_sgl);
+                                       (int) self.tangentCylinderDrawFlag,
+                                       kemo_sgl);
     [_metalView UpdateImage:kemo_sgl];
 }
 
@@ -341,7 +344,8 @@
 - (IBAction)TimeLabelSwitchAction:(id)sender{
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     kemoview_set_object_property_flags(TIME_LABEL_SWITCH,
-                                       self.timeDisplayFlag, kemo_sgl);
+                                       (int) self.timeDisplayFlag,
+                                       kemo_sgl);
     if(self.timeDisplayFlag > 0){
         self.fileStepDisplayFlag = 0;
         kemoview_set_object_property_flags(FILE_STEP_LABEL_SWITCH,
@@ -353,7 +357,8 @@
 - (IBAction)FileStepLabelSwitchAction:(id)sender{
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
     kemoview_set_object_property_flags(FILE_STEP_LABEL_SWITCH,
-                                       self.fileStepDisplayFlag, kemo_sgl);
+                                       (int) self.fileStepDisplayFlag,
+                                       kemo_sgl);
     if(self.fileStepDisplayFlag > 0){
         self.timeDisplayFlag = 0;
         kemoview_set_object_property_flags(TIME_LABEL_SWITCH,

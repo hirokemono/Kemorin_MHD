@@ -246,7 +246,7 @@
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
     kemoview_step_viewmatrix(IZERO, kemo_sgl);
 
-    int num = self.EvolutionEndStep - self.EvolutionStartStep;
+    long num = self.EvolutionEndStep - self.EvolutionStartStep;
     self.stepDisplayFlag = 1;
     [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
     for(self.CurrentStep = self.EvolutionStartStep;self.CurrentStep<self.EvolutionEndStep+1;self.CurrentStep++){
@@ -298,7 +298,7 @@
     kemoview_set_view_integer(ISET_ROTATE_INCREMENT, IZERO, kemo_sgl);
     kemoview_step_viewmatrix(IZERO, kemo_sgl);
 
-    int num = self.EvolutionEndStep - self.EvolutionStartStep;
+    long num = self.EvolutionEndStep - self.EvolutionStartStep;
     self.stepDisplayFlag = 1;
     [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]];
     for(self.CurrentStep = self.EvolutionStartStep;self.CurrentStep<self.EvolutionEndStep+1;self.CurrentStep++){

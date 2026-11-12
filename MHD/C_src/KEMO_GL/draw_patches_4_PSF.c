@@ -238,7 +238,7 @@ void const_PSF_isoline_buffer(const int nthreads, struct view_element *view_s,
     };
 
 
-    double ref_width = 1.5;
+/*    double ref_width = 1.5; */
     long num_patch = 0;
     for(i=0; i<psf_a->nmax_loaded; i++){
         iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid + psf_m[i]->draw_psf_zero);

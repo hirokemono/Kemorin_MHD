@@ -37,7 +37,7 @@
 	self.numLightTable =  [[defaults stringForKey:@"numberOfLights"] intValue];
 
     struct kemoviewer_type *kemo_sgl = [_kmv KemoViewPointer];
-    self.lightCheckFlag = kemoview_get_view_integer(LIGHTING_CHECK, kemo_sgl);
+    self.lightCheckFlag = kemoview_get_view_integer(kemo_sgl, LIGHTING_CHECK);
 ;
     kemoview_init_phong_light_list(kemo_sgl);
     
