@@ -215,7 +215,7 @@ long flatNodeCube_VBO(long icou, float fSize,
     float *c_draw;
     float *d_draw;
 	int i, j;
-	float radius;
+/*	float radius; */
 	
 	for(j=0;j<8;j++){
         point_buf->igl_xyzw =  strided_buf->ncomp_buf * icou + strided_buf->ist_xyz;
@@ -232,9 +232,11 @@ long flatNodeCube_VBO(long icou, float fSize,
         
 		
 		i = j;
+/*
 		radius = sqrt(cube_vertices[i][0]*cube_vertices[i][0]
 					+ cube_vertices[i][1]*cube_vertices[i][1]
 					+ cube_vertices[i][2]*cube_vertices[i][2]);
+*/
 		x_draw[0] = cube_vertices[i][0] * fSize;
 		x_draw[1] = cube_vertices[i][1] * fSize;
 		x_draw[2] = cube_vertices[i][2] * fSize;

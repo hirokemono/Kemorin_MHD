@@ -159,20 +159,22 @@ void take_length_fline(struct psf_data *fline_d,
 }
 
 
-void take_minmax_fline(int ipick_draw_viz,
+void take_minmax_fline(int if_draw_viz, int ipick_draw_viz,
                        struct fline_directions *fline_dir,
                        struct psf_data *fline_d){
 	take_rms_ave_fline(fline_dir, fline_d);
     take_minmax_psf_all_components(fline_d->nnod_viz, fline_d->ncomptot, fline_d->d_nod,
                                    fline_d->d_min, fline_d->d_max);
-    take_minmax_psf_picked_components(ipick_draw_viz, fline_d->nnod_viz, fline_d->angle_viz,
+    take_minmax_psf_picked_components(if_draw_viz, ipick_draw_viz,
+                                      fline_d->nnod_viz, fline_d->angle_viz,
                                       fline_d->nfield, fline_d->istack_comp, fline_d->istack_pick,
                                       fline_d->id_coord, fline_d->ncomptot, fline_d->d_nod,
                                       fline_d->d_pick, fline_d->pick_min, fline_d->pick_max);
 	return;
 }
 
-void take_minmax_points(int ipick_draw_viz, struct psf_data *point_d){
+void take_minmax_points(int if_draw_viz, int ipick_draw_viz,
+                        struct psf_data *point_d){
     point_d->rmax_psf = cal_psf_grid_range(point_d->nnod_viz, point_d->xyzw_viz,
                                            point_d->xmin_psf, point_d->xmax_psf,
                                            point_d->center_psf);
@@ -181,7 +183,8 @@ void take_minmax_points(int ipick_draw_viz, struct psf_data *point_d){
 	take_rms_ave_points(point_d);
     take_minmax_psf_all_components(point_d->nnod_viz, point_d->ncomptot, point_d->d_nod,
                                    point_d->d_min, point_d->d_max);
-    take_minmax_psf_picked_components(ipick_draw_viz, point_d->nnod_viz, point_d->angle_viz,
+    take_minmax_psf_picked_components(if_draw_viz, ipick_draw_viz,
+                                      point_d->nnod_viz, point_d->angle_viz,
                                       point_d->nfield, point_d->istack_comp, point_d->istack_pick,
                                       point_d->id_coord, point_d->ncomptot, point_d->d_nod,
                                       point_d->d_pick, point_d->pick_min, point_d->pick_max);

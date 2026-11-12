@@ -48,11 +48,13 @@ long set_psf_data_by_UCD(int if_draw_viz,
                          struct psf_data *psf_s,
                          struct psf_normals *psf_n,
                          struct psf_data *ucd_tmp);
-void set_fline_data_by_UCD(int ipick_draw_viz,
+void set_fline_data_by_UCD(int if_draw_viz,
+                           int ipick_draw_viz,
                            struct psf_data *fline_d,
                            struct fline_directions *fline_dir,
                            struct psf_data *ucd_tmp);
-void set_points_data_by_UCD(int ipick_draw_viz,
+void set_points_data_by_UCD(int if_draw_viz,
+                            int ipick_draw_viz,
                             struct psf_data *points_d,
                             struct psf_data *ucd_tmp);
 

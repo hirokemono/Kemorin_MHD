@@ -492,9 +492,9 @@ void check_psf_all_picked_range(struct psf_data *psf_s){
     for(ifld = 0; ifld < psf_s->nfield; ifld++){
         npick = psf_s->istack_pick[ifld+1] - psf_s->istack_pick[ifld];
         ist =   psf_s->istack_pick[ifld];
-        printf("field name %d: %s \n", ifld, psf_s->data_name[ifld]);
+        printf("field name %ld: %s \n", ifld, psf_s->data_name[ifld]);
         for(ipick = 0; ipick < npick; ipick++){
-            printf("  Picked range for %d: %d %lf %lf \n", ipick, 
+            printf("  Picked range for %ld: %ld %lf %lf \n", ipick,
                    ipick+ist, psf_s->pick_min[ipick+ist], psf_s->pick_max[ipick+ist]);
         };
     };

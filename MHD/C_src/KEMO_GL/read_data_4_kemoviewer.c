@@ -96,7 +96,7 @@ long set_psf_data_by_UCD(int if_draw_viz, int ipick_draw_viz,
 	return nadded_for_phi0;
 }
 
-void set_fline_data_by_UCD(int ipick_draw_viz,
+void set_fline_data_by_UCD(int if_draw_viz, int ipick_draw_viz,
                            struct psf_data *fline_d,
                            struct fline_directions *fline_dir,
                            struct psf_data *ucd_tmp){
@@ -108,14 +108,15 @@ void set_fline_data_by_UCD(int ipick_draw_viz,
     take_length_fline(fline_d, fline_dir);
     
     alloc_psf_data_s(fline_d);
-	take_minmax_fline(ipick_draw_viz, fline_dir, fline_d);
+	take_minmax_fline(if_draw_viz, ipick_draw_viz, fline_dir, fline_d);
     dealloc_fline_work_data(fline_dir);
     
     alloc_psf_color_data_c(fline_d);
 	return;
 };
 
-void set_points_data_by_UCD(int ipick_draw_viz,
+void set_points_data_by_UCD(int if_draw_viz,
+                            int ipick_draw_viz,
                             struct psf_data *points_d,
                             struct psf_data *ucd_tmp){
     set_viewer_points_data(points_d, ucd_tmp);
@@ -123,7 +124,7 @@ void set_points_data_by_UCD(int ipick_draw_viz,
                             points_d->angle_viz);
     
     alloc_psf_data_s(points_d);
-	take_minmax_points(ipick_draw_viz, points_d);
+	take_minmax_points(if_draw_viz, ipick_draw_viz, points_d);
 
     alloc_psf_color_data_c(points_d);
 	return;
@@ -147,7 +148,8 @@ void evolution_PSF_data(struct psf_data *psf_s,
                                  psf_m->viz_prefix_c->string, ucd_tmp);
         set_iflag_draw_time(time, psf_m);
         set_viewer_data_with_mapping(psf_m->map_itp, ucd_tmp, psf_s);
-        take_minmax_psf(psf_m->ipick_draw_viz, psf_s, psf_n);
+        take_minmax_psf(psf_m->if_draw_viz, psf_m->ipick_draw_viz,
+                        psf_s, psf_n);
 	} else if(psf_m->iformat_viz_file == IFLAG_SURF_UCD
 			  || psf_m->iformat_viz_file == IFLAG_SURF_UCD_GZ
 			  || psf_m->iformat_viz_file == IFLAG_SURF_VTK
@@ -190,7 +192,8 @@ int refresh_FLINE_data(struct psf_data *ucd_tmp,
     
     dealloc_fline_direction_data(fline_dir);
     deallc_all_psf_data(fline_d);
-	set_fline_data_by_UCD(fline_m->ipick_draw_viz,
+	set_fline_data_by_UCD(fline_m->if_draw_viz,
+                          fline_m->ipick_draw_viz,
                           fline_d, fline_dir, ucd_tmp);
 	return 0;
 }
