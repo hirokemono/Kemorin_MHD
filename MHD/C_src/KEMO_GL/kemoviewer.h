@@ -457,6 +457,8 @@ extern "C" {
                                          int id_model, int i);
     void kemoview_get_VIZ_field_name(struct kemoviewer_type *kemoviewer, int id_model,
                                      struct kv_string *colorname, int i);
+    void kemoview_get_VIZ_component_name(struct kemoviewer_type *kemoviewer, int id_model,
+                                         struct kv_string *compname, int i);
     
     void kemoview_set_PSF_by_rgba_texture(int width, int height, 
                                           const unsigned char *bgra_in,

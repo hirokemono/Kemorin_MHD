@@ -308,7 +308,7 @@ void set_VIZ_field(int selected, char *data_name,
     if(psf_m->ncomp_draw_viz != 3) psf_m->draw_psf_vect = IZERO;
  
     psf_m->ic_draw_viz = IZERO;
-    psf_m->ipick_draw_viz = psf_m->ic_draw_viz + istack_pick[psf_m->if_draw_viz];
+    psf_m->ipick_draw_viz = psf_m->ic_draw_viz + (int) istack_pick[psf_m->if_draw_viz];
     
     printf("selected 1st component of %s, %d \n",
            data_name, psf_m->if_draw_viz);
@@ -319,9 +319,9 @@ void set_VIZ_component(int selected, char *data_name,
                        long *istack_pick,
                        struct psf_menu_val *psf_m){
     psf_m->ic_draw_viz = selected;
-    psf_m->ipick_draw_viz = psf_m->ic_draw_viz + istack_pick[psf_m->if_draw_viz];
+    psf_m->ipick_draw_viz = psf_m->ic_draw_viz + (int) istack_pick[psf_m->if_draw_viz];
 
-    printf("component %d  of %s, %ld \n", (psf_m->ic_draw_viz+1),
+    printf("component %d  of %s, %d \n", (psf_m->ic_draw_viz+1),
            data_name, psf_m->ipick_draw_viz);
     return;
 }

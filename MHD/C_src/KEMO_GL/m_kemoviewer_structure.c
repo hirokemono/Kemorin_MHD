@@ -623,7 +623,7 @@ void kemoview_get_full_path_file_name(struct kemoviewer_type *kemoviewer,
 int kemoview_get_full_path_file_prefix_step(struct kemoviewer_type *kemoviewer, int id_model,
                                             struct kv_string *psf_filehead, int *i_file_step){
     struct psf_menu_val * viz_menu = select_viz_menu_structure(id_model, kemoviewer);
-    long i_format = send_VIZ_file_prefix_step_format(viz_menu, psf_filehead, i_file_step);
+    int i_format = (int) send_VIZ_file_prefix_step_format(viz_menu, psf_filehead, i_file_step);
     return i_format;
 }
 

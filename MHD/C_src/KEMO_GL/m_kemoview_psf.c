@@ -194,7 +194,7 @@ void set_each_PSF_field_param(int selected, int input,
                               struct psf_data *viz_data,
                               struct psf_menu_val *viz_menu){
 	if(selected == FIELD_SEL_FLAG){
-        set_VIZ_field(input, viz_data->data_name[selected],
+        set_VIZ_field(input, viz_data->data_name[input],
                       viz_data->istack_comp, viz_data->istack_pick,
                        viz_menu);
 	}else if(selected == COMPONENT_SEL_FLAG){
