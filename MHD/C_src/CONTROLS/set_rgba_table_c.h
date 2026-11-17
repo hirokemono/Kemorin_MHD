@@ -20,7 +20,26 @@
 #include "colormap_space_c.h"
 
 
-extern const char color_labels[7][KCHARA_C];
+extern const char * const label_rainbow;
+extern const char * const label_bluered;
+extern const char * const label_grayscale;
+extern const char * const label_sym_gray;
+extern const char * const label_orangecyan;
+extern const char * const label_molten_metal;
+extern const char * const label_space_color;
+
+extern const char * const hd_minmax_c;
+extern const char * const hd_linear_c;
+extern const char * const hd_nonlinear_c;
+extern const char * const hd_colorlist_c;
+
+extern const char * const hd_constant_c;
+extern const char * const hd_pointlinear_c;
+extern const char * const hd_pointrange_c;
+extern const char * const hd_pointdelta_c;
+extern const char * const hd_intensity_c;
+
+extern const char * const color_labels[];
 
 /* prototypes */
 
