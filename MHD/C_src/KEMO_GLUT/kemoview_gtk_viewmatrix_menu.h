@@ -78,6 +78,8 @@ struct view_widgets{
 };
 
 /*  prototypes */
+struct view_widgets * init_viewmat_widgets(void);
+void dealloc_viewmat_widgets(struct view_widgets *view_menu);
 
 void update_windowsize_menu(struct kemoviewer_gl_type *kemo_gl,
                             struct view_widgets *view_menu,
