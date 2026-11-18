@@ -30,18 +30,6 @@
 
 #include "view_modifier_glfw.h"
 
-struct psf_color_gtk_menu{
-	GtkWidget *switch_draw, *switch_bar;
-	
-	GtkWidget *combobox_sfcolor;
-	GtkWidget *colorcell_sfcolor;
-	
-	GtkWidget *spin_opacity1;	
-	GtkWidget *spin_range_min, *spin_digit_min; 
-	GtkWidget *spin_range_max, *spin_digit_max;
-	char min_text[30], max_text[30];
-};
-
 struct psf_gtk_menu{
     int iflag_psfBox;
     GtkWidget *psfWin;
