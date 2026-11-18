@@ -7,34 +7,33 @@
 #include "set_rgba_table_c.h"
 
 
-const char *label_rainbow =      "rainbow";
-const char *label_bluered =      "blue_to_red";
-const char *label_grayscale =    "grayscale";
-const char *label_sym_gray =     "symmetric_grayscale";
-const char *label_orangecyan =   "cyan_to_orange";
-const char *label_molten_metal = "molten_metal";
-const char *label_space_color  = "space_color";
+const char * const label_rainbow =      "rainbow";
+const char * const label_bluered =      "blue_to_red";
+const char * const label_grayscale =    "grayscale";
+const char * const label_sym_gray =     "symmetric_grayscale";
+const char * const label_orangecyan =   "cyan_to_orange";
+const char * const label_molten_metal = "molten_metal";
+const char * const label_space_color  = "space_color";
 
-const char *hd_minmax_c =      "minmax";
-const char *hd_linear_c =      "linear";
-const char *hd_nonlinear_c =   "nonlinear";
-const char *hd_colorlist_c =   "colormap_list";
+const char * const hd_minmax_c =      "minmax";
+const char * const hd_linear_c =      "linear";
+const char * const hd_nonlinear_c =   "nonlinear";
+const char * const hd_colorlist_c =   "colormap_list";
 
-const char *hd_constant_c =    "constant";
-const char *hd_pointlinear_c = "point_linear";
-const char *hd_pointrange_c =  "point_ranges";
-const char *hd_pointdelta_c =  "point_delta";
-const char *hd_intensity_c =   "intense_chenge";
+const char * const hd_constant_c =    "constant";
+const char * const hd_pointlinear_c = "point_linear";
+const char * const hd_pointrange_c =  "point_ranges";
+const char * const hd_pointdelta_c =  "point_delta";
+const char * const hd_intensity_c =   "intense_chenge";
 
-const char color_labels[7][KCHARA_C] = {
-    "rainbow", 
-    "grayscale",
-    "blue_to_red",
-    "symmetric_grayscale",
-    "cyan_to_orange",
-    "molten_metal",
-    "space_color"
-};
+const char * const color_labels[] = {label_rainbow,
+                                     label_grayscale,
+                                     label_bluered,
+                                     label_sym_gray,
+                                     label_orangecyan,
+                                     label_molten_metal,
+                                     label_space_color,
+                                     NULL};
 
 struct pvr_colormap_bar_ctl_c *cmap_cbar_c0;
 
