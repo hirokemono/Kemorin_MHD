@@ -154,7 +154,7 @@ void set_VIZ_linear_colormap(double minvalue, int i_min_digit,
 
 void set_VIZ_fixed_color(struct psf_data *psf_d,
                          struct psf_menu_val *psf_menu,
-                         double *rgba){
+                         float *rgba){
     long ipick = psf_menu->ipick_draw_viz;
     set_rgb_from_rgb(psf_menu->cmap_viz, rgba[0], rgba[1], rgba[2]);
     set_constant_opacitymap(psf_menu->cmap_viz,
@@ -164,7 +164,7 @@ void set_VIZ_fixed_color(struct psf_data *psf_d,
 
 void set_VIZ_constant_opacity(struct psf_data *psf_d,
                               struct psf_menu_val *psf_menu,
-                              double opacity){
+                              float opacity){
     long ipick = psf_menu->ipick_draw_viz;
 	set_constant_opacitymap(psf_menu->cmap_viz,
                             psf_d->pick_min[ipick], psf_d->pick_min[ipick], opacity);

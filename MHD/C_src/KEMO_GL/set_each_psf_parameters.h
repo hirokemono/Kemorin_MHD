@@ -108,10 +108,10 @@ void set_VIZ_linear_colormap(double minvalue, int i_min_digit,
 
 void set_VIZ_fixed_color(struct psf_data *psf_d,
                          struct psf_menu_val *psf_menu,
-                         double *rgba);
+                         float *rgba);
 void set_VIZ_constant_opacity(struct psf_data *psf_d,
                               struct psf_menu_val *psf_menu,
-                              double opacity);
+                              float opacity);
 
 void get_VIZ_rgb_from_value(struct psf_menu_val *psf_menu,
                             double value, double *red, double *green, double *blue);

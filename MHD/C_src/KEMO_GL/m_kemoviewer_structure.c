@@ -1065,7 +1065,7 @@ void kemoview_get_VIZ_color_w_exp(struct kemoviewer_type *kemoviewer, int id_mod
 	return;
 };
 
-void kemoview_set_VIZ_single_color(double *rgba, int id_model,
+void kemoview_set_VIZ_single_color(float *rgba, int id_model,
                                    struct kemoviewer_type *kemoviewer){
     if(id_model == FIELDLINE_RENDERING){
         set_VIZ_fixed_color(kemoviewer->kemo_fline->fline_d,
@@ -1083,7 +1083,7 @@ void kemoview_set_VIZ_single_color(double *rgba, int id_model,
     }
 }
 
-void kemoview_set_constant_opacity(double opacity, int id_model,
+void kemoview_set_constant_opacity(float opacity, int id_model,
                                    struct kemoviewer_type *kemoviewer){
     if(id_model == FIELDLINE_RENDERING){
         set_VIZ_constant_opacity(kemoviewer->kemo_fline->fline_d,

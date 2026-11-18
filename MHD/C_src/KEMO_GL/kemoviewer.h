@@ -532,9 +532,9 @@ extern "C" {
     void kemoview_get_VIZ_color_w_exp(struct kemoviewer_type *kemoviewer, int id_model,
                                       int selected, double *value, int *i_digit);
 	
-    void kemoview_set_VIZ_single_color(double *rgba, int id_model,
+    void kemoview_set_VIZ_single_color(float *rgba, int id_model,
                                        struct kemoviewer_type *kemoviewer);
-    void kemoview_set_constant_opacity(double opacity, int id_model,
+    void kemoview_set_constant_opacity(float opacity, int id_model,
                                        struct kemoviewer_type *kemoviewer);
 
     void kemoview_set_linear_colormap(double minvalue, int i_min_digit,

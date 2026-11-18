@@ -1030,8 +1030,7 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
                   colorwell:(NSColorWell *) viewColorWell
 {
     int id_model = (int) [_kemoviewControl CurrentControlModel];
-    kemoview_set_constant_opacity((double) const_opacity,
-                                  id_model, kemo_sgl);
+    kemoview_set_constant_opacity(const_opacity, id_model, kemo_sgl);
 
     NSColor *OriginalWellColor = [PSFPatchColorWell color];
     NSColor *NewWellColor = [OriginalWellColor colorWithAlphaComponent:const_opacity];

@@ -79,11 +79,11 @@ void cal_rgb_from_value_s(int id_color_mode, double rnorm,
 }
 
 void set_rgb_from_rgb(struct colormap_params *cmap_s,
-                      double red, double green, double blue){
+                      float red, float green, float blue){
     
-    cmap_s->single_color[0] = red;
-    cmap_s->single_color[1] = green;
-    cmap_s->single_color[2] = blue;
+    cmap_s->single_color[0] = (double) red;
+    cmap_s->single_color[1] = (double) green;
+    cmap_s->single_color[2] = (double) blue;
     return;
 }
 
@@ -154,12 +154,12 @@ void set_linear_colormap(struct colormap_params *cmap_s,
 	return;
 }
 void set_constant_opacitymap(struct colormap_params *cmap_s,
-                             double val_min, double val_max, double opacity){
+                             double val_min, double val_max, float opacity){
 	clear_real2_clist(cmap_s->opacitymap);
-	append_real2_clist(val_min, opacity, cmap_s->opacitymap);
-	append_real2_clist(val_max, opacity, cmap_s->opacitymap);
-	cmap_s->opacity_max = opacity;
-	cmap_s->opacity_min = opacity;
+	append_real2_clist(val_min, (double) opacity, cmap_s->opacitymap);
+	append_real2_clist(val_max, (double) opacity, cmap_s->opacitymap);
+	cmap_s->opacity_max = (double) opacity;
+	cmap_s->opacity_min = (double) opacity;
 	return;
 }
 void set_full_opacitymap(struct colormap_params *cmap_s,

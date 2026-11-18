@@ -206,9 +206,9 @@
 !                                       struct kemoviewer_type *kemoviewer);
 !	
 !
-!    void kemoview_set_VIZ_single_color(double *rgba, int id_model,
+!    void kemoview_set_VIZ_single_color(float *rgba, int id_model,
 !                                       struct kemoviewer_type *kemoviewer);
-!    void kemoview_set_constant_opacity(double opacity, int id_model,
+!    void kemoview_set_constant_opacity(float opacity, int id_model,
 !                                       struct kemoviewer_type *kemoviewer);
 !    
 !    void kemoview_set_VIZ_opacity_data(int i_point, double value, double opacity,

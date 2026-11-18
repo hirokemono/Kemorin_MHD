@@ -31,7 +31,7 @@ void copy_colormap_name_to_ctl(struct colormap_params *cmap_s,
 void cal_rgb_from_value_s(int id_color_mode, double rnorm,
                           double *red, double *green, double *blue);
 void set_rgb_from_rgb(struct colormap_params *cmap_s,
-                      double red, double green, double blue);
+                      float red, float green, float blue);
 double set_opacity_from_value_s(struct colormap_array *omap_array,
                                 double value);
 
@@ -56,7 +56,7 @@ void get_opacity_table_items_s(struct colormap_params *cmap_s,
 
 void set_linear_colormap(struct colormap_params *cmap_s, double val_min, double val_max);
 void set_constant_opacitymap(struct colormap_params *cmap_s,
-                             double val_min, double val_max, double opacity);
+                             double val_min, double val_max, float opacity);
 void set_full_opacitymap(struct colormap_params *cmap_s, double val_min, double val_max);
 
 void copy_colormap_from_ctl(struct chara_ctl_item *f_colormap_mode_ctl, 

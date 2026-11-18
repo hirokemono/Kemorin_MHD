@@ -33,18 +33,18 @@ static void set_PSFcolor_GTK(struct kemoviewer_gl_type *kemo_gl,
                              GtkColorChooser *colordialog)
 {
 	GdkRGBA gcolor;
-	gdouble dcolor[4];
+	gdouble fcolor[4];
 	
 	gtk_color_chooser_get_rgba(colordialog, &gcolor);
 	gtk_widget_destroy(window_csel);
 	
-	dcolor[0] = gcolor.red;
-	dcolor[1] = gcolor.green;
-	dcolor[2] = gcolor.blue;
-	dcolor[3] = (gdouble) kemoview_get_VIZ_opacity_range(kemo_gl->kemoview_data,
-                                                         SURFACE_RENDERING,
-                                                         ISET_OPACITY_MAX);
-    kemoview_set_VIZ_single_color(dcolor,
+	fcolor[0] = (float) gcolor.red;
+	fcolor[1] = (float) gcolor.green;
+	fcolor[2] = (float) gcolor.blue;
+	fcolor[3] = (float) kemoview_get_VIZ_opacity_range(kemo_gl->kemoview_data,
+                                                       SURFACE_RENDERING,
+                                                       ISET_OPACITY_MAX);
+    kemoview_set_VIZ_single_color(fcolor,
                                   SURFACE_RENDERING,
                                   kemo_gl->kemoview_data);
     kemoview_set_PSF_patch_color_mode(SINGLE_COLOR, kemo_gl->kemoview_data);
@@ -101,9 +101,8 @@ static void load_texture_handler(struct kemoviewer_gl_type *kemo_gl,
         kemoview_update_PSF_textured_id(kemo_gl->kemoview_data);
 		kemoview_set_texture_to_PSF(id_image, image_prefix, kemo_gl->kemoview_data, kemo_gl);
         kemoview_set_PSF_patch_color_mode(TEXTURED_SURFACE, kemo_gl->kemoview_data);
-        kemoview_free_kvstring(image_prefix);
 	};
-	
+    kemoview_free_kvstring(image_prefix);
 	return;
 };
 
@@ -136,7 +135,7 @@ static void psf_surf_colormode_CB(GtkComboBox *combobox_sfcolor,
 static void set_psf_opacity_CB(GtkWidget *entry, gpointer user_data)
 {
     struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) user_data;
-	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
+	float gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
     kemoview_set_constant_opacity(gtk_floatvalue,
                                   SURFACE_RENDERING,
                                   kemo_gl->kemoview_data);
