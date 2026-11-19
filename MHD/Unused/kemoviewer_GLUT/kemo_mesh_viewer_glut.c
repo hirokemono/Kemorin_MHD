@@ -358,10 +358,7 @@ static void set_psf_patchcolor_handler(int sel){
 };
 
 static void set_psf_linecolor_handler(int sel){
-	if (sel == BLACK_PSF_LINE)          {kemoview_set_PSF_isoline_color_mode(BLACK_LINE);}
-	else if (sel == RAINBOW_PSF_LINE)   {kemoview_set_PSF_isoline_color_mode(RAINBOW_LINE);}
-	else if (sel == WHITE_PSF_LINE)     {kemoview_set_PSF_isoline_color_mode(WHITE_LINE);};
-	
+	kemoview_set_PSF_isoline_color_mode(sel);
 	draw_mesh_w_menu();
 	return;
 };

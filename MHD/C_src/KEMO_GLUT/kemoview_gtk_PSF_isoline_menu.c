@@ -34,18 +34,8 @@ static void psf_surf_colormode_CB(GtkComboBox *combobox_gdcolor, gpointer user_d
 {
     struct kemoviewer_gl_type *kemo_gl = ( struct kemoviewer_gl_type *) user_data;
     int index_mode = gtk_selected_combobox_index(combobox_gdcolor);
-	
-	if (index_mode == RAINBOW_PSF_LINE){
-        kemoview_set_PSF_color_param(PSFGRID_TOGGLE, RAINBOW_LINE,
-                                     kemo_gl->kemoview_data);
-    }else if (index_mode == WHITE_PSF_LINE){
-        kemoview_set_PSF_color_param(PSFGRID_TOGGLE, WHITE_LINE,
-                                     kemo_gl->kemoview_data);
-    }else if (index_mode == BLACK_PSF_LINE){
-        kemoview_set_PSF_color_param(PSFGRID_TOGGLE, BLACK_LINE,
-                                     kemo_gl->kemoview_data);
-    };
-	
+    kemoview_set_PSF_color_param(PSFGRID_TOGGLE, index_mode,
+                                 kemo_gl->kemoview_data);
     draw_full_gl(kemo_gl);
 	return;
 };
@@ -156,9 +146,9 @@ GtkWidget * init_isoline_menu_expander(struct kemoviewer_gl_type *kemo_gl, GtkWi
 	psf_isoline_menu->child_model_gdcolor = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(psf_isoline_menu->model_gdcolor));
 	
 	int index = 0;
-	index = append_ci_item_to_tree(index, "Color lines", RAINBOW_PSF_LINE, psf_isoline_menu->child_model_gdcolor);
-	index = append_ci_item_to_tree(index, "White lines", WHITE_PSF_LINE, psf_isoline_menu->child_model_gdcolor);
-	index = append_ci_item_to_tree(index, "Black lines", BLACK_PSF_LINE, psf_isoline_menu->child_model_gdcolor);
+	index = append_ci_item_to_tree(index, "Color lines", RAINBOW_LINE, psf_isoline_menu->child_model_gdcolor);
+	index = append_ci_item_to_tree(index, "White lines", WHITE_LINE,   psf_isoline_menu->child_model_gdcolor);
+	index = append_ci_item_to_tree(index, "Black lines", BLACK_LINE,   psf_isoline_menu->child_model_gdcolor);
 	
 	psf_isoline_menu->combobox_gdcolor = gtk_combo_box_new_with_model(psf_isoline_menu->child_model_gdcolor);
 	psf_isoline_menu->renderer_gdcolor = gtk_cell_renderer_text_new();

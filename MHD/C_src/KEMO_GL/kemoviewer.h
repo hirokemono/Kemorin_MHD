@@ -96,10 +96,6 @@
 #define SGL_COLOR_PSF_SURF  13
 #define CHANGE_PSF_COLOR    14
 
-#define RAINBOW_PSF_LINE    20
-#define BLACK_PSF_LINE      21
-#define WHITE_PSF_LINE      22
-
 #define PSF_OFF             30
 #define PSFREFV_TOGGLE      41
 #define ISET_PSF_VEC_INC    44

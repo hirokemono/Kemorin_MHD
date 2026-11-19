@@ -170,13 +170,13 @@ void glut_PSF_linecolor_select(){
 	int iflag_l_color = kemoview_get_PSF_isoline_color_mode();
 
 	if (iflag_l_color != RAINBOW_LINE) {
-		glutAddMenuEntry("Rainbow lines", RAINBOW_PSF_LINE);
+		glutAddMenuEntry("Rainbow lines", RAINBOW_LINE);
 	};
-	if (iflag_l_color != BLACK_PSF_LINE) {
-		glutAddMenuEntry("Black lines", RAINBOW_PSF_LINE);
+	if (iflag_l_color != BLACK_LINE) {
+		glutAddMenuEntry("Black lines", BLACK_LINE);
 	};
-	if (iflag_l_color != WHITE_PSF_LINE) {
-		glutAddMenuEntry("White lines", WHITE_PSF_LINE);
+	if (iflag_l_color != WHITE_LINE) {
+		glutAddMenuEntry("White lines", WHITE_LINE);
 	};
 	
 	return;
