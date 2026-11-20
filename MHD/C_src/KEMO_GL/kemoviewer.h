@@ -136,17 +136,18 @@
 #define SINGLE_COLOR     6
 #define TEXTURED_SURFACE 7
 
-#define BLACK_LINE     1
-#define GREEN_LINE     2
-#define RAINBOW_LINE   3
-#define TWO_COLOR_LINE 4
-#define TWO_GRAY_LINE  5
-#define WHITE_LINE     6
+#define BLACK_LINE       1
+#define GREEN_LINE       2
+#define RAINBOW_LINE     3
+#define TWO_COLOR_LINE   4
+#define TWO_GRAY_LINE    5
+#define WHITE_LINE       6
+#define ONE_COLOR_LINE   7
 
-#define RAINBOW_MODE    0
-#define GRAYSCALE_MODE  1
-#define RED_BLUE_MODE   2
-#define SYM_GRAY_MODE   3
+#define RAINBOW_MODE       0
+#define GRAYSCALE_MODE     1
+#define RED_BLUE_MODE      2
+#define SYM_GRAY_MODE      3
 #define ORANGE_CYAN_MODE   4
 #define MOLTEN_METAL_MODE  5
 #define SPACE_COLOR_MODE   6

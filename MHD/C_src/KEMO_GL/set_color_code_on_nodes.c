@@ -108,7 +108,7 @@ void set_color_code_for_fieldlines(struct psf_data *fline_d,
 		for (inod=0; inod< fline_d->nnod_viz; inod++){
 			for(nd=0;nd<4;nd++){fline_d->color_nod[4*inod+nd] = black[nd];};
 		};
-    }else if(fline_m->viz_color_mode == SINGLE_COLOR) {
+    }else if(fline_m->viz_color_mode == ONE_COLOR_LINE) {
         for (inod=0; inod< fline_d->nnod_viz; inod++){
             for(nd=0;nd<3;nd++){
                 fline_d->color_nod[4*inod+nd] = fline_m->cmap_viz->single_color[nd];

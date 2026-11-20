@@ -1010,17 +1010,17 @@ void SetDataRanges(int id_model, struct kemoviewer_type *kemo_sgl,
                        colorwell:(NSColorWell *) viewColorWell
 {
     CGFloat redBG, greenBG, blueBG, opacityBG;
-    double rgba[4];
+    float rgba[4];
     
     int id_model = (int) [_kemoviewControl CurrentControlModel];
     
     NSColor *nsPSFPatchColor = [viewColorWell color];
     [nsPSFPatchColor getRed:&redBG green:&greenBG blue:&blueBG alpha:&opacityBG ];
     
-    rgba[0] = (double) redBG;
-    rgba[1] = (double) greenBG;
-    rgba[2] = (double) blueBG;
-    rgba[3] = (double) opacityBG;
+    rgba[0] = (float) redBG;
+    rgba[1] = (float) greenBG;
+    rgba[2] = (float) blueBG;
+    rgba[3] = (float) opacityBG;
     self.PSFOpacity = opacityBG;
     
     kemoview_set_VIZ_single_color(rgba, id_model, kemo_sgl);

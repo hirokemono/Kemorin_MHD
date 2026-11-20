@@ -534,7 +534,7 @@
             <windowCollectionBehavior key="collectionBehavior" fullScreenAuxiliary="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="1001" y="451" width="388" height="644"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1470" height="923"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1050"/>
             <view key="contentView" translatesAutoresizingMaskIntoConstraints="NO" id="722">
                 <rect key="frame" x="0.0" y="0.0" width="388" height="644"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1843,7 +1843,7 @@
             <windowCollectionBehavior key="collectionBehavior" fullScreenAuxiliary="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="27" y="154" width="485" height="870"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1470" height="923"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1050"/>
             <view key="contentView" id="1065">
                 <rect key="frame" x="0.0" y="0.0" width="485" height="870"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -2331,11 +2331,11 @@
                                         <box autoresizesSubviews="NO" fixedFrame="YES" borderType="line" title="Quilt output" translatesAutoresizingMaskIntoConstraints="NO" id="fVb-Qy-szJ">
                                             <rect key="frame" x="8" y="20" width="180" height="116"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <view key="contentView" id="jUZ-vD-eTg">
+                                            <view key="contentView" ambiguous="YES" id="jUZ-vD-eTg">
                                                 <rect key="frame" x="0.0" y="0.0" width="180" height="104"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="qmu-RQ-vPh">
+                                                    <button verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qmu-RQ-vPh">
                                                         <rect key="frame" x="99" y="68" width="72" height="20"/>
                                                         <buttonCell key="cell" type="push" title="Preview" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Aq2-Z9-UhP">
                                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -2352,7 +2352,7 @@
                                                             <action selector="ShowQuiltMovie:" target="2637" id="rD5-L1-a2E"/>
                                                         </connections>
                                                     </button>
-                                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fxi-PO-8WC">
+                                                    <button verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fxi-PO-8WC">
                                                         <rect key="frame" x="9" y="68" width="70" height="20"/>
                                                         <buttonCell key="cell" type="push" title="Quilt" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="xY2-EE-2YH">
                                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
@@ -2369,7 +2369,7 @@
                                                             <action selector="ToggleQuiltSwitch:" target="964" id="TDT-Ms-bmi"/>
                                                         </connections>
                                                     </button>
-                                                    <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bMI-oL-FmF">
+                                                    <textField focusRingType="none" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bMI-oL-FmF">
                                                         <rect key="frame" x="14" y="9" width="71" height="16"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="16" id="Yya-0B-jVZ"/>
@@ -2381,7 +2381,7 @@
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="C1e-Dx-urd">
+                                                    <textField focusRingType="none" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="C1e-Dx-urd">
                                                         <rect key="frame" x="16" y="39" width="40" height="16"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="16" id="KDm-0z-pCD"/>
@@ -2392,7 +2392,7 @@
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="woq-qt-83m">
+                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="woq-qt-83m">
                                                         <rect key="frame" x="158" y="39" width="13" height="15"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="15" id="b1X-6U-Q3i"/>
@@ -2408,7 +2408,7 @@
                                                             <action selector="SetQuiltRawByInput:" target="2679" id="MQr-d7-wlI"/>
                                                         </connections>
                                                     </stepper>
-                                                    <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="h6a-aZ-2YG">
+                                                    <textField focusRingType="none" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="h6a-aZ-2YG">
                                                         <rect key="frame" x="101" y="36" width="49" height="21"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="49" id="uuB-0U-qHO"/>
@@ -2431,7 +2431,7 @@
                                                             <action selector="SetQuiltRawByInput:" target="2679" id="0lQ-d1-I9P"/>
                                                         </connections>
                                                     </textField>
-                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9Z9-Eo-Ar0">
+                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9Z9-Eo-Ar0">
                                                         <rect key="frame" x="158" y="10" width="13" height="13"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="13" id="HX1-jr-b39"/>
@@ -2447,7 +2447,7 @@
                                                             <action selector="SetQuiltColumnByInput:" target="2679" id="1xr-HO-13L"/>
                                                         </connections>
                                                     </stepper>
-                                                    <textField focusRingType="none" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Yke-KO-C38">
+                                                    <textField focusRingType="none" verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Yke-KO-C38">
                                                         <rect key="frame" x="101" y="6" width="49" height="21"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="21" id="On1-wC-WXY"/>
@@ -4163,7 +4163,7 @@
                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                                         <clipView key="contentView" drawsBackground="NO" id="5Nr-Wa-LQ8">
                                                             <rect key="frame" x="1" y="1" width="227" height="731"/>
-                                                            <autoresizingMask key="autoresizingMask"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IsF-pz-RKX">
                                                                     <rect key="frame" x="0.0" y="6" width="214" height="727"/>
@@ -4417,6 +4417,9 @@
                                                                                         <rect key="frame" x="128" y="136" width="54" height="23"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                                                         <color key="color" red="0.1194670463" green="0.021984556839999999" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                                                        <connections>
+                                                                                            <action selector="SetFlineColorAction:" target="1932" id="c07-8Q-3A3"/>
+                                                                                        </connections>
                                                                                     </colorWell>
                                                                                     <textField focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="i1R-LN-MD2">
                                                                                         <rect key="frame" x="146" y="53" width="28" height="18"/>
@@ -4586,16 +4589,18 @@
                                                                                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1983">
                                                                                         <rect key="frame" x="85" y="163" width="105" height="25"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <popUpButtonCell key="cell" type="push" title="Two Color" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="2168" id="1986">
+                                                                                        <popUpButtonCell key="cell" type="push" title="Contour" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" tag="3" imageScaling="proportionallyDown" inset="2" selectedItem="1988" id="1986">
                                                                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                                                                             <font key="font" metaFont="message"/>
                                                                                             <menu key="menu" title="OtherViews" id="1987">
                                                                                                 <items>
                                                                                                     <menuItem title="Contour" tag="3" id="1988"/>
-                                                                                                    <menuItem title="Two Color" tag="4" id="1989"/>
+                                                                                                    <menuItem title="Two Color" state="on" tag="4" id="1989"/>
                                                                                                     <menuItem title="Two Grayscale" tag="5" id="2167"/>
-                                                                                                    <menuItem title="Two Color" state="on" tag="1" id="2168"/>
                                                                                                     <menuItem title="White" tag="6" id="3704"/>
+                                                                                                    <menuItem title="Single Color" tag="7" id="bLv-S6-kg2">
+                                                                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                                                                    </menuItem>
                                                                                                 </items>
                                                                                             </menu>
                                                                                         </popUpButtonCell>
@@ -4633,7 +4638,7 @@
                                                             <rect key="frame" x="1" y="715" width="227" height="17"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
-                                                        <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="0.25" horizontal="NO" id="75m-Pz-HJR">
+                                                        <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="75m-Pz-HJR">
                                                             <rect key="frame" x="211" y="1" width="17" height="731"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
@@ -4747,7 +4752,7 @@
                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                                         <clipView key="contentView" drawsBackground="NO" id="Cvx-up-T9C">
                                                             <rect key="frame" x="1" y="1" width="227" height="731"/>
-                                                            <autoresizingMask key="autoresizingMask"/>
+                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="muZ-Zk-uXx">
                                                                     <rect key="frame" x="0.0" y="6" width="214" height="727"/>
@@ -5331,16 +5336,16 @@
                                                                                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gYF-4Y-lvd">
                                                                                         <rect key="frame" x="85" y="169" width="105" height="25"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <popUpButtonCell key="cell" type="push" title="Two Color" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="vgC-AG-yow" id="emb-K8-IAC">
+                                                                                        <popUpButtonCell key="cell" type="push" title="Rainbow" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" tag="3" imageScaling="proportionallyDown" inset="2" selectedItem="FOO-E1-gV9" id="emb-K8-IAC">
                                                                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                                                                             <font key="font" metaFont="message"/>
                                                                                             <menu key="menu" title="OtherViews" id="qa4-Xg-ppy">
                                                                                                 <items>
                                                                                                     <menuItem title="Rainbow" tag="3" id="FOO-E1-gV9"/>
-                                                                                                    <menuItem title="Two Color" tag="4" id="z5d-EA-Bae"/>
+                                                                                                    <menuItem title="Two Color" state="on" tag="4" id="z5d-EA-Bae"/>
                                                                                                     <menuItem title="Two Grayscale" tag="5" id="fOg-y3-Y5G"/>
-                                                                                                    <menuItem title="Two Color" state="on" tag="1" id="vgC-AG-yow"/>
                                                                                                     <menuItem title="White" tag="6" id="jra-NK-0wd"/>
+                                                                                                    <menuItem title="Single Color" tag="7" id="vgC-AG-yow"/>
                                                                                                 </items>
                                                                                             </menu>
                                                                                         </popUpButtonCell>
@@ -5384,7 +5389,7 @@
                                                             <rect key="frame" x="1" y="715" width="227" height="17"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
-                                                        <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="0.25" horizontal="NO" id="Yhz-th-U63">
+                                                        <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="Yhz-th-U63">
                                                             <rect key="frame" x="211" y="1" width="17" height="731"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                         </scroller>
@@ -5420,7 +5425,7 @@
             <windowCollectionBehavior key="collectionBehavior" fullScreenAuxiliary="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="123" y="299" width="299" height="1038"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1470" height="923"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1050"/>
             <view key="contentView" id="2203">
                 <rect key="frame" x="0.0" y="0.0" width="299" height="1038"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -6722,7 +6727,7 @@
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="458" y="120" width="960" height="720"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1470" height="923"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1050"/>
             <view key="contentView" id="BeK-5P-Wgc">
                 <rect key="frame" x="0.0" y="0.0" width="960" height="720"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -6794,7 +6799,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES" HUD="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="1015" y="235" width="232" height="676"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1470" height="923"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1050"/>
             <view key="contentView" id="8yB-vy-asK">
                 <rect key="frame" x="0.0" y="0.0" width="232" height="676"/>
                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
@@ -7550,7 +7555,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="242" y="130" width="194" height="725"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1470" height="923"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1050"/>
             <view key="contentView" id="9Ms-do-edR">
                 <rect key="frame" x="0.0" y="0.0" width="194" height="725"/>
                 <autoresizingMask key="autoresizingMask"/>
