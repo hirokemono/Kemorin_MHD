@@ -38,8 +38,6 @@ void dealloc_Tracer_buffers(struct Tracer_buffers *Tracer_bufs)
 };
 
 
-
-
 long set_tracer_ico_buffer(const long ist_ico,
                            long ist_nod, long ied_nod,
                            struct psf_data *tracer_d,
@@ -48,7 +46,7 @@ long set_tracer_ico_buffer(const long ist_ico,
                            struct gl_index_buffer *Tracer_index_buf){
     long inum_ico = ist_nod;
     long inod;
-    for(inod = ist_nod; inod < ied_nod; inod++){
+    for(inod = ist_nod; inod < ied_nod; inod=inod+tracer_m->increment_vect){
         inum_ico = set_icosahedron_node_index_buffer(inum_ico,
                                                      tracer_m->viz_line_width,
                                                      &tracer_d->xyzw_viz[4*inod],
@@ -68,7 +66,7 @@ long set_tracer_cone_buffer(const long ist_ico,
     long inum_ico = ist_nod;
     int nd;
     long inod;
-    for(inod = ist_nod; inod < ied_nod; inod++){
+    for(inod = ist_nod; inod < ied_nod; inod=inod+tracer_m->increment_vect){
         set_line_for_tracer_arrow((int) tracer_d->istack_comp[tracer_m->if_draw_viz],
                                   inod, tracer_d, tracer_m,
                                   xyzw_line, dir_line);
@@ -118,11 +116,12 @@ void const_tracer_buffer(const int nthreads, struct view_element *view_s,
 
     long num_patch;
     Tracer_bufs->Tracer_ico_buf->num_nod_buf = 0;
+    num_patch = 1 + tracer_d->nnod_viz / tracer_m->increment_vect;
     if(tracer_m->draw_psf_vect > 0){
-        num_patch = (2 + tracer_m->ncorner_viz_line) * tracer_d->nnod_viz;
+        num_patch = (2 + tracer_m->ncorner_viz_line) * num_patch;
         set_buffer_address_4_patch(num_patch, Tracer_bufs->Tracer_ico_buf);
     }else{
-        num_patch = 12 * tracer_d->nnod_viz;
+        num_patch = 12 * num_patch;
         set_buffer_address_4_patch(num_patch, Tracer_bufs->Tracer_ico_buf);
     };
 

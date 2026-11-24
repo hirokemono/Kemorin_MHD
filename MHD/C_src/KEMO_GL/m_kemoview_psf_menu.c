@@ -189,7 +189,8 @@ struct psf_menu_val *  init_psf_menu_val(void){
     }
     
     psf_m->ncorner_viz_line = ISIX;
-    return psf_m;
+    psf_m->increment_vect =   IONE;
+   return psf_m;
 }
 
 void dealloc_psf_menu_val(struct psf_menu_val *psf_m){

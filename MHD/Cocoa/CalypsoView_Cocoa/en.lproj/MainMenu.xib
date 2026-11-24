@@ -1846,7 +1846,7 @@
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1050"/>
             <view key="contentView" id="1065">
                 <rect key="frame" x="0.0" y="0.0" width="485" height="870"/>
-                <autoresizingMask key="autoresizingMask"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 <subviews>
                     <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" translatesAutoresizingMaskIntoConstraints="NO" id="3786">
                         <rect key="frame" x="12" y="25" width="207" height="556"/>
@@ -4163,7 +4163,7 @@
                                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                                         <clipView key="contentView" drawsBackground="NO" id="5Nr-Wa-LQ8">
                                                             <rect key="frame" x="1" y="1" width="227" height="731"/>
-                                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
                                                                 <view fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IsF-pz-RKX">
                                                                     <rect key="frame" x="0.0" y="6" width="214" height="727"/>
@@ -4589,13 +4589,13 @@
                                                                                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1983">
                                                                                         <rect key="frame" x="85" y="163" width="105" height="25"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <popUpButtonCell key="cell" type="push" title="Contour" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" tag="3" imageScaling="proportionallyDown" inset="2" selectedItem="1988" id="1986">
+                                                                                        <popUpButtonCell key="cell" type="push" title="Contour" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="3" imageScaling="proportionallyDown" inset="2" selectedItem="1988" id="1986">
                                                                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                                                                             <font key="font" metaFont="message"/>
                                                                                             <menu key="menu" title="OtherViews" id="1987">
                                                                                                 <items>
-                                                                                                    <menuItem title="Contour" tag="3" id="1988"/>
-                                                                                                    <menuItem title="Two Color" state="on" tag="4" id="1989"/>
+                                                                                                    <menuItem title="Contour" state="on" tag="3" id="1988"/>
+                                                                                                    <menuItem title="Two Color" tag="4" id="1989"/>
                                                                                                     <menuItem title="Two Grayscale" tag="5" id="2167"/>
                                                                                                     <menuItem title="White" tag="6" id="3704"/>
                                                                                                     <menuItem title="Single Color" tag="7" id="bLv-S6-kg2">
@@ -5336,13 +5336,13 @@
                                                                                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gYF-4Y-lvd">
                                                                                         <rect key="frame" x="85" y="169" width="105" height="25"/>
                                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                                        <popUpButtonCell key="cell" type="push" title="Rainbow" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" tag="3" imageScaling="proportionallyDown" inset="2" selectedItem="FOO-E1-gV9" id="emb-K8-IAC">
+                                                                                        <popUpButtonCell key="cell" type="push" title="Rainbow" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="3" imageScaling="proportionallyDown" inset="2" selectedItem="FOO-E1-gV9" id="emb-K8-IAC">
                                                                                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                                                                             <font key="font" metaFont="message"/>
                                                                                             <menu key="menu" title="OtherViews" id="qa4-Xg-ppy">
                                                                                                 <items>
-                                                                                                    <menuItem title="Rainbow" tag="3" id="FOO-E1-gV9"/>
-                                                                                                    <menuItem title="Two Color" state="on" tag="4" id="z5d-EA-Bae"/>
+                                                                                                    <menuItem title="Rainbow" state="on" tag="3" id="FOO-E1-gV9"/>
+                                                                                                    <menuItem title="Two Color" tag="4" id="z5d-EA-Bae"/>
                                                                                                     <menuItem title="Two Grayscale" tag="5" id="fOg-y3-Y5G"/>
                                                                                                     <menuItem title="White" tag="6" id="jra-NK-0wd"/>
                                                                                                     <menuItem title="Single Color" tag="7" id="vgC-AG-yow"/>
