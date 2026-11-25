@@ -40,12 +40,14 @@ extern const char * const hd_pointdelta_c;
 extern const char * const hd_intensity_c;
 
 extern const char * const color_labels[];
+extern const char * const mesh_color_list[];
+
 
 /* prototypes */
 
 
 void copy_colormap_name_to_ctl(struct colormap_params *cmap_s, 
-			struct chara_ctl_item *colormap_mode);
+                               struct chara_ctl_item *colormap_mode);
 
 void cal_rgb_from_value_s(int id_color_mode, double rnorm,
                           double *red, double *green, double *blue);

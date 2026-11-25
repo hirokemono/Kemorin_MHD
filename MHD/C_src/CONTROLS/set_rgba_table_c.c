@@ -7,24 +7,24 @@
 #include "set_rgba_table_c.h"
 
 
-const char * const label_rainbow =      "rainbow";
-const char * const label_bluered =      "blue_to_red";
-const char * const label_grayscale =    "grayscale";
-const char * const label_sym_gray =     "symmetric_grayscale";
-const char * const label_orangecyan =   "cyan_to_orange";
-const char * const label_molten_metal = "molten_metal";
-const char * const label_space_color  = "space_color";
+const char * const label_rainbow =      "Rainbow";
+const char * const label_bluered =      "Blue_to_red";
+const char * const label_grayscale =    "Grayscale";
+const char * const label_sym_gray =     "Symmetric_grayscale";
+const char * const label_orangecyan =   "Cyan_to_orange";
+const char * const label_molten_metal = "Molten_metal";
+const char * const label_space_color  = "Space_color";
 
-const char * const hd_minmax_c =      "minmax";
-const char * const hd_linear_c =      "linear";
-const char * const hd_nonlinear_c =   "nonlinear";
-const char * const hd_colorlist_c =   "colormap_list";
+const char * const hd_minmax_c =      "Minmax";
+const char * const hd_linear_c =      "Linear";
+const char * const hd_nonlinear_c =   "Nonlinear";
+const char * const hd_colorlist_c =   "Colormap_list";
 
-const char * const hd_constant_c =    "constant";
-const char * const hd_pointlinear_c = "point_linear";
-const char * const hd_pointrange_c =  "point_ranges";
-const char * const hd_pointdelta_c =  "point_delta";
-const char * const hd_intensity_c =   "intense_chenge";
+const char * const hd_constant_c =    "Constant";
+const char * const hd_pointlinear_c = "Point_linear";
+const char * const hd_pointrange_c =  "Point_ranges";
+const char * const hd_pointdelta_c =  "Point_delta";
+const char * const hd_intensity_c =   "Intense_chenge";
 
 const char * const color_labels[] = {label_rainbow,
                                      label_grayscale,
@@ -35,10 +35,15 @@ const char * const color_labels[] = {label_rainbow,
                                      label_space_color,
                                      NULL};
 
+const char * const mesh_color_list[] = {label_rainbow,
+                                        label_grayscale,
+                                        NULL};
+
+
 struct pvr_colormap_bar_ctl_c *cmap_cbar_c0;
 
 void copy_colormap_name_to_ctl(struct colormap_params *cmap_s, 
-			struct chara_ctl_item *colormap_mode){	
+                               struct chara_ctl_item *colormap_mode){
 	if(cmap_s->id_color_mode == RED_BLUE_MODE){
 		copy_to_chara_ctl_item(label_bluered, colormap_mode);
 	} else if(cmap_s->id_color_mode == GRAYSCALE_MODE){
