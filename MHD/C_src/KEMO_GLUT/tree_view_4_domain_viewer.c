@@ -438,12 +438,10 @@ void init_domain_draw_expander(struct kemoviewer_gl_type *kemo_gl,
                      G_CALLBACK(hide_all_domain_patch_CB), (gpointer) dummy_entry);
     
     domain_group_gmenu->button_hide_grid = gtk_button_new_with_label("Hide grids");
-    g_object_set_data(G_OBJECT(domain_group_gmenu->button_hide_grid), "kemoview_gl", (gpointer) kemo_gl);
     g_signal_connect(G_OBJECT(domain_group_gmenu->button_hide_grid), "clicked",
                      G_CALLBACK(hide_all_domain_grids_CB), (gpointer) dummy_entry);
     
     domain_group_gmenu->button_hide_node = gtk_button_new_with_label("Hide nodes");
-    g_object_set_data(G_OBJECT(domain_group_gmenu->button_hide_node), "kemoview_gl", (gpointer) kemo_gl);
     g_signal_connect(G_OBJECT(domain_group_gmenu->button_hide_node), "clicked",
                      G_CALLBACK(hide_all_domain_nodes_CB), (gpointer) dummy_entry);
     
