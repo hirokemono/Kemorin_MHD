@@ -150,13 +150,8 @@ static void domain_patch_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer us
     struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) user_data;
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
-	if (index_mode == SINGLE_COLOR){
-		kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFSOLID_TOGGLE,
-                                     index_mode, kemo_gl->kemoview_data);
-	} else {
-		kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFSOLID_TOGGLE,
-                                     index_mode, kemo_gl->kemoview_data);
-	};
+	kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFSOLID_TOGGLE,
+                                 index_mode, kemo_gl->kemoview_data);
 	
     draw_full_gl(kemo_gl);
 	return;
@@ -167,13 +162,8 @@ static void domain_grid_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer use
     struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) user_data;
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
-	if (index_mode == SINGLE_COLOR){
-		kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFGRID_TOGGLE,
+	kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFGRID_TOGGLE,
                                      index_mode, kemo_gl->kemoview_data);
-	} else {
-		kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFGRID_TOGGLE,
-                                     index_mode, kemo_gl->kemoview_data);
-	};
 	
     draw_full_gl(kemo_gl);
 	return;
@@ -184,13 +174,8 @@ static void domain_node_colormode_CB(GtkComboBox *combobox_sfcolor, gpointer use
     struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) user_data;
     int index_mode = gtk_selected_combobox_index(combobox_sfcolor);
 	
-	if (index_mode == SINGLE_COLOR){
-		kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFNOD_TOGGLE,
+	kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFNOD_TOGGLE,
                                      index_mode, kemo_gl->kemoview_data);
-	} else {
-		kemoview_set_mesh_color_flag(DOMAIN_FLAG, SURFNOD_TOGGLE,
-                                     index_mode, kemo_gl->kemoview_data);
-	};
 	
     draw_full_gl(kemo_gl);
 	return;
